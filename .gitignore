@@ -1,0 +1,10 @@
+/vendor
+/node_modules
+.env
+
+# Composer
+composer.lock
+
+# OS
+.DS_Store
+.idea/
