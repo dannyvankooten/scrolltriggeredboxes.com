@@ -1,4 +1,4 @@
-## scrolltriggeredboxes.com [[&raquo](https://scrolltriggeredboxes.com/]
+## scrolltriggeredboxes.com [[&raquo](https://scrolltriggeredboxes.com/)]
 
 This is the site repository for [scrolltriggeredboxes.com](https://scrolltriggeredboxes.com), built using [Laravel](http://laravel.com/docs).
 
