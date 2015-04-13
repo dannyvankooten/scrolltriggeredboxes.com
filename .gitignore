@@ -8,3 +8,8 @@ composer.lock
 # OS
 .DS_Store
 .idea/
+
+# Misc
+package.json
+gulpfile.js
+
