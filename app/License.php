@@ -1,49 +1,105 @@
 <?php namespace App;
 
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Collection;
 
 class License extends Model {
 
+	use SoftDeletes;
+
 	protected $table = 'licenses';
-	protected $fillable = ['license_key', 'expires_at', 'email', 'sendowl_order_id', 'sendowl_product_id'];
+	protected $fillable = ['license_key', 'expires_at', 'email', 'sendowl_order_id'];
 	protected $guarded = ['id'];
 
+	// hidden from json export
+	protected $hidden = array( 'id', 'sendowl_order_id', 'sendowl_product_id', 'updated_at', 'deleted_at' );
+
 	public $timestamps = true;
+	protected $dates = ['deleted_at'];
 
-	public function sites()
+	public function activations()
 	{
-		return $this->hasMany('App\Site', 'license_id', 'id');
+		return $this->hasMany('App\Activation', 'license_id', 'id');
 	}
 
-	public function isAtLimit() {
-		return count( $this->getActiveSites() ) >= $this->site_limit;
+	public function plugins() {
+		return $this->belongsToMany('App\Plugin', 'plugin_licenses', 'license_id', 'plugin_id' );
 	}
 
-	public function isValid() {
+	/**
+	 * @return bool
+	 */
+	public function isExpired() {
 		return $this->expires_at >= new \DateTime('now');
 	}
 
-	public function getActiveSites() {
-		return $this->sites->filter(function($site) {
-			return $site->active;
+	/**
+	 * @param $plugin
+	 *
+	 * @return bool
+	 */
+	public function grantsAccessTo( $plugin ) {
+		return $this->plugins->contains( $plugin->id );
+	}
+
+	/**
+	 * @param $plugin
+	 */
+	public function grantAccessTo( $plugin ) {
+		if($this->grantsAccessTo($plugin)) {
+			return;
+		}
+
+		$this->plugins()->save( $plugin );
+		$this->load('plugins');
+	}
+
+	/**
+	 * @param $plugin
+	 *
+	 * @return Collection
+	 */
+	public function getPluginActivations( $plugin ) {
+		return $this->activations->filter(function($a) use($plugin) {
+			return $a->plugin->id === $plugin->id;
 		});
 	}
 
 	/**
-	 * @param $url
+	 * @return bool
+	 */
+	public function isAtSiteLimitForPlugin($plugin) {
+		return count( $this->getPluginActivations($plugin) ) >= $this->site_limit;
+	}
+
+	/**
 	 * @param $plugin
 	 *
-	 * @return null
+	 * @return int
 	 */
-	public function getSite( $url, $plugin )
-	{
+	public function getActivationsLeftForPlugin($plugin) {
+		return $this->site_limit - count( $this->getPluginActivations($plugin) );
+	}
 
-		foreach($this->sites as $site) {
-			if( $site->url === $url && $site->plugin === $plugin ) {
-				return $site;
-			}
-		}
+	/**
+	 * @return bool
+	 */
+	public function allowsActivationForPlugin($plugin) {
+		return ! $this->isExpired() && ! $this->isAtSiteLimitForPlugin( $plugin );
+	}
 
-		return null;
+	/**
+	 * @param $domain
+	 * @param $plugin
+	 *
+	 * @return static
+	 */
+	public function findDomainActivationForPlugin($domain, $plugin) {
+		$this->load('activations');
+		return $this->getPluginActivations($plugin)->filter(function($activation) use($domain){
+			return $activation->domain === $domain;
+		})->first();
 	}
 }

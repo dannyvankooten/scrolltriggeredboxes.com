@@ -10,7 +10,17 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-Route::get('/', 'WelcomeController@index');
-Route::get('/api/licenses/create', 'LicenseController@create');
-Route::get('/api/licenses/{key}', 'LicenseController@get');
-Route::post('/api/licenses/{key}/sites', 'LicenseController@toggleSite');
+Route::get('/', 'SiteController@index');
+Route::get('/download/plugin/{plugin_id_or_slug}', 'DownloadController@plugin' );
+
+Route::group(['prefix' => '/api', 'namespace' => 'API'], function()
+{
+	// Controllers Within The "App\Http\Controllers\API" Namespace
+	Route::get('/licenses/create', 'LicenseController@create');
+	Route::get('/licenses/{key}', 'LicenseController@get');
+	Route::post('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@activate');
+	Route::delete('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@deactivate');
+
+	Route::get('/plugins/{id_or_slug}', 'PluginController@get');
+	Route::get('/plugins/{id_or_slug}/download', 'PluginController@download');
+});

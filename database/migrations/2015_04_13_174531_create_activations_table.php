@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLicenseSitesTable extends Migration {
+class CreateActivationsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,16 +12,17 @@ class CreateLicenseSitesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('license_sites', function(Blueprint $table)
+		Schema::create('activations', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->increments('id')->unsigned();
 			$table->integer('license_id')->unsigned();
-			$table->string('url');
-			$table->string('plugin');
-			$table->boolean('active')->default(false);
+			$table->integer('plugin_id')->unsigned();
+			$table->string('domain');
+			$table->string('url')->default('');
 			$table->timestamps();
 
 			$table->foreign('license_id')->references('id')->on('licenses')->onDelete('cascade');
+			$table->foreign('plugin_id')->references('id')->on('plugins')->onDelete('cascade');
 		});
 	}
 
@@ -32,7 +33,7 @@ class CreateLicenseSitesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('license_sites');
+		Schema::drop('activations');
 	}
 
 }

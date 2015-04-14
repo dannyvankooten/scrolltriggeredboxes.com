@@ -23,6 +23,9 @@ class RouteServiceProvider extends ServiceProvider {
 	public function boot(Router $router)
 	{
 		//
+
+		// set a route contstraint on {key} parameters
+		//$router->pattern('key', '(\w{5}\-?){4}');
 		
 		parent::boot($router);
 	}

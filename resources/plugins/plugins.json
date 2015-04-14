@@ -1,0 +1,16 @@
+{
+
+  // STB Theme Pack
+  "stb-theme-pack": {
+    "name": "Scroll Triggered Boxes - Theme Pack",
+    "prices": {
+      "single": 29.00,
+      "developer": 29.00
+    },
+    "version": "1.0",
+    "requires": [
+      "Scroll Triggered Boxes v2.0",
+      "PHP 5.3+"
+    ]
+  }
+}

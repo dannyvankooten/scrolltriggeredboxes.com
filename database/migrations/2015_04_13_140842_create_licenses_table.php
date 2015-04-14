@@ -14,16 +14,14 @@ class CreateLicensesTable extends Migration {
 	{
 		Schema::create('licenses', function(Blueprint $table)
 		{
-			$table->increments('id');
-			$table->string('license_key');
+			$table->increments('id')->unsigned();
+			$table->string('license_key')->unique();
 			$table->string('email');
-			$table->integer('sendowl_product_id')->nullable();
-			$table->integer('sendowl_order_id')->nullable();
-			$table->integer('site_limit')->default(1);
+			$table->integer('site_limit')->unsigned()->default(1);
 			$table->dateTime('expires_at');
+			$table->integer('sendowl_order_id')->nullable();
 			$table->timestamps();
-
-			$table->unique('license_key');
+			$table->softDeletes();
 		});
 	}
 

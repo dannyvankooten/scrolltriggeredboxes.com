@@ -13,6 +13,10 @@ return [
 	| to have a conventional place to find your various credentials.
 	|
 	*/
+	'sendowl' => [
+		'api_key' => env('SENDOWL_API_KEY', ''),
+		'api_secret' => env('SENDOWL_API_SECRET', '')
+	],
 
 	'mailgun' => [
 		'domain' => '',
