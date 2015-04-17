@@ -17,7 +17,11 @@ class CreatePluginsTable extends Migration {
 			$table->increments('id')->unsigned();
 			$table->string('name');
 			$table->string('slug')->unique();
+			$table->string('url')->unique();
 			$table->string('version');
+			$table->string('author')->default('');
+			$table->text('changelog')->default('');
+			$table->text('description')->default('');
 			$table->timestamps();
 		});
 	}

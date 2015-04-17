@@ -36,7 +36,7 @@ class Handler extends ExceptionHandler {
 	 */
 	public function render($request, Exception $e)
 	{
-		if( $e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException ) {
+		if( $request->isJson() && $e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException ) {
 			return response()->json(null, 404 );
 		}
 

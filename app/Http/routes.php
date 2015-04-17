@@ -11,6 +11,12 @@
 |
 */
 Route::get('/', 'SiteController@index');
+Route::get('/plugins', 'PluginsController@index');
+Route::get('/plugins/{slug}', 'PluginsController@show');
+
+
+
+// download URL for SendOwl
 Route::get('/download/plugin/{plugin_id_or_slug}', 'DownloadController@plugin' );
 
 Route::group(['prefix' => '/api', 'namespace' => 'API'], function()

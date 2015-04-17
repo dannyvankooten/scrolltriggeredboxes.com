@@ -10,14 +10,18 @@ class License extends Model {
 	use SoftDeletes;
 
 	protected $table = 'licenses';
-	protected $fillable = ['license_key', 'expires_at', 'email', 'sendowl_order_id'];
+	protected $fillable = ['license_key', 'expires_at', 'sendowl_order_id'];
 	protected $guarded = ['id'];
 
 	// hidden from json export
-	protected $hidden = array( 'id', 'sendowl_order_id', 'sendowl_product_id', 'updated_at', 'deleted_at' );
+	protected $hidden = array( 'id', 'sendowl_order_id', 'user_id', 'created_at', 'updated_at', 'deleted_at' );
 
 	public $timestamps = true;
 	protected $dates = ['deleted_at'];
+
+	public function user() {
+		return $this->belongsTo('App\User', 'user_id', 'id');
+	}
 
 	public function activations()
 	{

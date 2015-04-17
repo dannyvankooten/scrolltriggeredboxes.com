@@ -9,9 +9,8 @@ class Plugin extends Model {
 	protected $guarded = ['id'];
 	public $timestamps = true;
 
-
 	// hidden from json export
-	protected $hidden = array( 'id', 'created_at', 'updated_at', 'version' );
+	protected $hidden = array( 'id', 'created_at', 'updated_at', 'version', 'changelog', 'author', 'description', 'url' );
 
 	public function licenses() {
 		return $this->belongsToMany('App\License', 'plugin_licenses', 'license_id', 'plugin_id' );

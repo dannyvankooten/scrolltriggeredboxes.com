@@ -23,8 +23,15 @@ class PluginController extends Controller {
 
 		// build response
 		$response = [
+			'name' => $plugin->name,
 			'slug' => $plugin->slug,
-			'version' => $plugin->version
+			'version' => $plugin->version,
+			'download_url' => url( '/api/plugins/download/' . $plugin->url ),
+			'author' => $plugin->author,
+			'sections' => [
+				'changelog' => $plugin->changelog,
+				'description' => $plugin->description
+			]
 		];
 
 		return response()->json($response);
@@ -36,6 +43,7 @@ class PluginController extends Controller {
 	 * @return mixed
 	 */
 	public function download($id_or_slug, Request $request) {
+
 		// then, retrieve plugin that user is trying to activate
 		$plugin = Plugin::where('id', $id_or_slug)->orWhere('slug', $id_or_slug)->firstOrFail();
 

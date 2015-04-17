@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title','Scroll Triggered Boxes - unobtrusive conversion boosters')
+@section('title','Add-on plugins for Scroll Triggered Boxes')
 
 @section('content')
 <!--Portfolio start-->

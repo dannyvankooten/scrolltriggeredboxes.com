@@ -52,7 +52,7 @@
         </div>
         <!--Header text end-->
         <!--Social icon start-->
-        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 socialList">
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
 
         </div>
         <!--Social icon start-->
@@ -63,14 +63,14 @@
 
 @yield('content')
 
-<!--<div class="separator container"><span class="sepIcon iconBotom"></span></div>-->
-
+<div class="separator container" style="margin-bottom:40px;"><span class="sepIcon iconBotom"></span></div>
 
 <!--footer start-->
 <footer class="footer">
     <div class="container">
         @include('parts.footermenu')
-        <p class="copyrightText">&copy; 2013-{{ date('Y') }}. <a href="{{ url('/') }}">Scroll Triggered Boxes</a>, a plugin by <a href="https://dannyvankooten.com">Danny van Kooten</a>. All Rights reserved</p>
+        <br />
+        <p class="copyrightText">&copy; 2013-{{ date('Y') }}. &nbsp;&nbsp; <a href="{{ url('/') }}">Scroll Triggered Boxes</a>, a plugin by <a href="https://dannyvankooten.com">Danny van Kooten</a>.</p>
     </div>
 
 </footer>
@@ -85,8 +85,8 @@
     imagesLoaded( container, function() {
         var msnry = new Masonry( container, {
             // options
-            columnWidth: 320,
             itemSelector: 'li'
+
         });
     });
     document.querySelector('.vc').onclick = function() {
@@ -94,6 +94,8 @@
     };
 
 </script>
+
+@yield('foot')
 
 </body>
 </html>

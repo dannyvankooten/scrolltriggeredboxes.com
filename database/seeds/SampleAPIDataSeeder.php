@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use App\Plugin, App\SendowlProduct;
-use App\License, App\Site;
+use App\License, App\Site, App\User;
 
 class SampleAPIDataSeeder extends Seeder {
 
@@ -16,6 +16,7 @@ class SampleAPIDataSeeder extends Seeder {
 	{
 		Model::unguard();
 
+		DB::table('users')->delete();
 		DB::table('licenses')->delete();
 		DB::table('plugins')->delete();
 		DB::table('plugin_licenses')->delete();
@@ -33,13 +34,19 @@ class SampleAPIDataSeeder extends Seeder {
 		Plugin::create([
 			'name' => 'STB Theme Pack',
 			'slug' => 'stb-theme-pack',
+			'url' => 'theme-pack',
+			'changelog' => 'Changelog text',
+			'description' => 'Description for Theme Pack.',
 			'version' => '1.0'
 		]);
 
 		Plugin::create([
 			'name' => 'Yet Another Plugin',
 			'slug' => 'another-plugin',
-			'version' => '1.1'
+			'url' => 'another-plugin',
+			'version' => '1.1',
+			'changelog' => 'Changelog text',
+			'description' => 'Description for Theme Pack.',
 		]);
 
 		$this->command->info('plugins table seeded!');
@@ -48,14 +55,21 @@ class SampleAPIDataSeeder extends Seeder {
 	// create sample sale for 1st sendowl product
 	public function createLicenses() {
 
+		$user = new User([
+			'name' => 'Danny van Kooten',
+			'email' => 'dannyvankooten@gmail.com',
+			'password' => Hash::make('password')
+		]);
+		$user->save();
+
 		// create license
 		$license = new License([
 			'license_key' => '4ELLX-E0BIW-BU0GP-94HW9',
 			'site_limit' => 2,
 			'expires_at' => new \DateTime('+1 year'),
 			'sendowl_order_id' => 100,
-			'email' => 'dannyvankooten@gmail.com'
 		]);
+		$license->user()->associate($user);
 
 		$license->save();
 

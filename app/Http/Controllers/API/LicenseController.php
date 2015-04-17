@@ -2,10 +2,11 @@
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use DB, App\License, App\Activation, App\SendowlProduct, App\Plugin;
+use DB, App\License, App\User, App\Activation, App\SendowlProduct, App\Plugin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class LicenseController extends Controller {
 
@@ -17,6 +18,20 @@ class LicenseController extends Controller {
 	 */
 	public function create(Request $request)
 	{
+		$email = $request->input('buyer_email');
+		if( ! $email ) {
+			abort( 403 );
+		}
+
+		// query user by email
+		$user = User::where('email', $email)->first();
+		if( ! $user ) {
+			$user = new User();
+			$user->email = $email;
+			$user->password = Hash::make( str_random( 16 ) );
+			$user->save();
+		}
+
 		// was a key previously generated for this order?
 		$license = License::where('sendowl_order_id', $request->input('order_id'))->first();
 		if( ! $license ) {
@@ -30,13 +45,18 @@ class LicenseController extends Controller {
 			// create new license with this key
 			$license = new License([
 				'license_key' => $key,
-				'email' => $request->input('buyer_email'),
 				'expires_at' => new \DateTime("+1 year"),
 				'sendowl_order_id' => $request->input('order_id')
 			]);
 
+			// attach license to user
+			$license->user()->associate($user);
+
+			// save the license
 			$license->save();
 		}
+
+		// query user by email
 
 		// get local information about SendOwl product
 		$product = SendowlProduct::where('id', $request->input('product_id'))->first();
