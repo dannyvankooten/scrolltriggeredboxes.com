@@ -19,6 +19,20 @@ p {
 	margin: 0 0 20px 0;
 }
 
+.header-divider {
+	height: 10px;
+	background: #f8f8f8;
+	border-top: 1px solid #efefef;
+	border-bottom: 1px solid #efefef;
+}
+
+.well {
+	background: #f8f8f8;
+	padding: 20px;
+	border: 1px solid #efefef;
+}
+
+
 /* Custom page header */
 .site-title a{
 	color: #222;
@@ -69,13 +83,6 @@ p {
 	color: #eeeeee;
 }
 
-/* Customize container */
-@media (min-width: 768px) {
-	.container {
-		max-width: 960px;
-	}
-}
-
 /* Main marketing message and sign up button */
 .jumbotron {
 	text-align: center;
@@ -84,11 +91,13 @@ p {
 	border-bottom: 1px solid #efefef;
 }
 
-.jumbotron *:first-child {
+.jumbotron > *:first-child,
+.well > *:first-child{
 	margin-top: 0;
 }
 
-.jumbotron *:last-child {
+.jumbotron > *:last-child,
+.well > *:last-child{
 	margin-bottom: 0;
 }
 
@@ -125,6 +134,9 @@ p {
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
 
+	.container {
+		max-width: 960px;
+	}
 
 	.jumbotron h1, .jumbotron .h1 {
 		font-size: 36px;

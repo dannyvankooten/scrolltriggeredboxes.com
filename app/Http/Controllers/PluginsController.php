@@ -14,7 +14,9 @@ class PluginsController extends Controller {
 	 */
 	public function index()
 	{
-		return view('plugins.index');
+		$plugins = Plugin::all();
+
+		return view('plugins.index', [ 'plugins' => $plugins ]);
 	}
 
 	/**
@@ -34,7 +36,7 @@ class PluginsController extends Controller {
 			return view('plugins.' . $url, [ 'plugin' => $plugin ]);
 		}
 
-		abort(404);
+		return view( 'plugins.general', [ 'plugin' => $plugin ]);
 	}
 
 }

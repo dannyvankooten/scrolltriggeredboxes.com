@@ -37,8 +37,11 @@ class SampleAPIDataSeeder extends Seeder {
 			'url' => 'theme-pack',
 			'changelog' => 'Changelog text',
 			'description' => 'Description for Theme Pack.',
+			'short_description' => 'A beautiful set of eye-catching themes for your boxes.',
 			'version' => '1.0',
-			'author' => 'Danny van Kooten'
+			'author' => 'Danny van Kooten',
+			'image_path' => '/images/plugins/theme-pack.jpg',
+			'type' => 'premium'
 		]);
 
 		Plugin::create([
@@ -47,8 +50,12 @@ class SampleAPIDataSeeder extends Seeder {
 			'url' => 'mailchimp',
 			'version' => '1.2',
 			'changelog' => 'Changelog text',
+			'short_description' => 'Sign-up forms for your MailChimp list, with ease.',
 			'description' => 'Description for MailChimp for WordPress.',
-			'author' => 'Danny van Kooten'
+			'author' => 'Danny van Kooten',
+			'image_path' => '/images/plugins/mailchimp.jpg',
+			'external_url' => 'https://wordpress.org/plugins/mailchimp-for-wp/',
+			'type' => 'free'
 		]);
 
 		Plugin::create([
@@ -58,7 +65,11 @@ class SampleAPIDataSeeder extends Seeder {
 			'version' => '1.3',
 			'changelog' => 'Changelog text',
 			'description' => 'Description for Related Posts for WordPress.',
-			'author' => 'Danny van Kooten'
+			'short_description' => 'Ask visitors to read a related post when they\'re done reading.',
+			'author' => 'Danny van Kooten',
+			'image_path' => '/images/plugins/related-posts.jpg',
+			'external_url' => 'https://relatedpostsforwp.com/',
+			'type' => 'free'
 		]);
 
 		$this->command->info('plugins table seeded!');

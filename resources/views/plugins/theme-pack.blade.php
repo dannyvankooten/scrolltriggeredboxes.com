@@ -2,7 +2,7 @@
 
 @section('content.primary')
 <div class="plugin">
-    <h1 class="page-title">Theme Pack</h1>
+    <h1>Theme Pack</h1>
     <p>This plugin adds several beautiful preset themes which you can choose from to your Scroll Triggered Boxes.</p>
     <p>You can pick a theme, immediately see the result in your editor and then further customise the colors to your own liking, so you can truly make it your own.</p>
     <p>The plugin comes with the following themes.</p>

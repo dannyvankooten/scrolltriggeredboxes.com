@@ -21,7 +21,11 @@ class CreatePluginsTable extends Migration {
 			$table->string('version');
 			$table->string('author')->default('');
 			$table->text('changelog')->default('');
+			$table->text('short_description')->default('');
 			$table->text('description')->default('');
+			$table->string('type')->default('premium');
+			$table->string('external_url')->default('');
+			$table->string('image_path')->default('');
 			$table->timestamps();
 		});
 	}

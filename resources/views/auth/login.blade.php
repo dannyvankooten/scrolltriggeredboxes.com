@@ -3,12 +3,18 @@
 @section('title','Scroll Triggered Boxes - unobtrusive conversion boosters')
 
 @section('content')
+
+    <hr class="header-divider">
+
     <div class="container bodyContent">
         <div class="content">
+
             <h3>Login</h3>
 
+            <p>Please login using the email address that you used when <a href="/pricing">purchasing your plan</a>.</p>
+
             @foreach($errors->all() as $error)
-                <p class="padding bg-warning">{!!$error!!}</p>
+                <p class="padding bg-warning">{{ $error }}</p>
             @endforeach
 
             <form method="post" action="/login">
