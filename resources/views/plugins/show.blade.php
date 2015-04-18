@@ -3,19 +3,52 @@
 @section('title','Scroll Triggered Boxes - unobtrusive conversion boosters')
 
 @section('content')
+
+    @include('parts.masthead')
+
+
     <div class="container">
+
+        <div class="breadcrumb" itemprop="breadcrumb">
+		<span prefix="v: http://rdf.data-vocabulary.org/#">
+			<span typeof="v:Breadcrumb" class="hidden"><a href="/" rel="v:url" property="v:title">Home</a></span> <span class="sep hidden">▸</span>
+            <span typeof="v:Breadcrumb"><a href="/plugins" rel="v:url" property="v:title">Plugins</a></span> <span class="sep">▸</span>
+            <span typeof="v:Breadcrumb"><span class="breadcrumb_last" property="v:title">{{ $plugin->name }}</span></span>
+		</span>
+        </div>
+
         <div class="row">
-            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 blogleft">
-                <article class="content clearfix">
-                   @yield('content.primary')
+            <div class="col-md-8">
+                <article>
+                    @yield('content.primary')
                 </article>
-                <div class="postnav clearfix">
-                   @yield('content.nav')
-                </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 col-md-offset-1 col-lg-offset-1 col-sm-offset-1 col-xs-offset-0 blogsidebar">
-                <aside class="widget sidebar">
-                   @yield('content.secondary')
+            <div class="col-md-4">
+                <aside role="complementary">
+                        <div>
+                            <h4>Plugin Name</h4>
+                            <p>{{ $plugin->name }}</p>
+                        </div>
+
+                        <div>
+                            <h4>Requires</h4>
+                            <p>Scroll Triggered Boxes v2.0 and PHP v5.3+</p>
+                        </div>
+
+                        <div>
+                            <h4>Version</h4>
+                            <p>{{ $plugin->version }}</p>
+                        </div>
+
+                        <div>
+                            <h4>Last Updated</h4>
+                            <p>{{ $plugin->updated_at->format( 'F, Y' ) }}</p>
+                        </div>
+
+                        <div>
+                            <h4>Developer</h4>
+                            <p>{{ $plugin->author }}<p>
+                        </div>
                 </aside>
             </div>
         </div>

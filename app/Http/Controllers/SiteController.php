@@ -11,7 +11,12 @@ class SiteController extends Controller {
 	 */
 	public function index()
 	{
-		return view('home');
+		return view('pages.home');
+	}
+
+	public function pricing()
+	{
+		return view('pages.pricing');
 	}
 
 }

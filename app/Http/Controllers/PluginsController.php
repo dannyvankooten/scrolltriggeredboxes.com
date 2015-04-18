@@ -22,16 +22,16 @@ class PluginsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function show($slug)
+	public function show($url)
 	{
 		// get plugin
-		//$plugin = Plugin::where('slug', $slug)->firstOrFail();
+		$plugin = Plugin::where('url', $url)->firstOrFail();
 
 		// get content from file system
 		$view = view();
 
-		if( $view->exists('plugins.'.$slug) ) {
-			return view('plugins.'.$slug);
+		if( $view->exists('plugins.' . $url) ) {
+			return view('plugins.' . $url, [ 'plugin' => $plugin ]);
 		}
 
 		abort(404);

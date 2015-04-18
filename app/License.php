@@ -1,6 +1,7 @@
 <?php namespace App;
 
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,7 +18,7 @@ class License extends Model {
 	protected $hidden = array( 'id', 'sendowl_order_id', 'user_id', 'created_at', 'updated_at', 'deleted_at' );
 
 	public $timestamps = true;
-	protected $dates = ['deleted_at'];
+	protected $dates = ['deleted_at', 'expires_at' ];
 
 	public function user() {
 		return $this->belongsTo('App\User', 'user_id', 'id');
@@ -36,7 +37,7 @@ class License extends Model {
 	 * @return bool
 	 */
 	public function isExpired() {
-		return $this->expires_at >= new \DateTime('now');
+		return $this->expires_at < Carbon::now();
 	}
 
 	/**

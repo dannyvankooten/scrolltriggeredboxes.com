@@ -32,21 +32,33 @@ class SampleAPIDataSeeder extends Seeder {
 	public function createPlugins() {
 		// create plugins
 		Plugin::create([
-			'name' => 'STB Theme Pack',
+			'name' => 'Theme Pack',
 			'slug' => 'stb-theme-pack',
 			'url' => 'theme-pack',
 			'changelog' => 'Changelog text',
 			'description' => 'Description for Theme Pack.',
-			'version' => '1.0'
+			'version' => '1.0',
+			'author' => 'Danny van Kooten'
 		]);
 
 		Plugin::create([
-			'name' => 'Yet Another Plugin',
-			'slug' => 'another-plugin',
-			'url' => 'another-plugin',
-			'version' => '1.1',
+			'name' => 'MailChimp Sign-Up',
+			'slug' => 'mailchimp-for-wp',
+			'url' => 'mailchimp',
+			'version' => '1.2',
 			'changelog' => 'Changelog text',
-			'description' => 'Description for Theme Pack.',
+			'description' => 'Description for MailChimp for WordPress.',
+			'author' => 'Danny van Kooten'
+		]);
+
+		Plugin::create([
+			'name' => 'Related Posts',
+			'slug' => 'related-posts-for-wp',
+			'url' => 'related-posts',
+			'version' => '1.3',
+			'changelog' => 'Changelog text',
+			'description' => 'Description for Related Posts for WordPress.',
+			'author' => 'Danny van Kooten'
 		]);
 
 		$this->command->info('plugins table seeded!');

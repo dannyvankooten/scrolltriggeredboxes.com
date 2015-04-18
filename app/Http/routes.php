@@ -10,15 +10,23 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+
+// public pages
 Route::get('/', 'SiteController@index');
+Route::get('/pricing', 'SiteController@pricing');
 Route::get('/plugins', 'PluginsController@index');
 Route::get('/plugins/{slug}', 'PluginsController@show');
 
+// account
+Route::get('/account', 'AccountController@overview');
+Route::get('/account/licenses/{id}', 'AccountController@license');
+Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
 
 
 // download URL for SendOwl
 Route::get('/download/plugin/{plugin_id_or_slug}', 'DownloadController@plugin' );
 
+// API Url's
 Route::group(['prefix' => '/api', 'namespace' => 'API'], function()
 {
 	// Controllers Within The "App\Http\Controllers\API" Namespace
@@ -30,3 +38,6 @@ Route::group(['prefix' => '/api', 'namespace' => 'API'], function()
 	Route::get('/plugins/{id_or_slug}', 'PluginController@get');
 	Route::get('/plugins/{id_or_slug}/download', 'PluginController@download');
 });
+
+// auth
+Route::controller('/','AuthController');

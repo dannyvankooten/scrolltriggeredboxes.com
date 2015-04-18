@@ -119,7 +119,7 @@ class LicenseController extends Controller {
 
 		// check if this site is already activated
 		$activation = $license->findDomainActivationForPlugin($domain, $plugin);
-		if( $activation ) {
+		if( is_object( $activation ) ) {
 			$activation->touch();
 		} else {
 
@@ -130,15 +130,15 @@ class LicenseController extends Controller {
 				]);
 				$activation->plugin()->associate($plugin);
 				$activation->license()->associate($license);
+				$activation->save();
 
 			} else {
 				$data['message'] = "Your license is expired or at its activation limit.";
+				return response()->json( $data );
 			}
 
 		}
 
-		// save site
-		$activation->save();
 		$data['message'] = sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeftForPlugin($plugin) );
 		$data['success'] = true;
 		return response()->json( $data );
