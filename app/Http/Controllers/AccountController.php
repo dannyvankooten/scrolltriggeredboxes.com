@@ -24,7 +24,7 @@ class AccountController extends Controller {
 	 * @return \Illuminate\View\View
 	 */
 	public function license($id) {
-		$license = License::find($id)->with('activations')->firstOrFail();
+		$license = License::with('activations')->findOrFail($id);
 		$user = Auth::user();
 
 		// check if license belongs to user

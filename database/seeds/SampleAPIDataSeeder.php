@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
-use App\Plugin, App\SendowlProduct;
-use App\License, App\Site, App\User;
+use App\Plugin, App\Plan;
+use App\License, App\User;
 
 class SampleAPIDataSeeder extends Seeder {
 
@@ -17,14 +17,15 @@ class SampleAPIDataSeeder extends Seeder {
 		Model::unguard();
 
 		DB::table('users')->delete();
+		DB::table('plan_plugins')->delete();
 		DB::table('licenses')->delete();
 		DB::table('plugins')->delete();
 		DB::table('plugin_licenses')->delete();
-		DB::table('sendowl_products')->delete();
+		DB::table('plans')->delete();
 		DB::table('activations')->delete();
 
 		$this->createPlugins();
-		$this->createSendowlProducts();
+		$this->createPlans();
 		$this->createLicenses();
 
 	}
@@ -97,43 +98,33 @@ class SampleAPIDataSeeder extends Seeder {
 		$license->save();
 
 		// grant access to all plugins
-		foreach( SendowlProduct::all() as $product ) {
-			$license->grantAccessTo( $product->plugin );
+		foreach( Plan::all() as $plan ) {
+			$license->grantAccessTo( $plan->plugins );
 		}
-
-
 
 		$this->command->info('licenses table seeded!');
 	}
 
-	public function createSendowlProducts() {
+	public function createPlans() {
 		$plugins = Plugin::all();
 
-		// create two SendOwl products for each plugin
-		$id = 0;
-		foreach( $plugins as $plugin ) {
+		// personal license
+		$product = new Plan([
+			'name' => "Personal License",
+			'site_limit' => 1,
+			'sendowl_product_id' => 1
+		]);
+		$product->save();
+		$product->plugins()->attach( $plugins->lists('id') );
 
-			$id++;
-
-			$product = new SendowlProduct([
-				'id' => $id,
-				'name' => "STB Theme Pack (single)",
-				'plugin_id' => $plugin->id,
-				'site_limit' => 1
-			]);
-			$product->save();
-
-			$id++;
-
-			$product = new SendowlProduct([
-				'id' => $id,
-				'name' => "STB Theme Pack (developer)",
-				'plugin_id' => $plugin->id,
-				'site_limit' => 10
-			]);
-			$product->save();
-
-		}
+		// developer license
+		$product = new Plan([
+			'name' => "Developer License",
+			'site_limit' => 10,
+			'sendowl_product_id' => 2
+		]);
+		$product->save();
+		$product->plugins()->attach( $plugins->lists('id') );
 
 		$this->command->info('sendowl_products table seeded!');
 	}

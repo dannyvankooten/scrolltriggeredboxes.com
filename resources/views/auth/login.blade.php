@@ -14,7 +14,7 @@
             <p>Please login using the email address that you used when <a href="/pricing">purchasing your plan</a>.</p>
 
             @foreach($errors->all() as $error)
-                <p class="padding bg-warning">{{ $error }}</p>
+                <p class="bs-callout bs-callout-warning">{{ $error }}</p>
             @endforeach
 
             <form method="post" action="/login">

@@ -2,7 +2,7 @@
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use DB, App\License, App\User, App\Activation, App\SendowlProduct, App\Plugin;
+use DB, App\License, App\User, App\Activation, App\Plan, App\Plugin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -30,6 +30,8 @@ class LicenseController extends Controller {
 			$user->email = $email;
 			$user->password = Hash::make( str_random( 16 ) );
 			$user->save();
+
+			// todo: send email to user with his/her password
 		}
 
 		// was a key previously generated for this order?
@@ -39,7 +41,7 @@ class LicenseController extends Controller {
 			$key_exists = true;
 			while( $key_exists ) {
 				$key = $this->generate_key();
-				$key_exists = DB::table('licenses')->where('license_key', $key)->first();
+				$key_exists = License::where('license_key', $key)->first();
 			}
 
 			// create new license with this key
@@ -56,17 +58,15 @@ class LicenseController extends Controller {
 			$license->save();
 		}
 
-		// query user by email
-
 		// get local information about SendOwl product
-		$product = SendowlProduct::where('id', $request->input('product_id'))->first();
+		$plan = Plan::where('sendowl_product_id', $request->input('product_id'))->first();
 
 		// does licence grant access to plugin associated with this product already?
-		$license->grantAccessTo($product->plugin);
+		$license->grantAccessTo($plan->plugins);
 
 		// if this product its site_limit is higher than the one previous set (from another product in the same bundle), use this one. <3
-		if( $product->site_limit > $license->site_limit ) {
-			$license->site_limit = $product->site_limit;
+		if( $plan->site_limit > $license->site_limit ) {
+			$license->site_limit = $plan->site_limit;
 			$license->save();
 		}
 

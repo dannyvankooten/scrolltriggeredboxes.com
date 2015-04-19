@@ -16,12 +16,12 @@
         @foreach($plugins as $plugin)
         <div class="col-sm-6 col-md-4">
             <div class="thumbnail">
-                <img src="{{ url( $plugin->image_path ) }}" alt="...">
+                <img src="{{ url( $plugin->image_path ) }}" alt="{{ $plugin->name }}">
                 <div class="caption">
-                    <h3>{{ $plugin->name }}</h3>
+                    <h3><a href="/plugins/{{ $plugin->url }}" class="unstyled">{{ $plugin->name }}</a></h3>
                     <p>{{ $plugin->short_description }}</p>
                     <p>
-                        <a href="/plugins/{{ $plugin->url }}" class="btn btn-default" role="button">Read more</a>
+                        <a href="/plugins/{{ $plugin->url }}" class="btn btn-default" role="button" title="More about {{ $plugin->name }}">Read more <span class="sr-only">about {{ $plugin->name }}</span></a>
                         <span class="text-muted pull-right">{{ ucfirst( $plugin->type ) }}</span>
                     </p>
                 </div>

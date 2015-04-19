@@ -20,15 +20,23 @@ class License extends Model {
 	public $timestamps = true;
 	protected $dates = ['deleted_at', 'expires_at' ];
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function user() {
 		return $this->belongsTo('App\User', 'user_id', 'id');
 	}
 
-	public function activations()
-	{
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function activations() {
 		return $this->hasMany('App\Activation', 'license_id', 'id');
 	}
 
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 */
 	public function plugins() {
 		return $this->belongsToMany('App\Plugin', 'plugin_licenses', 'license_id', 'plugin_id' );
 	}
@@ -53,11 +61,23 @@ class License extends Model {
 	 * @param $plugin
 	 */
 	public function grantAccessTo( $plugin ) {
-		if($this->grantsAccessTo($plugin)) {
-			return;
+
+		if( $plugin instanceof Collection ) {
+			$plugins = $plugin;
+		} else {
+			$plugins = array( $plugin );
 		}
 
-		$this->plugins()->save( $plugin );
+		foreach( $plugins as $plugin ) {
+
+			if( $this->grantsAccessTo($plugin) ) {
+				continue;
+			}
+
+			$this->plugins()->attach( $plugin );
+		}
+
+		// reload plugins
 		$this->load('plugins');
 	}
 
@@ -85,6 +105,7 @@ class License extends Model {
 	 * @return int
 	 */
 	public function getActivationsLeftForPlugin($plugin) {
+		$this->load('activations');
 		return $this->site_limit - count( $this->getPluginActivations($plugin) );
 	}
 

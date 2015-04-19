@@ -18,13 +18,29 @@
         </div>
 
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <article>
                     @yield('content.primary')
+
+                    @if( $plugin->type === 'premium' )
+                        <div class="bs-callout bs-callout-primary">
+                            <p>Get instant access to this plugin, <a href="/pricing">purchase a premium plan</a>.</p>
+                        </div>
+                    @endif
+
+                    @if( $plugin->external_url !== '' )
+                        <div class="bs-callout bs-callout-primary">
+                            <h4>External Plugin</h4>
+                            <p>This plugin can be downloaded for free on an external site.</p>
+                            <p><a href="{{ $plugin->external_url }}" class="btn btn-primary">More Info</a></p>
+                        </div>
+                    @endif
+
                 </article>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 col-md-offset-1">
                 <aside role="complementary">
+
                         <div>
                             <h4>Plugin Name</h4>
                             <p>{{ $plugin->name }}</p>

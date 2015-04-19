@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSendowlProductsTable extends Migration {
+class CreatePlansTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,18 +12,13 @@ class CreateSendowlProductsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('sendowl_products', function(Blueprint $table)
+		Schema::create('plans', function(Blueprint $table)
 		{
-			$table->integer('id')->unsigned();
+			$table->increments('id')->unsigned();
 			$table->string('name');
 			$table->integer('site_limit')->default(1);
-			$table->integer('plugin_id')->unsigned();
+			$table->integer('sendowl_product_id');
 			$table->timestamps();
-
-			$table->primary('id');
-			$table->foreign('plugin_id')
-			      ->references('id')->on('plugins')
-			      ->onDelete('CASCADE');
 		});
 	}
 
@@ -34,7 +29,7 @@ class CreateSendowlProductsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('sendowl_products');
+		Schema::drop('plans');
 	}
 
 }
