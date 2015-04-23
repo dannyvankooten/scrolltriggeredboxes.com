@@ -27,8 +27,8 @@ class DownloadController extends Controller {
 		}
 
 		// calculate signature
-//		$message = "expires=" . $expires . "&secret=" . $sendowl_config['api_secret'];
-//		$key = $sendowl_config['api_key'] .'&'. $sendowl_config['api_secret'];
+		$message = "expires=" . $expires . "&secret=" . $sendowl_config['api_secret'];
+		$key = $sendowl_config['api_key'] .'&'. $sendowl_config['api_secret'];
 //		$expected_signature = hash_hmac('sha1', $message, $key );
 //		if( $expected_signature != $signature ) {
 //			return response( 'Access to this file has been denied. Please contact support.', 403 );
