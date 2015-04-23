@@ -17,10 +17,10 @@
                 <p class="bs-callout bs-callout-warning">{{ $error }}</p>
             @endforeach
 
-            <form method="post" action="/login">
+            <form method="post" action="{{ action('Auth\AuthController@postLogin')  }}">
                 <div class="form-group">
                     <label for="loginInputEmail">Email address</label>
-                    <input type="email" name="email" class="form-control" id="loginInputEmail" placeholder="Enter email">
+                    <input type="email" name="email" class="form-control" id="loginInputEmail" value="{{ Request::input('email') }}" placeholder="Enter email">
                 </div>
                 <div class="form-group">
                     <label for="loginInputPassword">Password</label>

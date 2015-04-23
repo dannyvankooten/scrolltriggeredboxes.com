@@ -1,6 +1,5 @@
 <p>Welcome, {{ $user->name }}!</p>
-<br />
-<p>You can use the following credentials to log in to <a href="{{ url('/account') }}">our account area on scrolltriggeredboxes.com</a>.</p>
+<p>You can use the following credentials to log in to <a href="{{ url('/account?email=' . $user->email) }}">our account area on scrolltriggeredboxes.com</a>.</p>
 <table>
     <tr>
         <th>Email</th>
@@ -12,4 +11,8 @@
     </tr>
 </table>
 <p>If you have any questions, please just reply to this email.</p>
-<p>Danny, Ines & Harish</p>
+<p>
+    Danny, Ines & Harish<br />
+    Scroll Triggered Boxes<br />
+    {{ url('/') }}
+</p>
