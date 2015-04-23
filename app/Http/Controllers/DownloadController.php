@@ -15,7 +15,7 @@ class DownloadController extends Controller {
 	public function plugin( $plugin_id_or_slug, Request $request )
 	{
 		// get plugin
-		$plugin = Plugin::where('id', $plugin_id_or_slug)->orWhere('slug', $plugin_id_or_slug)->firstOrFail();
+		$plugin = Plugin::where('id', $plugin_id_or_slug)->orWhere('url', $plugin_id_or_slug)->firstOrFail();
 
 		// may we access this file?
 		$sendowl_config = config('services.sendowl');
