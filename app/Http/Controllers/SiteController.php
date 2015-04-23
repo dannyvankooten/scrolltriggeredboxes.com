@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class SiteController extends Controller {
 
@@ -11,6 +12,8 @@ class SiteController extends Controller {
 	 */
 	public function index()
 	{
+
+
 		return view('pages.home');
 	}
 

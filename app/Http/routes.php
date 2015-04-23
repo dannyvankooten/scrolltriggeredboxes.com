@@ -45,4 +45,7 @@ Route::group(['prefix' => '/api', 'namespace' => 'API'], function()
 });
 
 // auth
-Route::controller('/','AuthController');
+Route::controllers([
+	'auth' => 'Auth\AuthController',
+	'password' => 'Auth\PasswordController',
+]);

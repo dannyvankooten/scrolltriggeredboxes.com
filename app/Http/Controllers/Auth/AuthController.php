@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers\Auth;
 
 use App\User;
 use Illuminate\Auth\Guard;

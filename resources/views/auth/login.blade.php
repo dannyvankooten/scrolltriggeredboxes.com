@@ -33,6 +33,8 @@
                 </div>
                 <button type="submit" class="btn btn-default">Login</button>
             </form>
+
+            <p class="mute"><a href="{{ url('/password/email') }}">Forgot your password?</a></p>
         </div>
     </div>
 @stop

@@ -19,20 +19,12 @@ class DownloadController extends Controller {
 
 		// may we access this file?
 		$sendowl_config = config('services.sendowl');
-		$expires = $request->input('expires');
-		$signature = $request->input('signature');
-
-		if( ! $expires || ! $signature ) {
-			return response( 'Access to this file has been denied. Please contact support.', 403 );
-		}
-
-		// calculate signature
-		$message = "expires=" . $expires . "&secret=" . $sendowl_config['api_secret'];
+		$message = sprintf( "expires=%s&secret=%s", $request->input('expires'), $sendowl_config['api_secret']);
 		$key = $sendowl_config['api_key'] .'&'. $sendowl_config['api_secret'];
-//		$expected_signature = hash_hmac('sha1', $message, $key );
-//		if( $expected_signature != $signature ) {
-//			return response( 'Access to this file has been denied. Please contact support.', 403 );
-//		}
+		$expected_signature = base64_encode( hash_hmac('sha1', $message, $key, true ) );
+		if( $expected_signature != $request->input('signature') ) {
+			abort(403);
+		}
 
 		// get storage
 		$storage = Storage::disk('local');
