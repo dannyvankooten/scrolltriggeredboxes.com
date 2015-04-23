@@ -26,6 +26,7 @@ class Kernel extends HttpKernel {
 	protected $routeMiddleware = [
 		'auth' => 'App\Http\Middleware\Authenticate',
 		'auth.license' => 'App\Http\Middleware\AuthenticateWithLicense',
+		'auth.licenseAndSite' => 'App\Http\Middleware\AuthenticateWithLicenseAndSite',
 		'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
 	];
 

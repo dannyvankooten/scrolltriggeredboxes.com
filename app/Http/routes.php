@@ -42,7 +42,7 @@ Route::group(['prefix' => '/api', 'namespace' => 'API'], function()
 	//Route::delete('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@deactivate');
 
 	Route::get('/plugins/{id_or_slug}', 'PluginController@get');
-	Route::get('/plugins/{id_or_slug}/download', ['middleware' => 'auth.license', 'uses' => 'PluginController@download']);
+	Route::get('/plugins/{id_or_slug}/download', 'PluginController@download');
 });
 
 // auth

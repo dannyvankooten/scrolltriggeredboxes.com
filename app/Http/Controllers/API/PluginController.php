@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Storage;
 class PluginController extends Controller {
 
 
+	public function __construct() {
+		$this->middleware('auth.license', ['only' => 'download']);
+		$this->middleware('auth.licenseAndSite', ['only' => 'download']);
+	}
+
 	/**
 	 * Get a plugin by its ID or slug
 	 *
