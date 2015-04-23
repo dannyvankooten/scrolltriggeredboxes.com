@@ -42,10 +42,50 @@ class License extends Model {
 	}
 
 	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function plan() {
+		return $this->belongsTo('App\Plan', 'plan_id', 'id');
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function isExpired() {
 		return $this->expires_at < Carbon::now();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function allowsActivation() {
+		return ! $this->isExpired();
+	}
+
+	/**
+	 * @param $domain
+	 *
+	 * @return static
+	 */
+	public function findDomainActivation($domain) {
+		return $this->activations->filter(function($activation) use($domain){
+			return $activation->domain === $domain;
+		})->first();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isAtSiteLimit() {
+		return count( $this->activations ) >= $this->site_limit;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getActivationsLeft() {
+		$this->load('activations');
+		return $this->site_limit - count( $this->activations );
 	}
 
 	/**
@@ -113,7 +153,7 @@ class License extends Model {
 	 * @return bool
 	 */
 	public function allowsActivationForPlugin($plugin) {
-		return ! $this->isExpired() && ! $this->isAtSiteLimitForPlugin( $plugin );
+		return $this->allowsActivation() && ! $this->isAtSiteLimitForPlugin( $plugin );
 	}
 
 	/**

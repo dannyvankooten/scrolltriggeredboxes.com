@@ -20,9 +20,11 @@ class CreateLicensesTable extends Migration {
 			$table->timestamp('expires_at');
 			$table->integer('sendowl_order_id')->nullable();
 			$table->integer('user_id')->unsigned();
+			$table->integer('plan_id')->unsigned()->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 
+			$table->foreign('plan_id')->references('id')->on('plans');
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
 	}

@@ -78,7 +78,7 @@ class SampleAPIDataSeeder extends Seeder {
 
 	// create sample sale for 1st sendowl product
 	public function createLicenses() {
-
+		$plugins = Plugin::all();
 		$user = new User([
 			'name' => 'Danny van Kooten',
 			'email' => 'dannyvankooten@gmail.com',
@@ -92,15 +92,13 @@ class SampleAPIDataSeeder extends Seeder {
 			'site_limit' => 2,
 			'expires_at' => new \DateTime('+1 year'),
 			'sendowl_order_id' => 100,
+			'plan_id' => 1
 		]);
 		$license->user()->associate($user);
-
 		$license->save();
 
 		// grant access to all plugins
-		foreach( Plan::all() as $plan ) {
-			$license->grantAccessTo( $plan->plugins );
-		}
+		$license->plugins()->attach( $plugins->lists('id') );
 
 		$this->command->info('licenses table seeded!');
 	}
@@ -109,24 +107,26 @@ class SampleAPIDataSeeder extends Seeder {
 		$plugins = Plugin::all();
 
 		// personal license
-		$product = new Plan([
+		$plan_1 = new Plan([
 			'name' => "Personal License",
 			'site_limit' => 1,
 			'sendowl_product_id' => 1
 		]);
-		$product->save();
-		$product->plugins()->attach( $plugins->lists('id') );
+		$plan_1->save();
 
 		// developer license
-		$product = new Plan([
+		$plan_2 = new Plan([
 			'name' => "Developer License",
 			'site_limit' => 10,
 			'sendowl_product_id' => 2
 		]);
-		$product->save();
-		$product->plugins()->attach( $plugins->lists('id') );
+		$plan_2->save();
 
-		$this->command->info('sendowl_products table seeded!');
+		// grant access to all plugins
+		$plan_1->plugins()->attach( $plugins->lists('id') );
+		$plan_2->plugins()->attach( $plugins->lists('id') );
+
+		$this->command->info('plans table seeded!');
 	}
 
 }

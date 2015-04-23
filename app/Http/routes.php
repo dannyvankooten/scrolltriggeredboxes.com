@@ -31,12 +31,18 @@ Route::group(['prefix' => '/api', 'namespace' => 'API'], function()
 {
 	// Controllers Within The "App\Http\Controllers\API" Namespace
 	Route::get('/licenses/create', 'LicenseController@create');
-	Route::get('/licenses/{key}', 'LicenseController@get');
-	Route::post('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@activate');
-	Route::delete('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@deactivate');
+	//Route::get('/license', 'LicenseController@get');
+
+	// global licenses
+	Route::post('/login', 'AuthController@login');
+	Route::get('/logout', 'AuthController@logout');
+
+	// individual plugins
+	//Route::post('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@activate');
+	//Route::delete('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@deactivate');
 
 	Route::get('/plugins/{id_or_slug}', 'PluginController@get');
-	Route::get('/plugins/{id_or_slug}/download', 'PluginController@download');
+	Route::get('/plugins/{id_or_slug}/download', ['middleware' => 'auth.license', 'uses' => 'PluginController@download']);
 });
 
 // auth

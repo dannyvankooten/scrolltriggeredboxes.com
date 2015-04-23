@@ -25,13 +25,19 @@
             @foreach($license->activations as $activation)
             <tr>
                 <td>{{ $activation->domain }}</td>
-                <td>{{ $activation->plugin->name }}</td>
-                <td>
-                    <form action="/account/licenses/{{ $license->id }}/activations/{{ $activation->id }}" method="post">
-                        <input type="hidden" name="_method" value="DELETE" />
-                        <input type="submit" class="btn btn-danger" data-confirm="Are you sure you want to deactivate {{ $activation->plugin->name }} on {{ $activation->domain }}?" value="Deactivate" />
-                    </form>
-                </td>
+                @if( $activation->plugin )
+                    <td>{{ $activation->plugin->name }}</td>
+                    <td>
+                        <form action="/account/licenses/{{ $license->id }}/activations/{{ $activation->id }}" method="post">
+                            <input type="hidden" name="_method" value="DELETE" />
+                            <input type="submit" class="btn btn-danger" data-confirm="Are you sure you want to deactivate {{ $activation->plugin->name }} on {{ $activation->domain }}?" value="Deactivate" />
+                        </form>
+                    </td>
+                @else
+                    <td colspan="2">
+                        -
+                    </td>
+                @endif
             </tr>
             @endforeach
             @if( count( $license->activations ) == 0 )

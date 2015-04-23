@@ -97,13 +97,13 @@ p {
 	border-bottom: 1px solid #efefef;
 }
 
-.jumbotron > *:first-child,
-.well > *:first-child{
+.jumbotron *:first-child,
+.well *:first-child{
 	margin-top: 0;
 }
 
-.jumbotron > *:last-child,
-.well > *:last-child{
+.jumbotron *:last-child,
+.well *:last-child{
 	margin-bottom: 0;
 }
 

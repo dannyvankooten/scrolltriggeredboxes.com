@@ -19,18 +19,30 @@ class PluginController extends Controller {
 	public function get($id_or_slug)
 	{
 		// then, retrieve plugin that user is trying to activate
-		$plugin = Plugin::where('id', $id_or_slug)->orWhere('slug', $id_or_slug)->firstOrFail();
+		$plugin = Plugin::where('id', $id_or_slug)->orWhere('url', $id_or_slug)->firstOrFail();
 
+		$download_url = url( '/api/plugins/' . $plugin->id .'/download' );
 		// build response
 		$response = [
 			'name' => $plugin->name,
 			'slug' => $plugin->slug,
 			'version' => $plugin->version,
-			'download_url' => url( '/api/plugins/download/' . $plugin->url ),
+			'new_version' => $plugin->version,
+			'download_link' => $download_url,
+			'package' => $download_url,
 			'author' => $plugin->author,
 			'sections' => [
 				'changelog' => $plugin->changelog,
 				'description' => $plugin->description
+			],
+			'requires' => $plugin->requires,
+			'tested' => $plugin->tested,
+			'homepage' => url( '/plugins/' . $plugin->url ),
+			'url' => url( '/plugins/' . $plugin->url ),
+			'last_updated' => $plugin->updated_at->format( 'F, Y' ),
+			'upgrade_notice' => $plugin->upgrade_notice,
+			'banners' => [
+				'high' => asset( $plugin->image_path )
 			]
 		];
 
@@ -46,29 +58,6 @@ class PluginController extends Controller {
 
 		// then, retrieve plugin that user is trying to activate
 		$plugin = Plugin::where('id', $id_or_slug)->orWhere('slug', $id_or_slug)->firstOrFail();
-
-		// now, check request license and activation
-		// if key or site not given, abandon.
-		$key = $request->input('license');
-		$url = $request->input('url');
-		$domain = parse_url( $url, PHP_URL_HOST );
-
-		if( ! $key || ! $url ) {
-			return response('You do not have access to this download.', 403);
-		}
-
-		// find activation for this plugin w/ license & domain combination
-		$activation = Activation::where('plugin_id', $plugin->id)->where('domain', $domain)->with('license')->first();
-
-		// no activation found for this domain
-		if( ! $activation ) {
-			return response('You do not have access to this download.', 403);
-		}
-
-		// check if license is still valid
-		if( $activation->license->isExpired() ) {
-			return response('Your license has expired.', 403);
-		}
 
 		// is a specific version specified? if not, use latest.
 		$version = $request->input('version');

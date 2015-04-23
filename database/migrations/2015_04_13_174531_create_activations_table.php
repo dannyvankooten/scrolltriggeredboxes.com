@@ -16,7 +16,7 @@ class CreateActivationsTable extends Migration {
 		{
 			$table->increments('id')->unsigned();
 			$table->integer('license_id')->unsigned();
-			$table->integer('plugin_id')->unsigned();
+			$table->integer('plugin_id')->unsigned()->nullable();
 			$table->string('domain');
 			$table->string('url')->default('');
 			$table->timestamps();

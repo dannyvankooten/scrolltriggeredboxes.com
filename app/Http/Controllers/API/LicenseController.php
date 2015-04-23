@@ -34,6 +34,9 @@ class LicenseController extends Controller {
 			// todo: send email to user with his/her password
 		}
 
+		// get local information about SendOwl product
+		$plan = Plan::where('sendowl_product_id', $request->input('product_id'))->first();
+
 		// was a key previously generated for this order?
 		$license = License::where('sendowl_order_id', $request->input('order_id'))->first();
 		if( ! $license ) {
@@ -53,13 +56,11 @@ class LicenseController extends Controller {
 
 			// attach license to user
 			$license->user()->associate($user);
+			$license->plan()->associate($plan);
 
 			// save the license
 			$license->save();
 		}
-
-		// get local information about SendOwl product
-		$plan = Plan::where('sendowl_product_id', $request->input('product_id'))->first();
 
 		// does licence grant access to plugin associated with this product already?
 		$license->grantAccessTo($plan->plugins);
@@ -84,94 +85,6 @@ class LicenseController extends Controller {
 		$license = License::where('license_key',$key)->with('activations', 'activations.plugin')->firstOrFail();
 		return response()->json($license);
 	}
-
-	/**
-	 * Activates the given plugin for a given site
-	 *
-	 * @param string $key
-	 * @param string $plugin_id_or_slug
-	 * @return Response
-	 */
-	public function activate($key, $plugin_id_or_slug, Request $request)
-	{
-		$data = array( 'success' => false );
-
-		// first, retrieve license key
-		$license = License::where('license_key', $key)->with('activations')->with('plugins')->firstOrFail();
-
-		// then, retrieve plugin that user is trying to activate
-		$plugin = Plugin::where('id', $plugin_id_or_slug)->orWhere('slug', $plugin_id_or_slug)->first();
-
-		// check if license allows access to this plugin
-		if( ! $plugin || ! $license->grantsAccessTo($plugin) ) {
-			$data['message'] = "The license key used does not seem to grant access to this plugin.";
-			return response()->json( $data, 200);
-		}
-
-		// get url & parse domain
-		$url = $request->input('url');
-		$domain = parse_url( $url, PHP_URL_HOST );
-
-		if( ! $url ) {
-			$data['message'] = "Something went wrong while trying to active the license for this domain. Please contact support.";
-			return response()->json( $data, 200);
-		}
-
-		// check if this site is already activated
-		$activation = $license->findDomainActivationForPlugin($domain, $plugin);
-		if( is_object( $activation ) ) {
-			$activation->touch();
-		} else {
-
-			if( $license->allowsActivationForPlugin($plugin) ) {
-				$activation = new Activation([
-					'url' => $url,
-					'domain' => $domain
-				]);
-				$activation->plugin()->associate($plugin);
-				$activation->license()->associate($license);
-				$activation->save();
-
-			} else {
-				$data['message'] = "Your license is expired or at its activation limit.";
-				return response()->json( $data );
-			}
-
-		}
-
-		$data['message'] = sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeftForPlugin($plugin) );
-		$data['success'] = true;
-		return response()->json( $data );
-	}
-
-	/**
-	 * Deactivates the given plugin for a given site
-	 *
-	 * @param string $key
-	 * @param string $plugin_id_or_slug
-	 * @return Response
-	 */
-	public function deactivate($key, $plugin_id_or_slug, Request $request)
-	{
-		// first, retrieve license key
-		$license = License::where('license_key', $key)->with('activations')->with('plugins')->firstOrFail();
-
-		// then, retrieve plugin that user is trying to activate
-		$plugin = Plugin::where('id', $plugin_id_or_slug)->orWhere('slug', $plugin_id_or_slug)->first();
-
-		// parse domain from URL
-		$url = $request->input('url');
-		$domain = parse_url( $url, PHP_URL_HOST );
-
-		// now, delete activation if it actually exists
-		$activation = $license->findDomainActivationForPlugin($domain, $plugin);
-		if( $activation ) {
-			$activation->delete();
-		}
-
-		return response()->json( [ 'success' => true ] );
-	}
-
 	/**
 	 * Generate a random serial key of 25 characters
 	 * Format: XXXXX-XXXXX-XXXXX-XXXXX

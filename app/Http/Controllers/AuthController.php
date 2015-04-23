@@ -4,8 +4,6 @@ use App\User;
 use Illuminate\Auth\Guard;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller {
 

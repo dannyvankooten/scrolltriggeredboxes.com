@@ -17,7 +17,7 @@ class CreatePlansTable extends Migration {
 			$table->increments('id')->unsigned();
 			$table->string('name');
 			$table->integer('site_limit')->default(1);
-			$table->integer('sendowl_product_id');
+			$table->integer('sendowl_product_id')->default(0);
 			$table->timestamps();
 		});
 	}

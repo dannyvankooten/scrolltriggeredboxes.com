@@ -26,6 +26,9 @@ class CreatePluginsTable extends Migration {
 			$table->string('type')->default('premium');
 			$table->string('external_url')->default('');
 			$table->string('image_path')->default('');
+			$table->text('upgrade_notice')->nullable();
+			$table->string('requires')->nullable();
+			$table->string('tested')->nullable();
 			$table->timestamps();
 		});
 	}
