@@ -78,9 +78,9 @@
                 <br />
 
                 <h4>Is the price a one-time fee?</h4>
-                <p>No, but it can be.</p>
-                <p>Your license will automatically renew itself each year for 50% of the initial purchase price.</p>
-                <p>You can immediately cancel your subscription after purchasing your plan but that means you would only receive plugin updates for 1 year. We believe no one should be on outdated software, which is why we chose this model.</p>
+                <p>Not really. By default, your license will automatically renew itself each year for 50% of the initial purchase price.</p>
+                <p>You can opt-out of license renewals at any time you want, but that means you will no longer receive plugin updates once your license expires.</p>
+                <p>For a multitude of reasons, we believe no one should be on outdated software. This is why we choose to renew licenses by default.</p>
 
                 <br />
                 <h4>What happens after my license expires?</h4>
@@ -91,3 +91,23 @@
     </div>
 @stop;
 
+@section('foot')
+    <script type="text/javascript">
+        (function(d) {
+            var pricingBlocks = document.querySelectorAll('.pricing-block');
+            var largestHeight = 0;
+            for(var i=0; i<pricingBlocks.length; i++) {
+                if( pricingBlocks[i].clientHeight > largestHeight ) {
+                    largestHeight = pricingBlocks[i].clientHeight;
+                }
+            }
+
+            for(var i=0; i<pricingBlocks.length; i++) {
+                var topMargin = ( largestHeight - pricingBlocks[i].clientHeight ) / 2;
+                if( topMargin > 0 ) {
+                    pricingBlocks[i].style.marginTop = topMargin + "px";
+                }
+            }
+        })(window.document);
+    </script>
+ @endsection

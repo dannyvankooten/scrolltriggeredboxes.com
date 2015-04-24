@@ -37,14 +37,16 @@
 
 <div class="header clearfix">
     <div class="container">
+        <h2 class="site-title pull-left"><a href="/">Scroll Triggered Boxes</a></h2>
+        <input type="checkbox" id="toggle" />
         <nav class="header-nav" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
-            <ul class="pull-right">
+            <label for="toggle" class="glyphicon toggle" onclick></label>
+            <ul class="menu">
                 <li role="presentation"><a href="/pricing" class="{{ (Request::is('pricing') ? 'active' : '') }}">Pricing</a></li>
                 <li role="presentation"><a href="/plugins" class="{{ (Request::is('plugins') ? 'active' : '') }}">Plugins</a></li>
                 <li role="presentation"><a href="/contact" class="{{ (Request::is('contact') ? 'active' : '') }}">Contact</a></li>
             </ul>
         </nav>
-        <h2 class="site-title"><a href="/">Scroll Triggered Boxes</a></h2>
     </div>
 </div>
 
