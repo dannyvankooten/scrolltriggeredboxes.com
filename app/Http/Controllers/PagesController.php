@@ -3,23 +3,29 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
-class SiteController extends Controller {
+class PagesController extends Controller {
 
 	/**
 	 * Show the application welcome screen to the user.
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function getIndex()
 	{
-
-
 		return view('pages.home');
 	}
 
-	public function pricing()
+	public function getPricing()
 	{
 		return view('pages.pricing');
+	}
+
+	public function getContact() {
+		return view('pages.contact');
+	}
+
+	public function getPurchaseConfirmation() {
+		return view('pages.purchase-confirmation');
 	}
 
 }

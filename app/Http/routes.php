@@ -12,15 +12,13 @@
 */
 
 // public pages
-Route::get('/', 'SiteController@index');
-Route::get('/pricing', 'SiteController@pricing');
 Route::get('/plugins', 'PluginsController@index');
 Route::get('/plugins/{slug}', 'PluginsController@show');
 
 // account
 Route::get('/account', 'AccountController@overview');
 Route::get('/account/licenses/{id}', 'AccountController@license');
-Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
+//Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
 
 // download URL for SendOwl
 Route::get('/download/plugins/{plugin_id_or_slug}', 'DownloadController@plugin' );
@@ -43,6 +41,9 @@ Route::group(['prefix' => '/api', 'namespace' => 'API'], function()
 	Route::get('/plugins/{id_or_slug}', 'PluginController@get');
 	Route::get('/plugins/{id_or_slug}/download', 'PluginController@download');
 });
+
+// pages
+Route::controller('', 'PagesController');
 
 // auth
 Route::controllers([

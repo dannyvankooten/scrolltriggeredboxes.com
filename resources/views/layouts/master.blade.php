@@ -4,15 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
     <title>@yield('title', 'Scroll Triggered Boxes')</title>
 
-    <!-- Bootstrap core CSS -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
     <meta name="twitter:site" content="@dannyvankooten">
@@ -65,8 +60,9 @@
     </div>
 </footer>
 
-<script src="{{ asset('js/plugins.js') }}"></script>
 <script type="text/javascript" src="https://transactions.sendowl.com/assets/sendowl.js" ></script>
+<script src="{{ asset('js/plugins.js') }}"></script>
+
 
 @yield('foot')
 </body>

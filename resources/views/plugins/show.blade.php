@@ -6,19 +6,18 @@
 
     @include('parts.masthead')
 
-
     <div class="container">
 
         <div class="breadcrumb" itemprop="breadcrumb">
 		<span prefix="v: http://rdf.data-vocabulary.org/#">
 			<span typeof="v:Breadcrumb" class="hidden"><a href="/" rel="v:url" property="v:title">Home</a></span> <span class="sep hidden">▸</span>
-            <span typeof="v:Breadcrumb"><a href="/plugins" rel="v:url" property="v:title">Plugins</a></span> <span class="sep">▸</span>
+            <span typeof="v:Breadcrumb"><a href="{{ url('/plugins') }}" rel="v:url" property="v:title">Plugins</a></span> <span class="sep">▸</span>
             <span typeof="v:Breadcrumb"><span class="breadcrumb_last" property="v:title">{{ $plugin->name }}</span></span>
 		</span>
         </div>
 
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-7 sm-bottom-margin">
                 <article>
                     @yield('content.primary')
 

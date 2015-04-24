@@ -8,7 +8,7 @@
             <h1>Pricing</h1>
             <p>The base plugin is and <strong>always will be free</strong> but there are several paid plans available which give you a range of benefits.</p>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-sm-4 sm-bottom-margin">
                     <div class="pricing-block">
                         <h2>Free</h2>
                         <ul class="list-unstyled">
@@ -19,7 +19,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-4 sm-bottom-margin">
                     <div class="pricing-block standout">
                         <h2>Personal</h2>
                         <ul class="list-unstyled">
@@ -32,7 +32,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-4 sm-bottom-margin">
                     <div class="pricing-block">
                         <h2>Developer</h2>
                         <ul class="list-unstyled">

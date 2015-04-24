@@ -3,7 +3,7 @@
 @section('title','License - Scroll Triggered Boxes')
 
 @section('content')
-    @include('account.parts.actions')
+    @include('account.parts.masthead')
 
     <div class="container">
         <p>
@@ -18,13 +18,13 @@
             <thead>
             <tr>
                 <th>Domain</th>
-                <th>Plugin</th>
-                <th width="1"></th>
+                @if( $license->activation && $license->activation[0]->plugin )<th>Plugin</th>@endif
+                <th>Activated on</th>
             </tr>
             </thead>
             @foreach($license->activations as $activation)
             <tr>
-                <td>{{ $activation->domain }}</td>
+                <td><a href="{{ $activation->url }}">{{ $activation->domain }}</a></td>
                 @if( $activation->plugin )
                     <td>{{ $activation->plugin->name }}</td>
                     <td>
@@ -33,11 +33,8 @@
                             <input type="submit" class="btn btn-danger" data-confirm="Are you sure you want to deactivate {{ $activation->plugin->name }} on {{ $activation->domain }}?" value="Deactivate" />
                         </form>
                     </td>
-                @else
-                    <td colspan="2">
-                        -
-                    </td>
                 @endif
+                <td>{{ $activation->updated_at->format('F j, Y') }}</td>
             </tr>
             @endforeach
             @if( count( $license->activations ) == 0 )

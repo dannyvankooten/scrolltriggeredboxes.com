@@ -3,7 +3,7 @@
 @section('title','Account - Scroll Triggered Boxes')
 
 @section('content')
-    @include('account.parts.actions')
+    @include('account.parts.masthead')
 
     <div class="container">
         <h1>Account</h1>

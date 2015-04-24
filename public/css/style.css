@@ -21,7 +21,7 @@ p {
 
 .header-divider {
 	height: 10px;
-	background: #f8f8f8;
+	background: #f6f6f6;
 	border-top: 1px solid #efefef;
 	border-bottom: 1px solid #efefef;
 }
@@ -115,6 +115,7 @@ p {
 .pricing-block{
 	background: white;
 	padding: 20px;
+	border: 1px solid #efefef;
 }
 
 .pricing-block .price{
@@ -136,9 +137,21 @@ p {
 	padding: 15px;
 }
 
+.sm-bottom-margin,
+.xs-bottom-margin {
+	margin-bottom: 20px;
+}
+
+hr {
+	border-top-color: #f2f2f2;
+}
+
+.featurette-divider {
+	margin: 80px 0;
+}
 
 /* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 992px) {
 
 	.container {
 		max-width: 960px;
@@ -156,74 +169,23 @@ p {
 		padding-left: 0;
 	}
 
+	.sm-bottom-margin {
+		margin-bottom: 0;
+	}
+
+}
+
+@media screen and (min-width: 420px ) {
+	.xs-bottom-margin {
+		margin-bottom: 0;
+	}
 }
 
 
-/**
-Custom Lightbox
-*/
-/* dialog */
-@-webkit-keyframes fadeToNearBlack {
-	to { background: rgba(0,0,0,0.4); }
-}
-@keyframes fadeToNearBlack{
-	to { background: rgba(0,0,0,0.9); }
-}
-@-webkit-keyframes goBig { to { opacity: 1; } }
-@keyframes goBig { to { opacity: 1; } }
-
+/* even out thumbnails */
 .plugin .thumbnail img{
 	height: 120px;
 	width: auto;
-}
-
-#lightbox {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	position: fixed;
-	left: 50%;
-	top: 50%;
-	margin: auto;
-	padding: 10px;
-	background: white;
-	border: 1px solid #999;
-	opacity: 0;
-	max-width: 100%;
-}
-
-#lightbox img {
-	width: 100%;
-	height: auto;
-}
-#lightbox .close {
-	margin: 12px 0 0;
-	display: block;
-	border: none;
-	background: none;
-	font-size: 1.2rem;
-	outline: 0;
-}
-#lightbox[open] {
-	-webkit-animation: goBig .6s forwards;
-	-moz-animation: goBig .6s forwards;
-	animation: goBig .6s forwards;
-	max-width: 700px;
-}
-#lightbox + .backdrop,
-#lightbox::backdrop {
-	-webkit-animation: fadeToNearBlack 1s forwards;
-	-moz-animation: fadeToNearBlack 1s forwards;
-	animation: fadeToNearBlack 1s forwards;
-}
-
-.backdrop {
-	background: rgba(0,0,0,0.4);
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
 }
 
 /* callouts */
