@@ -1,23 +1,24 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
-
-// public pages
+// pages
+Route::get('/', 'PagesController@getIndex');
+Route::get('/pricing', 'PagesController@getPricing');
+Route::get('/contact', 'PagesController@getContact');
+Route::get('/refund-policy', 'PagesController@getRefundPolicy');
 Route::get('/plugins', 'PluginsController@index');
 Route::get('/plugins/{slug}', 'PluginsController@show');
+
+// auth
+Route::get('/auth/login/purchase', 'Auth\AuthController@loginFromPurchase');
+Route::get('/auth/login', 'Auth\AuthController@getLogin' );
+Route::post('/auth/login', 'Auth\AuthController@postLogin' );
+Route::get('/auth/logout', 'Auth\AuthController@getLogout' );
 
 // account
 Route::get('/account', 'AccountController@overview');
 Route::get('/account/licenses/{id}', 'AccountController@license');
+
+// todo: allow login out a license from the account page
 //Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
 
 // download URL for SendOwl
@@ -42,11 +43,5 @@ Route::group(['prefix' => '/api', 'namespace' => 'API'], function()
 	Route::get('/plugins/{id_or_slug}/download', 'PluginController@download');
 });
 
-// pages
-Route::controller('', 'PagesController');
-
 // auth
-Route::controllers([
-	'auth' => 'Auth\AuthController',
-	'password' => 'Auth\PasswordController',
-]);
+Route::controller( 'password', 'Auth\PasswordController' );
