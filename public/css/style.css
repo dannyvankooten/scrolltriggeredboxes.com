@@ -241,24 +241,10 @@ hr {
 	border-left-color: #5bc0de;
 }
 
-/*
- * Navigataur: A pure CSS responsive navigation menu
- * Author: Mike King (@micjamking)
- */
-
-/*
- 	Notes:
-
- 	- Media queries should be edited in both style sections if you require
-	  a different breakpoint for your navigation.
-
-	- Toggle class & menu anchor tags in list items have box-sizing: border-box
-	  style property to allow padding inside the container without conflicting with layout.
-*/
 
 
 /*--------------------------------
- Functional Styles (Required)
+Responsive Menu
 ---------------------------------*/
 
 #toggle,
