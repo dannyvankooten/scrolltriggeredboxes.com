@@ -7,6 +7,7 @@
     <p>You can pick a theme, immediately see the result in your editor and then further customise the colors to your own liking, so you can truly make it your own.</p>
     <p>The plugin comes with the following themes.</p>
 
+    <hr />
     <div class="row">
         <div class="col-xs-6 col-md-4">
             <a href="{{ asset('img/plugins/theme-pack/horizontal-stripe.jpg') }}" data-lightbox="horizontal-stripe" class="thumbnail"><img src="{{ asset('img/plugins/theme-pack/horizontal-stripe.jpg') }}" alt><span class="sr-only">Horizontal Stripe</span></a>
@@ -27,9 +28,13 @@
             <a href="{{ asset('img/plugins/theme-pack/striped-border.jpg') }}" class="thumbnail" data-lightbox="striped-border"><img src="{{ asset('img/plugins/theme-pack/striped-border.jpg') }}" alt><span class="sr-only">Striped Border</span></a>
         </div>
     </div>
+    <hr />
 
     <p>The themes shown above are just a few of the many possibilities, since the colors in the themes can be fully customised to your liking.</p>
+
+    <hr />
     <p><img src="{{ asset('img/plugins/theme-pack/option-panel.jpg') }}" alt="" /></p>
+    <hr />
 
     <p>Using this theme pack you can easily create beautiful eye-catching boxes without needing complex CSS styling rules.</p>
 </div>

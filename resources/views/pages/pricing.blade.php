@@ -15,7 +15,7 @@
                             <li class="price">$0</li>
                             <li>Scroll Triggered Boxes plugin</li>
                             <li>Access to all free add-ons</li>
-                            <li><a href="" class="btn btn-lg btn-default"><span class="glyphicon glyphicon-download-alt"></span> Download</a></li>
+                            <li><a href="https://wordpress.org/plugins/scroll-triggered-boxes/" class="btn btn-lg btn-default"><span class="glyphicon glyphicon-download-alt"></span> Download</a></li>
                         </ul>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                             <li class="price">$29</li>
                             <li>Scroll Triggered Boxes plugin</li>
                             <li>Access to <a href="/plugins">all premium add-ons</a></li>
-                            <li>1 year of auto-updates on 1 site (per plugin)</li>
+                            <li>1 year of auto-updates on 1 site</li>
                             <li>1 year of email support</li>
                             <li><a href="https://transactions.sendowl.com/subscriptions/1019/36F66557/purchase" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-shopping-cart"></span> Purchase</a></li>
                         </ul>
@@ -39,7 +39,7 @@
                             <li class="price">$49</li>
                             <li>Scroll Triggered Boxes plugin</li>
                             <li>Access to <a href="/plugins">all premium add-ons</a></li>
-                            <li>1 year of plugin updates on 10 sites (per plugin)</li>
+                            <li>1 year of plugin updates on 10 sites</li>
                             <li>1 year of email support</li>
                             <li><a href="https://transactions.sendowl.com/products/169391/230F7370/purchase" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-shopping-cart"></span> Purchase</a></li>
                         </ul>
@@ -53,25 +53,39 @@
         <div class="row marketing">
             <div class="col-lg-6">
                 <h4>Do I receive updates of the plugins?</h4>
-                <p>Yes! You will receive a license key which can be used to configure automatic update checks on 1 or multiple sites (depending on your plan).</p>
+                <p>Yes! After your payment, you will instantly receive a license key which can be used to configure automatic update checks on 1 or multiple sites (depending on your plan).</p>
 
                 <br />
 
-                <h4>Do I need to renew my license?</h4>
-                <p>No, although your license will automatically renew each year you can quit your subscription at any time.</p>
-                <p>The plugin will keep on working as it is, you just won't be eligible for email support or plugin updates any longer. </p>
+               <h4>Do you offer support when I need help?</h4>
+                <p>Of course we do. In fact, we're known for our top-notch support.</p>
+                <p>After purchasing your plan, you will get a dedicated email address that guarantees a fast response.</p>
+
+                <br />
+
+                <h4>Can I upgrade my plan later on?</h4>
+                <p>Yes, just <a href="{{ url('/contact') }}">send us an email</a> and we will make it happen.</p>
+
+                <br />
+                <h4>I have another question.</h4>
+                <p>Please <a href="{{ url('/contact') }}">send us an email</a> and we will answer it.</p>
             </div>
 
             <div class="col-lg-6">
                 <h4>Do you have a refund policy?</h4>
-                <p>Definitely. You can get a full refund within 30 days of your purchase, no questions asked.</p>
+                <p>Definitely! We trust you will enjoy our product so much that you can get a full refund within 30 days of your purchase, no questions asked.</p>
 
                 <br />
 
                 <h4>Is the price a one-time fee?</h4>
-                <p>Yes and no.</p>
-                <p>The price shown is a one-time fee, but your license will automatically renew itself (for just 50% of the initial price) each year unless you choose to cancel your subscription.</p>
-                <p>You can opt-out of renewing your license at any time.</p>
+                <p>No, but it can be.</p>
+                <p>Your license will automatically renew itself each year for 50% of the initial purchase price.</p>
+                <p>You can immediately cancel your subscription after purchasing your plan but that means you would only receive plugin updates for 1 year. We believe no one should be on outdated software, which is why we chose this model.</p>
+
+                <br />
+                <h4>What happens after my license expires?</h4>
+                <p>If you canceled your subscriptions then your license will expire after the year has ended. This means that the plugin will keep on working as it is at that moment but you will no longer have access to plugin updates, new plugins and email support.</p>
+
             </div>
         </div>
     </div>
