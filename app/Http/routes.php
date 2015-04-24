@@ -9,7 +9,7 @@ Route::get('/plugins', 'PluginsController@index');
 Route::get('/plugins/{slug}', 'PluginsController@show');
 
 // auth
-Route::get('/auth/login/purchase', 'Auth\AuthController@loginFromPurchase');
+Route::get('/auth/login/purchase', 'Auth\AuthController@getLoginFromPurchase');
 Route::get('/auth/login', 'Auth\AuthController@getLogin' );
 Route::post('/auth/login', 'Auth\AuthController@postLogin' );
 Route::get('/auth/logout', 'Auth\AuthController@getLogout' );

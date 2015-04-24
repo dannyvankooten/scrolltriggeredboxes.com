@@ -4,6 +4,7 @@ use App\User;
 use Illuminate\Auth\Guard;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller {
 
@@ -40,13 +41,51 @@ class AuthController extends Controller {
 		}
 	}
 
+	/**
+	 * @return \Illuminate\View\View
+	 */
 	public function getLogin( ) {
 		return view( 'auth.login' );
 	}
 
+	/**
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+	 */
 	public function getLogout() {
 		$this->auth->logout();
 		return redirect('/');
+	}
+
+	/**
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function getLoginFromPurchase( Request $request ) {
+		$sendowl_config = config('services.sendowl');
+
+		$message = sprintf( 'buyer_email=%s&buyer_name=%s&order_id=%s&secret=%s',
+			$request->input('buyer_email'),
+			$request->input('buyer_name'),
+			$request->input('order_id'),
+			$sendowl_config['api_secret'] );
+
+		$key = $sendowl_config['api_key'] .'&'. $sendowl_config['api_secret'];
+		$expected_signature = base64_encode( hash_hmac('sha1', $message, $key, true ) );
+		if( $expected_signature != $request->input('signature') ) {
+			abort(403);
+		}
+
+		// success! now, get this user.
+		$user = User::where('email', $request->input('buyer_email'))->firstOrFail();
+
+		// success! log user in
+		$this->auth->loginUsingId($user->id);
+
+		// set flash message
+		Session::flash('message', 'Thank you for your purchase! You can now download any of the premium plugin from this page.');
+
+		return response()->redirectTo('/account');
 	}
 
 }

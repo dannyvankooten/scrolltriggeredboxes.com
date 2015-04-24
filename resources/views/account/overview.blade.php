@@ -8,6 +8,12 @@
     <div class="container">
         <h1>Account</h1>
 
+        @if (session('message'))
+            <div class="bs-callout bs-callout-success">
+                {{ session('message') }}
+            </div>
+        @endif
+
         <p>Welcome, <strong>{{ $user->name }}</strong>.</p>
 
         <p>You have the following license keys.</p>
