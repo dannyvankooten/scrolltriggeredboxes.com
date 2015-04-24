@@ -83,7 +83,7 @@ class AuthController extends Controller {
 		$this->auth->loginUsingId($user->id);
 
 		// set flash message
-		Session::flash('message', 'Thank you for your purchase! You can now download any of the premium plugin from this page.');
+		Session::flash('message', sprintf( 'Thank you for your purchase! You can now download any of the premium plugin from this page. An email with login credentials for this site has been sent to <strong>%s</strong>.', $user->email ) );
 
 		return response()->redirectTo('/account');
 	}
