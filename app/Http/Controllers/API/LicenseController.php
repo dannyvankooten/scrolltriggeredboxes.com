@@ -21,7 +21,7 @@ class LicenseController extends Controller {
 	{
 		if(env('VERIFY_SIGNATURES', true)) {
 			$sendowl_config     = config( 'services.sendowl' );
-			$message            = sprintf( "buyer_email=%s&buyer_name=%s&order_id=%d&product_id=%d&secret=%s",
+			$message            = sprintf( "buyer_email=%s&buyer_name=%s&order_id=%s&product_id=%d&secret=%s",
 				$request->input( 'buyer_email' ),
 				$request->input( 'buyer_name' ),
 				$request->input( 'order_id' ),
