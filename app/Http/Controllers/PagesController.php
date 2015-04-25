@@ -24,10 +24,6 @@ class PagesController extends Controller {
 		return view('pages.contact');
 	}
 
-	public function getPurchaseConfirmation() {
-		return view('pages.purchase-confirmation');
-	}
-
 	public function getRefundPolicy() {
 		return view('pages.refund-policy');
 	}

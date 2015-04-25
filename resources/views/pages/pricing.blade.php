@@ -73,7 +73,7 @@
 
             <div class="col-lg-6">
                 <h4>Do you have a refund policy?</h4>
-                <p>Definitely! We trust you will enjoy our product so much that you can get a full refund within 30 days of your purchase, no questions asked.</p>
+                <p>Definitely! We trust you will enjoy our product so much that <a href="{{ url('/refund-policy') }}">you can get a full refund within 30 days of your purchase</a>, no questions asked.</p>
 
                 <br />
 
