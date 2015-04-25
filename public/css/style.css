@@ -81,6 +81,11 @@ h4, .h4 {
 	border-bottom: 3px solid black;
 }
 
+/* content specific styling */
+.content a{
+	text-decoration: underline;
+}
+
 /* Custom page footer */
 .footer {
 	position: absolute;

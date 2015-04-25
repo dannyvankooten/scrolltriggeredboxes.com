@@ -49,7 +49,7 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container content">
         <div class="row marketing">
             <div class="col-lg-6">
                 <h4>Do I receive updates of the plugins?</h4>
