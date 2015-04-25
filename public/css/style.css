@@ -70,15 +70,15 @@ h4, .h4 {
 
 .header-nav a {
 	font-weight: bold;
-	padding: 3px 5px 0;
+	padding: 6px 12px;
 	font-size: 110%;
 	display: inline-block;
 	text-transform: uppercase;
-	border-bottom: 3px solid transparent;
 }
 
 .header-nav a.active {
-	border-bottom: 3px solid black;
+	background: #24566d;
+	color: white;
 }
 
 /* content specific styling */
@@ -300,7 +300,7 @@ Responsive Menu
 
 	.menu a:hover,
 	.menu a:focus {
-		background: #ff4080;
+		background: #24566d;
 		color: white;
 		text-decoration: none;
 	}
