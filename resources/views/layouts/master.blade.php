@@ -7,7 +7,7 @@
 
     <title>@yield('title', 'Scroll Triggered Boxes')</title>
 
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
     <meta name="twitter:site" content="@dannyvankooten">

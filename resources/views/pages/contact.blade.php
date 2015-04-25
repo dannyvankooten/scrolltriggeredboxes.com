@@ -24,5 +24,5 @@
     <h4>Anything else?</h4>
     <p>Still here looking for answers?</p>
     <p>Please address your email to <a href="mailto:support@scrolltriggeredboxes.com">support@scrolltriggeredboxes.com</a> and we'll get to it as soon as we can.</p>
-@stop;
+@stop
 

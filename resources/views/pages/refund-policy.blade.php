@@ -26,5 +26,5 @@
 
     <p><strong>In short:</strong> it is safe to try any of the <a href="{{ url('/pricing') }}">available premium plans</a> as you can always get a full refund later.</p>
 
-@stop;
+@stop
 

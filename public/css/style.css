@@ -20,21 +20,11 @@ h4, .h4 {
 	color: #333333;
 }
 
-p {
-	margin: 0 0 20px 0;
-}
-
 .header-divider {
 	height: 10px;
 	background: #f6f6f6;
 	border-top: 1px solid #efefef;
 	border-bottom: 1px solid #efefef;
-}
-
-.well {
-	background: #f8f8f8;
-	padding: 20px;
-	border: 1px solid #efefef;
 }
 
 .unstyled,
@@ -105,9 +95,16 @@ p {
 /* Main marketing message and sign up button */
 .jumbotron {
 	text-align: center;
-	background: #f9f9f9;
-	border-top: 1px solid #efefef;
-	border-bottom: 1px solid #efefef;
+	background-image: url("../img/cover.jpg");
+	background-size: cover;
+	color: #eee;
+}
+
+.jumbotron h1,
+.jumbotron h2,
+.jumbotron h3,
+.jumbotron h4{
+	color: white;
 }
 
 .jumbotron *:first-child,
@@ -125,6 +122,13 @@ p {
 }
 
 /* pricing blocks */
+.pricing-block h1,
+.pricing-block h2,
+.pricing-block h3,
+.pricing-block {
+	color: initial;
+}
+
 .pricing-block{
 	background: white;
 	padding: 20px;

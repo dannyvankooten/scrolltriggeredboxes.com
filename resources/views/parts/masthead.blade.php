@@ -1,4 +1,4 @@
-<div class="jumbotron">
+<div class="jumbotron splash">
     <div class="container">
         <h2>A better alternative to pop-ups</h2>
         <p class="lead">Unobtrusive, conversion boosting boxes. The only lead generator we would ever use.</p>

@@ -89,7 +89,7 @@
             </div>
         </div>
     </div>
-@stop;
+@stop
 
 @section('foot')
     <script type="text/javascript">

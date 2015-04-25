@@ -1,7 +1,5 @@
 @extends('layouts.master')
 
-@section('title','Page - Scroll Triggered Boxes')
-
 @section('content')
     @include('parts.masthead')
 
