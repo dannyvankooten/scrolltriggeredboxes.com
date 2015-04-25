@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="jumbotron">
-    <p class="">Get instant access to all premium add-ons. <a href="/pricing" class="">Purchase a plan</a>.</p>
+    <p class="">Get instant access to all premium add-ons. <a href="/pricing" class="cta">Purchase a plan</a>.</p>
 </div>
 
 <div class="container">

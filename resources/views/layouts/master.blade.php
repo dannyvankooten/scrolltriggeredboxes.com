@@ -37,7 +37,7 @@
 
 <div class="header clearfix">
     <div class="container">
-        <h2 class="site-title pull-left"><a href="/">Scroll Triggered Boxes</a></h2>
+        <h2 class="site-title pull-left"><a href="/"><img src="{{ asset('img/logo-small.png') }}" class="logo" width="64" height="64" /> Scroll Triggered Boxes</a></h2>
         <input type="checkbox" id="toggle" />
         <nav class="header-nav" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
             <label for="toggle" class="glyphicon toggle" onclick></label>
