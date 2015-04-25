@@ -58,7 +58,7 @@
 
 <footer class="footer">
     <div class="container">
-        <p>&copy; 2013 - {{ date('Y') }} <a href="/">Scroll Triggered Boxes</a>. A plugin by <a href="https://dannyvankooten.com" rel="external author">Danny van Kooten</a>. </p>
+        <p>&copy; 2013 - {{ date('Y') }} <a href="/">Scroll Triggered Boxes</a>. A plugin by <a href="https://dannyvankooten.com" rel="external author">Danny van Kooten</a>. <span class="pull-right"><a href="{{ url('/refund-policy') }}">Refund Policy</a> &middot; <a href="#top">Back to top</a></span></p>
     </div>
 </footer>
 
