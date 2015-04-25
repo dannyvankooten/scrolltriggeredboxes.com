@@ -24,7 +24,7 @@
         Please include a clear explanation why you are unhappy so we can try and help resolve any problems you might have.
     </p>
 
-    <p><strong>In short:</strong> it is safe to try any of the <a href="{{ url('/pricing') }}">available premium plans</a> as you can always get a full refund later.</p>
+    <p><strong>In short:</strong> it is safe to try any of the <a href="{{ url('/pricing') }}">available premium plans</a> as you can always get a full refund within 30 days of your purchase.</p>
 
 @stop
 
