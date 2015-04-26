@@ -5,8 +5,12 @@ Route::get('/', 'PagesController@getIndex');
 Route::get('/pricing', 'PagesController@getPricing');
 Route::get('/contact', 'PagesController@getContact');
 Route::get('/refund-policy', 'PagesController@getRefundPolicy');
+
+// plugins
 Route::get('/plugins', 'PluginsController@index');
 Route::get('/plugins/{slug}', 'PluginsController@show');
+Route::get('/plugins/{plugin_id_or_slug}/download', 'PluginsController@download' );
+Route::get('/plugins/{plugin_id_or_slug}/download/sendowl', 'PluginsController@downloadFromSendowl' );
 
 // auth
 Route::get('/auth/login/purchase', 'Auth\AuthController@getLoginFromPurchase');
@@ -21,15 +25,13 @@ Route::get('/account/licenses/{id}', 'AccountController@license');
 // todo: allow login out a license from the account page
 //Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
 
-// download URL for SendOwl
-Route::get('/download/plugins/{plugin_id_or_slug}', 'DownloadController@plugin' );
+
 
 // API Url's
 Route::group(['prefix' => '/api', 'namespace' => 'API'], function()
 {
 	// Controllers Within The "App\Http\Controllers\API" Namespace
 	Route::get('/licenses/create', 'LicenseController@create');
-	//Route::get('/license', 'LicenseController@get');
 
 	// global licenses
 	Route::post('/login', 'AuthController@login');

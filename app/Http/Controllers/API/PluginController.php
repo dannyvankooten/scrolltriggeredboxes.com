@@ -11,7 +11,7 @@ class PluginController extends Controller {
 
 	public function __construct() {
 		$this->middleware('auth.license', ['only' => 'download']);
-		$this->middleware('auth.licenseAndSite', ['only' => 'download']);
+		$this->middleware('auth.license+site', ['only' => 'download']);
 	}
 
 	/**
@@ -29,25 +29,28 @@ class PluginController extends Controller {
 		$download_url = url( '/api/plugins/' . $plugin->id .'/download' );
 		// build response
 		$response = [
-			'name' => $plugin->name,
-			'slug' => $plugin->slug,
-			'version' => $plugin->version,
-			'new_version' => $plugin->version,
-			'download_link' => $download_url,
-			'package' => $download_url,
-			'author' => $plugin->author,
-			'sections' => [
-				'changelog' => $plugin->changelog,
-				'description' => $plugin->description
-			],
-			'requires' => $plugin->requires,
-			'tested' => $plugin->tested,
-			'homepage' => url( '/plugins/' . $plugin->url ),
-			'url' => url( '/plugins/' . $plugin->url ),
-			'last_updated' => $plugin->updated_at->format( 'F, Y' ),
-			'upgrade_notice' => $plugin->upgrade_notice,
-			'banners' => [
-				'high' => asset( $plugin->image_path )
+			'success' => true,
+			'data' => [
+				'name' => $plugin->name,
+				'slug' => $plugin->slug,
+				'version' => $plugin->version,
+				'new_version' => $plugin->version,
+				'download_link' => $download_url,
+				'package' => $download_url,
+				'author' => $plugin->author,
+				'sections' => [
+					'changelog' => $plugin->changelog,
+					'description' => $plugin->description
+				],
+				'requires' => $plugin->requires,
+				'tested' => $plugin->tested,
+				'homepage' => url( '/plugins/' . $plugin->url ),
+				'url' => url( '/plugins/' . $plugin->url ),
+				'last_updated' => $plugin->updated_at->format( 'F, Y' ),
+				'upgrade_notice' => $plugin->upgrade_notice,
+				'banners' => [
+					'high' => asset( $plugin->image_path )
+				]
 			]
 		];
 

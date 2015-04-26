@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Activation;
+use App\Plugin;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -10,12 +11,14 @@ use App\License;
 class AccountController extends Controller {
 
 	public function __construct() {
-		$this->middleware('auth');
+		$this->middleware('auth.user');
 	}
 
 	public function overview( ) {
 		$user = Auth::user();
-		return view( 'account.overview', [ 'user' => $user ] );
+		$plugins = Plugin::where('type','premium')->get();
+
+		return view( 'account.overview', [ 'user' => $user, 'plugins' => $plugins ] );
 	}
 
 	/**

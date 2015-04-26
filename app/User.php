@@ -31,8 +31,21 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
-	public function licenses() {
+	public function licenses()
+	{
 		return $this->hasMany('App\License', 'user_id', 'id');
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasValidLicense()
+	{
+		$validLicenses = $this->licenses->filter(function(License $l) {
+			return $l->isValid();
+		});
+
+		return count( $validLicenses ) > 0;
 	}
 
 }

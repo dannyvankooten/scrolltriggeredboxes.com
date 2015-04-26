@@ -87,17 +87,6 @@ class LicenseController extends Controller {
 	}
 
 	/**
-	 * Get a license by its key
-	 *
-	 * @param  string $key
-	 * @return Response
-	 */
-	public function get($key)
-	{
-		$license = License::where('license_key',$key)->with('activations', 'activations.plugin')->firstOrFail();
-		return response()->json($license);
-	}
-	/**
 	 * Generate a random serial key of 25 characters
 	 * Format: XXXXX-XXXXX-XXXXX-XXXXX
 	 *

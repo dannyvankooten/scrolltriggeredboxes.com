@@ -24,9 +24,10 @@ class Kernel extends HttpKernel {
 	 * @var array
 	 */
 	protected $routeMiddleware = [
-		'auth' => 'App\Http\Middleware\Authenticate',
-		'auth.license' => 'App\Http\Middleware\AuthenticateWithLicense',
-		'auth.licenseAndSite' => 'App\Http\Middleware\AuthenticateWithLicenseAndSite',
+		'auth.user' => 'App\Http\Middleware\AuthenticateUser',
+		'auth.user+license' => 'App\Http\Middleware\AuthenticateUserAndLicense',
+		'auth.license' => 'App\Http\Middleware\AuthenticateLicense',
+		'auth.license+site' => 'App\Http\Middleware\AuthenticateLicenseAndSite',
 		'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
 	];
 

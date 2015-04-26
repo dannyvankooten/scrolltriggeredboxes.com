@@ -3,7 +3,7 @@
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
-class Authenticate {
+class AuthenticateUser {
 
 	/**
 	 * The Guard implementation.

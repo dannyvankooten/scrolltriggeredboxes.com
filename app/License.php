@@ -58,7 +58,7 @@ class License extends Model {
 	/**
 	 * @return bool
 	 */
-	public function allowsActivation() {
+	public function isValid() {
 		return ! $this->isExpired();
 	}
 
@@ -87,85 +87,85 @@ class License extends Model {
 		$this->load('activations');
 		return $this->site_limit - count( $this->activations );
 	}
-
-	/**
-	 * @param $plugin
-	 *
-	 * @return bool
-	 */
-	public function grantsAccessTo( $plugin ) {
-		return $this->plugins->contains( $plugin->id );
-	}
-
-	/**
-	 * @param $plugin
-	 */
-	public function grantAccessTo( $plugin ) {
-
-		if( $plugin instanceof Collection ) {
-			$plugins = $plugin;
-		} else {
-			$plugins = array( $plugin );
-		}
-
-		foreach( $plugins as $plugin ) {
-
-			if( $this->grantsAccessTo($plugin) ) {
-				continue;
-			}
-
-			$this->plugins()->attach( $plugin );
-		}
-
-		// reload plugins
-		$this->load('plugins');
-	}
-
-	/**
-	 * @param $plugin
-	 *
-	 * @return Collection
-	 */
-	public function getPluginActivations( $plugin ) {
-		return $this->activations->filter(function($a) use($plugin) {
-			return $a->plugin->id === $plugin->id;
-		});
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isAtSiteLimitForPlugin($plugin) {
-		return count( $this->getPluginActivations($plugin) ) >= $this->site_limit;
-	}
-
-	/**
-	 * @param $plugin
-	 *
-	 * @return int
-	 */
-	public function getActivationsLeftForPlugin($plugin) {
-		$this->load('activations');
-		return $this->site_limit - count( $this->getPluginActivations($plugin) );
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function allowsActivationForPlugin($plugin) {
-		return $this->allowsActivation() && ! $this->isAtSiteLimitForPlugin( $plugin );
-	}
-
-	/**
-	 * @param $domain
-	 * @param $plugin
-	 *
-	 * @return static
-	 */
-	public function findDomainActivationForPlugin($domain, $plugin) {
-		$this->load('activations');
-		return $this->getPluginActivations($plugin)->filter(function($activation) use($domain){
-			return $activation->domain === $domain;
-		})->first();
-	}
+//
+//	/**
+//	 * @param $plugin
+//	 *
+//	 * @return bool
+//	 */
+//	public function grantsAccessTo( $plugin ) {
+//		return $this->plugins->contains( $plugin->id );
+//	}
+//
+//	/**
+//	 * @param $plugin
+//	 */
+//	public function grantAccessTo( $plugin ) {
+//
+//		if( $plugin instanceof Collection ) {
+//			$plugins = $plugin;
+//		} else {
+//			$plugins = array( $plugin );
+//		}
+//
+//		foreach( $plugins as $plugin ) {
+//
+//			if( $this->grantsAccessTo($plugin) ) {
+//				continue;
+//			}
+//
+//			$this->plugins()->attach( $plugin );
+//		}
+//
+//		// reload plugins
+//		$this->load('plugins');
+//	}
+//
+//	/**
+//	 * @param $plugin
+//	 *
+//	 * @return Collection
+//	 */
+//	public function getPluginActivations( $plugin ) {
+//		return $this->activations->filter(function($a) use($plugin) {
+//			return $a->plugin->id === $plugin->id;
+//		});
+//	}
+//
+//	/**
+//	 * @return bool
+//	 */
+//	public function isAtSiteLimitForPlugin($plugin) {
+//		return count( $this->getPluginActivations($plugin) ) >= $this->site_limit;
+//	}
+//
+//	/**
+//	 * @param $plugin
+//	 *
+//	 * @return int
+//	 */
+//	public function getActivationsLeftForPlugin($plugin) {
+//		$this->load('activations');
+//		return $this->site_limit - count( $this->getPluginActivations($plugin) );
+//	}
+//
+//	/**
+//	 * @return bool
+//	 */
+//	public function allowsActivationForPlugin($plugin) {
+//		return $this->allowsActivation() && ! $this->isAtSiteLimitForPlugin( $plugin );
+//	}
+//
+//	/**
+//	 * @param $domain
+//	 * @param $plugin
+//	 *
+//	 * @return static
+//	 */
+//	public function findDomainActivationForPlugin($domain, $plugin) {
+//		$this->load('activations');
+//		return $this->getPluginActivations($plugin)->filter(function($activation) use($domain){
+//			return $activation->domain === $domain;
+//		})->first();
+//	}
 }

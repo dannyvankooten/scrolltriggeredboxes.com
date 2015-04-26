@@ -9,14 +9,15 @@
     <div class="container bodyContent">
         <div class="content">
 
-            <h3>Login</h3>
+            <h3>Login to your account</h3>
 
-            <p>Please login using the email address that you used when <a href="/pricing">purchasing your plan</a>.</p>
+            <p>The account area is where you can manage your license(s) and download the plugins. To access it, please login using the same email address as when purchasing the premium plan.</p>
 
             @foreach($errors->all() as $error)
                 <p class="bs-callout bs-callout-warning">{{ $error }}</p>
             @endforeach
 
+            <div class="well">
             <form method="post" action="{{ action('Auth\AuthController@postLogin')  }}">
                 <div class="form-group">
                     <label for="loginInputEmail">Email address</label>
@@ -31,10 +32,13 @@
                         <input type="checkbox" name="remember_me" value="1"> Stay logged in?
                     </label>
                 </div>
-                <button type="submit" class="btn btn-default">Login</button>
+               <div>
+                   <button type="submit" class="btn btn-default">Login</button> &nbsp; <a href="{{ url('/password/email') }}">Forgot your password?</a>
+               </div>
             </form>
+            </div>
 
-            <p class="mute"><a href="{{ url('/password/email') }}">Forgot your password?</a></p>
+            <p>No account yet? <a href="{{ url('/pricing') }}">Purchase one of the premium plans</a> to get instant access to <a href="{{ url('/plugins') }}">all premium plugins</a>.</p>
         </div>
     </div>
 @stop

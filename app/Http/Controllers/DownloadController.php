@@ -8,12 +8,19 @@ use Illuminate\Support\Facades\Storage;
 class DownloadController extends Controller {
 
 	/**
+	 * Constructor
+	 */
+	public function __construct() {
+
+	}
+
+
+	/**
 	 * Show the application welcome screen to the user.
 	 *
 	 * @return Response
 	 */
-	public function plugin( $plugin_id_or_slug, Request $request )
-	{
+	public function plugin( $plugin_id_or_slug, Request $request ) {
 		// get plugin
 		$plugin = Plugin::where('id', $plugin_id_or_slug)->orWhere('url', $plugin_id_or_slug)->firstOrFail();
 
