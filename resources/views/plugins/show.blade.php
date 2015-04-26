@@ -38,7 +38,7 @@
                 </article>
             </div>
             <div class="col-md-4 col-md-offset-1">
-                <aside role="complementary">
+                <aside class="sidebar" role="complementary">
 
                         <div>
                             <h4>Plugin Name</h4>
@@ -67,14 +67,12 @@
 
                         @if( $plugin->type === 'premium' )
                         <div class="well">
-                            <h4>Premium Plugin</h4>
-                            <p>Get instant access to this plugin by <a href="/pricing">purchasing one of the premium plans</a>.</p>
+                            <p>Get instant access to this plugin by <a href="/pricing">purchasing one of the premium plans</a> or <a href="{{ url('/account') }}">login to your account</a>.</p>
                         </div>
                         @endif
 
                         @if( $plugin->external_url !== '' )
                         <div class="well">
-                            <h4>External Plugin</h4>
                             <p>This plugin can be downloaded for free on an external site.</p>
                             <p><a href="{{ $plugin->external_url }}" class="btn btn-primary">More Info</a></p>
                         </div>

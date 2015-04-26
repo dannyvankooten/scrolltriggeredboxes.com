@@ -27,7 +27,6 @@
 
         ga('create', 'UA-15758173-52', 'auto');
         ga('send', 'pageview');
-
     </script>
 
     @yield('head')

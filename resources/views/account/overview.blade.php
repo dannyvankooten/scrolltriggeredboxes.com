@@ -23,7 +23,8 @@
             <thead>
                 <tr>
                     <th>License Key</th>
-                    <th>Activations</th>
+                    <th width="20%">Used on # sites</th>
+                    <th>Created at</th>
                 </tr>
             </thead>
             <tbody>
@@ -31,6 +32,7 @@
                 <tr>
                     <td><a href="/account/licenses/{{ $license->id }}">{{ $license->license_key }}</a></td>
                     <td>{{ count( $license->activations ) }}</td>
+                    <td>{{ $license->created_at->format('F d, Y') }}</td>
                 </tr>
             @endforeach
             </tbody>
@@ -58,7 +60,7 @@
             </tbody>
         </table>
 
-        <p>If you need help installing a plugin, please have a look at the <a href="{{ url('/kb/installation-instructions') }}">installation instructions</a>.</p>
+        <p>If you need help installing a plugin, please have a look at the <a href="http://scrolltriggeredboxes.readme.io/v1.0/docs/installing-add-on-plugins">installation instructions</a>.</p>
 
         @endif
 
