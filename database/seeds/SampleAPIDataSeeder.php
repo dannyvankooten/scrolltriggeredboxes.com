@@ -37,11 +37,11 @@ class SampleAPIDataSeeder extends Seeder {
 			'slug' => 'stb-theme-pack',
 			'url' => 'theme-pack',
 			'changelog' => 'Changelog text',
-			'description' => 'Description for Theme Pack.',
+			'description' => 'A beautiful set of eye-catching themes for your boxes',
 			'short_description' => 'A beautiful set of eye-catching themes for your boxes.',
 			'version' => '1.0',
 			'author' => 'Danny van Kooten',
-			'image_path' => '/images/plugins/theme-pack.jpg',
+			'image_path' => '/img/plugins/theme-pack.jpg',
 			'type' => 'premium'
 		]);
 
@@ -49,12 +49,12 @@ class SampleAPIDataSeeder extends Seeder {
 			'name' => 'MailChimp Sign-Up',
 			'slug' => 'mailchimp-for-wp',
 			'url' => 'mailchimp',
-			'version' => '1.2',
-			'changelog' => 'Changelog text',
+			'version' => '2.2.9',
+			'changelog' => '',
 			'short_description' => 'Sign-up forms for your MailChimp list, with ease.',
 			'description' => 'MailChimp for WordPress allows you to place a sign-up form in your boxes.',
 			'author' => 'Danny van Kooten',
-			'image_path' => '/images/plugins/mailchimp.jpg',
+			'image_path' => '/img/plugins/mailchimp.jpg',
 			'external_url' => 'https://wordpress.org/plugins/mailchimp-for-wp/',
 			'type' => 'free'
 		]);
@@ -63,12 +63,12 @@ class SampleAPIDataSeeder extends Seeder {
 			'name' => 'Related Posts',
 			'slug' => 'related-posts-for-wp',
 			'url' => 'related-posts',
-			'version' => '1.3',
-			'changelog' => 'Changelog text',
+			'version' => '1.8.2',
+			'changelog' => '',
 			'description' => 'Rated Posts for WordPress allows you to show visitors a highly related post once they are done reading the current one. A perfect way to decrease your bounce rate.',
 			'short_description' => 'Ask visitors to read a related post when they\'re done reading.',
 			'author' => 'Danny van Kooten',
-			'image_path' => '/images/plugins/related-posts.jpg',
+			'image_path' => '/img/plugins/related-posts.jpg',
 			'external_url' => 'https://relatedpostsforwp.com/',
 			'type' => 'free'
 		]);
@@ -89,7 +89,7 @@ class SampleAPIDataSeeder extends Seeder {
 		// create license
 		$license = new License([
 			'license_key' => '4ELLX-E0BIW-BU0GP-94HW9',
-			'site_limit' => 2,
+			'site_limit' => 50,
 			'expires_at' => new \DateTime('+1 year'),
 			'sendowl_order_id' => 100,
 			'plan_id' => 1
@@ -98,7 +98,7 @@ class SampleAPIDataSeeder extends Seeder {
 		$license->save();
 
 		// grant access to all plugins
-		$license->plugins()->attach( $plugins->lists('id') );
+		//$license->plugins()->attach( $plugins->lists('id') );
 
 		$this->command->info('licenses table seeded!');
 	}
@@ -110,7 +110,7 @@ class SampleAPIDataSeeder extends Seeder {
 		$plan_1 = new Plan([
 			'name' => "Personal License",
 			'site_limit' => 1,
-			'sendowl_product_id' => 1
+			'sendowl_product_id' => 169390
 		]);
 		$plan_1->save();
 
@@ -118,7 +118,7 @@ class SampleAPIDataSeeder extends Seeder {
 		$plan_2 = new Plan([
 			'name' => "Developer License",
 			'site_limit' => 10,
-			'sendowl_product_id' => 2
+			'sendowl_product_id' => 169391
 		]);
 		$plan_2->save();
 
