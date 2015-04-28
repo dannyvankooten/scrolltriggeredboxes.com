@@ -28,7 +28,7 @@ return [
 	|
 	*/
 
-	'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+	'host' => env('MAIL_HOST', ''),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,7 +54,10 @@ return [
 	|
 	*/
 
-	'from' => ['address' => "support@scrolltriggeredboxes.com", 'name' => "Scroll Triggered Boxes"],
+	'from' => [
+		'address' => "support@scrolltriggeredboxes.com",
+		'name' => "Scroll Triggered Boxes"
+	],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -67,7 +70,7 @@ return [
 	|
 	*/
 
-	'encryption' => 'tls',
+	'encryption' => 'ssl',
 
 	/*
 	|--------------------------------------------------------------------------
