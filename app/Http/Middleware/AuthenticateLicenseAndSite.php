@@ -23,8 +23,8 @@ class AuthenticateLicenseAndSite {
 			return response()->json([
 				'success' => false,
 				'message' => sprintf( 'Your license was valid but it does not seem to be activated on %s.', $request->domain ),
-				'code' => 403
-			], 403);
+				'code' => 401
+			], 401 );
 		}
 
 		return $next($request);

@@ -33,15 +33,15 @@ class AuthenticateLicense  {
 			return response()->json([
 				'success' => false,
 				'message' => "Your license seems to be invalid. Please check your purchase email for the correct license key.",
-				'code' => 403
-			], 403 );
+				'code' => 401
+			], 401 );
 		} elseif( $license->isExpired() ) {
 			// license has expired
-			return response([
+			return response()->json([
 				'success' => false,
 				'message' => "Your license has expired.",
-				'code' => 403
-			], 403 );
+				'code' => 401
+			], 401 );
 		}
 
 		// todo: add check for revoked licenses (refunds, disputes, etc..)
