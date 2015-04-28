@@ -13,3 +13,7 @@ composer.lock
 package.json
 gulpfile.js
 
+# Laravel
+storage/app
+storage/framework
+storage/logs
