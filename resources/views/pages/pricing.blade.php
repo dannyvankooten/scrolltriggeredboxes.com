@@ -25,7 +25,7 @@
                     <div class="pricing-block standout">
                         <h2>Personal</h2>
                         <ul class="list-unstyled">
-                            <li class="price">$29</li>
+                            <li class="price">$49</li>
                             <li>Scroll Triggered Boxes core plugin</li>
                             <li>Access to <a href="{{ url('/plugins') }}">all premium add-ons</a></li>
                             <li>1 year of plugin updates on 1 site</li>
@@ -38,7 +38,7 @@
                     <div class="pricing-block">
                         <h2>Developer</h2>
                         <ul class="list-unstyled">
-                            <li class="price">$49</li>
+                            <li class="price">$89</li>
                             <li>Scroll Triggered Boxes core plugin</li>
                             <li>Access to <a href="{{ url('/plugins') }}">all premium add-ons</a></li>
                             <li>1 year of plugin updates on 10 sites</li>
