@@ -37,11 +37,12 @@ class LicenseController extends Controller {
 		// query user by email
 		$user = User::where('email', $request->input('buyer_email'))->first();
 		if( ! $user ) {
-			$user = new User();
-			$user->email = $request->input('buyer_email');
-			$user->name = $request->input('buyer_name');
 			$raw_password = str_random( 16 );
-			$user->password = Hash::make( $raw_password );
+			$user = new User([
+				'email' => $request->input('buyer_email'),
+				'name' => $request->input('buyer_name'),
+				'password' => Hash::make( $raw_password )
+			]);
 			$user->save();
 			event(new UserCreated($user, $raw_password));
 		}
@@ -75,7 +76,7 @@ class LicenseController extends Controller {
 		}
 
 		// does licence grant access to plugin associated with this product already?
-		$license->grantAccessTo($plan->plugins);
+		//$license->grantAccessTo($plan->plugins);
 
 		// if this product its site_limit is higher than the one previous set (from another product in the same bundle), use this one. <3
 		if( $plan->site_limit > $license->site_limit ) {
