@@ -10,7 +10,7 @@
 
         @if (session('message'))
             <div class="bs-callout bs-callout-success">
-                {{ session('message') }}
+                {!! session('message') !!}
             </div>
         @endif
 
