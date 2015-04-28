@@ -38,11 +38,10 @@ class LicenseController extends Controller {
 		$user = User::where('email', $request->input('buyer_email'))->first();
 		if( ! $user ) {
 			$raw_password = str_random( 16 );
-			$user = new User([
-				'email' => $request->input('buyer_email'),
-				'name' => $request->input('buyer_name'),
-				'password' => Hash::make( $raw_password )
-			]);
+			$user = new User();
+			$user->email = $request->input('buyer_email');
+			$user->name = $request->input('buyer_name');
+			$user->password = Hash::make( $raw_password );
 			$user->save();
 			event(new UserCreated($user, $raw_password));
 		}
