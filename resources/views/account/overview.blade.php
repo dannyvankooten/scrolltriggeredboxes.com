@@ -39,6 +39,8 @@
         </table>
 
         <h3>Plugins</h3>
+        <p>The core Scroll Triggered Boxes plugin can be downloaded from WordPress.org <a href="https://wordpress.org/plugins/scroll-triggered-boxes/">here</a>.</p>
+
         @if($user->hasValidLicense())
         <p>Since you have a valid license, you have access to the following plugin downloads.</p>
         <table class="table table-striped">
@@ -61,7 +63,8 @@
         </table>
 
         <p>If you need help installing a plugin, please have a look at the <a href="http://scrolltriggeredboxes.readme.io/v1.0/docs/installing-add-on-plugins">installation instructions</a>.</p>
-
+        @else
+            <p>It seems you have no valid license. Please <a href="/pricing">purchase one of the premium plans in order to get access to the premium add-on plugins</a>.</p>
         @endif
 
     </div>
