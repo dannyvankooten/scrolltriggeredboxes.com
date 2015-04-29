@@ -50,7 +50,7 @@ class Plugin extends Model {
 				'changelog'     => $this->changelog,
 				'description'   => $this->description
 			],
-			'requires'  => $this->requires,
+			'requires'  => '3.8',
 			'tested'    => $this->tested,
 			'last_updated' => $this->updated_at->format( 'F, Y' ),
 			'upgrade_notice' => $this->upgrade_notice,
