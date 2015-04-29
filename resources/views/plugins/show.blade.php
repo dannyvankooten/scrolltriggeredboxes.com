@@ -1,6 +1,8 @@
 @extends('layouts.master')
 
-@section('title','Scroll Triggered Boxes - unobtrusive conversion boosters')
+@section('title')
+    {{ $plugin->name }} - Scroll Triggered Boxes
+@endsection
 
 @section('content')
 
@@ -47,7 +49,7 @@
 
                         <div>
                             <h4>Requires</h4>
-                            <p>{{ $plugin->requires  }}</p>
+                            <p>{!! $plugin->requires  !!}</p>
                         </div>
 
                         <div>

@@ -5,7 +5,7 @@
         <h1>{{ $plugin->name }}</h1>
 
         @if( '' !== $plugin->long_description )
-            {{ $plugin->description }}
+            {!! $plugin->description !!}
         @else
             {{ $plugin->short_description }}
         @endif
