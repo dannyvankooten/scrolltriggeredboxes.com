@@ -47,7 +47,7 @@
 
                         <div>
                             <h4>Requires</h4>
-                            <p>Scroll Triggered Boxes v2.0 and PHP v5.3+</p>
+                            <p>{{ $plugin->requires  }}</p>
                         </div>
 
                         <div>
