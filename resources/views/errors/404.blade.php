@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
-@section('title','Scroll Triggered Boxes - unobtrusive conversion boosters')
-
+@section('title', 'Page not found - Scroll Triggered Boxes')
 
 @section('content')
 

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title','Scroll Triggered Boxes - unobtrusive conversion boosters')
+@section('title','Pricing - Scroll Triggered Boxes')
 
 @section('content')
     <div class="jumbotron">

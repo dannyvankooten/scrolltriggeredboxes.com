@@ -56,14 +56,72 @@
 </div>
 
 <footer class="footer">
+
+    <!-- start footer -->
+    <div class="footer-1">
     <div class="container">
-        <p>&copy; 2013 - {{ date('Y') }} <a href="/">Scroll Triggered Boxes</a>. A plugin by <a href="https://dannyvankooten.com" rel="external author">Danny van Kooten</a>. <span class="pull-right"><a href="{{ url('/refund-policy') }}">Refund Policy</a> &middot; <a href="#top">Back to top</a></span></p>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Scroll Triggered Boxes</h3>
+                <ul class="unstyled">
+                    <li><a href="{{ url('/') }}">Home</a></li>
+                    <li><a href="{{ url('/pricing') }}">Pricing</a></li>
+                    <li><a href="{{ url('/plugins') }}">Plugins</a></li>
+                    <li><a href="{{ url('/account') }}">Account</a></li>
+                    <li><a href="{{ url('/kb') }}">Documentation</a></li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <!-- Begin MailChimp Signup Form -->
+                <div id="mc_embed_signup">
+                    <form action="//dannyvankooten.us1.list-manage.com/subscribe/post?u=a2d08947dcd3683512ce174c5&amp;id=e3e1e0f8d8" method="post" name="mc-embedded-subscribe-form" target="_blank">
+                        <div id="mc_embed_signup_scroll">
+                            <h3>Subscribe to our mailing list</h3>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">@</div>
+                                    <input type="email" name="EMAIL" class="form-control" placeholder="Your email address..">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-8">
+                                    <input type="text" name="FNAME" class="form-control" placeholder="Your first name..">
+                                </div>
+                                <div class="col-md-4" style="padding-left: 0;">
+                                    <input type="submit" style="width: 100%;" value="Subscribe" name="subscribe" class="btn btn-cta">
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div style="position: absolute; left: -5000px;"><input type="text" name="b_a2d08947dcd3683512ce174c5_e3e1e0f8d8" tabindex="-1" value=""></div>
+
+                    </form>
+                </div>
+
+                <!--End mc_embed_signup-->
+            </div>
+        </div>
+         <!-- End top footer -->
+
     </div>
+
+    <!-- Start sub footer -->
+    <div class="footer-2">
+        <div class="container">
+            <p>&copy; 2013 - {{ date('Y') }} <a href="/">Scroll Triggered Boxes</a>. A plugin by <a href="https://dannyvankooten.com" rel="external author">Danny van Kooten</a>. <span class="pull-right"><a href="{{ url('/refund-policy') }}">Refund Policy</a> &middot; <a href="#top">Back to top</a></span></p>
+        </div>
+    </div>
+    <!-- End sub footer -->
+
+
 </footer>
+
 
 <script type="text/javascript" src="https://transactions.sendowl.com/assets/sendowl.js" ></script>
 <script src="{{ asset('js/plugins.js') }}"></script>
-
 
 @yield('foot')
 </body>

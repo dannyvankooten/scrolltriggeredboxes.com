@@ -69,7 +69,7 @@
 
                         @if( $plugin->type === 'premium' )
                         <div class="well">
-                            <p>Get instant access to this plugin by <a href="/pricing">purchasing one of the premium plans</a> or <a href="{{ url('/account') }}">login to your account</a>.</p>
+                            <p>Get instant access to this plugin by <a class="cta" href="/pricing">purchasing one of the premium plans</a> or <a class="cta" href="{{ url('/account') }}">login to your account</a>.</p>
                         </div>
                         @endif
 

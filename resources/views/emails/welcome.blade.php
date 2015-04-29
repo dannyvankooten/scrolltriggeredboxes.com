@@ -2,13 +2,13 @@
 
 <p>You can use the following credentials to log in to <a href="{{ url('/account?email=' . $user->email) }}">our account area on scrolltriggeredboxes.com</a>, where you can manage your license key(s) and download all add-on plugins.</p>
 <br />
-<table border="0" cellpadding="10">
+<table border="0" cellpadding="0" cellspacing="0">
     <tr>
-        <th style="text-align: left;">Email:</th>
+        <th align="left">Email:</th>
         <td>{{ $user->email }}</td>
     </tr>
     <tr>
-        <th style="text-align: left;">Password:</th>
+        <th align="left">Password:</th>
         <td>{{ $password }}</td>
     </tr>
 </table>
