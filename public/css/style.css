@@ -92,22 +92,26 @@ h4, .h4 {
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	padding: 40px 0 0;
+	padding: 20px 0 0;
 	margin-top: 40px;
 	font-size: 14px;
-	border-top: 1px solid #999;
+	border-top: 1px solid #eee;
+	background: #f8f8f8;
 }
 
-
+.footer-2 a,
+.footer-2 h3 {
+	color: white;
+}
 
 .footer-2 {
 	padding-top: 20px;
-	background: #222;
+	background: #111;
 	margin-top: 40px;
 	color: #eee;
 }
-.footer-2 a{
-	color: #eee;
+
+.footer-2 a {
 	text-decoration: underline;
 }
 
