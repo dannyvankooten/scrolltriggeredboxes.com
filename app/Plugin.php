@@ -33,6 +33,31 @@ class Plugin extends Model {
 		return $this->hasMany('App\Activation', 'plugin_id', 'id');
 	}
 
-
+	/**
+	 * @return array
+	 */
+	public function toWPJSON() {
+		return [
+			'id' => $this->id,
+			'url' => url( '/plugins/' . $this->url ),
+			'homepage' => url( '/plugins/' . $this->url ),
+			'package' => url( '/api/v1/plugins/' . $this->id .'/download' ),
+			'download_url' => url( '/api/v1/plugins/' . $this->id .'/download' ),
+			'name'      => $this->name,
+			'version'   => $this->version,
+			'author'    => $this->author,
+			'sections'  => [
+				'changelog'     => $this->changelog,
+				'description'   => $this->description
+			],
+			'requires'  => $this->requires,
+			'tested'    => $this->tested,
+			'last_updated' => $this->updated_at->format( 'F, Y' ),
+			'upgrade_notice' => $this->upgrade_notice,
+			'banners'   => [
+				'high'      => asset( $this->image_path )
+			]
+		];
+	}
 
 }

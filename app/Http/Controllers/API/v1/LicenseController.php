@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers\API;
+<?php namespace App\Http\Controllers\API\v1;
 
 use App\Events\UserCreated;
 use App\Http\Requests;

@@ -25,10 +25,8 @@ Route::get('/account/licenses/{id}', 'AccountController@license');
 // todo: allow login out a license from the account page
 //Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
 
-
-
 // API Url's
-Route::group(['prefix' => '/api', 'namespace' => 'API'], function()
+Route::group(['prefix' => '/api/v1', 'namespace' => 'API\\v1'], function()
 {
 	// Controllers Within The "App\Http\Controllers\API" Namespace
 	Route::get('/licenses/create', 'LicenseController@create');
@@ -41,8 +39,9 @@ Route::group(['prefix' => '/api', 'namespace' => 'API'], function()
 	//Route::post('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@activate');
 	//Route::delete('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@deactivate');
 
-	Route::get('/plugins/{id_or_slug}', 'PluginController@get');
-	Route::get('/plugins/{id_or_slug}/download', 'PluginController@download');
+	Route::get('/plugins', 'PluginController@getMany' );
+	Route::get('/plugins/{id}', 'PluginController@get');
+	Route::get('/plugins/{id}/download', 'PluginController@download');
 });
 
 // auth

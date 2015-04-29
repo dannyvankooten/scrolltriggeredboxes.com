@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers\API;
+<?php namespace App\Http\Controllers\API\v1;
 
 use App\Http\Requests\APIRequest;
 use App\License, App\Activation;
