@@ -46,3 +46,8 @@ Route::group(['prefix' => '/api/v1', 'namespace' => 'API\\v1'], function()
 
 // auth
 Route::controller( 'password', 'Auth\PasswordController' );
+
+// redirects
+Route::get('/kb', function() {
+	return redirect('http://scrolltriggeredboxes.readme.io/v1.0');
+});
