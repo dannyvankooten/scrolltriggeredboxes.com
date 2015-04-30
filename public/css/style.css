@@ -4,11 +4,8 @@ html {
 }
 
 body {
-	padding-top: 20px;
-	padding-bottom: 20px;
-	font-size: 16px;
-	line-height: 1.6;
-	margin-bottom: 360px;
+	border-top: 8px solid #24566d;
+	border-bottom: 4px solid #24566d;
 }
 
 .unstyled,
@@ -45,6 +42,7 @@ h4, .h4 {
 }
 
 .header {
+	margin-top: 30px;
 	padding-bottom: 20px;
 }
 
@@ -89,14 +87,17 @@ h4, .h4 {
 
 /* Custom page footer */
 .footer {
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-	padding: 20px 0 0;
+	font-size: 15px;
 	margin-top: 40px;
-	font-size: 14px;
 	border-top: 1px solid #eee;
-	background: #f8f8f8;
+}
+
+.footer h3 {
+	font-size: 18px;
+}
+
+.footer-1 {
+	margin-top: 10px;
 }
 
 .footer-2 a,
@@ -105,9 +106,10 @@ h4, .h4 {
 }
 
 .footer-2 {
+	font-size: 14px;
 	padding-top: 20px;
 	background: #111;
-	margin-top: 40px;
+	margin-top: 20px;
 	color: #eee;
 }
 
