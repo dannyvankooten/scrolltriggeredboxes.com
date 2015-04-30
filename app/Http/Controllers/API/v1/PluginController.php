@@ -18,7 +18,7 @@ class PluginController extends Controller {
 	 */
 	public function index( Request $request ) {
 
-		$pluginQuery = Plugin::where('type','premium');
+		$pluginQuery = Plugin::query();
 		if( $request->input('ids') ) {
 			$pluginQuery->whereIn( 'id',explode(',', $request->input('ids') ) );
 		}
@@ -29,8 +29,10 @@ class PluginController extends Controller {
 			'data' => []
 		];
 
+		$wpFormat = $request->input('format','') === 'wp';
+
 		foreach( $plugins as $plugin ) {
-			$response['data'][] = $plugin->toWPJSON();
+			$response['data'][] = ( $wpFormat ? $plugin->toWPArray() : $plugin->toArray() );
 		}
 		return response()->json($response);
 	}

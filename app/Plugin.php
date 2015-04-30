@@ -10,7 +10,8 @@ class Plugin extends Model {
 	public $timestamps = true;
 
 	// hidden from json export
-	protected $hidden = array( 'id', 'created_at', 'updated_at', 'version', 'changelog', 'author', 'description', 'url' );
+	protected $hidden = array( 'id', 'created_at', 'updated_at', 'changelog', 'description', 'url', 'slug', 'upgrade_notice', 'tested' );
+	protected $appends = [ 'full_url' ];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -36,7 +37,7 @@ class Plugin extends Model {
 	/**
 	 * @return array
 	 */
-	public function toWPJSON() {
+	public function toWPArray() {
 		return [
 			'id' => $this->id,
 			'url' => url( '/plugins/' . $this->url ),
@@ -58,6 +59,11 @@ class Plugin extends Model {
 				'high'      => asset( $this->image_path )
 			]
 		];
+	}
+
+	public function getFullUrlAttribute()
+	{
+		return url( sprintf( '/plugins/%s', $this->url ) );
 	}
 
 }
