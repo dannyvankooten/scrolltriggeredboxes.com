@@ -26,9 +26,9 @@ class PluginController extends Controller {
 		$plugins = $pluginQuery->get();
 
 		$response = [
-			'success' => true,
 			'data' => []
 		];
+
 		foreach( $plugins as $plugin ) {
 			$response['data'][] = $plugin->toWPJSON();
 		}
@@ -49,7 +49,6 @@ class PluginController extends Controller {
 
 		// build response
 		$response = [
-			'success' => true,
 			'data' => $plugin->toWPJSON()
 		];
 

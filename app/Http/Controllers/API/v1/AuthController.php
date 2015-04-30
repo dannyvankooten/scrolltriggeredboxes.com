@@ -28,11 +28,17 @@ class AuthController extends Controller {
 			// already logged-in
 			$activation->touch();
 		} elseif( $license->isExpired() ) {
-			$data['message'] = sprintf( "Your license is has expired.", $license->site_limit );
-			return response()->json( $data );
+			return response()->json([
+				'error' => [
+					'message' => sprintf( "Your license is has expired.", $license->site_limit )
+				]
+			]);
 		} elseif( $license->isAtSiteLimit() ) {
-			$data['message'] = sprintf( "Your license is at its activation limit of %d sites.", $license->site_limit );
-			return response()->json( $data );
+			return response()->json([
+				'error' => [
+					'message' => sprintf( "Your license is at its activation limit of %d sites.", $license->site_limit )
+				]
+			]);
 		} else {
 			// finally, activate site (aka login)
 			$activation = new Activation([
@@ -43,18 +49,16 @@ class AuthController extends Controller {
 			$activation->save();
 		}
 
-		$data['message'] = sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeft() );
-		$data['success'] = true;
-		return response()->json( $data );
+		return response()->json([
+			'data' => [
+				'message' => sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeft() )
+			],
+
+		]);
 	}
 
 
 	public function logout( Request $request ) {
-
-		$data = [
-			'success' => true,
-			'message' => 'Your license was successfully deactivated. You can use it on any other domain now.'
-		];
 
 		$license = $request->license;
 
@@ -64,7 +68,11 @@ class AuthController extends Controller {
 			$activation->delete();
 		}
 
-		return response()->json( $data );
+		return response()->json([
+			'data' => [
+				'message' => 'Your license was successfully deactivated. You can use it on any other domain now.'
+			]
+		]);
 	}
 
 }

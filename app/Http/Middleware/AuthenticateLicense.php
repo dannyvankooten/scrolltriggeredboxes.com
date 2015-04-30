@@ -21,9 +21,9 @@ class AuthenticateLicense  {
 		if( ! $key || ! $site ) {
 			// no license key or site given
 			return response()->json([
-				'success' => false,
-				'message' => "Please provide your license key and site.",
-				'code' => 400
+				'error' => [
+					'message' => 'Please provide your license key and site.'
+				]
 			], 400 );
 		}
 
@@ -31,16 +31,16 @@ class AuthenticateLicense  {
 		if( ! $license ) {
 			// license key was not found
 			return response()->json([
-				'success' => false,
-				'message' => "Your license seems to be invalid. Please check your purchase email for the correct license key.",
-				'code' => 401
+				'error' => [
+					'message' => "Your license seems to be invalid. Please check your purchase email for the correct license key."
+				]
 			], 401 );
 		} elseif( $license->isExpired() ) {
 			// license has expired
 			return response()->json([
-				'success' => false,
-				'message' => "Your license has expired.",
-				'code' => 401
+				'error' => [
+					'message' => sprintf( "Your license has expired on %s.", $license->expires_at->format('F j, Y') )
+				]
 			], 401 );
 		}
 
