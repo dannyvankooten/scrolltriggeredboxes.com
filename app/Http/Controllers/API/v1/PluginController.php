@@ -16,8 +16,14 @@ class PluginController extends Controller {
 
 	/**
 	 */
-	public function getMany( Request $request ) {
-		$plugins = Plugin::whereIn('id', $request->input('plugins'))->get();
+	public function index( Request $request ) {
+
+		$pluginQuery = Plugin::where('type','premium');
+		if( $request->input('ids') ) {
+			$pluginQuery->whereIn( 'id',explode(',', $request->input('ids') ) );
+		}
+
+		$plugins = $pluginQuery->get();
 
 		$response = [
 			'success' => true,

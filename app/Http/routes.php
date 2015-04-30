@@ -39,7 +39,7 @@ Route::group(['prefix' => '/api/v1', 'namespace' => 'API\\v1'], function()
 	//Route::post('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@activate');
 	//Route::delete('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@deactivate');
 
-	Route::get('/plugins', 'PluginController@getMany' );
+	Route::get('/plugins', 'PluginController@index' );
 	Route::get('/plugins/{id}', 'PluginController@get');
 	Route::get('/plugins/{id}/download', 'PluginController@download');
 });
