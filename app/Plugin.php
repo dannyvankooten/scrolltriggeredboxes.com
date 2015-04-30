@@ -10,8 +10,8 @@ class Plugin extends Model {
 	public $timestamps = true;
 
 	// hidden from json export
-	protected $hidden = array( 'id', 'created_at', 'updated_at', 'changelog', 'description', 'url', 'slug', 'upgrade_notice', 'tested' );
-	protected $appends = [ 'full_url' ];
+	protected $hidden = array( 'id', 'created_at', 'updated_at', 'changelog', 'description', 'url', 'slug', 'upgrade_notice', 'tested', 'image_path' );
+	protected $appends = [ 'page_url', 'image_url' ];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -61,7 +61,12 @@ class Plugin extends Model {
 		];
 	}
 
-	public function getFullUrlAttribute()
+	public function getImageUrlAttribute()
+	{
+		return asset( $this->image_path );
+	}
+
+	public function getPageUrlAttribute()
 	{
 		return url( sprintf( '/plugins/%s', $this->url ) );
 	}
