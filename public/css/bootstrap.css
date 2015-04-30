@@ -1106,9 +1106,7 @@ figure {
 img {
   vertical-align: middle;
 }
-.img-responsive,
-.thumbnail > img,
-.thumbnail a > img {
+.img-responsive {
   display: block;
   max-width: 100%;
   height: auto;
@@ -3591,32 +3589,6 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   .jumbotron .h1 {
     font-size: 72px;
   }
-}
-.thumbnail {
-  display: block;
-  padding: 4px;
-  margin-bottom: 25px;
-  line-height: 1.6;
-  background-color: #ffffff;
-  border: 1px solid #dddddd;
-  border-radius: 0;
-  -webkit-transition: border 0.2s ease-in-out;
-  -o-transition: border 0.2s ease-in-out;
-  transition: border 0.2s ease-in-out;
-}
-.thumbnail > img,
-.thumbnail a > img {
-  margin-left: auto;
-  margin-right: auto;
-}
-a.thumbnail:hover,
-a.thumbnail:focus,
-a.thumbnail.active {
-  border-color: #24566d;
-}
-.thumbnail .caption {
-  padding: 9px;
-  color: #333333;
 }
 .embed-responsive {
   position: relative;

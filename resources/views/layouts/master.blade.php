@@ -75,23 +75,20 @@
                     <!-- Begin MailChimp Signup Form -->
                     <div id="mc_embed_signup">
                         <form action="//dannyvankooten.us1.list-manage.com/subscribe/post?u=a2d08947dcd3683512ce174c5&amp;id=e3e1e0f8d8" method="post" name="mc-embedded-subscribe-form" target="_blank">
-                            <div id="mc_embed_signup_scroll">
+                            <div class="form-inline">
                                 <h3>Subscribe to our mailing list</h3>
+
+                                <p>Everything related to Scroll Triggered Boxes, straight from your inbox. We do not spam.</p>
 
                                 <div class="form-group">
                                     <div class="input-group">
                                         <div class="input-group-addon">@</div>
-                                        <input type="email" name="EMAIL" class="form-control" placeholder="Your email address..">
+                                        <input type="email" name="EMAIL"  class="form-control" placeholder="Your email address..">
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <div class="col-md-8">
-                                        <input type="text" name="FNAME" class="form-control" placeholder="Your first name..">
-                                    </div>
-                                    <div class="col-md-4" style="padding-left: 0;">
-                                        <input type="submit" style="width: 100%;" value="Subscribe" name="subscribe" class="btn btn-cta">
-                                    </div>
+                                <div class="form-group ">
+                                    <input type="submit" value="Subscribe" name="subscribe" class="btn btn-cta">
                                 </div>
 
 

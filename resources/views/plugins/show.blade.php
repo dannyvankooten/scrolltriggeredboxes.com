@@ -8,7 +8,7 @@
 
     @include('parts.masthead')
 
-    <div class="container">
+    <div class="container content">
 
         <div class="breadcrumb" itemprop="breadcrumb">
 		<span prefix="v: http://rdf.data-vocabulary.org/#">

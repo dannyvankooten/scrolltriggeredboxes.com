@@ -82,7 +82,7 @@ h4, .h4 {
 
 /* content specific styling */
 .content a{
-	text-decoration: underline;
+	font-weight: 500;
 }
 
 /* Custom page footer */
@@ -271,6 +271,22 @@ hr {
 
 a.cta{
 	color: #D96473;
+}
+
+/*
+Thumbnails
+*/
+
+.thumbnail {
+	border: 1px solid #eee;
+}
+
+.thumbnail img{
+	width: 100%;
+}
+
+.thumbnail .caption {
+	padding: 0 20px;
 }
 
 
