@@ -87,6 +87,24 @@ class License extends Model {
 		$this->load('activations');
 		return $this->site_limit - count( $this->activations );
 	}
+
+	/**
+	 * Generate a truly unique license key
+	 *
+	 * @return string
+	 */
+	public static function generateKey() {
+		// generate a truly unique key
+		$key_exists = true;
+		$key = '';
+
+		while( $key_exists ) {
+			$key = strtoupper( sprintf( '%s-%s-%s-%s', str_random(5), str_random(5), str_random(5), str_random(5) ) );
+			$key_exists = self::where('license_key', $key)->first();
+		}
+
+		return $key;
+	}
 //
 //	/**
 //	 * @param $plugin

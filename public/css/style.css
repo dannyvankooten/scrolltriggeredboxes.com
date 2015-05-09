@@ -278,7 +278,9 @@ Thumbnails
 */
 
 .thumbnail {
+	display: block;
 	border: 1px solid #eee;
+	margin-bottom: 20px;
 }
 
 .thumbnail img{
