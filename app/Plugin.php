@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 class Plugin extends Model {
 
 	protected $table = 'plugins';
-	protected $fillable = [ 'name', 'slug', 'version'];
+	protected $fillable = [];
 	protected $guarded = ['id'];
 	public $timestamps = true;
 

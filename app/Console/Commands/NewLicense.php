@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\Bus;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class CreateLicense extends Command {
+class NewLicense extends Command {
 
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name = 'license:create';
+	protected $name = 'licenses:new';
 
 	/**
 	 * The console command description.
