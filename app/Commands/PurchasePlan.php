@@ -5,6 +5,7 @@ use App\Commands\Command;
 use App\License;
 use App\Plan, App\User;
 use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Support\Facades\Log;
 
 class PurchasePlan extends Command implements SelfHandling {
 
@@ -68,6 +69,8 @@ class PurchasePlan extends Command implements SelfHandling {
 
 			// save the license
 			$this->license->save();
+
+			Log::info( sprintf( 'License created for %s (%s)', $this->user->email, $this->license->key ) );
 		}
 
 		// if this product its site_limit is higher than the one previous set (from another product in the same bundle), use this one. <3

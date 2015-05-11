@@ -5,6 +5,7 @@ use App\Commands\Command;
 use App\Events\UserCreated;
 use App\User;
 use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 
 class CreateUser extends Command implements SelfHandling {
@@ -49,6 +50,7 @@ class CreateUser extends Command implements SelfHandling {
 		$this->user->name = $this->name;
 		$this->user->password = Hash::make( $raw_password );
 		$this->user->save();
+		Log::info('User created: ' . $this->user->email );
 		event(new UserCreated($this->user, $raw_password));
 	}
 
