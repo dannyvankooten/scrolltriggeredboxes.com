@@ -38,10 +38,10 @@
                     <div class="pricing-block">
                         <h2>Developer</h2>
                         <ul class="list-unstyled">
-                            <li class="price">$89</li>
+                            <li class="price">$99</li>
                             <li>Scroll Triggered Boxes core plugin</li>
                             <li>Access to <a href="{{ url('/plugins') }}">all premium add-ons</a></li>
-                            <li>1 year of plugin updates on 10 sites</li>
+                            <li>1 year of plugin updates on 5 sites</li>
                             <li>1 year of priority email support </li>
                             <li><a href="https://transactions.sendowl.com/products/169391/230F7370/purchase" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-shopping-cart"></span> Purchase</a></li>
                         </ul>
