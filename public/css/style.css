@@ -126,6 +126,7 @@ h4, .h4 {
 	text-align: center;
 	background-image: url("../img/cover.jpg");
 	background-size: cover;
+	background-color: #222;
 	color: #f8f8f8;
 }
 
