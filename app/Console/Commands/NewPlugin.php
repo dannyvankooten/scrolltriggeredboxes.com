@@ -2,6 +2,8 @@
 
 use App\Plugin;
 use Illuminate\Console\Command;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -26,7 +28,7 @@ class NewPlugin extends Command {
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function __construct(  )
 	{
 		parent::__construct();
 	}
@@ -41,17 +43,31 @@ class NewPlugin extends Command {
 		$name = $this->argument('name');
 		$slug = str_slug( $name );
 
-		Plugin::create([
-			'name' => $name,
-			'url' => $slug,
-			'slug' => 'stb-' . $slug,
-			'version' => '1.0',
-			'author' => 'Danny van Kooten',
-			'image_path' => '/img/plugins/' . $slug . '.jpg',
-			'type' => 'premium'
-		]);
+		$plugin = Plugin::where('url', $slug )->first();
+		if( ! $plugin ) {
 
-		$this->info('Plugin ' . $slug . ' created!');
+			// create plugin in db
+			$plugin = Plugin::create([
+				'name' => $name,
+				'url' => $slug,
+				'slug' => 'stb-' . $slug,
+				'version' => '1.0',
+				'author' => 'Danny van Kooten',
+				'image_path' => '/img/plugins/' . $slug . '.jpg',
+				'type' => 'premium'
+			]);
+		}
+
+		// create directory for plugin
+		// check if plugin file exists
+		$dir = sprintf( 'app/plugins/%s', $plugin->slug, $plugin->slug );
+		$storage = Storage::disk('local');
+		$exists = $storage->exists( $dir );
+		if( ! $exists ) {
+			$storage->makeDirectory($dir);
+		}
+
+		$this->info( sprintf( 'Plugin %s (#%d) created!', $name, $plugin->id ) );
 	}
 
 	/**
