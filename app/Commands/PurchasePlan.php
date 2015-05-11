@@ -70,7 +70,7 @@ class PurchasePlan extends Command implements SelfHandling {
 			// save the license
 			$this->license->save();
 
-			Log::info( sprintf( 'License created for %s (%s)', $this->user->email, $this->license->key ) );
+			Log::info( sprintf( 'License created for %s (%s)', $this->user->email, $this->license->license_key ) );
 		}
 
 		// if this product its site_limit is higher than the one previous set (from another product in the same bundle), use this one. <3
