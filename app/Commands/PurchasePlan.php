@@ -6,6 +6,7 @@ use App\License;
 use App\Plan, App\User;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Support\Facades\Log;
+use App\Events\LicenseCreated;
 
 class PurchasePlan extends Command implements SelfHandling {
 
@@ -69,6 +70,8 @@ class PurchasePlan extends Command implements SelfHandling {
 
 			// save the license
 			$this->license->save();
+
+			event(new LicenseCreated($this->license));
 
 			Log::info( sprintf( 'License created for %s (%s)', $this->user->email, $this->license->license_key ) );
 		}

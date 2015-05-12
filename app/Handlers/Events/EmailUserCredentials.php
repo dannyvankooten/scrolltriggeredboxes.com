@@ -11,15 +11,6 @@ use Illuminate\Support\Facades\Mail;
 class EmailUserCredentials {
 
 	/**
-	 * Create the event handler.
-	 *
-	 * @return void
-	 */
-	public function __construct() {
-
-	}
-
-	/**
 	 * Handle the event.
 	 *
 	 * @param  UserCreated  $event

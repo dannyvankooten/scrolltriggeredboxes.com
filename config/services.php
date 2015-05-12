@@ -23,6 +23,11 @@ return [
 		'secret' => env('MAILGUN_SECRET', ''),
 	],
 
+	'pushbullet' => [
+		'api_key' => env('PUSHBULLET_API_KEY', ''),
+		'api_url' => 'https://api.pushbullet.com/v2'
+	],
+
 	'mandrill' => [
 		'secret' => '',
 	],
