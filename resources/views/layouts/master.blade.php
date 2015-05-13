@@ -69,6 +69,7 @@
                         <li><a href="{{ url('/plugins') }}">Plugins</a></li>
                         <li><a href="{{ url('/account') }}">Account</a></li>
                         <li><a href="{{ url('/kb') }}">Documentation</a></li>
+                        <li><a href="http://demo.scrolltriggeredboxes.com/">Demo</a></li>
                     </ul>
                 </div>
                 <div class="col-md-6">
