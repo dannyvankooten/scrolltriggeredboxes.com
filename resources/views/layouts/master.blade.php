@@ -43,6 +43,7 @@
             <ul class="menu">
                 <li role="presentation"><a href="/pricing" class="{{ (Request::is('pricing') ? 'active' : '') }}">Pricing</a></li>
                 <li role="presentation"><a href="/plugins" class="{{ (Request::is('plugins') ? 'active' : '') }}">Plugins</a></li>
+                <li role="presentation"><a href="http://demo.scrolltriggeredboxes.com/" target="_blank">Demo</a></li>
                 <li role="presentation"><a href="/contact" class="{{ (Request::is('contact') ? 'active' : '') }}">Contact</a></li>
             </ul>
         </nav>
