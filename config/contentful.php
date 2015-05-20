@@ -20,7 +20,7 @@ return array(
     | Get this from the Contentful api panel.
     |
     */
-    'token' => '79c4485d26538f3325cdd1835b2601e5016ac5fad5234644c076592d9aca22b2',
+    'token' => env( 'CONTENTFUL_TOKEN', '' ),
 
     /*
     |--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ return array(
    | In minutes.
    |
    */
-    'cacheTime' => '0',
+    'cacheTime' => '120',
 
     /*
    |--------------------------------------------------------------------------
