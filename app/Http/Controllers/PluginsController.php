@@ -1,9 +1,10 @@
 <?php namespace App\Http\Controllers;
 
+use App\Contentful\Repositories\PluginRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Plugin, App\Activation, App\License;
+use App\Plugin;
 use Illuminate\Support\Facades\Storage;
 
 class PluginsController extends Controller {
@@ -27,20 +28,16 @@ class PluginsController extends Controller {
 
 	/**
 	 * Show the application welcome screen to the user.
-	 * @param string $url
+	 *
+	 * @param string           $url
+	 * @param PluginRepository $repo
+	 *
 	 * @return Response
 	 */
-	public function show($url)
+	public function show($url )
 	{
 		// get plugin
 		$plugin = Plugin::where('url', $url)->firstOrFail();
-
-		// get content from file system
-		$view = view();
-
-		if( $view->exists('plugins.' . $url) ) {
-			return view('plugins.' . $url, [ 'plugin' => $plugin ]);
-		}
 
 		return view( 'plugins.general', [ 'plugin' => $plugin ]);
 	}

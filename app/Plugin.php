@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use App\Contentful\Repositories\PluginRepository;
 use Illuminate\Database\Eloquent\Model;
 
 class Plugin extends Model {
@@ -12,6 +13,8 @@ class Plugin extends Model {
 	// hidden from json export
 	protected $hidden = array( 'id', 'created_at', 'updated_at', 'changelog', 'description', 'url', 'slug', 'upgrade_notice', 'tested', 'image_path' );
 	protected $appends = [ 'page_url', 'image_url' ];
+
+	protected $content = null;
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -69,6 +72,19 @@ class Plugin extends Model {
 	public function getPageUrlAttribute()
 	{
 		return url( sprintf( '/plugins/%s', $this->url ) );
+	}
+
+	/**
+	 * @return Contentful\Repositories\Model|null
+	 */
+	public function content() {
+
+		if( is_null( $this->content ) ) {
+			$repo = new PluginRepository();
+			$this->content = $repo->findByUrl( $this->url );
+		}
+
+		return $this->content;
 	}
 
 }

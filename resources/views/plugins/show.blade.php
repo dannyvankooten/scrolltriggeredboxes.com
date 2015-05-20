@@ -21,21 +21,11 @@
         <div class="row">
             <div class="col-md-7 sm-bottom-margin">
                 <article>
-                    @yield('content.primary')
+                    <div class="plugin">
+                        <h1>{{ $plugin->content()->name }}</h1>
 
-                    @if( $plugin->type === 'premium' )
-                        <div class="bs-callout bs-callout-primary">
-                            <p>Get instant access to this plugin, <a href="/pricing">purchase a premium plan</a>.</p>
-                        </div>
-                    @endif
-
-                    @if( $plugin->external_url !== '' )
-                        <div class="bs-callout bs-callout-primary">
-                            <h4>External Plugin</h4>
-                            <p>This plugin can be downloaded for free on an external site.</p>
-                            <p><a href="{{ $plugin->external_url }}" class="btn btn-primary">More Info</a></p>
-                        </div>
-                    @endif
+                        {!! Markdown::convertToHtml( $plugin->content()->description ) !!}
+                    </div>
 
                 </article>
             </div>
