@@ -16,13 +16,18 @@ class PluginRepository extends EntriesRepositoryBase {
 	 */
 	public function findByUrl( $url )
 	{
-		return $this->getModel(
-			Contentful::entries()
-			          ->limitByType($this->id)
-			          ->where('fields.slug', '=', $url)
-			          ->limit(1)
-			          ->get()
-		);
+		$result = Contentful::entries()
+	                    ->limitByType($this->id)
+	                    ->where('fields.slug', '=', $url)
+	                    ->limit(1)
+	                    ->get();
+
+		if( $result['items'] ) {
+			$result = $result['items'][0];
+			return $this->getModel($result);
+		}
+
+		return null;
 	}
 
 }
