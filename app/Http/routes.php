@@ -56,6 +56,9 @@ Route::group(['domain' => env('APP_DOMAIN')], function () {
 });
 
 Route::group(['domain' => sprintf( 'admin.%s', env('APP_DOMAIN') )], function () {
+	Route::get( '/', function() {
+		return redirect( '/licenses' );
+	} );
 	Route::get( '/licenses', 'Admin\LicenseController@overview' );
 	Route::get( '/licenses/{id}', 'Admin\LicenseController@detail' );
 });
