@@ -1,5 +1,8 @@
 <?php
 
+$admins = env( 'ADMIN_ADDRESSES', '' );
+$admins = ( $admins !== '' ) ? explode( ',', $admins ) : array();
+
 return [
 
 	/*
@@ -63,5 +66,7 @@ return [
 		'table' => 'password_resets',
 		'expire' => 180, // 3 hours
 	],
+
+	'admins' => $admins
 
 ];

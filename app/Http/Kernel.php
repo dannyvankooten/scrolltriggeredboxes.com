@@ -28,6 +28,7 @@ class Kernel extends HttpKernel {
 		'auth.user+license' => 'App\Http\Middleware\AuthenticateUserAndLicense',
 		'auth.license' => 'App\Http\Middleware\AuthenticateLicense',
 		'auth.license+site' => 'App\Http\Middleware\AuthenticateLicenseAndSite',
+		'auth.admin' => 'App\Http\Middleware\AuthenticateAdmin',
 		'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
 	];
 
