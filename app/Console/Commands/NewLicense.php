@@ -1,5 +1,7 @@
 <?php namespace App\Console\Commands;
 
+use App\Jobs\CreateUser;
+use App\Jobs\PurchasePlan;
 use App\Plan;
 use App\User;
 use Illuminate\Console\Command;
@@ -42,7 +44,7 @@ class NewLicense extends Command {
 	{
 		$user = User::where('email', $this->option('email'))->first();
 		if( ! $user ) {
-			$command = new \App\Commands\CreateUser( $this->option('email'), $this->option('name') );
+			$command = new CreateUser( $this->option('email'), $this->option('name') );
 			Bus::dispatch( $command );
 			$user = $command->getUser();
 		}
@@ -50,7 +52,7 @@ class NewLicense extends Command {
 		// get local information about SendOwl product
 		$plan = Plan::find($this->option('plan_id'))->firstOrFail();
 
-		$command = new \App\Commands\PurchasePlan( $plan, $user, $this->option('order_id') );
+		$command = new PurchasePlan( $plan, $user, $this->option('order_id') );
 		Bus::dispatch( $command );
 
 		$this->info($command->getLicense()->license_key);

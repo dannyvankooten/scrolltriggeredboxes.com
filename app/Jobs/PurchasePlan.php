@@ -1,6 +1,6 @@
-<?php namespace App\Commands;
+<?php namespace App\Jobs;
 
-use App\Commands\Command;
+use App\Jobs\Command;
 
 use App\License;
 use App\Plan, App\User;

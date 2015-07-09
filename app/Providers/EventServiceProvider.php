@@ -12,10 +12,10 @@ class EventServiceProvider extends ServiceProvider {
 	 */
 	protected $listen = [
 		'App\Events\UserCreated' => [
-			'App\Handlers\Events\EmailUserCredentials',
+			'App\Listeners\Events\EmailUserCredentials',
 		],
 		'App\Events\LicenseCreated' => [
-			'App\Handlers\Events\PushNewLicenseNotification',
+			'App\Listeners\Events\PushNewLicenseNotification',
 		],
 	];
 

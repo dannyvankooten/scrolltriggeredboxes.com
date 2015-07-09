@@ -1,10 +1,9 @@
-<?php namespace App\Handlers\Events;
+<?php namespace App\Listeners\Events;
 
 use App\Events\UserCreated;
 
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldBeQueued;
-
+use Illuminate\Contracts\Queue\ShouldQueue;
 use App\User;
 use Illuminate\Support\Facades\Mail;
 

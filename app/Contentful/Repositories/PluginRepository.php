@@ -18,11 +18,6 @@ class PluginRepository extends EntriesRepositoryBase {
 	 */
 	public function findByUrl( $url )
 	{
-		// try to fetch from cache
-		if( Cache::has('contentful.plugins.' . $url ) ) {
-			return Cache::get('contentful.plugins.' . $url);
-		}
-
 		$result = Contentful::entries()
 	                    ->limitByType($this->id)
 	                    ->where('fields.slug', '=', $url)
@@ -32,11 +27,6 @@ class PluginRepository extends EntriesRepositoryBase {
 		if( $result['items'] ) {
 			$result = $result['items'][0];
 			$model = $this->getModel($result);
-
-			// store in cache
-			$expiresAt = Carbon::now()->addMinutes(60);
-			Cache::put('contentful.plugins.' . $url, $model, $expiresAt);
-
 			return $model;
 		}
 

@@ -1,4 +1,5 @@
-<?php namespace App\Handlers\Events;
+<?php
+namespace App\Listeners\Events;
 
 use App\Events\LicenseCreated;
 
