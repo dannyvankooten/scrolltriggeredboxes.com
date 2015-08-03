@@ -3,6 +3,8 @@
 use App\Events\UserCreated;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Jobs\CreateUser;
+use App\Jobs\PurchasePlan;
 use DB, App\License, App\User, App\Activation, App\Plan, App\Plugin;
 
 use Illuminate\Http\Request;
@@ -37,7 +39,7 @@ class LicenseController extends Controller {
 		// query user by email
 		$user = User::where('email', $request->input('buyer_email'))->first();
 		if( ! $user ) {
-			$command = new \App\Commands\CreateUser( $request->input('buyer_email'), $request->input('buyer_name' ) );
+			$command = new CreateUser( $request->input('buyer_email'), $request->input('buyer_name' ) );
 			$this->dispatch( $command );
 			$user = $command->getUser();
 		}
@@ -45,7 +47,7 @@ class LicenseController extends Controller {
 		// get local information about SendOwl product
 		$plan = Plan::where('sendowl_product_id', $request->input('product_id'))->firstOrFail();
 
-		$command = new \App\Commands\PurchasePlan( $plan, $user, $request->input('order_id') );
+		$command = new PurchasePlan( $plan, $user, $request->input('order_id') );
 		$this->dispatch( $command );
 
 		return $command->getLicense()->license_key;
