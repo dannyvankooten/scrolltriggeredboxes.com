@@ -2,19 +2,16 @@
 
 namespace App\Contentful\Repositories;
 
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Incraigulous\Contentful\EntriesRepositoryBase;
 use Incraigulous\Contentful\Facades\Contentful;
 
-class PluginRepository extends EntriesRepositoryBase {
+class PluginRepository {
 
 	protected $id = '6U2uGLyCnmQ6Oaqoe60Iiu';
 
 	/**
 	 * Get an entry model from Contentful by the "url" field.
 	 * @param $url
-	 * @return Model
+	 * @return array
 	 */
 	public function findByUrl( $url )
 	{
@@ -24,10 +21,8 @@ class PluginRepository extends EntriesRepositoryBase {
 	                    ->limit(1)
 	                    ->get();
 
-		if( $result['items'] ) {
-			$result = $result['items'][0];
-			$model = $this->getModel($result);
-			return $model;
+		if( isset( $result['items'][0]['fields'] ) ) {
+			return $result['items'][0]['fields'];
 		}
 
 		return null;

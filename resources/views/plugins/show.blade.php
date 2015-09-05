@@ -22,9 +22,9 @@
             <div class="col-md-7 sm-bottom-margin">
                 <article>
                     <div class="plugin">
-                        <h1>{{ $plugin->content()->name }}</h1>
+                        <h1>{{ $plugin->content('name') }}</h1>
 
-                        {!! Markdown::convertToHtml( $plugin->content()->description ) !!}
+                        {!! Markdown::convertToHtml( $plugin->content('description') ) !!}
                     </div>
 
                 </article>

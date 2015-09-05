@@ -75,16 +75,21 @@ class Plugin extends Model {
 	}
 
 	/**
+	 * @param $key
 	 * @return Contentful\Repositories\Model|null
 	 */
-	public function content() {
+	public function content( $key = '' ) {
 
 		if( is_null( $this->content ) ) {
 			$repo = new PluginRepository();
 			$this->content = $repo->findByUrl( $this->url );
 		}
 
-		return $this->content;
+		if( isset( $this->content[ $key]  ) ) {
+			return $this->content[ $key ];
+		}
+
+		return '';
 	}
 
 }
