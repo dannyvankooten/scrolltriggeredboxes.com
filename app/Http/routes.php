@@ -61,4 +61,5 @@ Route::group(['domain' => sprintf( 'admin.%s', env('APP_DOMAIN') )], function ()
 	} );
 	Route::get( '/licenses', 'Admin\LicenseController@overview' );
 	Route::get( '/licenses/{id}', 'Admin\LicenseController@detail' );
+	Route::get( '/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index' );
 });

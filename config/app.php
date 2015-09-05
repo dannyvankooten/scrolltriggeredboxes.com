@@ -147,7 +147,8 @@ return [
 		'App\Providers\RouteServiceProvider',
 
 		'Incraigulous\Contentful\ContentfulServiceProvider',
-		'GrahamCampbell\Markdown\MarkdownServiceProvider'
+		'GrahamCampbell\Markdown\MarkdownServiceProvider',
+		'Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider',
 	],
 
 	/*
