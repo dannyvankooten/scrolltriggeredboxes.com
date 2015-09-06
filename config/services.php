@@ -44,4 +44,8 @@ return [
 		'secret' => '',
 	],
 
+	'helpscout' => [
+		'secret' => env('HELPSCOUT_SECRET_KEY', '')
+	]
+
 ];

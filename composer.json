@@ -5,11 +5,12 @@
 	"license": "MIT",
 	"type": "project",
 	"require": {
-		"laravel/framework": "5.1.*",
-        "guzzlehttp/guzzle": "5.1.*",
-        "incraigulous/contentful-laravel": "~1.0",
-        "graham-campbell/markdown": "~3.0",
-		"rap2hpoutre/laravel-log-viewer": "^0.4.1"
+      "laravel/framework": "5.1.*",
+      "guzzlehttp/guzzle": "5.1.*",
+      "incraigulous/contentful-laravel": "~1.0",
+      "graham-campbell/markdown": "~3.0",
+      "rap2hpoutre/laravel-log-viewer": "^0.4.1",
+      "helpscout/apps": "^1.1"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",
