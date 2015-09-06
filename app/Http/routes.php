@@ -44,7 +44,7 @@ Route::group(['domain' => env('APP_DOMAIN')], function () {
 		Route::get( '/plugins/{id}', 'PluginController@get' );
 		Route::get( '/plugins/{id}/download', 'PluginController@download' );
 
-		Route::get( '/helpscout', 'HelpScoutController@get' );
+		Route::any( '/helpscout', 'HelpScoutController@get' );
 	} );
 
 	// auth
