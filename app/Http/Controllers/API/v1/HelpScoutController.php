@@ -38,7 +38,6 @@ class HelpScoutController extends Controller {
 		$user = User::where('email', $email)->first();
 
 		if( $user ) {
-			$user = User::where('email', 'dannyvankooten@gmail.com')->first();
 			$html = view( 'helpscout.customer', [ 'user' => $user ])->render();
 		} else {
 			$html = sprintf( '<p>No license found for <strong>%s</strong>.</p>', $email );
