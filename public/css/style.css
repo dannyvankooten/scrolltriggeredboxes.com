@@ -22,6 +22,13 @@ h4, .h4 {
 	color: #333333;
 }
 
+.copy h1,
+.copy h2,
+.copy h3,
+.copy h4 {
+	margin-top: 30px;
+}
+
 
 /* Custom page header */
 .site-title{
@@ -87,22 +94,29 @@ h4, .h4 {
 
 /* Custom page footer */
 .footer {
+	background-color: #24566d;
+	background-image: url("../img/always-grey.png");
 	font-size: 15px;
-	margin-top: 40px;
-	border-top: 1px solid #eee;
+	margin-top: 60px;
+	color: white;
+}
+
+.footer ul {
+	list-style: none;
+	padding: 0;
+}
+
+.footer a{
+	color: white;
 }
 
 .footer h3 {
+	color: #eee;
 	font-size: 18px;
 }
 
 .footer-1 {
-	margin-top: 10px;
-}
-
-.footer-2 a,
-.footer-2 h3 {
-	color: white;
+	padding: 20px 0;
 }
 
 .footer-2 {

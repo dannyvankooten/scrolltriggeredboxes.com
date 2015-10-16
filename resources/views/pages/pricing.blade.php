@@ -3,7 +3,7 @@
 @section('title','Pricing - Scroll Triggered Boxes')
 
 @section('content')
-    <div class="jumbotron">
+    <div class="jumbotron" style="margin-bottom: 40px;">
         <div class="container">
             <h1>Pricing</h1>
             <p>The Scroll Triggered Boxes core plugin <strong>is and always will be free</strong>.</p>

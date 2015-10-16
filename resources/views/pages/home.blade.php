@@ -13,7 +13,7 @@
 
         <div class="row featurette">
             <div class="col-md-5">
-                <h2 class="featurette-heading">Attention grabbing boxes. <span class="text-muted">At just the right time.</span></h2>
+                <h2 class="featurette-heading">Attention grabbing boxes. <br /><span class="text-muted">At just the right time.</span></h2>
                 <p class="lead">Using Scroll Triggered Boxes, you can ask your visitors to perform a certain action at just the right time.</p>
                 <p class="lead">For example, slide in a sign-up form box once a visitor reaches the end of your post. Already engaged visitors are very likely to want more of your goodness.</p>
             </div>
