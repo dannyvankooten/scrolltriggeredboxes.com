@@ -176,7 +176,11 @@ h4, .h4 {
 
 .pricing-block .price{
 	font-size: 32px;
-	color: black;
+	color: green;
+}
+
+.pricing-block .price s{
+	color: red;
 }
 
 .pricing-block li{
@@ -187,6 +191,35 @@ h4, .h4 {
 
 .pricing-block li:last-of-type{
 	border-bottom: 0;
+}
+
+.refund-guarantee {
+	position: relative;
+	margin-bottom: 40px;
+	padding: 20px 0 20px 120px;
+	font-style: italic;
+	border-top: 1px solid #efefef;
+	border-bottom: 1px solid #efefef;
+}
+
+.refund-guarantee p {
+	margin-bottom: 0;
+}
+
+.refund-guarantee img {
+	position: absolute;
+	left: 0;
+}
+
+@media( max-width: 780px ) {
+	.refund-guarantee{
+		padding-right: 20px;
+		padding-left: 140px;
+	}
+
+	.refund-guarantee img{
+		left: 20px;
+	}
 }
 
 .padding {
@@ -376,4 +409,8 @@ Responsive Menu
 	.toggle:before{
 		content: "\e236";
 	}
+}
+
+.text-centered {
+	text-align: center;
 }

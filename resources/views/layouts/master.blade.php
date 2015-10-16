@@ -80,7 +80,7 @@
                             <div class="form-inline">
                                 <h3>Subscribe to our mailing list</h3>
 
-                                <p>Everything related to Scroll Triggered Boxes, straight from your inbox. We do not spam.</p>
+                                <p>Everything related to Scroll Triggered Boxes, straight from your inbox.</p>
 
                                 <div class="form-group">
                                     <div class="input-group">
@@ -92,6 +92,8 @@
                                 <div class="form-group ">
                                     <input type="submit" value="Subscribe" name="subscribe" class="btn btn-cta">
                                 </div>
+
+                                <p class="muted" style="margin-top: 25px; font-size: 80%; font-style: italic;">* No spam, unsubscribe at any time.</p>
 
 
                             </div>
