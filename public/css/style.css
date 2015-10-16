@@ -98,7 +98,7 @@ h4, .h4 {
 	background-image: url("../img/always-grey.png");
 	font-size: 15px;
 	margin-top: 60px;
-	color: white;
+	color: #eee;
 }
 
 .footer ul {
@@ -107,11 +107,11 @@ h4, .h4 {
 }
 
 .footer a{
-	color: white;
+	color: #fff;
 }
 
 .footer h3 {
-	color: #eee;
+	color: #fff;
 	font-size: 18px;
 }
 
@@ -221,6 +221,46 @@ h4, .h4 {
 		left: 20px;
 	}
 }
+
+/* testimonials */
+.testimonial {
+	position: relative;
+	padding-left: 160px;
+	border-left: 0;
+	min-height: 140px;
+	margin-bottom: 40px;
+}
+
+.testimonial img {
+	border-radius: 50%;
+}
+
+.testimonial .copy {
+	margin-bottom: 20px;
+	font-style: italic;
+	font-size: 16px;
+}
+
+.testimonial header {
+	position: absolute;
+	left: 0;
+}
+
+.testimonial .author-name {
+	font-weight: bold;
+}
+
+@media( max-width: 620px ) {
+	.testimonial{
+		padding-left: 120px;
+	}
+
+	.testimonial img{
+		width: 80px;
+		height: auto;
+	}
+}
+
 
 .padding {
 	padding: 15px;
@@ -412,5 +452,15 @@ Responsive Menu
 }
 
 .text-centered {
+	text-align: center;
+}
+
+.medium-margin{
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+
+.section-title{
+	font-size: 36px;
 	text-align: center;
 }
