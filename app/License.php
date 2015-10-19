@@ -59,7 +59,7 @@ class License extends Model {
 	 * @return bool
 	 */
 	public function isValid() {
-		return ! $this->isExpired();
+		return ! $this->isExpired() && ! $this->trashed();
 	}
 
 	/**

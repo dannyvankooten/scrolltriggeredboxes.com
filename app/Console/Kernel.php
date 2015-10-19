@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel {
 	protected $commands = [
 		'App\Console\Commands\Inspire',
 		'App\Console\Commands\NewLicense',
-		'App\Console\Commands\NewPlugin'
+		'App\Console\Commands\NewPlugin',
+		'App\Console\Commands\DisableLicense',
 	];
 
 	/**
@@ -24,8 +25,8 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		$schedule->command('inspire')
-				 ->hourly();
+//		$schedule->command('inspire')
+//				 ->hourly();
 	}
 
 }
