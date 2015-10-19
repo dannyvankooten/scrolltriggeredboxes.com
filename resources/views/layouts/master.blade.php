@@ -36,7 +36,12 @@
 
 <div class="header clearfix">
     <div class="container">
-        <h2 class="site-title pull-left"><a href="/"><img src="{{ asset('img/logo-small.png') }}" class="logo" width="64" height="64" /> Scroll Triggered Boxes</a></h2>
+        <h2 class="site-title pull-left">
+            <a href="{{ url('/') }}">
+                <img src="{{ asset('img/logo-small.png') }}" class="logo" width="64" height="64" />
+                <span>Scroll Triggered Boxes</span>
+            </a>
+        </h2>
         <input type="checkbox" id="toggle" />
         <nav class="header-nav" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
             <label for="toggle" class="glyphicon toggle" onclick></label>
@@ -68,7 +73,7 @@
                         <li><a href="{{ url('/') }}">Home</a></li>
                         <li><a href="{{ url('/plugins') }}">Plugins</a></li>
                         <li><a href="{{ url('/pricing') }}">Pricing</a></li>
-                        <li><a href="{{ url('/account') }}">Account</a></li>
+                        <li><a href="{{ url('/account') }}">Your Account</a></li>
                         <li><a href="{{ url('/kb') }}">Documentation</a></li>
                         <li><a href="http://demo.scrolltriggeredboxes.com/">Demo</a></li>
                     </ul>
@@ -112,7 +117,18 @@
     <!-- Start sub footer -->
     <div class="footer-2">
         <div class="container">
-            <p>&copy; 2013 - {{ date('Y') }} <a href="/">Scroll Triggered Boxes</a>. A plugin by <a href="https://ibericode.com" rel="external author">ibericode</a>. <span class="pull-right"><a href="{{ url('/refund-policy') }}">Refund Policy</a> &middot; <a href="#top">Back to top</a></span></p>
+            <p class="margined-elements">
+                <a href="{{ url('/about') }}">About</a>
+                <a href="{{ url('/refund-policy') }}">Refund Policy</a>
+                <a href="{{ url('/kb') }}">Documentation</a>
+                <a href="#top">Back to top</a>
+            </p>
+            <p style="font-style: italic;">
+                <a class="unstyled" href="{{ url('/') }}">Scroll Triggered Boxes</a> is a WordPress plugin built by &nbsp;
+                <a href="https://ibericode.com" rel="external author">
+                    <img src="{{ asset('img/ibericode-logo-white.png') }}" height="25">
+                </a>
+            </p>
         </div>
     </div>
     <!-- End sub footer -->

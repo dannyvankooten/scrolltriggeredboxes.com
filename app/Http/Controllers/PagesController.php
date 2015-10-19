@@ -31,4 +31,9 @@ class PagesController extends Controller {
 		return view('pages.refund-policy');
 	}
 
+	public function getAbout()
+	{
+		return view('pages.about');
+	}
+
 }

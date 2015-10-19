@@ -6,6 +6,7 @@ Route::group(['domain' => env('APP_DOMAIN')], function () {
 	Route::get( '/', 'PagesController@getIndex' );
 	Route::get( '/pricing', 'PagesController@getPricing' );
 	Route::get( '/contact', 'PagesController@getContact' );
+	Route::get( '/about', 'PagesController@getAbout' );
 	Route::get( '/refund-policy', 'PagesController@getRefundPolicy' );
 
 	// plugins

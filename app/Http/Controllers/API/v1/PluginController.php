@@ -19,7 +19,7 @@ class PluginController extends Controller {
 	public function index( Request $request ) {
 
 		$pluginQuery = Plugin::query()->where('status','published');
-		
+
 		if( $request->input('ids') ) {
 			$pluginQuery->whereIn( 'id',explode(',', $request->input('ids') ) );
 		}

@@ -11,7 +11,7 @@ body {
 .unstyled,
 .unstyled:hover{
 	color: inherit;
-	text-decoration: none;
+	text-decoration: none !important;
 }
 
 
@@ -19,7 +19,7 @@ h1, .h1,
 h2, .h2,
 h3, .h3,
 h4, .h4 {
-	color: #333333;
+	color: #222;
 }
 
 .copy h1,
@@ -29,11 +29,16 @@ h4, .h4 {
 	margin-top: 30px;
 }
 
+.copy {
+	color: #444;
+}
+
 
 /* Custom page header */
 .site-title{
 	margin-top: 0;
 	line-height: 64px;
+	letter-spacing: -1px;
 }
 
 .site-title img{
@@ -125,6 +130,7 @@ h4, .h4 {
 	background: #111;
 	margin-top: 20px;
 	color: #eee;
+	text-align: center;
 }
 
 .footer-2 a {
@@ -261,6 +267,29 @@ h4, .h4 {
 	}
 }
 
+/* Persons */
+/* @todo duplicate of testomnial stuff */
+
+.person {
+	position: relative;
+	padding-left: 200px;
+	min-height: 160px;
+}
+
+.person .avatar {
+	position: absolute;
+	border-radius: 50%;
+	left: 0;
+}
+
+.person .text {
+	margin: 0 0 20px;
+	font-style: italic;
+}
+
+.person h3 small {
+	display: block;
+}
 
 .padding {
 	padding: 15px;
@@ -305,6 +334,7 @@ hr {
 }
 
 @media screen and (min-width: 420px ) {
+
 	.xs-bottom-margin {
 		margin-bottom: 0;
 	}
@@ -463,4 +493,20 @@ Responsive Menu
 .section-title{
 	font-size: 36px;
 	text-align: center;
+}
+
+.margined-elements > *{
+	margin: 0 10px;
+}
+
+@media( max-width: 480px ) {
+
+	.site-title span {
+		display: none;
+	}
+
+	.margined-elements > * {
+		display: block;
+		margin: 10px 0;
+	}
 }
