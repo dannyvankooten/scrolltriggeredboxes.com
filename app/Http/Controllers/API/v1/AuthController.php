@@ -30,7 +30,7 @@ class AuthController extends Controller {
 		} elseif( $license->isExpired() ) {
 			return response()->json([
 				'error' => [
-					'message' => sprintf( "Your license is has expired.", $license->site_limit )
+					'message' => sprintf( "Your license has expired.", $license->site_limit )
 				]
 			]);
 		} elseif( $license->isAtSiteLimit() ) {
