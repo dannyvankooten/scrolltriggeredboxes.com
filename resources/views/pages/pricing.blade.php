@@ -12,9 +12,9 @@
             <div class="row">
                 <div class="col-sm-4 sm-bottom-margin">
                     <div class="pricing-block">
-                        <h2>Free</h2>
+                        <h2>Core</h2>
                         <ul class="list-unstyled">
-                            <li class="price">$0</li>
+                            <li class="price">Free</li>
                             <li>Scroll Triggered Boxes core plugin</li>
                             <li>Access to all free add-ons</li>
                             <li><strong>No access</strong> to premium add-ons</li>
@@ -25,7 +25,7 @@
                 </div>
                 <div class="col-sm-4 sm-bottom-margin">
                     <div class="pricing-block standout">
-                        <h2>Personal</h2>
+                        <h2>Premium - Personal</h2>
                         <ul class="list-unstyled">
                             <li class="price">$49</li>
                             <li>Scroll Triggered Boxes core plugin</li>
@@ -38,7 +38,7 @@
                 </div>
                 <div class="col-sm-4 sm-bottom-margin">
                     <div class="pricing-block">
-                        <h2>Developer</h2>
+                        <h2>Premium - Developer</h2>
                         <ul class="list-unstyled">
                             <li class="price"><s>$249</s> $99</li>
                             <li>Scroll Triggered Boxes core plugin</li>
