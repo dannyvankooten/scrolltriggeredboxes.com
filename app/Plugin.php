@@ -11,7 +11,7 @@ class Plugin extends Model {
 	public $timestamps = true;
 
 	// hidden from json export
-	protected $hidden = array( 'id', 'created_at', 'updated_at', 'changelog', 'description', 'url', 'slug', 'upgrade_notice', 'tested', 'image_path' );
+	protected $hidden = array( 'id', 'created_at', 'updated_at', 'changelog', 'description', 'url', 'slug', 'upgrade_notice', 'tested', 'image_path', 'status' );
 	protected $appends = [ 'page_url', 'image_url' ];
 
 	protected $content = null;

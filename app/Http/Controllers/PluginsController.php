@@ -21,7 +21,7 @@ class PluginsController extends Controller {
 	 */
 	public function index()
 	{
-		$plugins = Plugin::all();
+		$plugins = Plugin::where('status', 'published')->get();
 
 		return view('plugins.index', [ 'plugins' => $plugins ]);
 	}
