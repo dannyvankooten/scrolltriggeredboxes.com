@@ -23,7 +23,7 @@ class NewLicense extends Command {
 	 *
 	 * @var string
 	 */
-	protected $description = 'Command description.';
+	protected $description = 'Create a new license.';
 
 	/**
 	 * Create a new command instance.
@@ -40,7 +40,7 @@ class NewLicense extends Command {
 	 *
 	 * @return mixed
 	 */
-	public function fire()
+	public function handle()
 	{
 		$user = User::where('email', $this->option('email'))->first();
 		if( ! $user ) {
