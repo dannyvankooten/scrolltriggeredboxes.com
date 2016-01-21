@@ -1,9 +1,9 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Activation;
 use App\Plugin;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 
 use App\License;
