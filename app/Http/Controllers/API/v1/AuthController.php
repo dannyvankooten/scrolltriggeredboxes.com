@@ -1,10 +1,9 @@
 <?php namespace App\Http\Controllers\API\v1;
 
-use App\Http\Requests\APIRequest;
-use App\License, App\Activation;
-use Illuminate\Auth\Guard;
+use App\Activation;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
 
 class AuthController extends Controller {
 

@@ -1,11 +1,5 @@
 <?php namespace App\Http\Controllers;
 
-use GrahamCampbell\Markdown\Facades\Markdown;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use Incraigulous\Contentful\Facades\Contentful;
-
-
 class PagesController extends Controller {
 
 	/**

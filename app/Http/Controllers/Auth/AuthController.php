@@ -3,7 +3,7 @@
 use App\User;
 use Illuminate\Auth\Guard;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller {

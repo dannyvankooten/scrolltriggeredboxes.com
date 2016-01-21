@@ -1,7 +1,6 @@
 <?php namespace App\Http\Controllers;
 
 use App\Contentful\Repositories\PluginRepository;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Plugin;

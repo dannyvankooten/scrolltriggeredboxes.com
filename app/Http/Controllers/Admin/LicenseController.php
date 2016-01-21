@@ -1,10 +1,6 @@
 <?php namespace App\Http\Controllers\Admin;
 
-use App\Activation;
-use App\Plugin;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-
+use App\Http\Controllers\Controller;
 use App\License;
 
 class LicenseController extends Controller {
