@@ -1,6 +1,7 @@
 <?php namespace App;
 
 use App\Contentful\Repositories\PluginRepository;
+use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Database\Eloquent\Model;
 
 class Plugin extends Model {
@@ -51,7 +52,7 @@ class Plugin extends Model {
 			'version'   => $this->version,
 			'author'    => $this->author,
 			'sections'  => [
-				'changelog'     => $this->changelog,
+				'changelog'     => Markdown::convertToHtml( $this->changelog ),
 				'description'   => $this->description
 			],
 			'requires'  => '3.8',
