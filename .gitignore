@@ -17,3 +17,4 @@ gulpfile.js
 storage/app
 storage/framework
 storage/logs
+resources/assets/bootstrap/node_modules
