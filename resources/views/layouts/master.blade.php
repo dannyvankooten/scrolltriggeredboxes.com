@@ -46,10 +46,10 @@
         <nav class="header-nav" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
             <label for="toggle" class="glyphicon toggle" onclick></label>
             <ul class="menu">
-                <li role="presentation"><a href="{{ url('/plugins') }}" class="{{ (Request::is('plugins') ? 'active' : '') }}">Plugins</a></li>
-                <li role="presentation"><a href="{{ url('/pricing') }}" class="{{ (Request::is('pricing') ? 'active' : '') }}">Pricing</a></li>
+                <li role="presentation"><a href="//{{ config('app.domain') }}/plugins">Plugins</a></li>
+                <li role="presentation"><a href="//{{ config('app.domain') }}/pricing">Pricing</a></li>
                 <li role="presentation"><a href="http://demo.scrolltriggeredboxes.com/" target="_blank">Demo</a></li>
-                <li role="presentation"><a href="{{ url('/contact') }}" class="{{ (Request::is('contact') ? 'active' : '') }}">Contact</a></li>
+                <li role="presentation"><a href="//{{ config('app.domain') }}/contact">Contact</a></li>
             </ul>
         </nav>
     </div>
@@ -63,68 +63,17 @@
 
 <footer class="footer">
 
-    <!-- start footer -->
-    <div class="footer-1">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h3>Scroll Triggered Boxes</h3>
-                    <ul class="unstyled">
-                        <li><a href="{{ url('/') }}">Home</a></li>
-                        <li><a href="{{ url('/plugins') }}">Plugins</a></li>
-                        <li><a href="{{ url('/pricing') }}">Pricing</a></li>
-                        <li><a href="{{ url('/account') }}">Your Account</a></li>
-                        <li><a href="{{ url('/kb') }}">Documentation</a></li>
-                        <li><a href="http://demo.scrolltriggeredboxes.com/">Demo</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6">
-                    <!-- Begin MailChimp Signup Form -->
-                    <div id="mc_embed_signup">
-                        <form action="//dannyvankooten.us1.list-manage.com/subscribe/post?u=a2d08947dcd3683512ce174c5&amp;id=e3e1e0f8d8" method="post" name="mc-embedded-subscribe-form" target="_blank">
-                            <div class="form-inline">
-                                <h3>Subscribe to our mailing list</h3>
-
-                                <p>Everything related to Scroll Triggered Boxes, straight from your inbox.</p>
-
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <div class="input-group-addon">@</div>
-                                        <input type="email" name="EMAIL"  class="form-control" placeholder="Your email address..">
-                                    </div>
-                                </div>
-
-                                <div class="form-group ">
-                                    <input type="submit" value="Subscribe" name="subscribe" class="btn btn-cta">
-                                </div>
-
-                                <p class="muted" style="margin-top: 25px; font-size: 80%; font-style: italic;">* No spam, unsubscribe at any time.</p>
-
-
-                            </div>
-                            <div style="position: absolute; left: -5000px;"><input type="text" name="b_a2d08947dcd3683512ce174c5_e3e1e0f8d8" tabindex="-1" value=""></div>
-
-                        </form>
-                    </div>
-
-                    <!--End mc_embed_signup-->
-                </div>
-            </div>
-        </div>
-    </div>
-        <!-- End top footer -->
-
     <!-- Start sub footer -->
     <div class="footer-2">
         <div class="container">
             <p class="margined-elements">
-                <a href="{{ url('/about') }}">About</a>
-                <a href="{{ url('/refund-policy') }}">Refund Policy</a>
-                <a href="{{ url('/kb') }}">Documentation</a>
+                <a href="//{{ config('app.domain') }}/about">About</a>
+                <a href="//{{ config('app.domain') }}/refund-policy">Refund Policy</a>
+                <a href="//{{ config('app.domain') }}/kb">Documentation</a>
                 <a href="#top">Back to top</a>
             </p>
             <p style="font-style: italic;">
-                <a class="unstyled" href="{{ url('/') }}">Scroll Triggered Boxes</a> is a WordPress plugin built by &nbsp;
+                <a class="unstyled" href="{{ config('app.domain') }}">Scroll Triggered Boxes</a> is a WordPress plugin built by &nbsp;
                 <a href="https://ibericode.com" rel="external author">
                     <img src="{{ asset('img/ibericode-logo-white.png') }}" height="25">
                 </a>
@@ -135,10 +84,6 @@
 
 
 </footer>
-
-
-<script type="text/javascript" src="https://transactions.sendowl.com/assets/sendowl.js" ></script>
-<script src="{{ asset('js/plugins.js') }}"></script>
 
 @yield('foot')
 </body>

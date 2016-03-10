@@ -14,34 +14,6 @@ class PluginsController extends Controller {
 	}
 
 	/**
-	 * Show the application welcome screen to the user.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-		$plugins = Plugin::where('status', 'published')->get();
-
-		return view('plugins.index', [ 'plugins' => $plugins ]);
-	}
-
-	/**
-	 * Show the application welcome screen to the user.
-	 *
-	 * @param string           $url
-	 * @param PluginRepository $repo
-	 *
-	 * @return Response
-	 */
-	public function show($url )
-	{
-		// get plugin
-		$plugin = Plugin::where('url', $url)->firstOrFail();
-
-		return view( 'plugins.general', [ 'plugin' => $plugin ]);
-	}
-
-	/**
 	 * @param string $url
 	 * @param Request $request
 	 * @return Response

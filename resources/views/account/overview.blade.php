@@ -30,7 +30,7 @@
             <tbody>
             @foreach($user->licenses as $license)
                 <tr>
-                    <td><a href="/account/licenses/{{ $license->id }}">{{ $license->license_key }}</a></td>
+                    <td><a href="/licenses/{{ $license->id }}">{{ $license->license_key }}</a></td>
                     <td>{{ count( $license->activations ) }}</td>
                     <td>{{ $license->created_at->format('F d, Y') }}</td>
                 </tr>
@@ -64,7 +64,7 @@
 
         <p>If you need help installing a plugin, please have a look at the <a href="http://scrolltriggeredboxes.readme.io/v1.0/docs/installing-add-on-plugins">installation instructions</a>.</p>
         @else
-            <p>It seems you have no valid license. Please <a href="/pricing">purchase one of the premium plans in order to get access to the premium add-on plugins</a>.</p>
+            <p>It seems you have no valid license. Please <a href="//{{ config('app.domain') }}/pricing">purchase one of the premium plans in order to get access to the premium add-on plugins</a>.</p>
         @endif
 
     </div>

@@ -33,7 +33,7 @@ class AuthController extends Controller {
 	public function postLogin( Request $request )
 	{
 		if ($this->auth->attempt($request->only('email', 'password'), $request->input('remember_me'))) {
-			return redirect('/account');
+			return redirect('/');
 		} else {
 			return redirect()->back()->withErrors([
 				'email' => 'The credentials you entered did not match our records.'
@@ -85,7 +85,7 @@ class AuthController extends Controller {
 		// set flash message
 		Session::flash('message', sprintf( 'Thank you for your purchase! You can now download any of the premium plugin from this page. An email with login credentials for this site has been sent to <strong>%s</strong>.', $user->email ) );
 
-		return response()->redirectTo('/account');
+		return response()->redirectTo('/');
 	}
 
 }

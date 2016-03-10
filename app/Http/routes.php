@@ -1,17 +1,9 @@
 <?php
 
-Route::group(['domain' => env('APP_DOMAIN')], function () {
-
-	// pages
-	Route::get( '/', 'PagesController@getIndex' );
-	Route::get( '/pricing', 'PagesController@getPricing' );
-	Route::get( '/contact', 'PagesController@getContact' );
-	Route::get( '/about', 'PagesController@getAbout' );
-	Route::get( '/refund-policy', 'PagesController@getRefundPolicy' );
+Route::group(['domain' => sprintf( 'account.%s', env('APP_DOMAIN') )], function () {
 
 	// plugins
-	Route::get( '/plugins', 'PluginsController@index' );
-	Route::get( '/plugins/{slug}', 'PluginsController@show' );
+	// TODO: Move to API
 	Route::get( '/plugins/{plugin_id_or_slug}/download', 'PluginsController@download' );
 	Route::get( '/plugins/{plugin_id_or_slug}/download/sendowl', 'PluginsController@downloadFromSendowl' );
 
@@ -22,31 +14,11 @@ Route::group(['domain' => env('APP_DOMAIN')], function () {
 	Route::get( '/auth/logout', 'Auth\AuthController@getLogout' );
 
 	// account
-	Route::get( '/account', 'AccountController@overview' );
-	Route::get( '/account/licenses/{id}', 'AccountController@license' );
+	Route::get( '/', 'AccountController@overview' );
+	Route::get( '/licenses/{id}', 'AccountController@license' );
 
 	// todo: allow login out a license from the account page
 	//Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
-
-	// API Url's
-	Route::group( [ 'prefix' => '/api/v1', 'namespace' => 'API\\v1' ], function () {
-		// Controllers Within The "App\Http\Controllers\API" Namespace
-		Route::get( '/licenses/create', 'LicenseController@create' );
-
-		// global licenses
-		Route::post( '/login', 'AuthController@login' );
-		Route::get( '/logout', 'AuthController@logout' );
-
-		// individual plugins
-		//Route::post('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@activate');
-		//Route::delete('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@deactivate');
-
-		Route::get( '/plugins', 'PluginController@index' );
-		Route::get( '/plugins/{id}', 'PluginController@get' );
-		Route::get( '/plugins/{id}/download', 'PluginController@download' );
-
-		Route::any( '/helpscout', 'HelpScoutController@get' );
-	} );
 
 	// auth
 	Route::controller( 'password', 'Auth\PasswordController' );
@@ -57,6 +29,26 @@ Route::group(['domain' => env('APP_DOMAIN')], function () {
 	} );
 
 });
+
+// API Url's
+Route::group( [ 'domain' => sprintf( 'api.%s', env('APP_DOMAIN') ), 'prefix' => '/v1', 'namespace' => 'API\\v1' ], function () {
+	// Controllers Within The "App\Http\Controllers\API" Namespace
+	Route::get( '/licenses/create', 'LicenseController@create' );
+
+	// global licenses
+	Route::post( '/login', 'AuthController@login' );
+	Route::get( '/logout', 'AuthController@logout' );
+
+	// individual plugins
+	//Route::post('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@activate');
+	//Route::delete('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@deactivate');
+
+	Route::get( '/plugins', 'PluginController@index' );
+	Route::get( '/plugins/{id}', 'PluginController@get' );
+	Route::get( '/plugins/{id}/download', 'PluginController@download' );
+
+	Route::any( '/helpscout', 'HelpScoutController@get' );
+} );
 
 Route::group(['domain' => sprintf( 'admin.%s', env('APP_DOMAIN') )], function () {
 	Route::get( '/', function() {

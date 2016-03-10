@@ -1,6 +1,5 @@
 <?php namespace App;
 
-use App\Contentful\Repositories\PluginRepository;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Database\Eloquent\Model;
 
@@ -74,23 +73,4 @@ class Plugin extends Model {
 	{
 		return url( sprintf( '/plugins/%s', $this->url ) );
 	}
-
-	/**
-	 * @param $key
-	 * @return Contentful\Repositories\Model|null
-	 */
-	public function content( $key = '' ) {
-
-		if( is_null( $this->content ) ) {
-			$repo = new PluginRepository();
-			$this->content = $repo->findByUrl( $this->url );
-		}
-
-		if( isset( $this->content[ $key]  ) ) {
-			return $this->content[ $key ];
-		}
-
-		return '';
-	}
-
 }

@@ -4,8 +4,6 @@
 
 @section('content')
 
-    @include('parts.masthead')
-
     <div class="container">
 
         <h1>Oops! <small>404, page not found</small></h1>

@@ -27,6 +27,7 @@ return [
 	*/
 
 	'url' => env('APP_URL', 'http://localhost'),
+	'domain' => env('APP_DOMAIN'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -145,10 +146,7 @@ return [
 		'App\Providers\ConfigServiceProvider',
 		'App\Providers\EventServiceProvider',
 		'App\Providers\RouteServiceProvider',
-
-		'Incraigulous\Contentful\ContentfulServiceProvider',
-		'GrahamCampbell\Markdown\MarkdownServiceProvider',
-		'Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider',
+		'GrahamCampbell\Markdown\MarkdownServiceProvider'
 	],
 
 	/*

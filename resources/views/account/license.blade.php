@@ -7,7 +7,7 @@
 
     <div class="container">
         <p>
-            <a href="/account">Account</a> &rightarrow; <span>Licenses</span>
+            <a href="/">Account</a> &rightarrow; <span>Licenses</span>
         </p>
 
         <h1>License: <small><code>{{ $license->license_key }}</code></small></h1>
@@ -28,7 +28,7 @@
                 @if( $activation->plugin )
                     <td>{{ $activation->plugin->name }}</td>
                     <td>
-                        <form action="/account/licenses/{{ $license->id }}/activations/{{ $activation->id }}" method="post">
+                        <form action="/licenses/{{ $license->id }}/activations/{{ $activation->id }}" method="post">
                             <input type="hidden" name="_method" value="DELETE" />
                             <input type="submit" class="btn btn-danger" data-confirm="Are you sure you want to deactivate {{ $activation->plugin->name }} on {{ $activation->domain }}?" value="Deactivate" />
                         </form>
@@ -44,7 +44,7 @@
             @endif
         </table>
 
-        <p><a href="/account">Back to your account.</a></p>
+        <p><a href="/">Back to your account.</a></p>
     </div>
 @stop
 
