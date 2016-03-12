@@ -41,6 +41,26 @@ class SampleAPIDataSeeder extends Seeder {
 			"github_repo" => "ibericode/stb-exit-intent",
 		]);
 		$plugin->save();
+
+		$plugin = new Plugin([
+			'name' => 'Theme Pack',
+			'url' => 'theme-pack',
+			'slug' => 'stb-theme-pack',
+			'description' => "Theme Pack add-on for Scroll Triggered Boxes",
+			'short_description' => "Theme Pack add-on",
+			"github_repo" => "ibericode/stb-theme-pack",
+		]);
+		$plugin->save();
+
+		$plugin = new Plugin([
+			'name' => 'Google Analytics',
+			'url' => 'google-analytics',
+			'slug' => 'stb-google-analytics',
+			'description' => "Google Analytics add-on for Scroll Triggered Boxes",
+			'short_description' => "Google Analytics add-on",
+			"github_repo" => "ibericode/stb-google-analytics",
+		]);
+		$plugin->save();
 	}
 
 	// create sample sale for 1st sendowl product
