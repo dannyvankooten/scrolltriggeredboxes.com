@@ -54,7 +54,7 @@
             <tbody>
             @foreach($plugins as $plugin)
                 <tr>
-                    <td><a href="{{ url('/plugins/' . $plugin->url )}}">{{ $plugin->name }}</a></td>
+                    <td><a href="{{ domain_url( '/plugins/' . $plugin->url ) }}">{{ $plugin->name }}</a></td>
                     <td>{{ $plugin->version }}</td>
                     <td><a href="{{ route('plugins_download', [ $plugin->url ]) }}">Download</a></td>
                 </tr>
@@ -64,7 +64,7 @@
 
         <p>If you need help installing a plugin, please have a look at the <a href="http://scrolltriggeredboxes.readme.io/v1.0/docs/installing-add-on-plugins">installation instructions</a>.</p>
         @else
-            <p>It seems you have no valid license. Please <a href="//{{ config('app.domain') }}/pricing">purchase one of the premium plans in order to get access to the premium add-on plugins</a>.</p>
+            <p>It seems you have no valid license. Please <a href="{{ domain_url('/pricing') }}">purchase one of the premium plans in order to get access to the premium add-on plugins</a>.</p>
         @endif
 
     </div>

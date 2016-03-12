@@ -27,15 +27,6 @@
             @foreach($license->activations as $activation)
                 <tr>
                     <td><a href="{{ $activation->url }}">{{ $activation->domain }}</a></td>
-                    @if( $activation->plugin )
-                        <td>{{ $activation->plugin->name }}</td>
-                        <td>
-                            <form action="/account/licenses/{{ $license->id }}/activations/{{ $activation->id }}" method="post">
-                                <input type="hidden" name="_method" value="DELETE" />
-                                <input type="submit" class="btn btn-danger" data-confirm="Are you sure you want to deactivate {{ $activation->plugin->name }} on {{ $activation->domain }}?" value="Deactivate" />
-                            </form>
-                        </td>
-                    @endif
                     <td>{{ $activation->updated_at->format('F j, Y') }}</td>
                 </tr>
             @endforeach

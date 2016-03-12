@@ -65,13 +65,13 @@
     <div class="footer-2">
         <div class="container">
             <p class="margined-elements">
-                <a href="//{{ config('app.domain') }}/about">About</a>
-                <a href="//{{ config('app.domain') }}/refund-policy">Refund Policy</a>
-                <a href="//{{ config('app.domain') }}/kb">Documentation</a>
+                <a href="{{ domain_url('/about') }}">About</a>
+                <a href="{{ domain_url('/refund-policy') }}">Refund Policy</a>
+                <a href="{{ domain_url('/kb') }}">Documentation</a>
                 <a href="#top">Back to top</a>
             </p>
             <p style="font-style: italic;">
-                <a class="unstyled" href="{{ config('app.domain') }}">Scroll Triggered Boxes</a> is a WordPress plugin built by &nbsp;
+                <a class="unstyled" href="{{ domain_url() }}">Scroll Triggered Boxes</a> is a WordPress plugin built by &nbsp;
                 <a href="https://ibericode.com" rel="external author">
                     <img src="{{ asset('img/ibericode-logo-white.png') }}" height="25">
                 </a>

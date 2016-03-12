@@ -16,6 +16,9 @@ define('LARAVEL_START', microtime(true));
 
 require __DIR__.'/../vendor/autoload.php';
 
+// include global helper functions
+require __DIR__ . '/../app/helper-functions.php';
+
 /*
 |--------------------------------------------------------------------------
 | Include The Compiled Class File
