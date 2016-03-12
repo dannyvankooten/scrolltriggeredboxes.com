@@ -26,11 +26,22 @@ class SampleAPIDataSeeder extends Seeder {
 		DB::table('plans')->delete();
 		DB::table('activations')->delete();
 
-
 		$this->createPlans();
+		$this->createPlugins();
 		$this->createLicenses();
 	}
 
+	public function createPlugins() {
+		$plugin = new Plugin([
+			'name' => 'Exit Intent',
+			'url' => 'exit-intent',
+			'slug' => 'stb-exit-intent',
+			'description' => "Exit Intent add-on for Scroll Triggered Boxes",
+			'short_description' => "Exit Intent add-on",
+			"github_repo" => "ibericode/stb-exit-intent",
+		]);
+		$plugin->save();
+	}
 
 	// create sample sale for 1st sendowl product
 	public function createLicenses() {

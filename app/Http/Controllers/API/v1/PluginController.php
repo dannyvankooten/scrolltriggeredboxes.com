@@ -3,7 +3,7 @@
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Plugin, App\Activation, App\License;
+use App\Plugin;
 use Illuminate\Support\Facades\Storage;
 
 class PluginController extends Controller {
@@ -52,7 +52,7 @@ class PluginController extends Controller {
 
 		// build response
 		$response = [
-			'data' => $plugin->toWPJSON()
+			'data' => $plugin->toWpArray()
 		];
 
 		return response()->json($response);

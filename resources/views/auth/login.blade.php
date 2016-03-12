@@ -38,7 +38,7 @@
             </form>
             </div>
 
-            <p>No account yet? <a href="//{{ config('app.domain\) }}//pricing">Purchase one of the premium plans</a> to get instant access to <a href="//{{ config('app.domain') }}/plugins">all premium plugins</a>.</p>
+            <p>No account yet? <a href="//{{ config('app.domain') }}//pricing">Purchase one of the premium plans</a> to get instant access to <a href="//{{ config('app.domain') }}/plugins">all premium plugins</a>.</p>
         </div>
     </div>
 @stop

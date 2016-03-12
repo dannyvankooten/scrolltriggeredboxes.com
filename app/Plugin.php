@@ -1,7 +1,9 @@
 <?php namespace App;
 
+use GrahamCampbell\GitHub\Facades\GitHub;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Plugin extends Model {
 
@@ -38,30 +40,84 @@ class Plugin extends Model {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getGitHubRepositoryOwner() {
+		return substr( $this->github_repo, 0, strpos( $this->github_repo, '/' ) );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getGitHubRepositoryName() {
+		return substr( $this->github_repo, strpos( $this->github_repo, '/' ) + 1 );
+	}
+
+
+	/**
 	 * @return array
 	 */
-	public function toWPArray() {
-		return [
+	public function getUpdateInfo() {
+
+		$cacheKey = "plugins.{$this->url}.update-info";
+		$fileContent = Cache::get( $cacheKey );
+
+		if( ! $fileContent ) {
+			$fileContent = GitHub::connection()->repo()->contents()->download( $this->getGitHubRepositoryOwner(), $this->getGitHubRepositoryName(), 'info.json');
+			$fileContent = str_ireplace( PHP_EOL, '', $fileContent );
+			$fileContent = str_ireplace( ',}', '}', $fileContent );
+
+			Cache::put( $cacheKey, $fileContent, 60 );
+		}
+
+		$data = json_decode( $fileContent, true );
+
+		return $data;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getChangelog() {
+		$cacheKey = "plugins.{$this->url}.changelog";
+		$html = Cache::get( $cacheKey );
+
+		if( ! $html ) {
+			$fileContent = GitHub::connection()->repo()->contents()->download( $this->getGitHubRepositoryOwner(), $this->getGitHubRepositoryName(), 'CHANGELOG.md');
+			$html = Markdown::convertToHtml( $fileContent );
+
+			Cache::put( $cacheKey, $html, 60 );
+		}
+
+		return $html;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function toWpArray() {
+
+		$data = [
 			'id' => $this->id,
 			'url' => url( '/plugins/' . $this->url ),
 			'homepage' => url( '/plugins/' . $this->url ),
 			'package' => url( '/api/v1/plugins/' . $this->id .'/download' ),
 			'download_url' => url( '/api/v1/plugins/' . $this->id .'/download' ),
 			'name'      => $this->name,
-			'version'   => $this->version,
-			'author'    => $this->author,
 			'sections'  => [
-				'changelog'     => Markdown::convertToHtml( $this->changelog ),
+				'changelog'     => $this->getChangelog(),
 				'description'   => $this->description
 			],
-			'requires'  => '3.8',
-			'tested'    => $this->tested,
 			'last_updated' => $this->updated_at->format( 'F, Y' ),
-			'upgrade_notice' => $this->upgrade_notice,
 			'banners'   => [
 				'high'      => asset( $this->image_path )
 			]
 		];
+
+		$updateInfo = $this->getUpdateInfo();
+		$data = array_merge( $data, $updateInfo );
+
+		return $data;
 	}
 
 	public function getImageUrlAttribute()
