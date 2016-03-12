@@ -63,23 +63,14 @@ class PluginController extends Controller {
 	 * @param Request $request
 	 * @return mixed
 	 */
-	public function download($id, Request $request) {
+	public function download($id_or_slug, Request $request) {
 
 		// then, retrieve plugin that user is trying to activate
-		$plugin = Plugin::find($id)->firstOrFail();
+		$plugin = Plugin::where('id', $id_or_slug)->orWhere('url', $id_or_slug)->firstOrFail();
 
 		// is a specific version specified? if not, use latest.
-		$version = preg_replace( "/[^0-9\.]/", "" ,$request->input( 'version', $plugin->version ) );
+		$version = preg_replace( "/[^0-9\.]/", "" ,$request->input( 'version', 'latest' ) );
 
-		// check if plugin file exists
-		$file = sprintf( 'app/plugins/%s/%s-%s.zip', $plugin->slug, $plugin->slug, $version );
-		$storage = Storage::disk('local');
-		$exists = $storage->exists( $file );
-		if( $exists ) {
-			return response()->download( storage_path( $file ) );
-		}
-
-		// serve fallback
-		return response( 'Plugin package is temporarily unavailable.', 404 );
+		return redirect( $plugin->getDownloadUrl( $version ) );
 	}
 }

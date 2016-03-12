@@ -76,6 +76,20 @@ class Plugin extends Model {
 	}
 
 	/**
+	 * TODO: Right now, this method exposes the Github Token.
+	 *
+	 * This isn't a huge deal as it is read-only and only visible for paying customers but still. DO BETTER.
+	 *
+	 * @param string $version
+	 *
+	 * @return string
+	 */
+	public function getDownloadUrl( $version = 'latest' ) {
+		$url = sprintf( 'https://api.github.com/repos/%s/%s/zipball/%s?access_token=%s', $this->getGitHubRepositoryOwner(), $this->getGitHubRepositoryName(), $version, env( 'GITHUB_TOKEN', '' ) );
+		return $url;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getChangelog() {
