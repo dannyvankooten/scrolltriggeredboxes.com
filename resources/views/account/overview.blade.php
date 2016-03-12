@@ -56,7 +56,7 @@
                 <tr>
                     <td><a href="{{ url('/plugins/' . $plugin->url )}}">{{ $plugin->name }}</a></td>
                     <td>{{ $plugin->version }}</td>
-                    <td><a href="{{ url('/plugins/' . $plugin->url . '/download') }}">Download</a></td>
+                    <td><a href="{{ route('plugins_download', [ $plugin->url ]) }}">Download</a></td>
                 </tr>
             @endforeach
             </tbody>

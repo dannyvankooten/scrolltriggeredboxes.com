@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Plugin;
@@ -8,10 +9,8 @@ use Illuminate\Support\Facades\Storage;
 
 class PluginController extends Controller {
 
-
 	public function __construct() {
-		$this->middleware('auth.license', ['only' => 'download']);
-		$this->middleware('auth.license+site', ['only' => 'download']);
+		$this->middleware('auth.license+site', [ 'only' => 'download' ]);
 	}
 
 	/**

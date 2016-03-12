@@ -1,10 +1,29 @@
 <?php namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Auth\Guard;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
 Use App\License;
 
 class AuthenticateLicense  {
+
+	/**
+	 * The Guard implementation.
+	 *
+	 * @var Guard
+	 */
+	protected $auth;
+
+	/**
+	 * Create a new filter instance.
+	 *
+	 * @param  Guard  $auth
+	 * @return void
+	 */
+	public function __construct(Guard $auth)
+	{
+		$this->auth = $auth;
+	}
 
 	/**
 	 * Handle an incoming request.
@@ -13,12 +32,17 @@ class AuthenticateLicense  {
 	 * @param  \Closure  $next
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next)
-	{
+	public function handle($request, Closure $next) {
+
+		// no need to check for license if user already authenticated
+		if( $this->auth->user() ) {
+			return $next($request);
+		}
+
 		$key = urldecode( $request->server('PHP_AUTH_PW') );
 		$site = urldecode( $request->server('PHP_AUTH_USER') );
 
-		if( ! $key || ! $site ) {
+		if( empty( $key ) || empty( $site ) ) {
 			// no license key or site given
 			return response()->json([
 				'error' => [
@@ -27,6 +51,7 @@ class AuthenticateLicense  {
 			], 400 );
 		}
 
+		// find license
 		$license = License::where('license_key', $key)->with('activations')->first();
 		if( ! $license ) {
 			// license key was not found
@@ -35,7 +60,9 @@ class AuthenticateLicense  {
 					'message' => sprintf( "Your license seems to be invalid. Please check <a href=\"%s\">your account</a> for the correct license key.", url( '/account' ) )
 				]
 			], 401 );
-		} elseif( $license->isExpired() ) {
+		}
+
+		if( $license->isExpired() ) {
 			// license has expired
 			return response()->json([
 				'error' => [

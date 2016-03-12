@@ -4,18 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Activation;
 use App\Plugin;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Auth\Guard;
 
 use App\License;
 
 class AccountController extends Controller {
 
-	public function __construct() {
+	/**
+	 * @var Guard
+	 */
+	protected $auth;
+
+	/**
+	 * AccountController constructor.
+	 *
+	 * @param Guard $auth
+	 */
+	public function __construct( Guard $auth ) {
+		$this->auth = $auth;
 		$this->middleware('auth.user');
 	}
 
 	public function overview( ) {
-		$user = Auth::user();
+		$user = $this->auth->user();
 		$plugins = Plugin::where('type','premium')->get();
 
 		return view( 'account.overview', [ 'user' => $user, 'plugins' => $plugins ] );
@@ -28,7 +39,7 @@ class AccountController extends Controller {
 	 */
 	public function license($id) {
 		$license = License::with('activations')->findOrFail($id);
-		$user = Auth::user();
+		$user = $this->auth->user();
 
 		// check if license belongs to user
 		if( $license->user->id != $user->id ) {
@@ -40,7 +51,7 @@ class AccountController extends Controller {
 
 	public function deleteActivation( $license_id, $activation_id ) {
 		$activation = Activation::find($activation_id)->firstOrFail();
-		$user = Auth::user();
+		$user = $this->auth->user();
 
 		// check if activation belongs to user
 		if( $activation->license->id !== $license_id || $activation->license->user->id !== $user->id ) {

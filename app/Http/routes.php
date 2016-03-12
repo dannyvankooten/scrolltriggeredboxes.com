@@ -2,11 +2,6 @@
 
 Route::group(['domain' => sprintf( 'account.%s', env('APP_DOMAIN') )], function () {
 
-	// plugins
-	// TODO: Move to API
-	Route::get( '/plugins/{plugin_id_or_slug}/download', 'PluginsController@download' );
-	Route::get( '/plugins/{plugin_id_or_slug}/download/sendowl', 'PluginsController@downloadFromSendowl' );
-
 	// auth
 	Route::get( '/auth/login/purchase', 'Auth\AuthController@getLoginFromPurchase' );
 	Route::get( '/auth/login', 'Auth\AuthController@getLogin' );
@@ -45,7 +40,7 @@ Route::group( [ 'domain' => sprintf( 'api.%s', env('APP_DOMAIN') ), 'prefix' => 
 
 	Route::get( '/plugins', 'PluginController@index' );
 	Route::get( '/plugins/{id}', 'PluginController@get' );
-	Route::get( '/plugins/{id}/download', 'PluginController@download' );
+	Route::get( '/plugins/{id}/download', 'PluginController@download' )->name('plugins_download');
 
 	Route::any( '/helpscout', 'HelpScoutController@get' );
 } );

@@ -5,7 +5,7 @@ use Closure;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 
-class AuthenticateLicenseAndSite {
+class AuthenticateLicenseAndSite extends AuthenticateLicense {
 
 
 	/**
@@ -16,6 +16,17 @@ class AuthenticateLicenseAndSite {
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next ) {
+
+		// no need to check for site if user already authenticated
+		if( $this->auth->user() ) {
+			return $next($request);
+		}
+
+		// only do our own stuff if next is next
+		$return = parent::handle( $request, $next );
+		if( $return != $next ) {
+			return $return;
+		}
 
 		// find site
 		$activation = $request->license->findDomainActivation( $request->domain );

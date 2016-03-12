@@ -46,10 +46,8 @@
         <nav class="header-nav" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
             <label for="toggle" class="glyphicon toggle" onclick></label>
             <ul class="menu">
-                <li role="presentation"><a href="//{{ config('app.domain') }}/plugins">Plugins</a></li>
-                <li role="presentation"><a href="//{{ config('app.domain') }}/pricing">Pricing</a></li>
-                <li role="presentation"><a href="http://demo.scrolltriggeredboxes.com/" target="_blank">Demo</a></li>
-                <li role="presentation"><a href="//{{ config('app.domain') }}/contact">Contact</a></li>
+                <li role="presentation"><a href="/">Your Account</a></li>
+
             </ul>
         </nav>
     </div>
