@@ -1,7 +1,5 @@
 <?php namespace App\Jobs;
 
-use App\Jobs\Command;
-
 use App\Events\UserCreated;
 use App\User;
 use Illuminate\Contracts\Bus\SelfHandling;

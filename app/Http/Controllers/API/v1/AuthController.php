@@ -1,12 +1,17 @@
 <?php namespace App\Http\Controllers\API\v1;
 
 use App\Activation;
+use App\License;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller {
 
+	/**
+	 * AuthController constructor.
+	 */
 	public function __construct() {
 		$this->middleware( 'auth.license' );
 	}
@@ -18,35 +23,44 @@ class AuthController extends Controller {
 	 */
 	public function login( Request $request ) {
 
-		$data = [ 'success' => false ];
+		/** @var License $license */
 		$license = $request->license;
 
-		// check if this site is already activated
-		$activation = $license->findDomainActivation($request->domain);
-		if( $activation ) {
-			// already logged-in
-			$activation->touch();
-		} elseif( $license->isExpired() ) {
+		// check if license is expired
+		if( $license->isExpired() ) {
 			return response()->json([
 				'error' => [
 					'message' => sprintf( "Your license has expired.", $license->site_limit )
 				]
 			]);
-		} elseif( $license->isAtSiteLimit() ) {
-			return response()->json([
-				'error' => [
-					'message' => sprintf( "Your license is at its activation limit of %d sites.", $license->site_limit )
-				]
-			]);
-		} else {
-			// finally, activate site (aka login)
+		}
+
+		// check if this site is already activated
+		$activation = $license->findDomainActivation($request->domain);
+
+		if( ! $activation ) {
+
+			// check if license is at limit
+			if( $license->isAtSiteLimit() ) {
+				return response()->json([
+					'error' => [
+						'message' => sprintf( "Your license is at its activation limit of %d sites.", $license->site_limit )
+					]
+				]);
+			}
+
+			// activate license on given site
 			$activation = new Activation([
 				'url' => $request->site,
 				'domain' => $request->domain
 			]);
 			$activation->license()->associate($license);
-			$activation->save();
+
+			Log::info( "Activated license #{$license->id} on {$request->domain}" );
 		}
+
+		$activation->touch();
+		$activation->save();
 
 		return response()->json([
 			'data' => [
@@ -64,6 +78,7 @@ class AuthController extends Controller {
 		// now, delete activation (aka logout)
 		$activation = $license->findDomainActivation( $request->domain );
 		if( $activation ) {
+			Log::info( "Deactivated license #{$license->id} on {$request->domain}" );
 			$activation->delete();
 		}
 

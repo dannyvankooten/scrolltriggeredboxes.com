@@ -1,15 +1,12 @@
 <?php namespace App\Http\Controllers\API\v1;
 
-use App\Events\UserCreated;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Jobs\CreateUser;
 use App\Jobs\PurchasePlan;
-use DB, App\License, App\User, App\Activation, App\Plan, App\Plugin;
-
+use App\User, App\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
 
 class LicenseController extends Controller {
 

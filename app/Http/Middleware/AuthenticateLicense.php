@@ -57,7 +57,7 @@ class AuthenticateLicense  {
 			// license key was not found
 			return response()->json([
 				'error' => [
-					'message' => sprintf( "Your license seems to be invalid. Please check <a href=\"%s\">your account</a> for the correct license key.", url( '/account' ) )
+					'message' => sprintf( "Your license seems to be invalid. Please check <a href=\"%s\">your account</a> for the correct license key.", domain_url( '/', 'account' ) )
 				]
 			], 401 );
 		}
@@ -77,6 +77,7 @@ class AuthenticateLicense  {
 		$request->site = $site;
 
 		// parse domain from site url
+		$site = 'http://' . str_replace( array( 'http://', 'https://', '://' ), '', $site );
 		$domain = parse_url( $site, PHP_URL_HOST );
 		$request->domain = $domain;
 

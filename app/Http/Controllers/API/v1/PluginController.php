@@ -32,7 +32,7 @@ class PluginController extends Controller {
 		$wpFormat = $request->input('format','') === 'wp';
 
 		foreach( $plugins as $plugin ) {
-			$response['data'][] = ( $wpFormat ? $plugin->toWPArray() : $plugin->toArray() );
+			$response['data'][] = ( $wpFormat ? $plugin->toWpArray() : $plugin->toArray() );
 		}
 		return response()->json($response);
 	}
