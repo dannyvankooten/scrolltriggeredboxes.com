@@ -4,7 +4,7 @@
 <p>Click here to reset your password: {{ url('password/reset/'.$token.'?email='.$user->email ) }} .</p>
 <p>Hope that helps!</p>
 <p>
-    Danny, Ines & Harish<br />
+    Danny, Harish & Arne<br />
     Scroll Triggered Boxes<br />
     {{ url('/') }}
 </p>

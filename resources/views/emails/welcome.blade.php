@@ -15,7 +15,7 @@
 <br />
 <p>If you have any questions related to your purchase or our plugins, please just reply to this email.</p>
 <p>
-    Danny, Ines & Harish<br />
+    Danny, Harish & Arne<br />
     Scroll Triggered Boxes<br />
     {{ url('/') }}
 </p>
