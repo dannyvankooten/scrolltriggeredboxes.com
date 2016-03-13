@@ -11,7 +11,7 @@
 
             <h3>Request a new password</h3>
 
-            <p>If you forgot your password then you can request a new one by filling out the form below. Please use the same email address as when you <a href="/pricing">purchased your premium plan</a>.</p>
+            <p>If you forgot your password then you can request a new one by filling out the form below. Please use the same email address as when you <a href="{{ domain_url( '/pricing' ) }}">purchased your premium plan</a>.</p>
 
             <form  role="form" method="POST" action="{{ url('/password/email') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">

@@ -33,7 +33,7 @@
                     </label>
                 </div>
                <div>
-                   <button type="submit" class="btn btn-default">Login</button> &nbsp; <a href="{{ url('/password/email') }}">Forgot your password?</a>
+                   <button type="submit" class="btn btn-default">Login</button> &nbsp; <a href="{{ domain_url('/password/email', 'account') }}">Forgot your password?</a>
                </div>
             </form>
             </div>

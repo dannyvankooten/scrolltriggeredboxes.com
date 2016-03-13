@@ -1,6 +1,6 @@
 <p>Welcome, {{ $user->name }}!</p>
 
-<p>You can use the following credentials to log in to <a href="{{ url('/account?email=' . $user->email) }}">our account area on scrolltriggeredboxes.com</a>, where you can manage your license key(s) and download all add-on plugins.</p>
+<p>You can use the following credentials to log in to <a href="{{ domain_url('?email=' . $user->email, 'account') }}">our account area on scrolltriggeredboxes.com</a>, where you can manage your license key(s) and download all add-on plugins.</p>
 <br />
 <table border="0" cellpadding="0" cellspacing="0">
     <tr>
