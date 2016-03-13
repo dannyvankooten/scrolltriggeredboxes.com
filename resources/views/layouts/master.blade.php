@@ -46,8 +46,8 @@
         <nav class="header-nav" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
             <label for="toggle" class="glyphicon toggle" onclick></label>
             <ul class="menu">
-                <li role="presentation"><a href="/">Your Account</a></li>
-
+                <li role="presentation"><a href="/">Account</a></li>
+                <li role="presentation"><a href="/auth/logout">Log out</a></li>
             </ul>
         </nav>
     </div>

@@ -21,7 +21,9 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+		$this->app->singleton(\HelpScoutApp\DynamicApp::class, function ($app) {
+			return new \HelpScoutApp\DynamicApp( config('services.helpscout')['secret'] );
+		});
 	}
 
 }

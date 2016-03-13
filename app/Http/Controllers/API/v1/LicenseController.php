@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\Hash;
 class LicenseController extends Controller {
 
 	/**
+	 * LicenseController constructor.
+	 */
+	public function __construct() {
+		$this->middleware('sendowl.signature');
+	}
+
+	/**
 	 * Create a new license key for a new SendOwl order or add plugin access to an existing one (for bundle orders)
 	 *
 	 * @param Request $request
@@ -21,21 +28,6 @@ class LicenseController extends Controller {
 	 */
 	public function create( Request $request)
 	{
-		if(env('VERIFY_SIGNATURES', true)) {
-			$sendowl_config     = config( 'services.sendowl' );
-			$message            = sprintf( "buyer_email=%s&buyer_name=%s&order_id=%s&product_id=%d&secret=%s",
-				$request->input( 'buyer_email' ),
-				$request->input( 'buyer_name' ),
-				$request->input( 'order_id' ),
-				$request->input( 'product_id' ),
-				$sendowl_config['api_secret'] );
-			$key                = $sendowl_config['api_key'] . '&' . $sendowl_config['api_secret'];
-			$expected_signature = base64_encode( hash_hmac( 'sha1', $message, $key, true ) );
-			if ( $expected_signature != $request->input( 'signature' ) ) {
-				abort( 403 );
-			}
-		}
-
 		// query user by email
 		$user = User::where('email', $request->input('buyer_email'))->first();
 		if( ! $user ) {

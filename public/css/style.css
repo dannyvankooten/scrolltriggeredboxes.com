@@ -8,6 +8,11 @@ body {
 	border-bottom: 4px solid #24566d;
 }
 
+
+.container {
+	max-width: 720px;
+}
+
 .unstyled,
 .unstyled:hover{
 	color: inherit;
@@ -310,10 +315,6 @@ hr {
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 992px) {
-
-	.container {
-		max-width: 960px;
-	}
 
 	.jumbotron h1, .jumbotron .h1 {
 		font-size: 36px;

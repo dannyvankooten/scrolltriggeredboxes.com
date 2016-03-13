@@ -1,5 +1,5 @@
 <div class="jumbotron">
     <div class="container">
-        <p>Logged in as <strong>{{ Auth::user()->name }}</strong> <small>({{ Auth::user()->email }})</small>. <small>(<a href="/auth/logout">logout</a>)</small></p>
+        <p>Hey <strong>{{ Auth::user()->getFirstName() }}</strong>, welcome!</p>
     </div>
 </div>

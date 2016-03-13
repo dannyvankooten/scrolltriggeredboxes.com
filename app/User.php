@@ -48,4 +48,28 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return count( $validLicenses ) > 0;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getFirstName() {
+		$pos = strpos( $this->name, ' ' );
+		if( ! $pos ) {
+			return $this->name;
+		}
+
+		return substr( $this->name, 0, $pos );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLastName() {
+		$pos = strpos( $this->name, ' ' );
+		if( ! $pos ) {
+			return $this->name;
+		}
+
+		return substr( $this->name, $pos );
+	}
+
 }
