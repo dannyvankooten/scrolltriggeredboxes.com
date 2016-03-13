@@ -11,6 +11,11 @@
  *
  * @return string
  */
-function domain_url( $path = '/' ) {
-	return '//' . rtrim( config( 'app.domain' ), '/' ) . '/' . ltrim( $path, '/' );
+function domain_url( $path = '/', $subdomain = '' ) {
+
+	$domain = config( 'app.domain' );
+	if( ! empty( $subdomain ) ) {
+		$domain = sprintf( '%s.%s', $subdomain, $domain );
+	}
+	return '//' . rtrim( $domain, '/' ) . '/' . ltrim( $path, '/' );
 }
