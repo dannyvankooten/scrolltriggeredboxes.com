@@ -65,11 +65,50 @@ class PluginController extends Controller {
 	public function download($id_or_slug, Request $request) {
 
 		// then, retrieve plugin that user is trying to activate
+		/** @var Plugin $plugin */
 		$plugin = Plugin::where('id', $id_or_slug)->orWhere('url', $id_or_slug)->firstOrFail();
 
 		// is a specific version specified? if not, use latest.
-		$version = preg_replace( "/[^0-9\.]/", "" ,$request->input( 'version', 'latest' ) );
+		$version = preg_replace( "/[^0-9\.]/", "" , $request->input( 'version', '' ) );
 
-		return redirect( $plugin->getDownloadUrl( $version ) );
+		// make sure /downloads directory exists
+		$downloads_dir = storage_path( 'downloads' );
+
+		// generate filename
+		$filename = sprintf( '%s/%s%s.zip', $downloads_dir, $plugin->slug, ! empty( $version ) ? '-' . $version : '' );
+
+		$exists = file_exists( $filename );
+		$last_modified = $exists ? filemtime( $filename ) : 0;
+		$some_time_ago = time() - 1500;
+
+		// if file does not exist or is older than 15 minutes, re-download & process
+		if( ! $exists || $last_modified < $some_time_ago ) {
+
+			if( ! is_dir( $downloads_dir ) ) {
+				mkdir( $downloads_dir );
+			}
+
+			// download file
+			$client = new \GuzzleHttp\Client();
+			$res = $client->request( 'GET', $plugin->getDownloadUrl( $version ) );
+
+			file_put_contents( $filename, $res->getBody() );
+
+			// open zip & rename index directory because WordPress expects plugin slug as directory name.
+			$zip = new \ZipArchive;
+			$zip->open( $filename );
+
+			$regex = sprintf( '/%s-%s-%s\//', $plugin->getGitHubRepositoryOwner(), $plugin->getGitHubRepositoryName(), '\w+' );
+
+			for( $i = 0; $i < $zip->numFiles; $i++ ){
+				$stat = $zip->statIndex( $i );
+				$newName = preg_replace( $regex, $plugin->slug . '/', $stat['name'] );
+				$zip->renameIndex( $i, $newName );
+			}
+
+			$zip->close();
+		}
+
+		return response()->download( $filename );
 	}
 }

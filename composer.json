@@ -6,7 +6,7 @@
 	"type": "project",
 	"require": {
       "laravel/framework": "5.1.*",
-      "guzzlehttp/guzzle": "5.1.*",
+      "guzzlehttp/guzzle": "^6.1",
       "graham-campbell/markdown": "~3.0",
       "rap2hpoutre/laravel-log-viewer": "^0.4.1",
       "helpscout/apps": "^1.1",

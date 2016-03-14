@@ -3,8 +3,6 @@ namespace App\Listeners\Events;
 
 use App\Events\LicenseCreated;
 
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldBeQueued;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 
@@ -49,7 +47,7 @@ class PushNewLicenseNotification {
 		$message = sprintf("Order #%s\n Email: %s\nName: %s\nLicense: %s", $license->sendowl_order_id, $license->user->email, $license->user->name, $license->license_key );
 
 		$this->client->post( $this->api_url . '/pushes', [
-			'body' => [
+			'json' => [
 				'type' => 'note',
 				'title' => sprintf( 'STB Order #%s - %s', $license->sendowl_order_id, $license->plan->name ),
 				'body' => $message
