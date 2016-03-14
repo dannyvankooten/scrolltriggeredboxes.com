@@ -1,11 +1,10 @@
 <?php namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Auth\Guard;
+use GuzzleHttp;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Plugin;
-use Illuminate\Support\Facades\Storage;
 
 class PluginController extends Controller {
 
@@ -89,8 +88,14 @@ class PluginController extends Controller {
 			}
 
 			// download file
-			$client = new \GuzzleHttp\Client();
-			$res = $client->request( 'GET', $plugin->getDownloadUrl( $version ) );
+			$client = new GuzzleHttp\Client();
+
+			try {
+				$res = $client->request( 'GET', $plugin->getDownloadUrl( $version ) );
+			} catch( GuzzleHttp\Exception\ClientException $e ) {
+				abort( $e->getCode() );
+				exit;
+			}
 
 			file_put_contents( $filename, $res->getBody() );
 
@@ -98,11 +103,12 @@ class PluginController extends Controller {
 			$zip = new \ZipArchive;
 			$zip->open( $filename );
 
-			$regex = sprintf( '/%s-%s-%s\//', $plugin->getGitHubRepositoryOwner(), $plugin->getGitHubRepositoryName(), '\w+' );
+			$current_base_directory = $zip->getNameIndex(0);
+			$new_base_directory = $plugin->slug . '/';
 
 			for( $i = 0; $i < $zip->numFiles; $i++ ){
-				$stat = $zip->statIndex( $i );
-				$newName = preg_replace( $regex, $plugin->slug . '/', $stat['name'] );
+				$name = $zip->getNameIndex( $i );
+				$newName = str_replace( $current_base_directory, $new_base_directory, $name );
 				$zip->renameIndex( $i, $newName );
 			}
 
