@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title','New Password - Scroll Triggered Boxes')
+@section('title','New Password - Boxzilla')
 
 @section('content')
 

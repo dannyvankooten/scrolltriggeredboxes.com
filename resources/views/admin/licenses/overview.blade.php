@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title','Account - Scroll Triggered Boxes')
+@section('title','Licenses - Boxzilla')
 
 @section('content')
 

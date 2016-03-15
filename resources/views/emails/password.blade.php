@@ -5,6 +5,6 @@
 <p>Hope that helps!</p>
 <p>
     Danny, Harish & Arne<br />
-    Scroll Triggered Boxes<br />
+    Boxzilla<br />
     {{ url('/') }}
 </p>

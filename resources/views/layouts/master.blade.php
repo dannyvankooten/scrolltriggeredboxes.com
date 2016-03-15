@@ -5,13 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>@yield('title', 'Scroll Triggered Boxes')</title>
+    <title>@yield('title', 'Boxzilla')</title>
 
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
-    <meta name="twitter:site" content="@dannyvankooten">
-    <meta name="twitter:creator" content="@dannyvankooten">
+    <meta name="twitter:site" content="@boxzillaplugin">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -39,7 +38,7 @@
         <h2 class="site-title pull-left">
             <a href="{{ url('/') }}">
                 <img src="{{ asset('img/logo-small.png') }}" class="logo" width="64" height="64" />
-                <span>Scroll Triggered Boxes</span>
+                <span>Boxzilla</span>
             </a>
         </h2>
         <input type="checkbox" id="toggle" />
@@ -47,7 +46,10 @@
             <label for="toggle" class="glyphicon toggle" onclick></label>
             <ul class="menu">
                 <li role="presentation"><a href="/">Account</a></li>
+
+                @if (Auth::check())
                 <li role="presentation"><a href="/auth/logout">Log out</a></li>
+                @endif
             </ul>
         </nav>
     </div>
@@ -71,7 +73,7 @@
                 <a href="#top">Back to top</a>
             </p>
             <p style="font-style: italic;">
-                <a class="unstyled" href="{{ domain_url() }}">Scroll Triggered Boxes</a> is a WordPress plugin built by &nbsp;
+                <a class="unstyled" href="{{ domain_url() }}">Boxzilla</a> is a WordPress plugin built by &nbsp;
                 <a href="https://ibericode.com" rel="external author">
                     <img src="{{ asset('img/ibericode-logo-white.png') }}" height="25">
                 </a>

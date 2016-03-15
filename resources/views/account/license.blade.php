@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title','License - Scroll Triggered Boxes')
+@section('title','License - Boxzilla')
 
 @section('content')
     @include('account.parts.masthead')

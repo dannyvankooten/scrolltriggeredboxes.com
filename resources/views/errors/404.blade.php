@@ -1,11 +1,11 @@
 @extends('layouts.master')
 
-@section('title', 'Page not found - Scroll Triggered Boxes')
+@section('title', 'Page not found - Boxzilla')
 
 @section('content')
 
     <div class="container">
-        
+
         <h1>Oops! <small>Page not found.</small></h1>
 
         <p>

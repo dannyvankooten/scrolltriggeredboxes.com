@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title','Account - Scroll Triggered Boxes')
+@section('title','Account - Boxzilla')
 
 @section('content')
     @include('account.parts.masthead')
@@ -39,7 +39,7 @@
         </table>
 
         <h3>Plugins</h3>
-        <p>The core Scroll Triggered Boxes plugin can be downloaded from WordPress.org <a href="https://wordpress.org/plugins/scroll-triggered-boxes/">here</a>.</p>
+        <p>The core Boxzilla plugin can be downloaded from WordPress.org <a href="https://wordpress.org/plugins/scroll-triggered-boxes/">here</a>.</p>
 
         @if($user->hasValidLicense())
         <p>Since you have a valid license, you have access to the following plugin downloads.</p>

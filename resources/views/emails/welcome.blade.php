@@ -16,6 +16,6 @@
 <p>If you have any questions related to your purchase or our plugins, please just reply to this email.</p>
 <p>
     Danny, Harish & Arne<br />
-    Scroll Triggered Boxes<br />
+    Boxzilla<br />
     {{ url('/') }}
 </p>
