@@ -70,7 +70,7 @@
                 <a href="{{ domain_url('/about') }}">About</a>
                 <a href="{{ domain_url('/refund-policy') }}">Refund Policy</a>
                 <a href="{{ domain_url('/kb') }}">Documentation</a>
-                <a href="#top">Back to top</a>
+                <a href="{{ domain_url('/contact') }}">Contact</a>
             </p>
             <p style="font-style: italic;">
                 <a class="unstyled" href="{{ domain_url() }}">Boxzilla</a> is a WordPress plugin built by &nbsp;
