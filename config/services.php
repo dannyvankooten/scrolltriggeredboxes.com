@@ -39,9 +39,9 @@ return [
 	],
 
 	'stripe' => [
-		'model'  => 'App\User',
-		'key' => '',
-		'secret' => '',
+		'model'  => App\User::class,
+		'key' => env('STRIPE_KEY', ''),
+		'secret' => env('STRIPE_SECRET', ''),
 	],
 
 	'helpscout' => [

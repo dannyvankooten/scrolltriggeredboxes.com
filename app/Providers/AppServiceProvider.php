@@ -1,5 +1,6 @@
 <?php namespace App\Providers;
 
+use HelpScoutApp\DynamicApp;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider {
@@ -21,8 +22,8 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$this->app->singleton(\HelpScoutApp\DynamicApp::class, function ($app) {
-			return new \HelpScoutApp\DynamicApp( config('services.helpscout')['secret'] );
+		$this->app->singleton(DynamicApp::class, function ($app) {
+			return new DynamicApp( config('services.helpscout')['secret'] );
 		});
 	}
 
