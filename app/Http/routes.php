@@ -12,6 +12,12 @@ Route::group(['domain' => sprintf( 'account.%s', env('APP_DOMAIN') )], function 
 	Route::get( '/', 'AccountController@overview' );
 	Route::get( '/licenses/{id}', 'AccountController@license' );
 
+	// buy
+	Route::get( '/buy', 'AccountController@buy' );
+	Route::post('/buy', 'AccountController@postBuy' );
+	Route::get('/invoices', 'AccountController@invoices' );
+	Route::get('/invoices/{id}', 'AccountController@downloadInvoice');
+
 	// todo: allow login out a license from the account page
 	//Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
 
