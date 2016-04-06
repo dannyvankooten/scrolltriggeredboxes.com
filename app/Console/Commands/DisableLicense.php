@@ -21,12 +21,8 @@ class DisableLicense extends Command
      */
     protected $description = 'Disables a license.';
 
-
-
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {

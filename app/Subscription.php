@@ -7,7 +7,7 @@ class Subscription extends Model {
 	protected $table = 'subscriptions';
 	public $timestamps = true;
 
-	protected $fillable = ['amount', 'payment_token', 'interval', 'user_id', 'license_id' ];
+	protected $fillable = ['amount', 'interval', 'user_id', 'license_id', 'next_charge_at', 'active' ];
 
 
 	/**
@@ -15,6 +15,10 @@ class Subscription extends Model {
 	 */
 	public function user() {
 		return $this->belongsTo('App\User', 'user_id', 'id');
+	}
+
+	public function license() {
+		return $this->belongsTo( 'App\License', 'license_id', 'id' );
 	}
 
 }

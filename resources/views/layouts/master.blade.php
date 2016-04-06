@@ -7,7 +7,7 @@
 
     <title>@yield('title', 'Boxzilla')</title>
 
-    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/normalize.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
     <meta name="twitter:site" content="@boxzillaplugin">
@@ -33,18 +33,13 @@
 
 <body>
 
-<div class="header clearfix">
+<div class="header padded clearfix">
     <div class="container">
         <h2 class="site-title pull-left">
-            <a href="{{ url('/') }}">
-                <img src="{{ asset('img/logo-small.png') }}" class="logo" width="64" height="64" />
-                <span>Boxzilla</span>
-            </a>
+            <a href="{{ url('/') }}"><span>Boxzilla</span></a>
         </h2>
-        <input type="checkbox" id="toggle" />
-        <nav class="header-nav" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
-            <label for="toggle" class="glyphicon toggle" onclick></label>
-            <ul class="menu">
+        <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+            <ul class="nav nav-inline">
                 <li role="presentation"><a href="/">Account</a></li>
 
                 @if (Auth::check())
@@ -57,32 +52,25 @@
 
 @yield('masthead')
 
-<div role="main" itemprop="mainContentOfPage">
+<div class="main-container big-margin" role="main" itemprop="mainContentOfPage">
     @yield('content')
 </div>
 
-<footer class="footer">
-
-    <!-- Start sub footer -->
-    <div class="footer-2">
-        <div class="container">
-            <p class="margined-elements">
-                <a href="{{ domain_url('/about') }}">About</a>
-                <a href="{{ domain_url('/refund-policy') }}">Refund Policy</a>
-                <a href="{{ domain_url('/kb') }}">Documentation</a>
-                <a href="{{ domain_url('/contact') }}">Contact</a>
-            </p>
-            <p style="font-style: italic;">
-                <a class="unstyled" href="{{ domain_url() }}">Boxzilla</a> is a WordPress plugin built by &nbsp;
-                <a href="https://ibericode.com" rel="external author">
-                    <img src="{{ asset('img/ibericode-logo-white.png') }}" height="25">
-                </a>
-            </p>
-        </div>
+<footer class="footer padded">
+    <div class="container">
+        <ul class="nav nav-inline">
+            <li><a href="{{ domain_url('/about') }}">About</a></li>
+            <li><a href="{{ domain_url('/refund-policy') }}">Refund Policy</a></li>
+            <li><a href="{{ domain_url('/kb') }}">Documentation</a></li>
+            <li><a href="{{ domain_url('/contact') }}">Contact</a></li>
+        </ul>
+        <p style="font-style: italic;">
+            <a class="unstyled" href="{{ domain_url() }}">Boxzilla</a> is a WordPress plugin built by &nbsp;
+            <a href="https://ibericode.com" rel="external author">
+                <img src="{{ asset('img/ibericode-logo-white.png') }}" height="25">
+            </a>
+        </p>
     </div>
-    <!-- End sub footer -->
-
-
 </footer>
 
 @yield('foot')

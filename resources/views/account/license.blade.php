@@ -3,7 +3,6 @@
 @section('title','License - Boxzilla')
 
 @section('content')
-    @include('account.parts.masthead')
 
     <div class="container">
         <p>

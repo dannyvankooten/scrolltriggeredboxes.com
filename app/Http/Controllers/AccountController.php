@@ -29,6 +29,55 @@ class AccountController extends Controller {
 	}
 
 	/**
+	 *
+	 */
+	public function editBillingInfo() {
+		return view( 'account.edit-billing-info', [ 'user' => $this->auth->user() ] );
+	}
+
+	/**
+	 *
+	 */
+	public function editPaymentMethod() {
+		return view( 'account.edit-payment-method', [ 'user' => $this->auth->user() ] );
+	}
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
+	public function updateBillingInfo( Request $request ) {
+		$user = $this->auth->user();
+		// todo: validate vat number
+		// todo: verify email address before changing
+		$user->fill( $request->input('user') );
+		$user->save();
+		return redirect()->back()->with('message', 'Changes saved!');
+	}
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
+	public function updatePaymentMethod( Request $request ) {
+		$user = $this->auth->user();
+
+		Stripe::setApiKey(config('services.stripe.secret'));
+		$token = $request->input('token');
+		$customer = \Stripe\Customer::create([
+			"source" => $token,
+			"description" => "User #{$user->id}",
+			'email' => $user->email,
+		]);
+
+		$user->card_last_four = $customer->sources->data[0]->last4;
+		$user->stripe_customer_id = $customer->id;
+		$user->save();
+
+		return redirect()->back()->with('message', 'Changes saved!');
+	}
+
+	/**
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function overview( ) {
@@ -74,79 +123,6 @@ class AccountController extends Controller {
 		return redirect()->back();
 	}
 
-	/**
-	 *
-	 */
-	public function buy() {
-		return view('account.buy');
-	}
-
-
-	public function postBuy( Request $request ) {
-		$user = $this->auth->user();
-
-		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
-		$activation_limit = $request->input('amount', 1);
-
-		// TODO: Calculate price
-		$amount = 10.50;
-
-		// Setup payment gateway
-		Stripe::setApiKey(config('services.stripe.secret'));
-
-		// create customer in Stripe
-		$token = $request->input('token');
-		if( ! empty( $token ) ) {
-			$customer = \Stripe\Customer::create([
-				"source" => $token,
-				"description" => "User #{$user->id}",
-				'email' => $user->email,
-			]);
-
-			// store customer ID
-			$user->card_last_four = $customer->sources->data[0]->last4;
-			$user->stripe_customer_id = $customer->id;
-			$user->save();
-		}
-
-		try {
-			$charge = \Stripe\Charge::create([
-				"amount" => $amount * 100, // amount in cents
-				"currency" => "USD",
-				"customer" => $user->stripe_customer_id
-			]);
-		} catch(\Stripe\Error\Card $e) {
-			// The card has been declined
-			// TODO: Do something!
-
-			die('Uh oh. ' . $e);
-		}
-
-		// Success!
-
-		$license = License::create([
-			'license_key' => License::generateKey(),
-			'expires_at' => new \DateTime("+1 $interval"),
-			'user_id' => $user->id,
-		]);
-
-		// Create subscription
-		$subscription = Subscription::create([
-			'amount' => $amount,
-			'interval' => $interval,
-			'user_id' => $user->id,
-			'license_id' => $license->id
-		]);
-
-		return redirect('/');
-	}
-
-	public function invoices() {
-
-
-
-		return view('account.invoices');
-	}
 
 
 }

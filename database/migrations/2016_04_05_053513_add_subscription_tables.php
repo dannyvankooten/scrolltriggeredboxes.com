@@ -22,7 +22,7 @@ class AddSubscriptionTables extends Migration
             $table->integer('user_id');
             $table->boolean('active')->default(false);
             $table->decimal('amount', 10, 2);
-            $table->enum( 'interval', [ 'monthly', 'yearly' ]);
+            $table->enum( 'interval', [ 'month', 'year' ]);
             $table->timestamp('next_charge_at')->nullable();
             $table->timestamps();
         });

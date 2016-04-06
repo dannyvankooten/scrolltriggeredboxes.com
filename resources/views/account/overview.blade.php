@@ -3,10 +3,10 @@
 @section('title','Account - Boxzilla')
 
 @section('content')
-    @include('account.parts.masthead')
 
     <div class="container">
-        <h1>Account</h1>
+
+        <h1 class="page-title">Account</h1>
 
         @if (session('message'))
             <div class="bs-callout bs-callout-success">
@@ -37,6 +37,8 @@
             @endforeach
             </tbody>
         </table>
+
+        <p><a href="/purchase">Purchase a new license.</a></p>
 
         <h3>Plugins</h3>
         <p>The core Boxzilla plugin can be downloaded from WordPress.org <a href="https://wordpress.org/plugins/scroll-triggered-boxes/">here</a>.</p>

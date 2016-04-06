@@ -11,7 +11,7 @@ class License extends Model {
 	use SoftDeletes;
 
 	protected $table = 'licenses';
-	protected $fillable = [ 'license_key', 'expires_at', 'user_id' ];
+	protected $fillable = [ 'license_key', 'expires_at', 'user_id', 'site_limit' ];
 	protected $guarded = ['id'];
 
 	// hidden from json export
@@ -39,6 +39,13 @@ class License extends Model {
 	 */
 	public function plugins() {
 		return $this->belongsToMany('App\Plugin', 'plugin_licenses', 'license_id', 'plugin_id' );
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function subscription() {
+		return $this->hasOne('App\Subscription');
 	}
 
 	/**

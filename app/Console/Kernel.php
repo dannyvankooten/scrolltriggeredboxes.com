@@ -11,10 +11,7 @@ class Kernel extends ConsoleKernel {
 	 * @var array
 	 */
 	protected $commands = [
-		'App\Console\Commands\Inspire',
-		'App\Console\Commands\NewLicense',
-		'App\Console\Commands\NewPlugin',
-		'App\Console\Commands\DisableLicense',
+
 	];
 
 	/**
