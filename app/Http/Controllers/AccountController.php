@@ -85,16 +85,14 @@ class AccountController extends Controller {
 	public function postBuy( Request $request ) {
 		$user = $this->auth->user();
 
-		// Setup payment gateway
-		// TODO: Move to service provider
-		Stripe::setApiKey(config('services.stripe.secret'));
+		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
+		$activation_limit = $request->input('amount', 1);
 
-		// Create subscription
-		$subscription = Subscription::create([
-			'amount' => 10.50,
-			'interval' => 'monthly',
-			'user_id' => $user->id,
-		]);
+		// TODO: Calculate price
+		$amount = 10.50;
+
+		// Setup payment gateway
+		Stripe::setApiKey(config('services.stripe.secret'));
 
 		// create customer in Stripe
 		$token = $request->input('token');
@@ -111,27 +109,41 @@ class AccountController extends Controller {
 			$user->save();
 		}
 
-		// charge customer
-		$charge = \Stripe\Charge::create([
-			"amount" => $subscription->amount * 100, // amount in cents
-			"currency" => "USD",
-			"customer" => $user->stripe_customer_id
+		try {
+			$charge = \Stripe\Charge::create([
+				"amount" => $amount * 100, // amount in cents
+				"currency" => "USD",
+				"customer" => $user->stripe_customer_id
+			]);
+		} catch(\Stripe\Error\Card $e) {
+			// The card has been declined
+			// TODO: Do something!
+
+			die('Uh oh. ' . $e);
+		}
+
+		// Success!
+
+		$license = License::create([
+			'license_key' => License::generateKey(),
+			'expires_at' => new \DateTime("+1 $interval"),
+			'user_id' => $user->id,
 		]);
 
-		// create license
-		// TODO: Create new license here
+		// Create subscription
+		$subscription = Subscription::create([
+			'amount' => $amount,
+			'interval' => $interval,
+			'user_id' => $user->id,
+			'license_id' => $license->id
+		]);
 
-
-		dd( $charge );
-		
-		// TODO: Create new license
+		return redirect('/');
 	}
 
 	public function invoices() {
 
 
-		$subscription =
-		die('Done');
 
 		return view('account.invoices');
 	}

@@ -25,6 +25,10 @@ class AppServiceProvider extends ServiceProvider {
 		$this->app->singleton(DynamicApp::class, function ($app) {
 			return new DynamicApp( config('services.helpscout')['secret'] );
 		});
+
+		$this->app->singleton(Stripe::class, function( $app ) {
+
+		});
 	}
 
 }

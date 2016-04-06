@@ -7,7 +7,7 @@ class Subscription extends Model {
 	protected $table = 'subscriptions';
 	public $timestamps = true;
 
-	protected $fillable = ['amount', 'payment_token', 'interval', 'user_id'];
+	protected $fillable = ['amount', 'payment_token', 'interval', 'user_id', 'license_id' ];
 
 
 	/**

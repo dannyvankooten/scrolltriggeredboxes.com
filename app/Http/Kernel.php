@@ -30,7 +30,6 @@ class Kernel extends HttpKernel {
 		'auth.license+site' => 'App\Http\Middleware\AuthenticateLicenseAndSite',
 		'auth.admin' => 'App\Http\Middleware\AuthenticateAdmin',
 		'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
-		'sendowl.signature' => 'App\Http\Middleware\VerifySendowlSignature',
 		'helpscout.signature' => 'App\Http\Middleware\VerifyHelpScoutSignature',
 	];
 

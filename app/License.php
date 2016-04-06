@@ -11,11 +11,11 @@ class License extends Model {
 	use SoftDeletes;
 
 	protected $table = 'licenses';
-	protected $fillable = ['license_key', 'expires_at', 'sendowl_order_id'];
+	protected $fillable = [ 'license_key', 'expires_at', 'user_id' ];
 	protected $guarded = ['id'];
 
 	// hidden from json export
-	protected $hidden = array( 'id', 'sendowl_order_id', 'user_id', 'created_at', 'updated_at', 'deleted_at' );
+	protected $hidden = array( 'id', 'user_id', 'created_at', 'updated_at', 'deleted_at' );
 
 	public $timestamps = true;
 	protected $dates = ['deleted_at', 'expires_at' ];
@@ -39,13 +39,6 @@ class License extends Model {
 	 */
 	public function plugins() {
 		return $this->belongsToMany('App\Plugin', 'plugin_licenses', 'license_id', 'plugin_id' );
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function plan() {
-		return $this->belongsTo('App\Plan', 'plan_id', 'id');
 	}
 
 	/**
@@ -105,85 +98,5 @@ class License extends Model {
 
 		return $key;
 	}
-//
-//	/**
-//	 * @param $plugin
-//	 *
-//	 * @return bool
-//	 */
-//	public function grantsAccessTo( $plugin ) {
-//		return $this->plugins->contains( $plugin->id );
-//	}
-//
-//	/**
-//	 * @param $plugin
-//	 */
-//	public function grantAccessTo( $plugin ) {
-//
-//		if( $plugin instanceof Collection ) {
-//			$plugins = $plugin;
-//		} else {
-//			$plugins = array( $plugin );
-//		}
-//
-//		foreach( $plugins as $plugin ) {
-//
-//			if( $this->grantsAccessTo($plugin) ) {
-//				continue;
-//			}
-//
-//			$this->plugins()->attach( $plugin );
-//		}
-//
-//		// reload plugins
-//		$this->load('plugins');
-//	}
-//
-//	/**
-//	 * @param $plugin
-//	 *
-//	 * @return Collection
-//	 */
-//	public function getPluginActivations( $plugin ) {
-//		return $this->activations->filter(function($a) use($plugin) {
-//			return $a->plugin->id === $plugin->id;
-//		});
-//	}
-//
-//	/**
-//	 * @return bool
-//	 */
-//	public function isAtSiteLimitForPlugin($plugin) {
-//		return count( $this->getPluginActivations($plugin) ) >= $this->site_limit;
-//	}
-//
-//	/**
-//	 * @param $plugin
-//	 *
-//	 * @return int
-//	 */
-//	public function getActivationsLeftForPlugin($plugin) {
-//		$this->load('activations');
-//		return $this->site_limit - count( $this->getPluginActivations($plugin) );
-//	}
-//
-//	/**
-//	 * @return bool
-//	 */
-//	public function allowsActivationForPlugin($plugin) {
-//		return $this->allowsActivation() && ! $this->isAtSiteLimitForPlugin( $plugin );
-//	}
-//
-//	/**
-//	 * @param $domain
-//	 * @param $plugin
-//	 *
-//	 * @return static
-//	 */
-//	public function findDomainActivationForPlugin($domain, $plugin) {
-//		$this->load('activations');
-//		return $this->getPluginActivations($plugin)->filter(function($activation) use($domain){
-//			return $activation->domain === $domain;
-//		})->first();
-//	}
+
 }

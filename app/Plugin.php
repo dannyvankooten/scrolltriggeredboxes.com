@@ -21,13 +21,6 @@ class Plugin extends Model {
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
 	 */
-	public function plans() {
-		return $this->belongsToMany('App\Plan', 'plan_plugins', 'plan_id', 'plugin_id');
-	}
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-	 */
 	public function licenses() {
 		return $this->belongsToMany('App\License', 'plugin_licenses', 'license_id', 'plugin_id' );
 	}
