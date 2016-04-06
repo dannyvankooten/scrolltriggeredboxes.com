@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Activation;
 use App\Plugin;
+use App\Subscription;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\License;
+use Stripe\Stripe;
 
 class AccountController extends Controller {
 
@@ -79,25 +81,60 @@ class AccountController extends Controller {
 		return view('account.buy');
 	}
 
-	
+
 	public function postBuy( Request $request ) {
 		$user = $this->auth->user();
 
-		// TODO: Pass quantity
-		$subscription = $user->newSubscription('main', 'boxzilla-monthly')->create( $request->input( 'stripe_token' ) );
+		// Setup payment gateway
+		// TODO: Move to service provider
+		Stripe::setApiKey(config('services.stripe.secret'));
 
+		// Create subscription
+		$subscription = Subscription::create([
+			'amount' => 10.50,
+			'interval' => 'monthly',
+			'user_id' => $user->id,
+		]);
+
+		// create customer in Stripe
+		$token = $request->input('token');
+		if( ! empty( $token ) ) {
+			$customer = \Stripe\Customer::create([
+				"source" => $token,
+				"description" => "User #{$user->id}",
+				'email' => $user->email,
+			]);
+
+			// store customer ID
+			$user->card_last_four = $customer->sources->data[0]->last4;
+			$user->stripe_customer_id = $customer->id;
+			$user->save();
+		}
+
+		// charge customer
+		$charge = \Stripe\Charge::create([
+			"amount" => $subscription->amount * 100, // amount in cents
+			"currency" => "USD",
+			"customer" => $user->stripe_customer_id
+		]);
+
+		// create license
+		// TODO: Create new license here
+
+
+		dd( $charge );
+		
 		// TODO: Create new license
 	}
 
 	public function invoices() {
+
+
+		$subscription =
+		die('Done');
+
 		return view('account.invoices');
 	}
 
-	public function downloadInvoice( $id ) {
-		return $this->auth->user()->downloadInvoice($id, [
-			'vendor'  => 'Your Company',
-			'product' => 'Your Product',
-		]);
-	}
 
 }

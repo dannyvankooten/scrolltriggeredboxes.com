@@ -146,8 +146,7 @@ return [
 		'App\Providers\EventServiceProvider',
 		'App\Providers\RouteServiceProvider',
 		'GrahamCampbell\Markdown\MarkdownServiceProvider',
-		'GrahamCampbell\GitHub\GitHubServiceProvider',
-		'Laravel\Cashier\CashierServiceProvider'
+		'GrahamCampbell\GitHub\GitHubServiceProvider'
 	],
 
 	/*
