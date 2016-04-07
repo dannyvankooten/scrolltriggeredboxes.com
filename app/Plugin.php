@@ -8,15 +8,12 @@ use Illuminate\Support\Facades\Cache;
 class Plugin extends Model {
 
 	protected $table = 'plugins';
-	protected $fillable = [];
-	protected $guarded = ['id'];
 	public $timestamps = true;
+	protected $fillable = [];
 
 	// hidden from json export
 	protected $hidden = array( 'id', 'created_at', 'updated_at', 'changelog', 'description', 'url', 'slug', 'upgrade_notice', 'tested', 'image_path', 'status' );
 	protected $appends = [ 'page_url', 'image_url' ];
-
-	protected $content = null;
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

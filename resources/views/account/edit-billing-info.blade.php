@@ -18,12 +18,6 @@
 
     <h1 class="page-title">Update Billing Information</h1>
 
-    @if (session('message'))
-    <div class="notice notice-success">
-        {!! session('message') !!}
-    </div>
-    @endif
-
     @if (count($errors) > 0)
     <div class="notice notice-warning">
         <ul>

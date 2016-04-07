@@ -6,14 +6,8 @@
 
     <div class="container">
 
-        @if (session('message'))
-            <div class="notice notice-success">
-                {!! session('message') !!}
-            </div>
-        @endif
-
         <p>Welcome, <strong>{{ $user->name }}</strong>.</p>
-        <p>Your last login was on ...</p>
+        <p>Your last login was on <em>{{ $user->updated_at->format( 'F j, Y' ) }}</em>.</p>
 
         <h4>Actions</h4>
         <ul>

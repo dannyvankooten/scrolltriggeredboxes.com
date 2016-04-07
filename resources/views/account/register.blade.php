@@ -18,12 +18,6 @@
             <a class="unstyled" onclick="steps.go(3)" data-step="3">3: Payment</a>
         </div>
 
-        @if (session('message'))
-        <div class="notice notice-success">
-            {!! session('message') !!}
-        </div>
-        @endif
-
         <!-- Step 1: License -->
         <div class="step">
 

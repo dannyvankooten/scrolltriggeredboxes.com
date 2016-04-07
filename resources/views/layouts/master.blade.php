@@ -49,6 +49,15 @@
 @yield('masthead')
 
 <div class="main-container medium-margin" role="main" itemprop="mainContentOfPage">
+
+    <div class="container">
+        @if (session('message'))
+        <div class="notice notice-success">
+            {!! session('message') !!}
+        </div>
+        @endif
+    </div>
+
     @yield('content')
 </div>
 

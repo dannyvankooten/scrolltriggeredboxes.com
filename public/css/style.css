@@ -92,7 +92,7 @@ a {
 	text-decoration: none;
 	font-weight: normal;
 	color: inherit;
-	padding: inherit;
+	padding: initial;
 }
 
 .nav-inline {
@@ -145,6 +145,11 @@ a {
 .table {
 	border-collapse: collapse;
 	width: 100%;
+	border: 1px solid #eee;
+}
+
+.table .row-action {
+
 }
 
 .table.row-scoped th {
@@ -154,8 +159,10 @@ a {
 .table th,
 .table td {
 	text-align: left;
-	padding: 6px;
+	padding: 6px 12px;
 	border: 1px solid #eee;
+	border-left: 0;
+	border-right: 0;
 	vertical-align: middle;
 }
 
@@ -185,6 +192,19 @@ a {
 .js .hide-if-js {
 	display: none;
 }
+
+/* progress bar */
+.progress {
+	background: #aaa;
+	height: 4px;
+	width: 100%;
+}
+
+.progress-bar {
+	background: lightgreen;
+	height: 4px;
+}
+
 /* forms */
 .form-group {
 	margin-bottom: 24px;
@@ -243,7 +263,7 @@ button,
 }
 
 .button-small {
-	padding: 6px 8px;
+	padding: 3px 4px;
 	font-size: 14px;
 }
 

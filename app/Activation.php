@@ -7,7 +7,6 @@ class Activation extends Model {
 	protected $table = 'activations';
 
 	protected $fillable = ['url', 'domain'];
-	protected $guarded = ['id'];
 	public $timestamps = true;
 
 	// hidden from json export

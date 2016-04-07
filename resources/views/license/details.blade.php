@@ -15,40 +15,51 @@
         <table class="table row-scoped">
             <tr>
                 <th>Key</th>
-                <td>
+                <td width="80%">
                     <input type="text" value="{{ $license->license_key }}" class="unstyled" onfocus="this.select()" readonly />
-
                 </td>
+                <td class="row-action"></td>
+            </tr>
+            <tr>
+                <th>Activations</th>
+                <td>
+                    <p>Using {{ count( $license->activations ) }} of {{ $license->site_limit }} activations.</p>
+                    <div class="progress"><div class="progress-bar" style="width: {{ $license->usagePercentage() }}%;"></div></div>
+                </td>
+                <td class="row-action"></td>
             </tr>
             <tr>
                 <th>Status</th>
                 <td class="clearfix">
                     @if( $license->subscription->active )
                         Active
-
-                        <form method="post" action="/licenses/{{ $license->id }}" class="pull-right">
-                            <input type="hidden" name="subscription[active]" value="0" />
-                            <button class="button-small">Deactivate</button>
-                        </form>
                     @else
                         Inactive
-
-                        <form method="post" action="/licenses/{{ $license->id }}" class="pull-right">
+                    @endif
+                </td>
+                <td class="row-action">
+                    <form method="post" action="/licenses/{{ $license->id }}">
+                        @if( $license->subscription->active )
+                            <input type="hidden" name="subscription[active]" value="0" />
+                            <button class="button-small">Deactivate</button>
+                        @else
                             <input type="hidden" name="subscription[active]" value="1" />
                             <button class="button-small">Reactivate</button>
-                        </form>
-                    @endif
+                        @endif
+
+                    </form>
                 </td>
             </tr>
             <tr>
                 <th>Payment</th>
                 <td>
                     @if( $license->subscription->active )
-                        You will be charged <strong>${{ $license->subscription->amount }}</strong> on <strong>{{ $license->subscription->next_charge_at->format('m/d/Y') }}</strong>.
+                        Your card ending in <strong>{{ Auth::user()->card_last_four }}</strong> will be charged <strong>${{ $license->subscription->amount }}</strong> on <strong>{{ $license->subscription->next_charge_at->format('m/d/Y') }}</strong>.
                     @else
                         No payment due.
                     @endif
                 </td>
+                <td class="row-action"></td>
             </tr>
         </table>
 

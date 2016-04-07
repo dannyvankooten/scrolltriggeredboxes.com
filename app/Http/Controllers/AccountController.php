@@ -168,23 +168,24 @@ class AccountController extends Controller {
 		}
 
 		// Success!
-
-		$license = License::create([
-			'license_key' => License::generateKey(),
-			'expires_at' => new \DateTime("+1 $interval"),
-			'user_id' => $user->id,
-			'site_limit' => $quantity
-		]);
+		$license = new License();
+		$license->license_key = License::generateKey();
+		$license->user()->associate( $user );
+		$license->site_limit = $quantity;
+		$license->expires_at = new \DateTime("+1 {$interval}");
+		$license->save();
 
 		// Create subscription
-		$subscription = Subscription::create([
-			'amount' => $amount,
+		$subscription = new Subscription([
 			'interval' => $interval,
-			'user_id' => $user->id,
-			'license_id' => $license->id,
 			'active' => 1,
 			'next_charge_at' => (new DateTime("+1 $interval"))->modify('-1 week')
 		]);
+		$subscription->amount = $amount;
+		$subscription->license()->associate( $license );
+		$subscription->user()->associate( $user );
+		$subscription->save();
+
 
 		return redirect('/')->with('message', "You're all set!");
 	}

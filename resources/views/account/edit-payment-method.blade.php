@@ -18,12 +18,6 @@
 
     <h1 class="page-title">Update Payment Method</h1>
 
-    @if (session('message'))
-    <div class="notice notice-success">
-        {!! session('message') !!}
-    </div>
-    @endif
-
     @if(Auth::user()->card_last_four)
     <p>You have registered your card ending in {{ Auth()->user()->card_last_four }}.</p>
     <p>Use the following form if you want to use a different credit card.</p>

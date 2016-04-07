@@ -11,14 +11,13 @@ class License extends Model {
 	use SoftDeletes;
 
 	protected $table = 'licenses';
-	protected $fillable = [ 'license_key', 'expires_at', 'user_id', 'site_limit' ];
-	protected $guarded = ['id'];
+	protected $fillable = [];
 
 	// hidden from json export
 	protected $hidden = array( 'id', 'user_id', 'created_at', 'updated_at', 'deleted_at' );
 
 	public $timestamps = true;
-	protected $dates = ['deleted_at', 'expires_at' ];
+	protected $dates = [ 'created_at', 'updated_at', 'deleted_at', 'expires_at' ];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -104,6 +103,10 @@ class License extends Model {
 		}
 
 		return $key;
+	}
+
+	public function usagePercentage() {
+		return count( $this->activations ) / $this->site_limit * 100;
 	}
 
 }
