@@ -8,6 +8,10 @@ Route::group(['domain' => sprintf( 'account.%s', env('APP_DOMAIN') )], function 
 	Route::post( '/auth/login', 'Auth\AuthController@postLogin' );
 	Route::get( '/auth/logout', 'Auth\AuthController@getLogout' );
 
+	// checkout
+	Route::get( '/register', 'AccountController@register' );
+	Route::post( '/register', 'AccountController@create' );
+
 	// account
 	Route::get( '/', 'AccountController@overview' );
 
@@ -19,18 +23,17 @@ Route::group(['domain' => sprintf( 'account.%s', env('APP_DOMAIN') )], function 
 
 	// licenses
 	Route::get('/licenses', 'LicenseController@overview');
-	Route::get('/licenses/new', 'LicenseController@purchase' );
+	Route::get('/licenses/new', 'LicenseController@_new' );
 	Route::post('/licenses/new', 'LicenseController@process' );
 	Route::get('/licenses/{id}', 'LicenseController@details' );
 
-
-	// plygins
+	// plugins
 	Route::get('/plugins', 'PluginController@overview' );
 
 	//Route::get('/invoices', 'AccountController@invoices' );
 	//Route::get('/invoices/{id}', 'AccountController@downloadInvoice');
 
-	// todo: allow login out a license from the account page
+	// TODO: allow login out a license from the account page
 	//Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
 
 	// auth
@@ -43,7 +46,7 @@ Route::group(['domain' => sprintf( 'account.%s', env('APP_DOMAIN') )], function 
 
 });
 
-// API Url's
+// API url's
 Route::group( [ 'domain' => sprintf( 'api.%s', env('APP_DOMAIN') ), 'prefix' => '/v1', 'namespace' => 'API\\v1' ], function () {
 
 	// global licenses
@@ -57,6 +60,7 @@ Route::group( [ 'domain' => sprintf( 'api.%s', env('APP_DOMAIN') ), 'prefix' => 
 	Route::any( '/helpscout', 'HelpScoutController@get' );
 } );
 
+// Admin url's
 Route::group(['domain' => sprintf( 'admin.%s', env('APP_DOMAIN') )], function () {
 	Route::get( '/', function() {
 		return redirect( '/licenses' );

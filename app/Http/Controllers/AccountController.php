@@ -25,7 +25,7 @@ class AccountController extends Controller {
 	 */
 	public function __construct( Guard $auth ) {
 		$this->auth = $auth;
-		$this->middleware('auth.user');
+		$this->middleware('auth.user', [ 'except' => [ 'register', 'create' ] ]);
 	}
 
 	/**
@@ -82,7 +82,20 @@ class AccountController extends Controller {
 	 */
 	public function overview( ) {
 		$user = $this->auth->user();
-
 		return view( 'account.overview', [ 'user' => $user ] );
+	}
+
+	/**
+	 *
+	 */
+	public function register() {
+		return view('account.register');
+	}
+
+	/**
+	 *
+	 */
+	public function create() {
+		return redirect()->back()->with( 'message', "Great submission - but we're not ready yet!");
 	}
 }

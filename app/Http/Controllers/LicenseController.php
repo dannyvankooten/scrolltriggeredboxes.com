@@ -26,6 +26,7 @@ class LicenseController extends Controller {
 	 */
 	public function __construct( Guard $auth ) {
 		$this->auth = $auth;
+		$this->middleware('auth.user');
 	}
 
 	public function overview() {
@@ -35,13 +36,8 @@ class LicenseController extends Controller {
 	/**
 	 * @return \Illuminate\View\View
 	 */
-	public function purchase( ) {
-
-		if( $this->auth->user() ) {
-			return view('license.purchase');
-		}
-
-		return view('license.purchase-guest');
+	public function _new( ) {
+		return view('license.new');
 	}
 
 	public function process( Request $request  ) {

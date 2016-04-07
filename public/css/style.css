@@ -12,6 +12,7 @@ body {
 
 a {
 	color: #cc4400;
+	cursor: pointer;
 }
 
 .site-title,
@@ -35,6 +36,11 @@ a {
 
 .header a {
 	color: white;
+}
+
+.header .nav a {
+	text-decoration: none;
+	line-height: 40px;
 }
 
 .footer {
@@ -84,6 +90,7 @@ a {
 .unstyled {
 	text-decoration: none;
 	font-weight: normal;
+	color: inherit;
 }
 
 .nav-inline {
@@ -156,6 +163,14 @@ a {
 }
 .well > *:last-child { margin-bottom: 0; }
 
+.sep {
+	margin: 0 20px;
+}
+
+.current {
+	font-weight: bold;
+}
+
 /* forms */
 .form-group {
 	margin-bottom: 24px;
@@ -175,6 +190,12 @@ textarea {
 	background: white;
 }
 
+select {
+	-webkit-appearance: menulist-button;
+	height: 42px;
+	background: white;
+	width: 100%;
+}
 
 input[type="radio"],
 input[type="checkbox"] {
@@ -182,7 +203,9 @@ input[type="checkbox"] {
 }
 
 input[type="text"],
-input[type="email"] {
+input[type="email"],
+input[type="password"],
+textarea {
 	width: 100%;
 	max-width: 320px;
 }
