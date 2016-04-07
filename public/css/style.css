@@ -88,9 +88,11 @@ a {
 }
 
 .unstyled {
+	border: 0;
 	text-decoration: none;
 	font-weight: normal;
 	color: inherit;
+	padding: inherit;
 }
 
 .nav-inline {
@@ -142,6 +144,11 @@ a {
 
 .table {
 	border-collapse: collapse;
+	width: 100%;
+}
+
+.table.row-scoped th {
+	width: 160px;
 }
 
 .table th,
@@ -149,6 +156,7 @@ a {
 	text-align: left;
 	padding: 6px;
 	border: 1px solid #eee;
+	vertical-align: middle;
 }
 
 .main-container p,
@@ -232,6 +240,11 @@ button,
 	color: white;
 	font-size: 16px;
 	text-decoration: none;
+}
+
+.button-small {
+	padding: 6px 8px;
+	font-size: 14px;
 }
 
 input[type="submit"]:hover,

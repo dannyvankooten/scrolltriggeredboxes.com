@@ -111,6 +111,17 @@ class LicenseController extends Controller {
 	}
 
 	/**
+	 * @param int $id
+	 * @param Request $request
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
+	public function update($id, Request $request ) {
+		$license = License::find($id)->firstOrFail();
+		$license->subscription->update( $request->input('subscription') );
+		return redirect()->back()->with('message', 'Changes saved!');
+	}
+
+	/**
 	 * @param int $license_id
 	 * @param int $activation_id
 	 *

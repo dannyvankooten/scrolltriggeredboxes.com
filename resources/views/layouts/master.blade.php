@@ -9,7 +9,6 @@
 
     <link href="{{ asset('css/normalize.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
 
     <meta name="twitter:site" content="@boxzillaplugin">
 
@@ -72,6 +71,10 @@
 
 <script>
     document.documentElement.className = document.documentElement.className.replace('no-js','js');
+    var linkElement = document.createElement('link');
+    linkElement.rel = "stylesheet";
+    linkElement.href = "{{ asset('css/font-awesome.min.css') }}";
+    document.head.appendChild(linkElement);
 </script>
 
 @yield('foot')

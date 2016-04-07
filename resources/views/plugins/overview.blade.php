@@ -4,6 +4,11 @@
 
 @section('content')
 <div class="container">
+
+    <div class="breadcrumbs bordered padded">
+        <a href="/">Account</a> &rightarrow; Plugins
+    </div>
+
     <h1 class="page-title">Plugins</h1>
     <p>The core Boxzilla plugin can be downloaded from WordPress.org <a href="https://wordpress.org/plugins/scroll-triggered-boxes/">here</a>.</p>
 

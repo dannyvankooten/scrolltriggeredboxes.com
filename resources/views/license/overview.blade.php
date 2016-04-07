@@ -4,6 +4,11 @@
 
 @section('content')
 <div class="container">
+
+    <div class="breadcrumbs bordered padded small-margin">
+        <a href="/">Account</a> &rightarrow; Licenses
+    </div>
+
     <h1 class="page-title">Licenses</h1>
     <p>You have the following license keys. You can use these keys to configure the plugin for automatic update checks.</p>
 
@@ -26,7 +31,7 @@
         </tbody>
     </table>
 
-    <p><a class="button" href="/purchase">Purchase a new license.</a></p>
+    <p><a class="button" href="/licenses/new">Purchase a new license.</a></p>
 
     <p><a href="javascript:history.go(-1);">&lsaquo; Go back</a></p>
 

@@ -3,7 +3,6 @@
 Route::group(['domain' => sprintf( 'account.%s', env('APP_DOMAIN') )], function () {
 
 	// auth
-	Route::get( '/auth/login/purchase', 'Auth\AuthController@getLoginFromPurchase' );
 	Route::get( '/auth/login', 'Auth\AuthController@getLogin' );
 	Route::post( '/auth/login', 'Auth\AuthController@postLogin' );
 	Route::get( '/auth/logout', 'Auth\AuthController@getLogout' );
@@ -26,6 +25,7 @@ Route::group(['domain' => sprintf( 'account.%s', env('APP_DOMAIN') )], function 
 	Route::get('/licenses/new', 'LicenseController@_new' );
 	Route::post('/licenses/new', 'LicenseController@process' );
 	Route::get('/licenses/{id}', 'LicenseController@details' );
+	Route::post('/licenses/{id}', 'LicenseController@update' );
 
 	// plugins
 	Route::get('/plugins', 'PluginController@overview' );

@@ -9,6 +9,8 @@ class Subscription extends Model {
 
 	protected $fillable = ['amount', 'interval', 'user_id', 'license_id', 'next_charge_at', 'active' ];
 
+	protected $dates = ['created_at', 'updated_at', 'next_charge_at'];
+
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

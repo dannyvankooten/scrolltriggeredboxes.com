@@ -6,6 +6,10 @@
 
 <div class="container">
 
+    <div class="breadcrumbs bordered padded">
+        <a href="/">Account</a> &rightarrow; Edit
+    </div>
+
     <ul class="nav nav-inline bordered">
         <li><strong>Edit: </strong></li>
         <li><a href="/edit">Billing Info</a></li>

@@ -5,6 +5,10 @@
 @section('content')
 <div class="container">
 
+    <div class="breadcrumbs bordered padded small-margin">
+        <a href="/">Account</a> &rightarrow; <a href="/licenses">Licenses</a> &rightarrow; New
+    </div>
+
     <h1 class="page-title">Get a new license</h1>
 
     <div class="payment-errors"></div>
@@ -47,16 +51,15 @@
         var isYearly = interval === 'year';
         var price = isYearly ? 50 : 5;
         var total = amount * price;
-        var discount = amount > 5 ? 30 : amount > 1 ? 20 : 0;
-        if( discount > 0 ) {
-            total = total * ( ( 100 - discount ) / 100 );
-        }
+        total = price + ( ( amount - 1 ) * price * 0.5 );
 
         var elements = document.querySelectorAll('.total');
         [].forEach.call(elements,function(el) {
             el.innerHTML = '$' + total + ( isYearly ? ' per year' : ' per month' );
         });
     }
+
+    total(1,'month');
 
     var form  = document.getElementById('buy-form');
     form.addEventListener('change', function(event) {
