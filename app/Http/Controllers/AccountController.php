@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Activation;
-use App\Plugin;
 use App\Subscription;
+use App\User;
+
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\License;
 use Stripe\Stripe;
+use App\VatValidator;
+use Datetime;
+use Hash;
 
 class AccountController extends Controller {
 
@@ -44,12 +47,24 @@ class AccountController extends Controller {
 
 	/**
 	 * @param Request $request
+	 * @param VatValidator $vatValidator
+	 *
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
-	public function updateBillingInfo( Request $request ) {
+	public function updateBillingInfo( Request $request, VatValidator $vatValidator ) {
 		$user = $this->auth->user();
-		// todo: validate vat number
-		// todo: verify email address before changing
+
+		// TODO: verify email address before changing
+
+		// validate new values
+		$this->validate( $request, [
+			'user.email' => 'required|email',
+			'user.country' => 'required',
+			'user.vat_number' => 'sometimes|vat_number'
+		], array(
+			'vat_number' => 'Please supply a valid VAT number.'
+		));
+
 		$user->fill( $request->input('user') );
 		$user->save();
 		return redirect()->back()->with('message', 'Changes saved!');
@@ -93,9 +108,84 @@ class AccountController extends Controller {
 	}
 
 	/**
+	 * TODO: Refactor this method into jobs
+	 * TODO: Validate request before proceeding
+	 * TODO: Force user to set password
 	 *
+	 * @param Request $request
+	 * @return \Illuminate\Http\RedirectResponse
 	 */
-	public function create() {
-		return redirect()->back()->with( 'message', "Great submission - but we're not ready yet!");
+	public function create( Request $request ) {
+
+		// create user
+		$userData = $request->input('user');
+		$userData['password'] = Hash::make( str_random() );
+		$user = User::create( $userData );
+
+		// login user
+		$this->auth->loginUsingId( $user->id );
+
+		// create customer in Stripe
+		Stripe::setApiKey(config('services.stripe.secret'));
+		$token = $request->input('token');
+		$customer = \Stripe\Customer::create([
+			"source" => $token,
+			"description" => "User #{$user->id}",
+			'email' => $user->email,
+		]);
+
+		// update user
+		$user->card_last_four = $customer->sources->data[0]->last4;
+		$user->stripe_customer_id = $customer->id;
+		$user->save();
+
+		// proceed with charge
+		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
+		$quantity = (int) $request->input('quantity', 1);
+
+		$discount_percentage = $quantity > 5 ? 30 : $quantity > 1 ? 20 : 0;
+		$item_price = $interval == 'month' ? 5 : 50;
+
+		// calculate amount based on number of activations & discount
+		$amount = $item_price * $quantity;
+		if( $discount_percentage > 0 ) {
+			$amount = $amount * ( ( 100 - $discount_percentage ) / 100 );
+		}
+
+		// Setup payment gateway
+		Stripe::setApiKey(config('services.stripe.secret'));
+
+		try {
+			$charge = \Stripe\Charge::create([
+				"amount" => $amount * 100, // amount in cents
+				"currency" => "USD",
+				"customer" => $user->stripe_customer_id
+			]);
+		} catch(\Stripe\Error\Card $e) {
+			// The card has been declined
+			// TODO: Do something!
+			die('Uh oh. ' . $e);
+		}
+
+		// Success!
+
+		$license = License::create([
+			'license_key' => License::generateKey(),
+			'expires_at' => new \DateTime("+1 $interval"),
+			'user_id' => $user->id,
+			'site_limit' => $quantity
+		]);
+
+		// Create subscription
+		$subscription = Subscription::create([
+			'amount' => $amount,
+			'interval' => $interval,
+			'user_id' => $user->id,
+			'license_id' => $license->id,
+			'active' => 1,
+			'next_charge_at' => (new DateTime("+1 $interval"))->modify('-1 week')
+		]);
+
+		return redirect('/')->with('message', "You're all set!");
 	}
 }

@@ -26,7 +26,8 @@
     @endif
 
     <div class="well small-margin" style="max-width: 360px;">
-        <form method="post" id="cc-form">
+        <noscript>Please enable JavaScript to select a payment method.</noscript>
+        <form method="post" id="cc-form" class="hide-if-no-js">
 
             <div class="errors"></div>
 

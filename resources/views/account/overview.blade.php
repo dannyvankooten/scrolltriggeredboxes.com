@@ -24,7 +24,7 @@
             <li><a href="/licenses/new">Purchase a new license</a></li>
         </ul>
 
-        <p>Alternatively, <a href="/logout">click here to log out</a>.</p>
+        <p>Alternatively, <a href="/auth/logout">click here to log out</a>.</p>
 
 
     </div>

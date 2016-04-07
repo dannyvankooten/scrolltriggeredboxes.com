@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -69,6 +69,10 @@
         </p>
     </div>
 </footer>
+
+<script>
+    document.documentElement.className = document.documentElement.className.replace('no-js','js');
+</script>
 
 @yield('foot')
 </body>

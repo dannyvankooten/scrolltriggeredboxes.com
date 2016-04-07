@@ -146,7 +146,7 @@ return [
 		'App\Providers\EventServiceProvider',
 		'App\Providers\RouteServiceProvider',
 		'GrahamCampbell\Markdown\MarkdownServiceProvider',
-		'GrahamCampbell\GitHub\GitHubServiceProvider'
+		'GrahamCampbell\GitHub\GitHubServiceProvider',
 	],
 
 	/*

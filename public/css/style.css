@@ -171,6 +171,12 @@ a {
 	font-weight: bold;
 }
 
+.no-js .hide-if-no-js {
+	display: none;
+}
+.js .hide-if-js {
+	display: none;
+}
 /* forms */
 .form-group {
 	margin-bottom: 24px;

@@ -8,7 +8,7 @@
 
     <h1>Register</h1>
 
-    <form method="post" id="buy-form">
+    <form method="post" id="buy-form" novalidate="novalidate">
 
         <div class="breadcrumb bordered small-margin">
             <a class="unstyled" onclick="steps.go(1);" data-step="1">1: License</a>
@@ -42,14 +42,14 @@
             <p>You will be charged <span class="total strong">$10 per month</span>.</p>
 
             <div class="form-group">
-                <input type="button" value="Proceed to billing info" class="button" onclick="steps.next()">
+                <input type="submit" value="Proceed to billing info" class="button">
             </div>
 
         </div>
         <!-- / Step -->
 
         <!-- Step 2: Billing Info -->
-        <div class="step">
+        <div class="step" style="hide-if-js">
 
             <div class="form-group">
                 <label>Email address</label>
@@ -78,26 +78,26 @@
 
             <div class="form-group">
                 <label>Country</label>
-                <select name="user[country]">
+                <select name="user[country]" id="country-input">
                     @foreach(Countries::all() as $code => $country)
                     <option value="{{ $code }}">{{ $country }}</option>
                     @endforeach
                 </select>
             </div>
 
-            <div class="form-group" style="display: none;">
+            <div class="form-group eu-only" style="display: none;">
                 <label>VAT Number</label>
                 <input type="text" name="user[vat_number]" value="" />
             </div>
 
             <div class="form-group">
-                <input type="button" value="Proceed to payment" class="button" onclick="steps.next()">
+                <input type="submit" value="Proceed to payment" class="button">
             </div>
         </div>
         <!-- / Step -->
 
         <!-- Step 3: Payment -->
-        <div class="step">
+        <div class="step" style="hide-if-js">
             <div class="errors"></div>
 
             <div class="well small-margin">
@@ -178,10 +178,18 @@
     // steps
     function Steps( selector ) {
         this.toggle = function() {
+            // toggle step visibility
             [].forEach.call(elements,function(el) {
                 el.style.display = ( el === elements[ currentStep ] ) ? '' : 'none';
             });
 
+            // focus on first input
+           var firstInput = elements[currentStep].querySelector('input');
+            if( firstInput ) {
+                firstInput.focus();
+            }
+
+            // highlight links to this step
            var links = document.querySelectorAll('[data-step]');
             [].forEach.call(links, function(el) {
                 el.className = el.className.replace('current','');
@@ -204,26 +212,67 @@
             this.toggle();
         };
 
+        this.done = function() {
+            return ( currentStep + 1 ) == elements.length;
+        };
+
         var elements = document.querySelectorAll(selector);
         var currentStep = 0;
+
         this.toggle();
     }
 
+    function toggleEuFields() {
+        var euCountries = [ 'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK' ];
+        var isEu = euCountries.indexOf(countryElement.value.toUpperCase()) > -1;
+
+        [].forEach.call(euOnlyFields, function(el) {
+            el.style.display = isEu ? '' : 'none';
+        });
+    }
+
+    function error(msg) {
+        var errorElement = form.querySelector('.errors');
+        errorElement.className += " notice notice-warning";
+        errorElement.innerText = msg;
+    }
+
     var form  = document.getElementById('buy-form');
+    var euOnlyFields = document.querySelectorAll('.eu-only');
+    var countryElement = document.getElementById('country-input');
+
     form.addEventListener('change', function(event) {
         total(this.quantity.value, this.interval.value);
+        toggleEuFields();
     });
 
     form.addEventListener( 'submit', function(event) {
 
+        // if we're not at last step yet, proceed one step.
+        if( ! steps.done() ) {
+            event.preventDefault();
+            steps.next();
+            return false;
+        }
+
+        // TODO: Validate all other fields (preferably per step)
+
+        event.preventDefault();
+
+        // soft-validate credit card
+        var creditCardNumber = form.querySelector('[data-stripe="number"]').value;
+        if( ! Stripe.card.validateCardNumber(creditCardNumber) ) {
+            error( "That credit card number doesn't seem right.")
+            return false;
+        }
+
+        // disable button
         var submitButton = form.elements.namedItem('submit_button');
         var buttonText = submitButton.value;
 
-        // disable button
         submitButton.disabled = true;
         submitButton.value = "Please wait";
 
-        // todo: validate inputs
         Stripe.card.createToken(this, function(status, response) {
 
             // re-enable button
@@ -231,9 +280,7 @@
             submitButton.removeAttribute('disabled');
 
             if (response.error) {
-                var errorElement = form.querySelector('.errors');
-                errorElement.className += " notice notice-warning";
-                errorElement.innerText = response.error.message;
+                error(response.error.message);
             } else {
                 form.elements.namedItem('token').value = response.id;
                 form.submit();
