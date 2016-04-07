@@ -27,7 +27,7 @@
                 <label class="unstyled"><input type="radio" name="interval" value="year"> Yearly</label>
             </div>
 
-            <p>Your card ending in {{ Auth::user()->card_last_four }} will be charged <span class="total strong">$10 per month</span>.</p>
+            <p>Your card ending in <strong>{{ Auth::user()->card_last_four }}</strong> (<a href="/edit/payment">edit</a>) will be charged <span class="total strong">$10 per month</span>.</p>
 
             <div class="form-group">
                 <input type="submit" value="Pay" class="btn btn-primary">
@@ -47,6 +47,10 @@
         var isYearly = interval === 'year';
         var price = isYearly ? 50 : 5;
         var total = amount * price;
+        var discount = amount > 5 ? 30 : amount > 1 ? 20 : 0;
+        if( discount > 0 ) {
+            total = total * ( ( 100 - discount ) / 100 );
+        }
 
         var elements = document.querySelectorAll('.total');
         [].forEach.call(elements,function(el) {

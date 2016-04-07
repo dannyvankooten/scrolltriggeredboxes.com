@@ -9,6 +9,7 @@
 
     <link href="{{ asset('css/normalize.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
 
     <meta name="twitter:site" content="@boxzillaplugin">
 
@@ -33,18 +34,14 @@
 
 <body>
 
-<div class="header padded clearfix">
+<div class="header clearfix">
     <div class="container">
         <h2 class="site-title pull-left">
             <a href="{{ url('/') }}"><span>Boxzilla</span></a>
         </h2>
         <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
             <ul class="nav nav-inline">
-                <li role="presentation"><a href="/">Account</a></li>
-
-                @if (Auth::check())
-                <li role="presentation"><a href="/auth/logout">Log out</a></li>
-                @endif
+                <li role="presentation"><a href="/">Home</a></li>
             </ul>
         </nav>
     </div>
@@ -52,7 +49,7 @@
 
 @yield('masthead')
 
-<div class="main-container big-margin" role="main" itemprop="mainContentOfPage">
+<div class="main-container medium-margin" role="main" itemprop="mainContentOfPage">
     @yield('content')
 </div>
 

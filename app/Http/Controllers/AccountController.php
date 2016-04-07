@@ -82,47 +82,7 @@ class AccountController extends Controller {
 	 */
 	public function overview( ) {
 		$user = $this->auth->user();
-		$plugins = Plugin::where('type','premium')->get();
 
-		return view( 'account.overview', [ 'user' => $user, 'plugins' => $plugins ] );
+		return view( 'account.overview', [ 'user' => $user ] );
 	}
-
-	/**
-	 * @param $id
-	 *
-	 * @return \Illuminate\View\View
-	 */
-	public function license($id) {
-		$license = License::with('activations')->findOrFail($id);
-		$user = $this->auth->user();
-
-		// check if license belongs to user
-		if( $license->user->id != $user->id ) {
-			abort( 403 );
-		}
-
-		return view( 'account.license', [ 'license' => $license ] );
-	}
-
-	/**
-	 * @param int $license_id
-	 * @param int $activation_id
-	 *
-	 * @return \Illuminate\Http\RedirectResponse
-	 */
-	public function deleteActivation( $license_id, $activation_id ) {
-		$activation = Activation::find($activation_id)->firstOrFail();
-		$user = $this->auth->user();
-
-		// check if activation belongs to user
-		if( $activation->license->id !== $license_id || $activation->license->user->id !== $user->id ) {
-			abort(403);
-		}
-
-		$activation->delete();
-		return redirect()->back();
-	}
-
-
-
 }

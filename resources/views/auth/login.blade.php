@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title','Boxzilla - unobtrusive conversion boosters')
+@section('title','Login - Boxzilla')
 
 @section('content')
 
@@ -14,7 +14,7 @@
             <p>The account area is where you can manage your license(s) and download the plugins. To access it, please login using the same email address as when purchasing the premium plan.</p>
 
             @foreach($errors->all() as $error)
-                <p class="bs-callout bs-callout-warning">{{ $error }}</p>
+                <p class="notice notice-error">{{ $error }}</p>
             @endforeach
 
             <div class="well">

@@ -7,6 +7,7 @@
 <div class="container">
 
     <ul class="nav nav-inline bordered">
+        <li><strong>Edit: </strong></li>
         <li><a href="/edit">Billing Info</a></li>
         <li><a href="/edit/payment">Payment Method</a></li>
     </ul>
@@ -23,20 +24,30 @@
 
         <div class="form-group">
             <label>Email address</label>
-            <input type="email" name="user[email]" value="{{ $user->email }}" required>
+
+            <div class="form-element">
+                <input type="email" name="user[email]" value="{{ $user->email }}" required>
+                <i class="fa fa-at form-element-icon"></i>
+            </div>
         </div>
 
         <div class="form-group">
             <label>Name</label>
-            <input type="text" name="user[name]" value="{{ $user->name }}">
+            <div class="form-element">
+             <input type="text" name="user[name]" value="{{ $user->name }}">
+                <i class="fa fa-user form-element-icon"></i>
+            </div>
         </div>
 
         <div class="form-group">
             <label>Company Name <span class="muted pull-right">(optional)</span></label>
-            <input type="text" name="user[company]" value="{{ $user->company }}">
+            <div class="form-element">
+                <input type="text" name="user[company]" value="{{ $user->company }}">
+                <i class="fa fa-building form-element-icon"></i>
+            </div>
         </div>
 
-              <div class="form-group">
+        <div class="form-group">
             <label>Country</label>
             <select name="user[country]">
                 @foreach(Countries::all() as $code => $country)

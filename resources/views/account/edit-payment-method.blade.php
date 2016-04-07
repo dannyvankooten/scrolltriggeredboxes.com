@@ -7,6 +7,7 @@
 <div class="container">
 
     <ul class="nav nav-inline bordered">
+        <li><strong>Edit: </strong></li>
         <li><a href="/edit">Billing Info</a></li>
         <li><a href="/edit/payment">Payment Method</a></li>
     </ul>
@@ -19,50 +20,63 @@
     </div>
     @endif
 
-    <form method="post" id="cc-form">
+    @if(Auth::user()->card_last_four)
+    <p>You have registered your card ending in {{ Auth()->user()->card_last_four }}.</p>
+    <p>Use the following form if you want to use a different credit card.</p>
+    @endif
 
-        @if(Auth::user()->card_last_four)
-           <p>You have registered your card ending in {{ Auth()->user()->card_last_four }}.</p>
-           <p>Use the following form if you want to use a different credit card.</p>
-        @endif
+    <div class="well small-margin" style="max-width: 360px;">
+        <form method="post" id="cc-form">
 
-        <div class="errors"></div>
+            <div class="errors"></div>
 
-        <div class="form-group">
-            <label>Credit Card Number</label>
-            <input type="text" data-stripe="number">
-        </div>
+            <div class="form-group">
+                <label>Credit Card Number</label>
 
-        <div class="form-group">
-            <label>CVC</label>
-            <input type="text" data-stripe="cvc">
-        </div>
+                <div class="form-element">
+                    <input type="text" data-stripe="number" placeholder="**** **** **** ****">
+                    <i class="fa fa-credit-card form-element-icon"></i>
+                </div>
+            </div>
 
-        <div class="form-group">
-            <label>Expiration MM/YY</label>
-            <select data-stripe="exp_month" style="width: 80px; display: inline;">
-                <option disabled>Month</option>
-                @for ($i = 1; $i <= 12; $i++)
-                <option>{{ $i }}</option>
-                @endfor
-            </select>
+            <div class="form-group">
+                <label>Expiration</label>
+                <select data-stripe="exp_month" style="width: 80px; display: inline;">
+                    <option disabled>Month</option>
+                    @for ($i = 1; $i <= 12; $i++)
+                    <option>{{ $i }}</option>
+                    @endfor
+                </select>
 
-            <select data-stripe="exp_year" style="width: 80px; display: inline;">
-                <option disabled>Year</option>
-                @for ($i = 0; $i < 10; $i++)
-                <option value="{{ date('Y') + $i }}">{{ date('y') + $i }}</option>
-                @endfor
-            </select>
-        </div>
+                <select data-stripe="exp_year" style="width: 80px; display: inline;">
+                    <option disabled>Year</option>
+                    @for ($i = 0; $i < 10; $i++)
+                    <option value="{{ date('Y') + $i }}">{{ date('y') + $i }}</option>
+                    @endfor
+                </select>
+            </div>
 
-        <div class="form-group">
-            <input type="submit" value="Save" />
-        </div>
+            <div class="form-group">
+                <label>CVC</label>
 
-        <input type="hidden" name="token" value="" />
-    </form>
+                <div class="form-element" style="width: 120px;">
+                    <input type="text" data-stripe="cvc">
+                    <i class="fa fa-lock form-element-icon"></i>
+                </div>
 
-    <p>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Save" />
+            </div>
+
+            <input type="hidden" name="token" value="" />
+        </form>
+    </div>
+
+
+<p>
         <a href="javascript:history.go(-1);">&lsaquo; Go back</a>
     </p>
 

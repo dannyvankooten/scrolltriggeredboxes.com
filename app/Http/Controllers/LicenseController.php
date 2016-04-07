@@ -28,6 +28,10 @@ class LicenseController extends Controller {
 		$this->auth = $auth;
 	}
 
+	public function overview() {
+		return view('license.overview', [ 'user' => $this->auth->user() ]);
+	}
+
 	/**
 	 * @return \Illuminate\View\View
 	 */
@@ -46,13 +50,13 @@ class LicenseController extends Controller {
 		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
 		$quantity = (int) $request->input('quantity', 1);
 
-		$discount_percentage = $quantity > 5 ? 50 : $quantity > 1 ? 25 : 0;
+		$discount_percentage = $quantity > 5 ? 30 : $quantity > 1 ? 20 : 0;
 		$item_price = $interval == 'month' ? 5 : 50;
 
 		// calculate amount based on number of activations & discount
 		$amount = $item_price * $quantity;
 		if( $discount_percentage > 0 ) {
-			$amount = $amount * ( $discount_percentage / 100 );
+			$amount = $amount * ( ( 100 - $discount_percentage ) / 100 );
 		}
 
 		// Setup payment gateway
@@ -91,6 +95,45 @@ class LicenseController extends Controller {
 
 		return redirect('/')->with('message', 'You now have a new license!');
 	}
+
+
+	/**
+	 * @param $id
+	 *
+	 * @return \Illuminate\View\View
+	 */
+	public function details($id) {
+		$license = License::with('activations')->findOrFail($id);
+		$user = $this->auth->user();
+
+		// check if license belongs to user
+		if( $license->user->id != $user->id ) {
+			abort( 403 );
+		}
+
+		return view( 'license.details', [ 'license' => $license ] );
+	}
+
+	/**
+	 * @param int $license_id
+	 * @param int $activation_id
+	 *
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
+	public function deleteActivation( $license_id, $activation_id ) {
+		$activation = Activation::find($activation_id)->firstOrFail();
+		$user = $this->auth->user();
+
+		// check if activation belongs to user
+		if( $activation->license->id !== $license_id || $activation->license->user->id !== $user->id ) {
+			abort(403);
+		}
+
+		$activation->delete();
+		return redirect()->back();
+	}
+
+
 
 
 }

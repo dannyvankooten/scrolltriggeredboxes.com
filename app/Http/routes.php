@@ -17,11 +17,15 @@ Route::group(['domain' => sprintf( 'account.%s', env('APP_DOMAIN') )], function 
 	Route::get( '/edit/payment', 'AccountController@editPaymentMethod' );
 	Route::post( '/edit/payment', 'AccountController@updatePaymentMethod' );
 
-	Route::get( '/licenses/{id}', 'AccountController@license' );
+	// licenses
+	Route::get('/licenses', 'LicenseController@overview');
+	Route::get('/licenses/new', 'LicenseController@purchase' );
+	Route::post('/licenses/new', 'LicenseController@process' );
+	Route::get('/licenses/{id}', 'LicenseController@details' );
 
-	// buy
-	Route::get( '/purchase', 'LicenseController@purchase' );
-	Route::post('/purchase', 'LicenseController@process' );
+
+	// plygins
+	Route::get('/plugins', 'PluginController@overview' );
 
 	//Route::get('/invoices', 'AccountController@invoices' );
 	//Route::get('/invoices/{id}', 'AccountController@downloadInvoice');
