@@ -147,6 +147,7 @@ return [
 		'App\Providers\RouteServiceProvider',
 		'GrahamCampbell\Markdown\MarkdownServiceProvider',
 		'GrahamCampbell\GitHub\GitHubServiceProvider',
+		'DvK\Laravel\Vat\VatServiceProvider'
 	],
 
 	/*

@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Subscription;
 use App\User;
 
+use DvK\Laravel\Vat\Validator;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\License;
 use Stripe\Stripe;
-use App\VatValidator;
 use Datetime;
 use Hash;
 
@@ -47,11 +47,10 @@ class AccountController extends Controller {
 
 	/**
 	 * @param Request $request
-	 * @param VatValidator $vatValidator
 	 *
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
-	public function updateBillingInfo( Request $request, VatValidator $vatValidator ) {
+	public function updateBillingInfo( Request $request ) {
 		$user = $this->auth->user();
 
 		// TODO: verify email address before changing
@@ -95,7 +94,7 @@ class AccountController extends Controller {
 	/**
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
-	public function overview( ) {
+	public function overview() {
 		$user = $this->auth->user();
 		return view( 'account.overview', [ 'user' => $user ] );
 	}

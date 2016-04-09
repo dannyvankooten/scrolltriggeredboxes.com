@@ -1,5 +1,8 @@
 <?php namespace App;
 
+use DvK\Laravel\Vat\Facades\Rates as VatRates;
+use DvK\Laravel\Vat\Facades\Validator as VatValidator;
+
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -69,11 +72,34 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	}
 
 	/**
-	 *
+	 * @return boolean
 	 */
 	public function inEurope() {
-		$euCountries = Countries::europe();
-		return in_array( $this->country, array_values( $euCountries ) );
+		return VatValidator::isEuCountry( $this->country );
+	}
+
+	/**
+	 * @return double
+	 */
+	public function getTaxRate() {
+
+		// no tax for non-EU customers
+		if( ! $this->inEurope() ) {
+			return 0;
+		}
+
+		// Dutch tax for all NL customers
+		if( $this->country === 'NL' ) {
+			return VatRates::country( 'NL', 'standard' );
+		}
+
+		// Reverse charge for EU businesses (outside of NL)
+		if( ! empty( $this->vat_number ) ) {
+			return 0;
+		}
+
+		// EU tax rate of specific country otherwise
+		return VatRates::country( $this->country, 'standard' );
 	}
 
 }
