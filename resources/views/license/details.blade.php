@@ -54,7 +54,7 @@
                 <th>Payment</th>
                 <td>
                     @if( $license->subscription->active )
-                        Your card ending in <strong>{{ Auth::user()->card_last_four }}</strong> will be charged <strong>${{ $license->subscription->amount }}</strong> on <strong>{{ $license->subscription->next_charge_at->format('m/d/Y') }}</strong>.
+                        You will be charged <strong>${{ $license->subscription->amount + 0 }}</strong> on <strong>{{ $license->subscription->next_charge_at->format('m/d/Y') }}</strong>.
                     @else
                         No payment due.
                     @endif
