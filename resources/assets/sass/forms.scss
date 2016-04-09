@@ -1,0 +1,85 @@
+@import "variables";
+
+.form-group {
+  margin-bottom: 24px;
+  max-width: 320px;
+}
+
+.inline {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+input,
+select,
+textarea {
+  padding: 8px;
+  display: inline-block;
+  background: white;
+}
+
+select {
+  -webkit-appearance: menulist-button;
+  height: 42px;
+  background: white;
+  width: 100%;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  width: 100%;
+  max-width: 320px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+input[type="submit"],
+button,
+.button {
+  background: $primary_color;
+  padding: 8px 24px;
+  display: inline-block;
+  border: 2px solid $primary_color;
+  color: white;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.button-small {
+  padding: 3px 4px;
+  font-size: 14px;
+}
+
+input[type="submit"]:hover,
+input[type="submit"]:focus,
+button:hover,
+button:focus,
+.button:hover,
+.button:focus {
+  background: darken( $primary_color, 6% );
+  border-color: darken( $primary_color, 6% );
+}
+
+.form-element {
+  position: relative;
+}
+
+.form-element-icon {
+  position: absolute;
+  top: 6px;
+  padding: 8px;
+  right: 8px;
+  color: #666;
+
+}

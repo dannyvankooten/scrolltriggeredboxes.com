@@ -1,0 +1,60 @@
+.no-js .hide-if-no-js {
+  display: none;
+}
+
+.js .hide-if-js {
+  display: none;
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.bordered {
+  border: 1px solid #eee;
+  padding: 6px;
+}
+
+.muted {
+  color: #aaa;
+  font-weight: normal;
+}
+
+.strong {
+  font-weight: bold;
+}
+
+.padded {
+  padding: 20px;
+}
+
+.big-margin {
+  margin: 80px 0;
+}
+
+.medium-margin {
+  margin: 50px 0;
+}
+
+.small-margin {
+  margin: 20px 0;
+}
+
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+
+.unstyled {
+  border: 0;
+  text-decoration: none;
+  font-weight: normal;
+  color: inherit;
+  padding: initial;
+}
+

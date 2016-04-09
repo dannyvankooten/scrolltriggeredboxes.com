@@ -7,8 +7,7 @@
 
     <title>@yield('title', 'Boxzilla')</title>
 
-    <link href="{{ asset('css/normalize.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/main.css') }}" rel="stylesheet">
 
     <meta name="twitter:site" content="@boxzillaplugin">
 
