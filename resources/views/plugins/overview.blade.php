@@ -26,8 +26,8 @@
         @foreach($plugins as $plugin)
         <tr>
             <td><a href="{{ domain_url( '/plugins/' . $plugin->url ) }}">{{ $plugin->name }}</a></td>
-            <td>{{ $plugin->version }}</td>
-            <td><a href="{{ route('plugins_download', [ $plugin->url ]) }}">Download</a></td>
+            <td>{{ $plugin->getVersion() }}</td>
+            <td><a class="button button-small" href="{{ route('plugins_download', [ $plugin->url ]) }}">Download</a></td>
         </tr>
         @endforeach
         </tbody>

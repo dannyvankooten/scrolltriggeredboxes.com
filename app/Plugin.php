@@ -54,6 +54,8 @@ class Plugin extends Model {
 
 		if( ! $fileContent ) {
 			$fileContent = GitHub::connection()->repo()->contents()->download( $this->getGitHubRepositoryOwner(), $this->getGitHubRepositoryName(), 'info.json');
+
+			// Remove GitHub-added formatting to make this machine readable again
 			$fileContent = str_ireplace( PHP_EOL, '', $fileContent );
 			$fileContent = str_ireplace( ',}', '}', $fileContent );
 
@@ -92,6 +94,14 @@ class Plugin extends Model {
 		}
 
 		return $html;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getVersion() {
+		$info = $this->getUpdateInfo();
+		return isset( $info['version'] ) ? $info['version'] : '';
 	}
 
 	/**
