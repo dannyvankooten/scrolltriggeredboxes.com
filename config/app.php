@@ -171,7 +171,6 @@ return [
 		'Cache'     => 'Illuminate\Support\Facades\Cache',
 		'Config'    => 'Illuminate\Support\Facades\Config',
 		'Cookie'    => 'Illuminate\Support\Facades\Cookie',
-		'Countries' 	=> 'App\Countries',
 		'Crypt'     => 'Illuminate\Support\Facades\Crypt',
 		'DB'        => 'Illuminate\Support\Facades\DB',
 		'Eloquent'  => 'Illuminate\Database\Eloquent\Model',
@@ -197,6 +196,7 @@ return [
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
 		'Markdown' 	=> 'GrahamCampbell\Markdown\Facades\Markdown',
+		'Countries' => 'DvK\Laravel\Vat\Facades\Countries',
 	],
 
 ];

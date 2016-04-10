@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Subscription;
 use App\User;
 
-use DvK\Laravel\Vat\Validator;
+use DvK\Laravel\Vat\Facades\Countries;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

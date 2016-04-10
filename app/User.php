@@ -2,6 +2,8 @@
 
 use DvK\Laravel\Vat\Facades\Rates as VatRates;
 use DvK\Laravel\Vat\Facades\Validator as VatValidator;
+use DvK\Laravel\Vat\Facades\Countries as Countries;
+
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -75,7 +77,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 * @return boolean
 	 */
 	public function inEurope() {
-		return VatValidator::isEuCountry( $this->country );
+		return Countries::inEurope( $this->country );
 	}
 
 	/**
