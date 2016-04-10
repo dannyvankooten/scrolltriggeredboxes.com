@@ -289,5 +289,19 @@
 
     Stripe.setPublishableKey('{{ config('services.stripe.key') }}');
 
+    // try to get country from ipinfo.io
+    var req = new XMLHttpRequest();
+    req.onreadystatechange = function() {
+        if (req.readyState != XMLHttpRequest.DONE || req.status != 200) {
+            return;
+        }
+
+       var res = JSON.parse(req.responseText);
+        document.getElementById('country-input').value = res.country;
+    };
+    req.open("GET", "http://ipinfo.io");
+    req.setRequestHeader('Accept','application/json');
+    req.send();
+
 </script>
 @stop
