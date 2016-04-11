@@ -26,6 +26,7 @@
     <div class="well small-margin" style="max-width: 360px;">
         <noscript>Please enable JavaScript to select a payment method.</noscript>
         <form method="post" id="cc-form" class="hide-if-no-js">
+            {!! csrf_field() !!}
 
             <div class="errors"></div>
 

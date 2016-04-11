@@ -15,7 +15,9 @@
         @endforeach
 
         <div class="well small-margin">
-        <form method="post" action="{{ action('Auth\AuthController@postLogin')  }}">
+        <form method="post" action="/login">
+            {!! csrf_field() !!}
+
             <div class="form-group">
                 <label for="loginInputEmail">Email address</label>
 

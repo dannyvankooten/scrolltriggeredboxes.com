@@ -4,22 +4,20 @@
 
 @section('content')
 
+
+
 <div class="container">
 
     <h1>Register</h1>
 
-    <form method="post" id="buy-form" novalidate="novalidate">
-
-        <div class="breadcrumb bordered small-margin">
-            <a class="unstyled" onclick="steps.go(1);" data-step="1">1: License</a>
-            <span class="muted sep"> // </span>
-            <a class="unstyled" onclick="steps.go(2)" data-step="2">2: Billing Info</a>
-            <span class="muted sep"> // </span>
-            <a class="unstyled" onclick="steps.go(3)" data-step="3">3: Payment</a>
-        </div>
+    <form method="post" id="buy-form">
+        {!! csrf_field() !!}
 
         <!-- Step 1: License -->
-        <div class="step">
+
+        <div class="step medium-margin">
+
+            <h2 class="slashes">1. License</h2>
 
             <div class="form-group">
                 <label class="control-label">How many site activations do you need?</label>
@@ -35,15 +33,14 @@
 
             <p>You will be charged <span class="total strong">$10 per month</span>.</p>
 
-            <div class="form-group">
-                <input type="submit" value="Proceed to billing info" class="button">
-            </div>
-
         </div>
         <!-- / Step -->
 
         <!-- Step 2: Billing Info -->
-        <div class="step" style="hide-if-js">
+
+        <div class="step medium-margin">
+
+            <h2 class="slashes">2. Billing Info</h2>
 
             <div class="form-group">
                 <label>Email address</label>
@@ -63,14 +60,6 @@
             </div>
 
             <div class="form-group">
-                <label>Company Name <span class="muted pull-right">(optional)</span></label>
-                <div class="form-element">
-                    <input type="text" name="user[company]" value="">
-                    <i class="fa fa-building form-element-icon"></i>
-                </div>
-            </div>
-
-            <div class="form-group">
                 <label>Country</label>
                 <select name="user[country]" id="country-input">
                     @foreach(Countries::all() as $code => $country)
@@ -84,14 +73,15 @@
                 <input type="text" name="user[vat_number]" value="" />
             </div>
 
-            <div class="form-group">
-                <input type="submit" value="Proceed to payment" class="button">
-            </div>
         </div>
         <!-- / Step -->
 
         <!-- Step 3: Payment -->
-        <div class="step" style="hide-if-js">
+
+        <div class="step medium-margin">
+
+            <h2 class="slashes">3. Payment</h2>
+
             <div class="errors"></div>
 
             <div class="well small-margin">
@@ -126,7 +116,7 @@
                     <label>CVC</label>
 
                     <div class="form-element" style="width: 120px;">
-                        <input type="text" data-stripe="cvc">
+                        <input type="text" data-stripe="cvc" maxlength="4">
                         <i class="fa fa-lock form-element-icon"></i>
                     </div>
 
@@ -285,7 +275,7 @@
         return false;
     });
 
-    var steps = new Steps('.step');
+    //var steps = new Steps('.step');
 
     Stripe.setPublishableKey('{{ config('services.stripe.key') }}');
 

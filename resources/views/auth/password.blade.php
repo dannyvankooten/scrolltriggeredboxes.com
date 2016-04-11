@@ -10,6 +10,23 @@
 
             <p>If you forgot your password then you can request a new one by filling out the form below.</p>
 
+            @if (session('status'))
+                <div class="notice notice-success">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            @if (count($errors) > 0)
+                <div class="notice notice-error">
+                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form  role="form" method="POST" action="{{ url('/password/email') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
@@ -27,22 +44,5 @@
                     </button>
                 </div>
             </form>
-
-            @if (session('status'))
-                <div class="notice notice-success">
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            @if (count($errors) > 0)
-                <div class="notice notice-error">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
     </div>
 @stop

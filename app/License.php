@@ -13,8 +13,6 @@ class License extends Model {
 	protected $table = 'licenses';
 	protected $fillable = [];
 
-	// hidden from json export
-	protected $hidden = array( 'id', 'user_id', 'created_at', 'updated_at', 'deleted_at' );
 
 	public $timestamps = true;
 	protected $dates = [ 'created_at', 'updated_at', 'deleted_at', 'expires_at' ];
@@ -88,6 +86,22 @@ class License extends Model {
 	}
 
 	/**
+	 * @return float
+	 */
+	public function usagePercentage() {
+		return count( $this->activations ) / $this->site_limit * 100;
+	}
+
+	/**
+	 * @param User $user
+	 * 
+	 * @return bool
+	 */
+	public function belongsToUser( User $user ) {
+		return $this->user_id == $user->id;
+	}
+
+	/**
 	 * Generate a truly unique license key
 	 *
 	 * @return string
@@ -104,9 +118,4 @@ class License extends Model {
 
 		return $key;
 	}
-
-	public function usagePercentage() {
-		return count( $this->activations ) / $this->site_limit * 100;
-	}
-
 }

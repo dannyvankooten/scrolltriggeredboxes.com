@@ -29,6 +29,7 @@
     @endif
 
     <form method="post" id="billing-info-form">
+        {!! csrf_field() !!}
 
         <div class="form-group">
             <label>Email address</label>

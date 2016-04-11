@@ -8,8 +8,9 @@ use App\Plugin;
 
 class PluginController extends Controller {
 
+
 	public function __construct() {
-		$this->middleware('auth.license+site', [ 'only' => 'download' ]);
+		$this->middleware('auth.license', [ 'only' => 'download' ]);
 	}
 
 	/**

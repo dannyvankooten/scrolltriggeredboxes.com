@@ -1,29 +1,10 @@
 <?php namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Auth\Guard;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
 Use App\License;
+use Illuminate\Support\Facades\Auth;
 
 class AuthenticateLicense  {
-
-	/**
-	 * The Guard implementation.
-	 *
-	 * @var Guard
-	 */
-	protected $auth;
-
-	/**
-	 * Create a new filter instance.
-	 *
-	 * @param  Guard  $auth
-	 * @return void
-	 */
-	public function __construct(Guard $auth)
-	{
-		$this->auth = $auth;
-	}
 
 	/**
 	 * Handle an incoming request.
@@ -32,10 +13,10 @@ class AuthenticateLicense  {
 	 * @param  \Closure  $next
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next) {
+	public function handle($request, Closure $next, $guard = null) {
 
 		// no need to check for license if user already authenticated
-		if( $this->auth->user() ) {
+		if( Auth::guard($guard)->check() ) {
 			return $next($request);
 		}
 

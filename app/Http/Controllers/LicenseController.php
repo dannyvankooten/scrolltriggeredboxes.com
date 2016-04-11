@@ -103,7 +103,7 @@ class LicenseController extends Controller {
 		$user = $this->auth->user();
 
 		// check if license belongs to user
-		if( $license->user->id != $user->id ) {
+		if( ! $license->belongsToUser( $user ) ) {
 			abort( 403 );
 		}
 

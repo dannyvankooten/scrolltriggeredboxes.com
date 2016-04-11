@@ -11,15 +11,9 @@ use Illuminate\Http\Response;
 class HelpScoutController extends Controller {
 
 	/**
-	 * @var HelpScoutApp
-	 */
-	protected $helpscout;
-
-	/**
 	 * HelpScoutController constructor.
 	 */
-	public function __construct( HelpScoutApp $helpscout ) {
-		$this->helpscout = $helpscout;
+	public function __construct(  ) {
 		$this->middleware('helpscout.signature');
 	}
 
@@ -28,9 +22,9 @@ class HelpScoutController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function get()
+	public function get( HelpScoutApp $helpscout )
 	{
-		$customer = $this->helpscout->getCustomer();
+		$customer = $helpscout->getCustomer();
 		$email = $customer->getEmail();
 		$user = User::where('email', $email)->first();
 

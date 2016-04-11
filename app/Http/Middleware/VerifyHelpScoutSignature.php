@@ -28,7 +28,7 @@ class VerifyHelpScoutSignature {
 	 */
 	public function handle($request, Closure $next )
 	{
-		if( ! env('VERIFY_SIGNATURES', true ) ) {
+		if( config('app.env') !== 'production' ) {
 			return $next($request);
 		}
 

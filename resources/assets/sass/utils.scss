@@ -58,3 +58,10 @@
   padding: initial;
 }
 
+.slashes {
+  &:before {
+    content: "//";
+    color: #999;
+    margin-right: 15px;
+  }
+}

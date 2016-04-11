@@ -11,17 +11,21 @@
 		}
 	],
 	"require": {
-        "laravel/framework": "5.1.*",
-        "guzzlehttp/guzzle": "^6.1",
-        "graham-campbell/markdown": "~3.0",
+		"php": ">=5.5.9",
+		"laravel/framework": "5.2.*",
+        "guzzlehttp/guzzle": "^6.2",
+        "graham-campbell/markdown": "^6.0",
         "helpscout/apps": "^1.1",
 		"graham-campbell/github": "^4.2",
 		"stripe/stripe-php": "^3.12",
 		"dannyvankooten/laravel-vat": "dev-master"
 	},
 	"require-dev": {
+		"fzaninotto/faker": "~1.4",
+		"mockery/mockery": "0.9.*",
 		"phpunit/phpunit": "~4.0",
-		"phpspec/phpspec": "~2.1"
+		"symfony/css-selector": "2.8.*|3.0.*",
+		"symfony/dom-crawler": "2.8.*|3.0.*"
 	},
 	"autoload": {
 		"classmap": [
@@ -37,17 +41,19 @@
 		]
 	},
 	"scripts": {
+		"post-root-package-install": [
+			"php -r \"copy('.env.example', '.env');\""
+		],
+		"post-create-project-cmd": [
+			"php artisan key:generate"
+		],
 		"post-install-cmd": [
-			"php artisan clear-compiled",
+			"Illuminate\\Foundation\\ComposerScripts::postInstall",
 			"php artisan optimize"
 		],
 		"post-update-cmd": [
-			"php artisan clear-compiled",
+			"Illuminate\\Foundation\\ComposerScripts::postUpdate",
 			"php artisan optimize"
-		],
-		"post-create-project-cmd": [
-			"php -r \"copy('.env.example', '.env');\"",
-			"php artisan key:generate"
 		]
 	},
 	"config": {

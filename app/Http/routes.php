@@ -1,11 +1,13 @@
 <?php
 
-Route::group(['domain' => sprintf( 'account.%s', env('APP_DOMAIN') )], function () {
+$domain = config('app.domain');
+
+Route::group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['web']], function () {
 
 	// auth
-	Route::get( '/auth/login', 'Auth\AuthController@getLogin' );
-	Route::post( '/auth/login', 'Auth\AuthController@postLogin' );
-	Route::get( '/auth/logout', 'Auth\AuthController@getLogout' );
+	$this->get('/login', 'Auth\AuthController@showLoginForm');
+	$this->post('/login', 'Auth\AuthController@login');
+	$this->get('/logout', 'Auth\AuthController@logout');
 
 	// checkout
 	Route::get( '/register', 'AccountController@register' );
@@ -47,7 +49,7 @@ Route::group(['domain' => sprintf( 'account.%s', env('APP_DOMAIN') )], function 
 });
 
 // API url's
-Route::group( [ 'domain' => sprintf( 'api.%s', env('APP_DOMAIN') ), 'prefix' => '/v1', 'namespace' => 'API\\v1' ], function () {
+Route::group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', 'namespace' => 'API\\v1', 'middleware' => ['api'] ], function () {
 
 	// global licenses
 	Route::post( '/login', 'AuthController@login' );
@@ -61,7 +63,7 @@ Route::group( [ 'domain' => sprintf( 'api.%s', env('APP_DOMAIN') ), 'prefix' => 
 } );
 
 // Admin url's
-Route::group(['domain' => sprintf( 'admin.%s', env('APP_DOMAIN') )], function () {
+Route::group(['domain' => sprintf( 'admin.%s', $domain )], function () {
 	Route::get( '/', function() {
 		return redirect( '/licenses' );
 	} );

@@ -75,7 +75,7 @@ class Plugin extends Model {
 	 * @return string
 	 */
 	public function getDownloadUrl( $version = '' ) {
-		$url = sprintf( 'https://api.github.com/repos/%s/%s/zipball/%s?access_token=%s', $this->getGitHubRepositoryOwner(), $this->getGitHubRepositoryName(), $version, env( 'GITHUB_TOKEN', '' ) );
+		$url = sprintf( 'https://api.github.com/repos/%s/%s/zipball/%s?access_token=%s', $this->getGitHubRepositoryOwner(), $this->getGitHubRepositoryName(), $version, config('github.connections.main.token') );
 		return $url;
 	}
 
