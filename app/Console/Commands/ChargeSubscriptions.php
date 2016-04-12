@@ -44,7 +44,10 @@ class ChargeSubscriptions extends Command
     {
         // find all subscriptions with a due payment
         $today = new DateTime('today 00:00:00');
-        $subscriptions = Subscription::where('next_charge_at', '<', $today)->with('license')->get();
+        $subscriptions = Subscription::where('next_charge_at', '<', $today)
+            ->where('active', 1)
+            ->with('license')
+            ->get();
 
         // charge user
         $charger = new Charger();

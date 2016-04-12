@@ -118,6 +118,11 @@ class LicenseController extends Controller {
 	 */
 	public function update($id, Request $request ) {
 		$license = License::find($id)->with('subscription')->firstOrFail();
+		
+		// check if license belongs to user
+		if( ! $license->belongsToUser( $this->auth->user() ) ) {
+			abort( 403 );
+		}
 
 		/** @var Subscription $subscription */
 		$subscription = $license->subscription;

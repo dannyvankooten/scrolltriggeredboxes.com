@@ -26,11 +26,18 @@ class Subscription extends Model {
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function isActive() {
+		return $this->active;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function isPaymentDue() {
 		$now = new DateTime('now');
-		return $now > $this->next_charge_at;
+		return $this->isActive() && $now > $this->next_charge_at;
 	}
 
 	/**
