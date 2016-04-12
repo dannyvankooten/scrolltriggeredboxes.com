@@ -14,6 +14,9 @@ class EventServiceProvider extends ServiceProvider {
 		'App\Events\UserCreated' => [
 			'App\Listeners\Events\EmailUserCredentials',
 		],
+		'Illuminate\Auth\Events\Login' => [
+			'App\Listeners\UserLoginHandler',
+		],
 		'App\Events\LicenseCreated' => [
 			'App\Listeners\Events\PushNewLicenseNotification',
 		],

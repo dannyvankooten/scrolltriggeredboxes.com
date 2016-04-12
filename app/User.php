@@ -31,6 +31,8 @@ class User extends Model implements AuthenticatableContract,
 	 */
 	protected $fillable = [ 'name', 'email', 'password', 'card_last_four', 'company', 'country', 'vat_number' ];
 
+	protected $dates = [ 'updated_at', 'created_at', 'last_login_at' ];
+
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */

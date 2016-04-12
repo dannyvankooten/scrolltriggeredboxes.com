@@ -7,7 +7,7 @@
     <div class="container">
 
         <p>Welcome, <strong>{{ $user->name }}</strong>.</p>
-        <p>Your last login was on <em>{{ $user->updated_at->format( 'F j, Y' ) }}</em>.</p>
+        <p>Your last login was on <em>{{ $user->last_login_at->format( 'F j, Y' ) }}</em> at <em>{{ $user->last_login_at->format( 'H:i' ) }}</em>.</p>
 
         <h4>Actions</h4>
         <ul>
