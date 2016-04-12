@@ -379,6 +379,9 @@ textarea {
   color: #aaa;
   font-weight: normal; }
 
+.small {
+  font-size: 80%; }
+
 .strong {
   font-weight: bold; }
 
@@ -393,6 +396,9 @@ textarea {
 
 .small-margin {
   margin: 20px 0; }
+
+.tiny-margin {
+  margin: 10px 0; }
 
 .pull-left {
   float: left; }
@@ -414,7 +420,7 @@ textarea {
 
 .form-group {
   margin-bottom: 24px;
-  max-width: 320px; }
+  max-width: 360px; }
 
 .inline {
   display: inline-block;
@@ -441,8 +447,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 textarea {
-  width: 100%;
-  max-width: 320px; }
+  width: 100%; }
 
 label {
   display: block;
