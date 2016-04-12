@@ -39,6 +39,8 @@
                 </td>
                 <td class="row-action">
                     <form method="post" action="/licenses/{{ $license->id }}">
+                        {!! csrf_field() !!}
+
                         @if( $license->subscription->active )
                             <input type="hidden" name="subscription[active]" value="0" />
                             <button class="button-small">Deactivate</button>
@@ -54,12 +56,19 @@
                 <th>Payment</th>
                 <td>
                     @if( $license->subscription->active )
-                        You will be charged <strong>${{ $license->subscription->amount + 0 }}</strong> on <strong>{{ $license->subscription->next_charge_at->format('m/d/Y') }}</strong>.
+                        You will be charged <strong>${{ $license->subscription->amount + 0 }}</strong> on <strong>{{ $license->subscription->getNextChargeDate()->format('m/d/Y') }}</strong>.
                     @else
                         No payment due.
                     @endif
                 </td>
-                <td class="row-action"></td>
+                <td class="row-action">
+                    @if( $license->subscription->isPaymentDue() )
+                        <form method="post" action="/licenses/{{ $license->id }}">
+                            {!! csrf_field() !!}
+                            <button class="button-small">Pay Now</button>
+                        </form>
+                    @endif
+                </td>
             </tr>
         </table>
 

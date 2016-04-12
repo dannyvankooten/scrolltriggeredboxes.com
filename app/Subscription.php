@@ -2,13 +2,14 @@
 
 use Illuminate\Database\Eloquent\Model;
 
+use DateTime;
+
 class Subscription extends Model {
 
 	protected $table = 'subscriptions';
 	public $timestamps = true;
 	protected $fillable = [ 'interval', 'next_charge_at', 'active' ];
 	protected $dates = ['created_at', 'updated_at', 'next_charge_at'];
-
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -28,8 +29,15 @@ class Subscription extends Model {
 	 * @return bool
 	 */
 	public function isPaymentDue() {
-		$now = new \DateTime('now');
+		$now = new DateTime('now');
 		return $now > $this->next_charge_at;
+	}
+
+	/**
+	 * @return DateTime
+	 */
+	public function getNextChargeDate() {
+		return $this->isPaymentDue() ? new DateTime('now') : $this->next_charge_at;
 	}
 
 }

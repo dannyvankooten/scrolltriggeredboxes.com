@@ -3,10 +3,11 @@
 namespace App\Console\Commands;
 
 use App\License;
+use App\Services\Charger;
 use App\Subscription;
 use Illuminate\Console\Command;
 use DateTime;
-use Stripe\Stripe;
+use Exception;
 
 class ChargeSubscriptions extends Command
 {
@@ -43,45 +44,24 @@ class ChargeSubscriptions extends Command
     {
         // find all subscriptions with a due payment
         $today = new DateTime('today 00:00:00');
-        $subscriptions = Subscription::where('next_charge_at', '<', $today)->get();
+        $subscriptions = Subscription::where('next_charge_at', '<', $today)->with('license')->get();
 
         // charge user
-        Stripe::setApiKey(config('services.stripe.secret'));
+        $charger = new Charger();
 
         // charge subscriptions
         foreach( $subscriptions as $subscription ) {
 
+            // charge
             try {
-                $charge = \Stripe\Charge::create([
-                    "amount" => $subscription->amount * 100, // amount in cents
-                    "currency" => "USD",
-                    "customer" => $subscription->user->stripe_customer_id
-                ]);
-            } catch(\Stripe\Error\Card $e) {
-                // The card has been declined
-                $this->error($e);
-
-                // TODO: Send out email to user that their subscription renewal failed
+                $success = $charger->subscription( $subscription );
+            } catch( Exception $e ) {
+                $this->error( $e->getMessage() );
                 continue;
             }
 
-            // success! extend license
-            $today = new DateTime("now");
-            $intervalString = "+1 {$subscription->interval}";
-
-            /** @var License $license */
-            $license = $subscription->license;
-
-            // start counting at expiration date or from today if already expired
-            $license->expires_at = $license->isExpired() ? $today->modify( $intervalString ) : $license->expires_at->modify( $intervalString );
-            $license->save();
-
-            // set new charge date
-            $subscription->next_charge_at = $license->expires_at->modify('-1 week');
-            $subscription->save();
-
             // print some info
-            $this->info("Successfully renewed license #{$license->id}");
+            $this->info("Successfully renewed license #{$subscription->license->id}");
         }
 
     }

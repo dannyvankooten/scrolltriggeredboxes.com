@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Activation;
 use App\Plugin;
+use App\Services\Charger;
 use App\Subscription;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
@@ -116,8 +117,26 @@ class LicenseController extends Controller {
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function update($id, Request $request ) {
-		$license = License::find($id)->firstOrFail();
-		$license->subscription->update( $request->input('subscription') );
+		$license = License::find($id)->with('subscription')->firstOrFail();
+
+		/** @var Subscription $subscription */
+		$subscription = $license->subscription;
+
+		$data = $request->input('subscription');
+		if( $data ) {
+			$subscription->fill( $data );
+
+			// update next charge date
+			$subscription->next_charge_at = $license->expires_at->modify('-1 week');
+			$subscription->save();
+		}
+
+		// if a payment is due, try to charge right away
+		if( $subscription->isPaymentDue() ) {
+			$charger = new Charger();
+			$charger->subscription( $subscription );
+		}
+
 		return redirect()->back()->with('message', 'Changes saved!');
 	}
 
