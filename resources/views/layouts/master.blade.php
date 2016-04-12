@@ -85,6 +85,10 @@
     document.head.appendChild(linkElement);
 </script>
 
+
+<script src="{{ asset('js/main.js') }}" type="text/javascript"></script>
+
 @yield('foot')
+
 </body>
 </html>
