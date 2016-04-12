@@ -13,7 +13,7 @@ class AuthController extends Controller {
 	 * AuthController constructor.
 	 */
 	public function __construct() {
-		$this->middleware( 'auth.license' );
+		$this->middleware( [ 'throttle', 'auth.license' ] );
 	}
 
 	/**

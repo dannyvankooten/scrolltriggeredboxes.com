@@ -31,6 +31,7 @@ Route::group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['we
 
 	// plugins
 	Route::get('/plugins', 'PluginController@overview' );
+	Route::get('/plugins/{id}/download', 'PluginController@download' )->name('plugins_download');
 
 	//Route::get('/invoices', 'AccountController@invoices' );
 	//Route::get('/invoices/{id}', 'AccountController@downloadInvoice');
@@ -57,7 +58,7 @@ Route::group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', 'na
 
 	Route::get( '/plugins', 'PluginController@index' );
 	Route::get( '/plugins/{id}', 'PluginController@get' );
-	Route::get( '/plugins/{id}/download', 'PluginController@download' )->name('plugins_download');
+	Route::get( '/plugins/{id}/download', 'PluginController@download' );
 
 	Route::any( '/helpscout', 'HelpScoutController@get' );
 } );

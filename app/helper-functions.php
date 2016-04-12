@@ -8,6 +8,7 @@
 
 /**
  * @param string $path
+ * @param string $subdomain
  *
  * @return string
  */
