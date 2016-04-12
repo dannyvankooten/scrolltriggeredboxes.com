@@ -1,7 +1,9 @@
 <?php namespace App\Console;
 
+use App\Console\Commands\ChargeSubscriptions;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Symfony\Component\Process\Process;
 
 class Kernel extends ConsoleKernel {
 
@@ -11,7 +13,7 @@ class Kernel extends ConsoleKernel {
 	 * @var array
 	 */
 	protected $commands = [
-
+		ChargeSubscriptions::class
 	];
 
 	/**
