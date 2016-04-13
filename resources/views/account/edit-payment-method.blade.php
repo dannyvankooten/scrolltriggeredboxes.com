@@ -19,12 +19,14 @@
     <h1 class="page-title">Update Payment Method</h1>
 
     @if(Auth::user()->card_last_four)
-    <p>You have registered your card ending in {{ Auth()->user()->card_last_four }}.</p>
-    <p>Use the following form if you want to use a different credit card.</p>
+        <p>You have registered your card ending in {{ Auth()->user()->card_last_four }}.</p>
+        <p>Use the following form if you want to use a different credit card.</p>
     @endif
 
+    @include('partials.form-messages')
+
     <div class="well small-margin" style="max-width: 360px;">
-        <noscript>Please enable JavaScript to select a payment method.</noscript>
+        <noscript>Please enable JavaScript to update your credit card.</noscript>
         <form method="post" id="cc-form" class="hide-if-no-js">
             {!! csrf_field() !!}
 

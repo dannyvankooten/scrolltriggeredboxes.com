@@ -566,16 +566,34 @@ a {
 
 .notice {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 16px 16px 16px 16px;
   margin-bottom: 20px;
-  width: 100%; }
+  width: 100%;
+  position: relative;
+  vertical-align: top; }
+  .notice:before {
+    font-family: "FontAwesome";
+    margin-right: 8px;
+    font-size: 22px;
+    display: inline;
+    line-height: 0;
+    vertical-align: middle; }
 
 .notice-success {
   color: #3c763d;
   background-color: #dff0d8;
   border-color: #d6e9c6; }
+  .notice-success:before {
+    content: "\f05d"; }
 
 .notice-warning {
+  color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #faebcc; }
+  .notice-warning:before {
+    content: "\f071"; }
+
+.notice-danger {
   color: #a94442;
   background-color: #f2dede;
   border-color: #ebccd1; }

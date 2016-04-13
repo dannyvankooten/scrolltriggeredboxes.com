@@ -10,9 +10,7 @@
 
         <p>The account area is where you manage your licenses and download all premium add-on plugins.</p>
 
-        @foreach($errors->all() as $error)
-            <p class="notice notice-error">{{ $error }}</p>
-        @endforeach
+        @include('partials.form-messages')
 
         <div class="well small-margin">
         <form method="post" action="/login">

@@ -12,20 +12,11 @@
 
             @if (session('status'))
                 <div class="notice notice-success">
-                    {{ session('status') }}
+                    <p>{{ session('status') }}</p>
                 </div>
             @endif
 
-            @if (count($errors) > 0)
-                <div class="notice notice-error">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+            @include('partials.form-messages')
 
             <form  role="form" method="POST" action="{{ url('/password/email') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">

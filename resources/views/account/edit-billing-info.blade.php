@@ -18,15 +18,7 @@
 
     <h1 class="page-title">Update Billing Information</h1>
 
-    @if (count($errors) > 0)
-    <div class="notice notice-warning">
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
+    @include('partials.form-messages')
 
     <form method="post" id="billing-info-form">
         {!! csrf_field() !!}

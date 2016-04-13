@@ -11,9 +11,11 @@
 
     <h1 class="page-title">Get a new license</h1>
 
-    <div class="payment-errors"></div>
+    @include('partials.form-messages')
 
     <form method="post" id="buy-form">
+
+        {!! csrf_field() !!}
 
         <div class="">
 
@@ -21,13 +23,13 @@
 
             <div class="form-group">
                 <label class="control-label">How many site activations do you need?</label>
-                <input type="number" name="quantity" class="form-control" value="1" step="1" />
+                <input type="number" name="quantity" class="form-control" value="1" step="1" min="1" required />
             </div>
 
             <div class="form-group radio">
                 <label class="control-label">Would you like to pay monthly or yearly?</label>
 
-                <label class="unstyled"><input type="radio" name="interval" value="month" checked> Monthly</label>
+                <label class="unstyled"><input type="radio" name="interval" value="month" checked required> Monthly</label>
                 <label class="unstyled"><input type="radio" name="interval" value="year"> Yearly</label>
             </div>
 
