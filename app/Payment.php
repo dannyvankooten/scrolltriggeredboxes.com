@@ -2,6 +2,18 @@
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Payment
+ * @package App
+ *
+ * @property User $user
+ * @property Subscription $subscription
+ * @property string currency
+ * @property double subtotal
+ * @property double tax
+ * @property \DateTime created_at
+ * @property \DateTime updated_at
+ */
 class Payment extends Model
 {
 

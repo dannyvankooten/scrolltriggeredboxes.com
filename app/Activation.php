@@ -2,6 +2,18 @@
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Activation
+ *
+ * @package App
+ *
+ * @property License $license
+ * @property Plugin $plugin
+ * @property int id
+ * @property string url
+ * @property \DateTime created_at
+ * @property \DateTime updated_at
+ */
 class Activation extends Model {
 
 	protected $table = 'activations';

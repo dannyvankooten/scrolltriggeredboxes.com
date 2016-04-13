@@ -4,6 +4,19 @@ use Illuminate\Database\Eloquent\Model;
 
 use DateTime;
 
+/**
+ * Class Subscription
+ *
+ * @package App
+ *
+ * @property User $user
+ * @property License $license
+ * @property Payment[] $payments
+ * @property bool $active
+ * @property DateTime $next_charge_at
+ * @property \DateTime created_at
+ * @property \DateTime updated_at
+ */
 class Subscription extends Model {
 
 	protected $table = 'subscriptions';

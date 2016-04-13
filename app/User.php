@@ -11,6 +11,23 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
+/**
+ * Class User
+ *
+ * @package App
+ *
+ * @property License[] $licenses
+ * @property Payment[] $payments
+ * @property string $email
+ * @property string $name
+ * @property string $country
+ * @property string $vat_number
+ * @property string $company
+ * @property string $card_last_four
+ * @proeprty boolean $is_admin
+ * @property \DateTime created_at
+ * @property \DateTime updated_at
+ */
 class User extends Model implements AuthenticatableContract,
 	AuthorizableContract,
 	CanResetPasswordContract {

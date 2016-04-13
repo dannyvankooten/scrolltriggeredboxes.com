@@ -6,6 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * Class License
+ *
+ * @package App
+ *
+ * @property User $user
+ * @property Activation[] $activations
+ * @property Subscription $subscription
+ * @property \DateTime $expires_at
+ * @property \DateTime created_at
+ * @property \DateTime updated_at
+ */
 class License extends Model {
 
 	use SoftDeletes;
