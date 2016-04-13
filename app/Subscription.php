@@ -30,7 +30,7 @@ class Subscription extends Model {
 	 */
 	public function payments()
 	{
-		return $this->hasMany('App\Payment', 'user_id', 'id');
+		return $this->hasMany('App\Payment', 'subscription_id', 'id');
 	}
 
 	/**

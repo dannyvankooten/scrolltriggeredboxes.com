@@ -35,7 +35,7 @@ class Payment extends Model
 	 * @return double
 	 */
 	public function getTotal() {
-		return $this->total + $this->tax;
+		return number_format( $this->subtotal + $this->tax, 2 );
 	}
 
 	/**
@@ -50,5 +50,17 @@ class Payment extends Model
 	 */
 	public function getCurrency() {
 		return strtoupper( $this->currency );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCurrencySign() {
+		static $map = [
+			'USD' => '$',
+			'EUR' => '€'
+		];
+
+		return $map[ $this->currency ];
 	}
 }

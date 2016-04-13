@@ -21,7 +21,7 @@ class CreatePaymentsTable extends Migration
             $table->decimal('subtotal', 10, 2);
             $table->decimal('tax', 10, 2)->default(0);
             $table->string('currency')->default('USD');
-
+            
             $table->timestamps();
         });
     }

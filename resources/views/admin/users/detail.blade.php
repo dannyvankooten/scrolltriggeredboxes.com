@@ -1,26 +1,29 @@
 @extends('layouts.admin')
 
-@section('title','Licenses - Boxzilla')
+@section('title','View User - Boxzilla')
 
 @section('content')
 
     <div class="container">
-        <h1>Licenses</h1>
+
+        <div class="breadcrumbs bordered padded small-margin">
+            <a href="/users/">Users</a> &rightarrow; {{ $user->email }}
+        </div>
+
+        <h1>User {{ $user->email }}</h1>
 
         <table class="table table-striped">
             <thead>
-                <tr>
-                    <th>License Key</th>
-                    <th>Owner</th>
-                    <th width="20%">Used on # sites</th>
-                    <th>Created at</th>
-                </tr>
+            <tr>
+                <th>License Key</th>
+                <th width="20%">Used on # sites</th>
+                <th>Created at</th>
+            </tr>
             </thead>
             <tbody>
-            @foreach($licenses as $license)
+            @foreach($user->licenses as $license)
                 <tr>
                     <td><a href="{{ url('/licenses/' . $license->id) }}">{{ $license->license_key }}</a></td>
-                    <td>{{ $license->user->email }}</td>
                     <td>{{ count( $license->activations ) }}</td>
                     <td>{{ $license->created_at->format('F d, Y') }}</td>
                 </tr>
@@ -28,6 +31,7 @@
             </tbody>
         </table>
 
+        <p><a href="javascript:history.go(-1);">&leftarrow; Go back.</a></p>
 
     </div>
 @stop

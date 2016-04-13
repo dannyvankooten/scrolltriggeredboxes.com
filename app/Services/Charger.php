@@ -20,6 +20,42 @@ class Charger {
     }
 
     /**
+     * Refund a payment
+     *
+     * @param Payment $payment
+     *
+     * @return boolean
+     */
+    public function refund( Payment $payment, $amount = null )
+    {
+        $args = array(
+            "charge" => $payment->stripe_id,
+            'reason' => 'requested_by_customer'
+        );
+
+        if( $amount ) {
+            $args['amount'] = $amount;
+        }
+
+        try {
+            $refund = \Stripe\Refund::create($args);
+        } catch( \Stripe\Error\InvalidRequest $e ) {
+            // invalid request must be because charge was refunded
+            $payment->delete();
+            return true;
+        }
+
+        if( $refund->status == 'succeeded' ) {
+            $payment->delete();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Charge a subscription
+     *
      * @param Subscription $subscription
      *
      * @return bool

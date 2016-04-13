@@ -55,7 +55,8 @@ button,
   text-decoration: none;
 }
 
-.button-small {
+.button-small,
+input[type="submit"].button-small {
   padding: 3px 4px;
   font-size: 14px;
 }

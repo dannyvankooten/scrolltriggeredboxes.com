@@ -69,6 +69,11 @@ Route::group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['admi
 		return redirect( '/licenses' );
 	} );
 
+	Route::get( '/users', 'Admin\UserController@overview' );
+	Route::get( '/users/{id}', 'Admin\UserController@detail' );
+
 	Route::get( '/licenses', 'Admin\LicenseController@overview' );
 	Route::get( '/licenses/{id}', 'Admin\LicenseController@detail' );
+
+	Route::delete( '/payments/{id}', 'Admin\PaymentController@delete' );
 });

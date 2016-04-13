@@ -21,9 +21,36 @@
 
 <body>
 
-<div role="main" itemprop="mainContentOfPage">
+<div class="header clearfix">
+    <div class="container">
+        <h2 class="site-title pull-left">
+            <a href="{{ url('/') }}"><span>Boxzilla</span></a>
+        </h2>
+        <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+            <ul class="nav nav-inline">
+                <li role="presentation"><a href="/users">Users</a></li>
+                <li role="presentation"><a href="/licenses">Licenses</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div role="main" class="big-margin" itemprop="mainContentOfPage">
+
+    @if (session('message'))
+        <div class="notice notice-success">
+            {!! session('message') !!}
+        </div>
+    @endif
+
     @yield('content')
 </div>
+
+<footer class="muted">
+    <div class="container">
+        <em>There is no value in anything until it is finished</em> &mdash; The Great Khan
+    </div>
+</footer>
 
 @yield('foot')
 </body>

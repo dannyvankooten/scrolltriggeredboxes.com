@@ -2,6 +2,7 @@
 @import "variables";
 @import "utils";
 @import "forms";
+@import "tables";
 
 body {
   font-family: "Helvetica Neue", "Helvetica", Arial, Verdana, sans-serif;
@@ -95,29 +96,7 @@ a {
   border-color: #ebccd1;
 }
 
-.table {
-  border-collapse: collapse;
-  width: 100%;
-  border: 1px solid #eee;
-}
 
-.table .row-action {
-
-}
-
-.table.row-scoped th {
-  width: 160px;
-}
-
-.table th,
-.table td {
-  text-align: left;
-  padding: 6px 12px;
-  border: 1px solid #eee;
-  border-left: 0;
-  border-right: 0;
-  vertical-align: middle;
-}
 
 .main-container p,
 .main-container table {
