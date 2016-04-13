@@ -14,14 +14,7 @@ class Plugin extends Model {
 	// hidden from json export
 	protected $hidden = array( 'id', 'created_at', 'updated_at', 'changelog', 'description', 'url', 'slug', 'upgrade_notice', 'tested', 'image_path', 'status' );
 	protected $appends = [ 'page_url', 'image_url' ];
-
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-	 */
-	public function licenses() {
-		return $this->belongsToMany('App\License', 'plugin_licenses', 'license_id', 'plugin_id' );
-	}
-
+	
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */

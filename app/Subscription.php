@@ -26,6 +26,14 @@ class Subscription extends Model {
 	}
 
 	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function payments()
+	{
+		return $this->hasMany('App\Payment', 'user_id', 'id');
+	}
+
+	/**
 	 * @return boolean
 	 */
 	public function isActive() {
@@ -57,23 +65,23 @@ class Subscription extends Model {
 	/**
 	 * @return double
 	 */
-	public function getVatAmount() {
+	public function getTaxAmount() {
 
-		$vatRate = $this->user->getVatRate();
-		$vatAmount = 0.00;
+		$taxRate = $this->user->getTaxRate();
+		$taxAmount = 0.00;
 
-		if( $vatRate > 0) {
-			$vatAmount = $this->amount * ( $vatRate / 100 );
+		if( $taxRate > 0) {
+			$taxAmount = $this->amount * ( $taxRate / 100 );
 		}
 
-		return $vatAmount;
+		return $taxAmount;
 	}
 
 	/**
 	 * Gets the amount for this subscription incl. VAT
 	 */
-	public function getAmountInclVat() {
-		return $this->getAmount() + $this->getVatAmount();
+	public function getAmountInclTax() {
+		return $this->getAmount() + $this->getTaxAmount();
 	}
 
 }

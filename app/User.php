@@ -45,6 +45,14 @@ class User extends Model implements AuthenticatableContract,
 	}
 
 	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function payments()
+	{
+		return $this->hasMany('App\Payment', 'user_id', 'id');
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function hasValidLicense()
@@ -90,7 +98,7 @@ class User extends Model implements AuthenticatableContract,
 	/**
 	 * @return double
 	 */
-	public function getVatRate() {
+	public function getTaxRate() {
 
 		// no tax for non-EU customers
 		if( ! $this->inEurope() ) {

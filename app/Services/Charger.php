@@ -3,7 +3,8 @@
 namespace App\Services;
 
 use App\Subscription;
-use App\License;
+use App\Payment;
+
 
 use Stripe\Stripe;
 use DateTime;
@@ -31,7 +32,7 @@ class Charger {
         $intervalString = "+1 {$subscription->interval}";
 
         // calculate amount in cents
-        $amountInCents = $subscription->getAmountInclVat() * 100;
+        $amountInCents = $subscription->getAmountInclTax() * 100;
 
         try {
             $charge = \Stripe\Charge::create([
@@ -42,6 +43,14 @@ class Charger {
         } catch(\Stripe\Error\Card $e) {
            throw new Exception( $e->getMessage(), $e->getCode() );
         }
+
+        $payment = new Payment();
+        $payment->user_id = $user->id;
+        $payment->subscription_id = $subscription->id;
+        $payment->subtotal = $subscription->getAmount();
+        $payment->tax = $subscription->getTaxAmount();
+        $payment->stripe_id = $charge->id;
+        $payment->save();
 
         // success! extend license
         $license = $subscription->license;
