@@ -52,8 +52,6 @@ class AccountController extends Controller {
 	public function updateBillingInfo( Request $request ) {
 		$user = $this->auth->user();
 
-		// TODO: verify email address before changing
-
 		// validate new values
 		$this->validate( $request, [
 			'user.email' => 'required|email',
@@ -114,6 +112,17 @@ class AccountController extends Controller {
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function create( Request $request ) {
+
+		// validate new values
+		$this->validate( $request, [
+			'token' => 'required',
+			'user.email' => 'required|email',
+			'user.country' => 'required',
+			'user.vat_number' => 'sometimes|vat_number'
+		], array(
+			'email' => 'Please enter a valid email address.',
+			'vat_number' => 'Please enter a valid VAT number.'
+		));
 
 		// create user
 		$userData = $request->input('user');

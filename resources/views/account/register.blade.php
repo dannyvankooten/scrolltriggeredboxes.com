@@ -10,6 +10,16 @@
 
     <h1>Register</h1>
 
+    @if (count($errors) > 0)
+        <div class="notice notice-warning">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form method="post" id="buy-form">
         {!! csrf_field() !!}
 
@@ -21,14 +31,14 @@
 
             <div class="form-group">
                 <label class="control-label">How many site activations do you need?</label>
-                <input type="number" name="quantity" class="form-control" value="1" step="1" required />
+                <input type="number" name="quantity" class="form-control" value="{{ old('quantity', 1) }}" step="1" min="1" required />
             </div>
 
             <div class="form-group radio">
                 <label class="control-label">Would you like to pay monthly or yearly?</label>
 
-                <label class="unstyled"><input type="radio" name="interval" value="month" checked> Monthly</label>
-                <label class="unstyled"><input type="radio" name="interval" value="year"> Yearly</label>
+                <label class="unstyled"><input type="radio" name="interval" value="month" {{ old('interval', 'month') === 'month' ? 'checked' : '' }}> Monthly</label>
+                <label class="unstyled"><input type="radio" name="interval" value="year" {{ old('interval') === 'year' ? 'checked' : '' }}> Yearly</label>
             </div>
 
             <p>You will be charged <span class="total strong">$10 per month</span>.</p>
@@ -46,31 +56,24 @@
                 <label>Email address</label>
 
                 <div class="form-element">
-                    <input type="email" name="user[email]" value="" required>
+                    <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" required>
                     <i class="fa fa-at form-element-icon"></i>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Name</label>
-                <div class="form-element">
-                    <input type="text" name="user[name]" value="">
-                    <i class="fa fa-user form-element-icon"></i>
-                </div>
-            </div>
-
-            <div class="form-group">
                 <label>Country</label>
-                <select name="user[country]" id="country-input">
+                <select name="user[country]" id="country-input" required>
+                    <option value="" disabled {{ old('user.country','') === '' ? 'selected' : '' }}>Select your country..</option>
                     @foreach(Countries::all() as $code => $country)
-                    <option value="{{ $code }}">{{ $country }}</option>
+                    <option value="{{ $code }}" {{ old('user.country') == $code ? 'selected' : '' }}>{{ $country }}</option>
                     @endforeach
                 </select>
             </div>
 
             <div class="form-group eu-only" style="display: none;">
                 <label>VAT Number</label>
-                <input type="text" name="user[vat_number]" value="" />
+                <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" />
             </div>
 
         </div>
@@ -90,22 +93,22 @@
                     <label>Credit Card Number</label>
 
                     <div class="form-element">
-                        <input type="text" data-stripe="number" placeholder="**** **** **** ****">
+                        <input type="text" data-stripe="number" placeholder="**** **** **** ****" required>
                         <i class="fa fa-credit-card form-element-icon"></i>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Expiration</label>
-                    <select data-stripe="exp_month" style="width: 80px; display: inline;">
-                        <option disabled>Month</option>
+                    <select data-stripe="exp_month" style="width: 80px; display: inline;" required>
+                        <option value="" disabled selected>Month</option>
                         @for ($i = 1; $i <= 12; $i++)
                         <option>{{ $i }}</option>
                         @endfor
                     </select>
 
-                    <select data-stripe="exp_year" style="width: 80px; display: inline;">
-                        <option disabled>Year</option>
+                    <select data-stripe="exp_year" style="width: 80px; display: inline;" required>
+                        <option value="" disabled selected>Year</option>
                         @for ($i = 0; $i < 10; $i++)
                         <option value="{{ date('Y') + $i }}">{{ date('y') + $i }}</option>
                         @endfor
@@ -116,7 +119,7 @@
                     <label>CVC</label>
 
                     <div class="form-element" style="width: 120px;">
-                        <input type="text" data-stripe="cvc" maxlength="4">
+                        <input type="text" data-stripe="cvc" maxlength="4" required>
                         <i class="fa fa-lock form-element-icon"></i>
                     </div>
 
@@ -159,53 +162,6 @@
         });
     }
 
-    // steps
-    function Steps( selector ) {
-        this.toggle = function() {
-            // toggle step visibility
-            [].forEach.call(elements,function(el) {
-                el.style.display = ( el === elements[ currentStep ] ) ? '' : 'none';
-            });
-
-            // focus on first input
-           var firstInput = elements[currentStep].querySelector('input');
-            if( firstInput ) {
-                firstInput.focus();
-            }
-
-            // highlight links to this step
-           var links = document.querySelectorAll('[data-step]');
-            [].forEach.call(links, function(el) {
-                el.className = el.className.replace('current','');
-
-                if( el.getAttribute('data-step') == ( currentStep + 1 ) ) {
-                    el.className += " current";
-                }
-            })
-        };
-        this.next = function() {
-            currentStep++;
-            this.toggle();
-        };
-        this.previous = function() {
-            currentStep--;
-            this.toggle();
-        };
-        this.go = function(step) {
-            currentStep = step-1;
-            this.toggle();
-        };
-
-        this.done = function() {
-            return ( currentStep + 1 ) == elements.length;
-        };
-
-        var elements = document.querySelectorAll(selector);
-        var currentStep = 0;
-
-        this.toggle();
-    }
-
     function toggleEuFields() {
         var euCountries = [ 'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK' ];
         var isEu = euCountries.indexOf(countryElement.value.toUpperCase()) > -1;
@@ -232,21 +188,12 @@
 
     form.addEventListener( 'submit', function(event) {
 
-        // if we're not at last step yet, proceed one step.
-        if( ! steps.done() ) {
-            event.preventDefault();
-            steps.next();
-            return false;
-        }
-
-        // TODO: Validate all other fields (preferably per step)
-
         event.preventDefault();
 
         // soft-validate credit card
         var creditCardNumber = form.querySelector('[data-stripe="number"]').value;
         if( ! Stripe.card.validateCardNumber(creditCardNumber) ) {
-            error( "That credit card number doesn't seem right.")
+            error( "That credit card number doesn't seem right.");
             return false;
         }
 
@@ -271,7 +218,6 @@
             }
         });
 
-        event.preventDefault();
         return false;
     });
 
@@ -280,18 +226,22 @@
     Stripe.setPublishableKey('{{ config('services.stripe.key') }}');
 
     // try to get country from ipinfo.io
-    var req = new XMLHttpRequest();
-    req.onreadystatechange = function() {
-        if (req.readyState != XMLHttpRequest.DONE || req.status != 200) {
-            return;
-        }
+    if( countryElement.value === '' ) {
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function() {
+            if (req.readyState != XMLHttpRequest.DONE || req.status != 200) {
+                return;
+            }
 
-       var res = JSON.parse(req.responseText);
-        document.getElementById('country-input').value = res.country;
-    };
-    req.open("GET", "http://ipinfo.io");
-    req.setRequestHeader('Accept','application/json');
-    req.send();
+            var res = JSON.parse(req.responseText);
+            countryElement.value = res.country;
+            toggleEuFields();
+        };
+        req.open("GET", "http://ipinfo.io");
+        req.setRequestHeader('Accept','application/json');
+        req.send();
+    }
+
 
 </script>
 @stop
