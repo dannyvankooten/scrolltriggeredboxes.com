@@ -132,11 +132,17 @@ class Plugin extends Model {
 		return $data;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getImageUrlAttribute()
 	{
 		return asset( $this->image_path );
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getPageUrlAttribute()
 	{
 		return url( sprintf( '/plugins/%s', $this->url ) );
