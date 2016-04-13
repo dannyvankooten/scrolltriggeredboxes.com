@@ -47,4 +47,33 @@ class Subscription extends Model {
 		return $this->isPaymentDue() ? new DateTime('now') : $this->next_charge_at;
 	}
 
+	/**
+	 * @return double
+	 */
+	public function getAmount() {
+		return $this->amount;
+	}
+
+	/**
+	 * @return double
+	 */
+	public function getVatAmount() {
+
+		$vatRate = $this->user->getVatRate();
+		$vatAmount = 0.00;
+
+		if( $vatRate > 0) {
+			$vatAmount = $this->amount * ( $vatRate / 100 );
+		}
+
+		return $vatAmount;
+	}
+
+	/**
+	 * Gets the amount for this subscription incl. VAT
+	 */
+	public function getAmountInclVat() {
+		return $this->getAmount() + $this->getVatAmount();
+	}
+
 }

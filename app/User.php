@@ -31,6 +31,9 @@ class User extends Model implements AuthenticatableContract,
 	 */
 	protected $fillable = [ 'name', 'email', 'password', 'card_last_four', 'company', 'country', 'vat_number' ];
 
+	/**
+	 * @var array
+	 */
 	protected $dates = [ 'updated_at', 'created_at', 'last_login_at' ];
 
 	/**
@@ -87,7 +90,7 @@ class User extends Model implements AuthenticatableContract,
 	/**
 	 * @return double
 	 */
-	public function getTaxRate() {
+	public function getVatRate() {
 
 		// no tax for non-EU customers
 		if( ! $this->inEurope() ) {
