@@ -6,6 +6,7 @@ use App\Activation;
 use App\Plugin;
 use App\Services\Charger;
 use App\Subscription;
+use Exception;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -56,39 +57,32 @@ class LicenseController extends Controller {
 			$amount = $amount * ( ( 100 - $discount_percentage ) / 100 );
 		}
 
-		// Setup payment gateway
-		Stripe::setApiKey(config('services.stripe.secret'));
-
-		try {
-			$charge = \Stripe\Charge::create([
-				"amount" => $amount * 100, // amount in cents
-				"currency" => "USD",
-				"customer" => $user->stripe_customer_id
-			]);
-		} catch(\Stripe\Error\Card $e) {
-			// The card has been declined
-			// TODO: Do something!
-			die('Uh oh. ' . $e);
-		}
-
-		// Success!
+		// First, create license.
 		$license = new License();
 		$license->license_key = License::generateKey();
 		$license->user()->associate( $user );
 		$license->site_limit = $quantity;
-		$license->expires_at = new \DateTime("+1 {$interval}");
+		$license->expires_at = new \DateTime("now");
 		$license->save();
 
-		// Create subscription
+		// Then, create subscription
 		$subscription = new Subscription([
 			'interval' => $interval,
 			'active' => 1,
-			'next_charge_at' => (new DateTime("+1 $interval"))->modify('-1 week')
+			'next_charge_at' => new DateTime("now")
 		]);
 		$subscription->amount = $amount;
 		$subscription->license()->associate( $license );
 		$subscription->user()->associate( $user );
 		$subscription->save();
+
+		// finally, charge subscription so that license starts
+		$charger = new Charger();
+		try {
+			$success = $charger->subscription( $subscription );
+		} catch( Exception $e ) {
+			return redirect('/')->with('error', $e->getMessage());
+		}
 
 		return redirect('/licenses/' . $license->id )->with('message', 'You now have a new license!');
 	}

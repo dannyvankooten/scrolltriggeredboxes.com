@@ -50,18 +50,32 @@
             <tr>
                 <th>Status</th>
                 <td>{{ $license->subscription->active ? "Active" : "Inactive" }}</td>
+                <td>
+                    <form method="POST" action="/subscriptions/{{ $license->subscription->id }}">
+                        @if( $license->subscription->active )
+                            <input type="hidden" name="subscription[active]" value="0" />
+                            <button class="button-small">Deactivate</button>
+                        @else
+                            <input type="hidden" name="subscription[active]" value="1" />
+                            <button class="button-small">Reactivate</button>
+                        @endif
+                    </form>
+                </td>
             </tr>
             <tr>
                 <th>Expires</th>
                 <td>{{ $license->expires_at->format('Y-m-d') }}</td>
+                <td></td>
             </tr>
             <tr>
                 <th>Interval</th>
                 <td>{{ ucfirst( $license->subscription->interval ) . "ly" }}</td>
+                <td></td>
             </tr>
             <tr>
                 <th>Amount</th>
                 <td>${{ $license->subscription->amount }}</td>
+                <td></td>
             </tr>
 
         </table>

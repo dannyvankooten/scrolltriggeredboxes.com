@@ -75,5 +75,7 @@ Route::group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['admi
 	Route::get( '/licenses', 'Admin\LicenseController@overview' );
 	Route::get( '/licenses/{id}', 'Admin\LicenseController@detail' );
 
+	Route::post( '/subscriptions/{id}', 'Admin\SubscriptionController@update' );
+
 	Route::delete( '/payments/{id}', 'Admin\PaymentController@delete' );
 });

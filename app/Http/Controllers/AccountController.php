@@ -159,7 +159,7 @@ class AccountController extends Controller {
 			$amount = $amount * ( ( 100 - $discount_percentage ) / 100 );
 		}
 
-		// Success!
+		// First, create license.
 		$license = new License();
 		$license->license_key = License::generateKey();
 		$license->user()->associate( $user );
@@ -167,7 +167,7 @@ class AccountController extends Controller {
 		$license->expires_at = new \DateTime("now");
 		$license->save();
 
-		// Create subscription
+		// Then, create subscription
 		$subscription = new Subscription([
 			'interval' => $interval,
 			'active' => 1,
