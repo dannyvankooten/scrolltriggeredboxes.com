@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\License;
 use App\Subscription;
 use App\Payment;
 
@@ -26,29 +27,27 @@ class Charger {
      *
      * @return boolean
      */
-    public function refund( Payment $payment, $amount = null )
+    public function refund( Payment $payment )
     {
         $args = array(
             "charge" => $payment->stripe_id,
             'reason' => 'requested_by_customer'
         );
 
-        if( $amount ) {
-            $args['amount'] = $amount;
-        }
-
         try {
             $refund = \Stripe\Refund::create($args);
         } catch( \Stripe\Error\InvalidRequest $e ) {
-            // invalid request must be because charge was refunded
-            $payment->delete();
-            return true;
+
         }
 
-        if( $refund->status == 'succeeded' ) {
-            $payment->delete();
-            return true;
-        }
+        $payment->delete();
+
+        $subscription = $payment->subscription;
+        $license = $subscription->license;
+
+        // substract one interval from license expiration date
+        $license->expires_at = $license->expires_at->modify("-1 {$subscription->interval}");
+        $license->save();
 
         return false;
     }
