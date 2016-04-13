@@ -11,8 +11,11 @@ use Exception;
 
 class Charger {
 
+    /**
+     * Charger constructor.
+     */
     public function __construct() {
-
+        Stripe::setApiKey(config('services.stripe.secret'));
     }
 
     /**
@@ -23,24 +26,24 @@ class Charger {
      * @throws Exception
      */
     public function subscription( Subscription $subscription ) {
-        // charge user
-        Stripe::setApiKey(config('services.stripe.secret'));
+        $user = $subscription->user;
+        $today = new DateTime("now");
+        $intervalString = "+1 {$subscription->interval}";
+
+        // calculate amount in cents
+        $amountInCents = $subscription->getAmountInclVat() * 100;
 
         try {
             $charge = \Stripe\Charge::create([
-                "amount" => $subscription->amount * 100, // amount in cents
+                "amount" => $amountInCents,
                 "currency" => "USD",
-                "customer" => $subscription->user->stripe_customer_id
+                "customer" => $user->stripe_customer_id
             ]);
         } catch(\Stripe\Error\Card $e) {
            throw new Exception( $e->getMessage(), $e->getCode() );
         }
 
         // success! extend license
-        $today = new DateTime("now");
-        $intervalString = "+1 {$subscription->interval}";
-
-        /** @var License $license */
         $license = $subscription->license;
 
         // start counting at expiration date or from today if already expired
