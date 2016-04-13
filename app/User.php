@@ -108,4 +108,11 @@ class User extends Model implements AuthenticatableContract,
 		return VatRates::country( $this->country, 'standard' );
 	}
 
+	/**
+	 * @return bool
+	 */
+	function isAdmin() {
+		return (bool) $this->is_admin;
+	}
+
 }

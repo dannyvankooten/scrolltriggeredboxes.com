@@ -30,6 +30,10 @@ class Kernel extends HttpKernel {
 		'api' => [
 			
 		],
+		'admin' => [
+			\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+			Middleware\Admin::class
+		]
 	];
 
 	/**
@@ -38,12 +42,13 @@ class Kernel extends HttpKernel {
 	 * @var array
 	 */
 	protected $routeMiddleware = [
-		'auth.user' => 'App\Http\Middleware\AuthenticateUser',
-		'auth.license' => 'App\Http\Middleware\AuthenticateLicense',
-		'auth.admin' => 'App\Http\Middleware\AuthenticateAdmin',
-		'helpscout.signature' => 'App\Http\Middleware\VerifyHelpScoutSignature',
+		'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+		'auth.user' => Middleware\AuthenticateUser::class,
+		'auth.license' => Middleware\AuthenticateLicense::class,
+		'admin' => Middleware\Admin::class,
+		'guest' => Middleware\RedirectIfAuthenticated::class,
+		'helpscout.signature' => Middleware\VerifyHelpScoutSignature::class,
 		'can' => \Illuminate\Foundation\Http\Middleware\Authorize::class,
-		'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
 		'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 	];
 

@@ -5,8 +5,11 @@ use App\License;
 
 class LicenseController extends Controller {
 
+	/**
+	 * LicenseController constructor.
+	 */
 	public function __construct() {
-		$this->middleware('auth.admin');
+		
 	}
 
 

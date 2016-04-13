@@ -1,8 +1,9 @@
 <?php namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
-class AuthenticateAdmin {
+class Admin {
 
 	/**
 	 * Handle an incoming request.
@@ -13,11 +14,12 @@ class AuthenticateAdmin {
 	 */
 	public function handle($request, Closure $next)
 	{
-		if( ! in_array( $request->getClientIp(), config('auth.admins') ) ) {
-			return response('Unauthorized.', 401);
-		}
+		if ( Auth::check() && Auth::user()->isAdmin() )
+		{
+            return $next($request);
+        }
 
-		return $next($request);
+		return response('Unauthorized.', 401);
 	}
 
 }

@@ -64,7 +64,7 @@ Route::group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', 'na
 } );
 
 // Admin url's
-Route::group(['domain' => sprintf( 'admin.%s', $domain )], function () {
+Route::group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['admin'] ], function () {
 	Route::get( '/', function() {
 		return redirect( '/licenses' );
 	} );

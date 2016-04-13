@@ -27,3 +27,4 @@ class AuthenticateUser
 		return $next($request);
 	}
 }
+
