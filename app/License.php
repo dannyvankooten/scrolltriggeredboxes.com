@@ -32,12 +32,6 @@ class License extends Model {
 	}
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-	 */
-	public function plugins() {
-		return $this->belongsToMany('App\Plugin', 'plugin_licenses', 'license_id', 'plugin_id' );
-	}
-
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */

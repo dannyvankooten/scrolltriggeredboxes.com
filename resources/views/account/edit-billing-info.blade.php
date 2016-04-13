@@ -76,7 +76,7 @@
 
     </form>
 
-    <p>Given the current information, your VAT rate is <strong>{{ $user->getTaxRate() }}%</strong>.</p>
+    <p>Given the current information, your VAT rate is <strong>{{ $user->getVatRate() }}%</strong>.</p>
 
     <p>
         <a href="javascript:history.go(-1);">&lsaquo; Go back</a>
