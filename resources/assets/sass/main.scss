@@ -9,6 +9,7 @@ body {
   font-family: "Helvetica Neue", "Helvetica", Arial, Verdana, sans-serif;
   font-size: 16px;
   line-height: 1.4;
+  color: #333;
 }
 
 * {
@@ -20,6 +21,11 @@ body {
 a {
   color: $primary_color;
   cursor: pointer;
+}
+
+h1, h2, h3, h4, h5 {
+  color: #000;
+  margin: 24px 0 12px;
 }
 
 .site-title,
@@ -87,7 +93,7 @@ a {
 
 .well {
   background: #eef5fa;
-  border: 1px solid #ccc;
+  border: 1px solid darken( #eef5fa, 5% );
   padding: 20px;
 }
 .well > *:last-child {

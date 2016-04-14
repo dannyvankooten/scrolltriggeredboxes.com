@@ -33,7 +33,7 @@
 
     <p class="medium-margin"><a class="button" href="/licenses/new">Purchase a new license.</a></p>
 
-    <p><a href="javascript:history.go(-1);">&lsaquo; Go back</a></p>
+    <p><a href="/">&leftarrow; Back to account overview</a></p>
 
 </div>
 @stop

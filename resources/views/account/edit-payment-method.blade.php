@@ -76,6 +76,7 @@
             </div>
 
             <input type="hidden" name="token" value="" />
+            <input type="hidden" name="user[card_last_four]" value="" />
         </form>
     </div>
 
@@ -132,6 +133,7 @@
                 if (response.error) {
                     error(response.error.message);
                 } else {
+                    form.elements.namedItem('user[card_last_four]').value = response.card.last4;
                     form.elements.namedItem('token').value = response.id;
                     form.submit();
                 }

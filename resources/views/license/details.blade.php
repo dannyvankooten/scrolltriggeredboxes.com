@@ -97,7 +97,7 @@
             @endif
         </table>
 
-        <p><a href="/">Back to your account.</a></p>
+        <p><a href="/licenses">&leftarrow; Back to all your licenses.</a></p>
     </div>
 @stop
 
