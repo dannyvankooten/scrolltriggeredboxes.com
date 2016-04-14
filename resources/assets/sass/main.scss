@@ -3,6 +3,7 @@
 @import "utils";
 @import "forms";
 @import "tables";
+@import "notices";
 
 body {
   font-family: "Helvetica Neue", "Helvetica", Arial, Verdana, sans-serif;
@@ -64,7 +65,8 @@ a {
 }
 
 .nav-inline {
-  padding-left: 0;
+  padding: 0;
+  margin: 0;
   list-style: none;
 }
 
@@ -77,51 +79,6 @@ a {
   padding: 3px;
 }
 
-.notice {
-  border: 1px solid #ddd;
-  padding: 16px 16px 16px 16px;
-  margin-bottom: 20px;
-  width: 100%;
-  position: relative;
-  vertical-align: top;
-
-  &:before{
-    font-family: "FontAwesome";
-    margin-right: 8px;
-    font-size: 22px;
-    display: inline;
-    line-height: 0;
-    vertical-align: middle;
-  }
-}
-
-.notice-success {
-  color: #3c763d;
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
-
-  &:before {
-    content: "\f05d";
-  }
-}
-
-.notice-warning {
-  color: #8a6d3b;
-  background-color: #fcf8e3;
-  border-color: #faebcc;
-
-  &:before{
-    content: "\f071";
-  }
-}
-
-.notice-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
-}
-
-
 
 .main-container p,
 .main-container table {
@@ -129,7 +86,7 @@ a {
 }
 
 .well {
-  background: #fefefe;
+  background: #eef5fa;
   border: 1px solid #ccc;
   padding: 20px;
 }

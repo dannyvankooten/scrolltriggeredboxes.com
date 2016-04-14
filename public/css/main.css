@@ -451,7 +451,7 @@ textarea {
 
 label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
   font-weight: bold; }
 
 input[type="submit"],
@@ -507,6 +507,40 @@ button:focus,
   border-right: 0;
   vertical-align: middle; }
 
+.notice {
+  border: 1px solid #ddd;
+  padding: 16px 16px 16px 16px;
+  margin-bottom: 20px;
+  width: 100%;
+  position: relative;
+  vertical-align: top; }
+  .notice:before {
+    font-family: "FontAwesome";
+    margin-right: 8px;
+    font-size: 22px;
+    display: inline;
+    line-height: 0;
+    vertical-align: middle; }
+
+.notice-success {
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6; }
+  .notice-success:before {
+    content: "\f05d"; }
+
+.notice-warning {
+  color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #faebcc; }
+  .notice-warning:before {
+    content: "\f071"; }
+
+.notice-danger {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1; }
+
 body {
   font-family: "Helvetica Neue", "Helvetica", Arial, Verdana, sans-serif;
   font-size: 16px;
@@ -554,7 +588,8 @@ a {
   margin-top: 0; }
 
 .nav-inline {
-  padding-left: 0;
+  padding: 0;
+  margin: 0;
   list-style: none; }
 
 .nav-inline li {
@@ -564,46 +599,12 @@ a {
 .nav a {
   padding: 3px; }
 
-.notice {
-  border: 1px solid #ddd;
-  padding: 16px 16px 16px 16px;
-  margin-bottom: 20px;
-  width: 100%;
-  position: relative;
-  vertical-align: top; }
-  .notice:before {
-    font-family: "FontAwesome";
-    margin-right: 8px;
-    font-size: 22px;
-    display: inline;
-    line-height: 0;
-    vertical-align: middle; }
-
-.notice-success {
-  color: #3c763d;
-  background-color: #dff0d8;
-  border-color: #d6e9c6; }
-  .notice-success:before {
-    content: "\f05d"; }
-
-.notice-warning {
-  color: #8a6d3b;
-  background-color: #fcf8e3;
-  border-color: #faebcc; }
-  .notice-warning:before {
-    content: "\f071"; }
-
-.notice-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1; }
-
 .main-container p,
 .main-container table {
   margin: 0 0 20px 0; }
 
 .well {
-  background: #fefefe;
+  background: #eef5fa;
   border: 1px solid #ccc;
   padding: 20px; }
 

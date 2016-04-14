@@ -10,11 +10,13 @@
         <a href="/">Account</a> &rightarrow; Edit
     </div>
 
-    <ul class="nav nav-inline bordered">
-        <li><strong>Edit: </strong></li>
-        <li><a href="/edit">Billing Info</a></li>
-        <li><a href="/edit/payment">Payment Method</a></li>
-    </ul>
+    <div class="padded bordered small-margin">
+        <ul class="nav nav-inline">
+            <li><strong>Edit: </strong></li>
+            <li><a href="/edit" class="">Billing Info</a></li>
+            <li><a href="/edit/payment" class="strong">Payment Method</a></li>
+        </ul>
+    </div>
 
     <h1 class="page-title">Update Payment Method</h1>
 
@@ -25,33 +27,33 @@
 
     @include('partials.form-messages')
 
-    <div class="well small-margin" style="max-width: 360px;">
+    <div class="well small-margin">
         <noscript>Please enable JavaScript to update your credit card.</noscript>
         <form method="post" id="cc-form" class="hide-if-no-js">
             {!! csrf_field() !!}
 
-            <div class="errors"></div>
+            <div class="card-errors"></div>
 
             <div class="form-group">
                 <label>Credit Card Number</label>
 
                 <div class="form-element">
-                    <input type="text" data-stripe="number" placeholder="**** **** **** ****">
+                    <input type="text" data-stripe="number" placeholder="**** **** **** ****" required>
                     <i class="fa fa-credit-card form-element-icon"></i>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Expiration</label>
-                <select data-stripe="exp_month" style="width: 80px; display: inline;">
-                    <option disabled>Month</option>
+                <select data-stripe="exp_month" style="width: 80px; display: inline;" required>
+                    <option disabled value="" selected>Month</option>
                     @for ($i = 1; $i <= 12; $i++)
                     <option>{{ $i }}</option>
                     @endfor
                 </select>
 
                 <select data-stripe="exp_year" style="width: 80px; display: inline;">
-                    <option disabled>Year</option>
+                    <option disabled value="" selected required>Year</option>
                     @for ($i = 0; $i < 10; $i++)
                     <option value="{{ date('Y') + $i }}">{{ date('y') + $i }}</option>
                     @endfor
@@ -62,7 +64,7 @@
                 <label>CVC</label>
 
                 <div class="form-element" style="width: 120px;">
-                    <input type="text" data-stripe="cvc">
+                    <input type="text" data-stripe="cvc" required maxlength="4">
                     <i class="fa fa-lock form-element-icon"></i>
                 </div>
 
@@ -70,7 +72,7 @@
 
 
             <div class="form-group">
-                <input type="submit" value="Save" />
+                <input type="submit" name="submit_button" value="Save" />
             </div>
 
             <input type="hidden" name="token" value="" />
@@ -89,6 +91,13 @@
 @section('foot')
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
     <script>
+
+        function error(msg) {
+            var errorElement = form.querySelector('.card-errors');
+            errorElement.className += " notice notice-warning";
+            errorElement.innerText = msg;
+        }
+
         Stripe.setPublishableKey('{{ config('services.stripe.key') }}');
         var form  = document.getElementById('cc-form');
 
@@ -97,22 +106,39 @@
         });
 
         form.addEventListener( 'submit', function(event) {
-            // todo: validate inputs
+
+            event.preventDefault();
+
+            // soft-validate credit card
+            var creditCardNumber = form.querySelector('[data-stripe="number"]').value;
+            if( ! Stripe.card.validateCardNumber(creditCardNumber) ) {
+                error( "That credit card number doesn't seem right.");
+                return false;
+            }
+
+            // disable button
+            var submitButton = form.elements.namedItem('submit_button');
+            var buttonText = submitButton.value;
+
+            submitButton.disabled = true;
+            submitButton.value = "Please wait";
 
             Stripe.card.createToken(this, function(status, response) {
+
+                // re-enable button
+                submitButton.value = buttonText;
+                submitButton.removeAttribute('disabled');
+
                 if (response.error) {
-                    var errorElement = form.querySelector('.errors');
-                    errorElement.className += " notice notice-warning";
-                    errorElement.innerText = response.error.message;
+                    error(response.error.message);
                 } else {
                     form.elements.namedItem('token').value = response.id;
                     form.submit();
                 }
             });
 
-            event.preventDefault();
             return false;
-        })
+        });
     </script>
 @stop
 

@@ -24,6 +24,10 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
  * @property string $vat_number
  * @property string $company
  * @property string $card_last_four
+ * @property string $address
+ * @property string $city
+ * @property string $zip
+ * @property string $state
  * @proeprty boolean $is_admin
  * @property \DateTime created_at
  * @property \DateTime updated_at
@@ -46,7 +50,7 @@ class User extends Model implements AuthenticatableContract,
 	 *
 	 * @var array
 	 */
-	protected $fillable = [ 'name', 'email', 'password', 'card_last_four', 'company', 'country', 'vat_number' ];
+	protected $fillable = [ 'name', 'email', 'address', 'city', 'zip', 'state', 'company', 'country', 'vat_number' ];
 
 	/**
 	 * @var array

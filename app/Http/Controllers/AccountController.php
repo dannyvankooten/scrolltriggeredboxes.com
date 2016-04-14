@@ -125,9 +125,9 @@ class AccountController extends Controller {
 		));
 
 		// create user
-		$userData = $request->input('user');
-		$userData['password'] = Hash::make( str_random() );
-		$user = User::create( $userData );
+		$user = new User($request->input('user'));
+		$user->password = Hash::make( str_random() );
+		$user->save();
 
 		// login user
 		$this->auth->loginUsingId( $user->id );

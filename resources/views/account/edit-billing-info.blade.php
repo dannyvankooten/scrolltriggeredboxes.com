@@ -6,17 +6,19 @@
 
 <div class="container">
 
-    <div class="breadcrumbs bordered padded">
+    <div class="breadcrumbs bordered padded small-margin">
         <a href="/">Account</a> &rightarrow; Edit
     </div>
 
-    <ul class="nav nav-inline bordered">
+  <div class="padded bordered small-margin">
+      <ul class="nav nav-inline">
         <li><strong>Edit: </strong></li>
-        <li><a href="/edit">Billing Info</a></li>
+        <li><a href="/edit" class="strong">Billing Info</a></li>
         <li><a href="/edit/payment">Payment Method</a></li>
     </ul>
+  </div>
 
-    <h1 class="page-title">Update Billing Information</h1>
+    <h1 class="page-title">Update billing information</h1>
 
     @include('partials.form-messages')
 
@@ -27,7 +29,7 @@
             <label>Email address</label>
 
             <div class="form-element">
-                <input type="email" name="user[email]" value="{{ $user->email }}" required>
+                <input type="email" name="user[email]" value="{{ old('user.email', $user->email ) }}" required>
                 <i class="fa fa-at form-element-icon"></i>
             </div>
         </div>
@@ -35,7 +37,7 @@
         <div class="form-group">
             <label>Name</label>
             <div class="form-element">
-             <input type="text" name="user[name]" value="{{ $user->name }}">
+             <input type="text" name="user[name]" value="{{ old('user.name', $user->name ) }}">
                 <i class="fa fa-user form-element-icon"></i>
             </div>
         </div>
@@ -44,22 +46,50 @@
             <label>Country</label>
             <select name="user[country]" id="country-input">
                 @foreach(Countries::all() as $code => $country)
-                <option value="{{ $code }}" @if($user->country == $code) selected="selected" @endif>{{ $country }}</option>
+                    <option value="{{ $code }}" @if($user->country == $code) selected="selected" @endif>{{ $country }}</option>
                 @endforeach
             </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group eu-only">
+            <label>Address</label>
+            <div class="form-element">
+                <input type="text" name="user[address]" value="{{ old('user.address', $user->address ) }}">
+            </div>
+        </div>
+
+        <div class="form-group eu-only">
+            <label>City</label>
+            <div class="form-element">
+                <input type="text" name="user[city]" value="{{ old('user.city', $user->city ) }}">
+            </div>
+        </div>
+
+        <div class="form-group eu-only">
+            <label>ZIP / Postal code</label>
+            <div class="form-element">
+                <input type="text" name="user[zip]" value="{{ old('user.zip', $user->zip ) }}">
+            </div>
+        </div>
+
+        <div class="form-group eu-only">
+            <label>State / Province</label>
+            <div class="form-element">
+                <input type="text" name="user[state]" value="{{ old('user.state', $user->state ) }}">
+            </div>
+        </div>
+
+        <div class="form-group eu-only">
             <label>Company Name <span class="muted pull-right">(optional)</span></label>
             <div class="form-element">
-                <input type="text" name="user[company]" value="{{ $user->company }}">
+                <input type="text" name="user[company]" value="{{ old('user.company', $user->company ) }}">
                 <i class="fa fa-building form-element-icon"></i>
             </div>
         </div>
 
         <div class="form-group eu-only" style="@if(!$user->inEurope()) display: none; @endif">
             <label>VAT Number <span class="muted pull-right">(optional)</span></label>
-            <input type="text" name="user[vat_number]" value="{{ $user->vat_number }}" />
+            <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', $user->vat_number ) }}" />
         </div>
 
         <div class="form-group">
