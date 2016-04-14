@@ -111,7 +111,7 @@ class LicenseController extends Controller {
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function update($id, Request $request ) {
-		$license = License::find($id)->with('subscription')->firstOrFail();
+		$license = License::with('subscription')->findOrFail($id);
 		
 		// check if license belongs to user
 		if( ! $license->belongsToUser( $this->auth->user() ) ) {
@@ -146,7 +146,7 @@ class LicenseController extends Controller {
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function deleteActivation( $license_id, $activation_id ) {
-		$activation = Activation::find($activation_id)->firstOrFail();
+		$activation = Activation::with(['license', 'license.user'])->findOrFail($activation_id);
 		$user = $this->auth->user();
 
 		// check if activation belongs to user
@@ -157,8 +157,5 @@ class LicenseController extends Controller {
 		$activation->delete();
 		return redirect()->back();
 	}
-
-
-
-
+	
 }

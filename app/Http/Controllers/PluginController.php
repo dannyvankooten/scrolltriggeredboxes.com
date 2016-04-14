@@ -42,7 +42,7 @@ class PluginController extends Controller {
 	 */
 	public function download( $id ) {
 		/** @var Plugin $plugin */
-		$plugin = Plugin::where('id', $id)->firstOrFail();
+		$plugin = Plugin::findOrFail($id);
 
 		$downloader = new PluginDownloader( $plugin );
 		$filename = $downloader->download();
