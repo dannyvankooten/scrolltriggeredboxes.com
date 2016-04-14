@@ -73,7 +73,10 @@ class Charger {
             $charge = \Stripe\Charge::create([
                 "amount" => $amountInCents,
                 "currency" => "USD",
-                "customer" => $user->stripe_customer_id
+                "customer" => $user->stripe_customer_id,
+                "metadata" => array(
+                    "subscription_id" => $subscription->id
+                )
             ]);
         } catch(\Stripe\Error\Card $e) {
            throw new Exception( $e->getMessage(), $e->getCode() );
