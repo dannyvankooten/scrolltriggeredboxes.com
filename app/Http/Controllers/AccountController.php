@@ -140,6 +140,10 @@ class AccountController extends Controller {
 			"source" => $token,
 			"description" => "User #{$user->id}",
 			'email' => $user->email,
+			"metadata" => array(
+				"user" => $user->id
+			),
+			'business_vat_id' => $request->input('user.vat_number'),
 		]);
 
 		// update user
