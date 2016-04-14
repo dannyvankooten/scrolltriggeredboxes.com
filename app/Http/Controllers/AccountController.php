@@ -116,12 +116,13 @@ class AccountController extends Controller {
 		// validate new values
 		$this->validate( $request, [
 			'token' => 'required',
-			'user.email' => 'required|email',
+			'user.email' => 'required|email|unique:users,email',
 			'user.country' => 'required',
 			'user.vat_number' => 'sometimes|vat_number'
 		], array(
 			'email' => 'Please enter a valid email address.',
-			'vat_number' => 'Please enter a valid VAT number.'
+			'vat_number' => 'Please enter a valid VAT number.',
+			'unique' => 'That email address is already in use. <a href="/login">Did you mean to log-in instead</a>?'
 		));
 
 		// create user
