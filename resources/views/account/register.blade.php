@@ -55,7 +55,7 @@
 
             <div class="form-group">
                 <label>Country</label>
-                <select name="user[country]" id="country-input" required>
+                <select name="user[country]" id="country-input" data-stripe="address_country" required>
                     <option value="" disabled {{ old('user.country','') === '' ? 'selected' : '' }}>Select your country..</option>
                     @foreach(Countries::all() as $code => $country)
                     <option value="{{ $code }}" {{ old('user.country') == $code ? 'selected' : '' }}>{{ $country }}</option>
