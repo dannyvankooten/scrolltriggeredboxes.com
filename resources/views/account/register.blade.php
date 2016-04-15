@@ -8,7 +8,7 @@
 
 <div class="container">
 
-    <h1>Register</h1>
+    <h1 class="page-title">Register</h1>
 
     @include('partials.form-messages')
 

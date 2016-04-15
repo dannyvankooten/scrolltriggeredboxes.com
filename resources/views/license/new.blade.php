@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
 
-    <div class="breadcrumbs bordered padded small-margin">
+    <div class="breadcrumbs bordered small-padding">
         <a href="/">Account</a> &rightarrow; <a href="/licenses">Licenses</a> &rightarrow; New
     </div>
 

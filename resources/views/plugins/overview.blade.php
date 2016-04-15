@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
 
-    <div class="breadcrumbs bordered padded">
+    <div class="breadcrumbs bordered small-padding">
         <a href="/">Account</a> &rightarrow; Plugins
     </div>
 
@@ -38,6 +38,10 @@
     <p>It seems you have no valid license. Please <a href="{{ domain_url('/pricing') }}">purchase one of the premium plans in order to get access to the premium add-on plugins</a>.</p>
     @endif
 
-    <p><a href="javascript:history.go(-1);">&lsaquo; Go back</a></p>
+    <div class="medium-margin">
+        <p><a href="/">&leftarrow; Back to account overview</a></p>
+    </div>
+
+
 </div>
 @stop

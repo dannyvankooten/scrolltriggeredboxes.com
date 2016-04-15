@@ -1,15 +1,16 @@
 @import "normalize";
 @import "variables";
-@import "utils";
 @import "forms";
 @import "tables";
 @import "notices";
+@import "utils";
 
 body {
   font-family: "Helvetica Neue", "Helvetica", Arial, Verdana, sans-serif;
   font-size: 16px;
   line-height: 1.4;
   color: #333;
+  overflow-y: scroll;
 }
 
 * {
@@ -44,17 +45,31 @@ h1, h2, h3, h4, h5 {
 
 .header {
   color: white;
-  background: $primary_color url("../img/pattern.png");
+  background-color: $primary_color;
+  background-url: url("http://www.transparenttextures.com/patterns/absurdity.png");
+  line-height: 100px;
+
+  a {
+    color: white;
+    font-weight: bold;
+    padding: 3px;
+  }
+
+  .site-title,
+  .nav {
+    margin: 0;
+  }
+
+  .site-title img{
+    vertical-align: middle;
+  }
+
+  .nav a {
+    font-size: 20px;
+    text-decoration: none;
+  }
 }
 
-.header a {
-  color: white;
-}
-
-.header .nav a {
-  text-decoration: none;
-  line-height: 40px;
-}
 
 .footer {
   background: #111;
@@ -67,12 +82,11 @@ h1, h2, h3, h4, h5 {
 }
 
 .page-title{
-  margin-top: 0;
+  text-shadow: 1px 1px 1px #ccc;
 }
 
 .nav-inline {
   padding: 0;
-  margin: 0;
   list-style: none;
 }
 
@@ -95,6 +109,7 @@ h1, h2, h3, h4, h5 {
   background: #eef5fa;
   border: 1px solid darken( #eef5fa, 5% );
   padding: 20px;
+  box-shadow: 0 0 1px 1px #eee;
 }
 .well > *:last-child {
   margin-bottom: 0;

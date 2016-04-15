@@ -33,13 +33,15 @@
                     <input type="checkbox" name="remember_me" value="1"> Stay logged in?
                 </label>
             </div>
-           <div class="form-group">
+           <div class="form-group no-margin">
                <button type="submit" class="btn btn-default">Login</button> &nbsp; <a href="{{ domain_url('/password/email', 'account') }}">Forgot your password?</a>
            </div>
         </form>
         </div>
 
-        <h3>No account yet?</h3>
-        <p><a href="/register">Purchase a license</a> to get instant access to <a href="{{ domain_url('/plugins') }}">all premium plugins</a>.</p>
-    </div>
+        <div class="medium-margin">
+            <h3>No account yet?</h3>
+             <p><a href="/register">Purchase a license</a> to get instant access to <a href="{{ domain_url('/plugins') }}">all premium plugins</a>.</p>
+        </div>
+        </div>
 @stop

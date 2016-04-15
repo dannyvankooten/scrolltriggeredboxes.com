@@ -6,11 +6,11 @@
 
     <div class="container">
 
-        <div class="breadcrumbs bordered padded">
+        <div class="breadcrumbs bordered small-padding">
             <a href="/">Account</a> &rightarrow; <a href="/licenses">Licenses</a> &rightarrow; License Details
         </div>
 
-        <h1>License details</h1>
+        <h1 class="page-title">License details</h1>
 
         <table class="table row-scoped">
             <tr>
@@ -97,7 +97,11 @@
             @endif
         </table>
 
-        <p><a href="/licenses">&leftarrow; Back to all your licenses.</a></p>
+
+        <div class="medium-margin">
+            <p><a href="/licenses">&leftarrow; Back to your licenses</a></p>
+        </div>
+
     </div>
 @stop
 

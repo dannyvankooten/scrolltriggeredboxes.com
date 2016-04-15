@@ -18,6 +18,10 @@
     <![endif]-->
 
     <script>
+        // util
+        document.documentElement.className = document.documentElement.className.replace('no-js','js');
+
+        // google analytics
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -28,64 +32,76 @@
     </script>
 
     @yield('head')
+
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 </head>
 
 <body>
+<div id="page-wrap">
 
-<div class="header clearfix">
-    <div class="container">
-        <h2 class="site-title pull-left">
-            <a href="{{ url('/') }}"><span>Boxzilla</span></a>
-        </h2>
-        <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
-            <ul class="nav nav-inline">
-                <li role="presentation"><a href="/">Home</a></li>
-            </ul>
-        </nav>
-    </div>
-</div>
-
-@yield('masthead')
-
-<div class="main-container medium-margin" role="main" itemprop="mainContentOfPage">
-
-    <div class="container">
-        @if (session('message'))
-        <div class="notice notice-success">
-            {!! session('message') !!}
+    <div id="header" class="header clearfix">
+        <div class="container">
+            <h2 class="site-title pull-left">
+                <a href="{{ url('/') }}">
+                    <img src="{{ asset('img/logo-text-white.png') }}" height="40" width="150" alt="boxzilla" />
+                </a>
+            </h2>
+            <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+                <ul class="nav nav-inline">
+                    <li role="presentation"><a href="/">Home</a></li>
+                </ul>
+            </nav>
         </div>
-        @endif
     </div>
 
-    @yield('content')
+    <div id="content" class="main-container medium-margin" role="main" itemprop="mainContentOfPage">
+
+        <div class="container">
+            @if (session('message'))
+            <div class="notice notice-success">
+                {!! session('message') !!}
+            </div>
+            @endif
+        </div>
+
+        @yield('content')
+    </div>
+
+    <footer id="footer" class="footer medium-padding">
+        <div class="container">
+
+            <ul class="small-margin nav nav-inline">
+                <li><a href="{{ domain_url('/about') }}">About</a></li>
+                <li><a href="{{ domain_url('/refund-policy') }}">Refund Policy</a></li>
+                <li><a href="{{ domain_url('/kb') }}">Documentation</a></li>
+                <li><a href="{{ domain_url('/contact') }}">Contact</a></li>
+            </ul>
+
+            <p class="medium-margin" style="font-style: italic;">
+                <a class="unstyled" href="{{ domain_url() }}">Boxzilla</a> is a WordPress plugin built by &nbsp;
+                <a href="https://ibericode.com" rel="external author">
+                    <img src="{{ asset('img/ibericode-logo-white.png') }}" height="25" style="vertical-align: bottom;">
+                </a>
+            </p>
+        </div>
+    </footer>
 </div>
-
-<footer class="footer padded">
-    <div class="container">
-        <ul class="nav nav-inline">
-            <li><a href="{{ domain_url('/about') }}">About</a></li>
-            <li><a href="{{ domain_url('/refund-policy') }}">Refund Policy</a></li>
-            <li><a href="{{ domain_url('/kb') }}">Documentation</a></li>
-            <li><a href="{{ domain_url('/contact') }}">Contact</a></li>
-        </ul>
-        <p style="font-style: italic;">
-            <a class="unstyled" href="{{ domain_url() }}">Boxzilla</a> is a WordPress plugin built by &nbsp;
-            <a href="https://ibericode.com" rel="external author">
-                <img src="{{ asset('img/ibericode-logo-white.png') }}" height="25">
-            </a>
-        </p>
-    </div>
-</footer>
 
 <script>
-    document.documentElement.className = document.documentElement.className.replace('no-js','js');
+    // expand footer
+    var pageWrap = document.getElementById('page-wrap');
+    var footer = document.getElementById('footer');
+    if( pageWrap.clientHeight < window.innerHeight ) {
+        footer.style.height = footer.clientHeight + ( window.innerHeight - pageWrap.clientHeight ) + "px";
+    }
+
+    // font awesome
     var linkElement = document.createElement('link');
     linkElement.rel = "stylesheet";
     linkElement.href = "{{ asset('css/font-awesome.min.css') }}";
     document.head.appendChild(linkElement);
 </script>
-
-
 <script src="{{ asset('js/main.js') }}" type="text/javascript"></script>
 
 @yield('foot')

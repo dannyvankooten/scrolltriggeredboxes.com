@@ -30,8 +30,12 @@
   font-weight: bold;
 }
 
-.padded {
+.medium-padding {
   padding: 20px;
+}
+
+.small-padding {
+  padding: 10px;
 }
 
 .big-margin {
@@ -48,6 +52,10 @@
 
 .tiny-margin{
   margin: 10px 0;
+}
+
+.no-margin {
+  margin: 0;
 }
 
 .pull-left {

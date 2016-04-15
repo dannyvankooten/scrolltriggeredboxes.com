@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
 
-    <div class="breadcrumbs bordered padded small-margin">
+    <div class="breadcrumbs bordered small-padding">
         <a href="/">Account</a> &rightarrow; Licenses
     </div>
 
@@ -33,7 +33,10 @@
 
     <p class="medium-margin"><a class="button" href="/licenses/new">Purchase a new license.</a></p>
 
-    <p><a href="/">&leftarrow; Back to account overview</a></p>
+    <div class="medium-margin">
+        <p><a href="/">&leftarrow; Back to account overview</a></p>
+    </div>
+
 
 </div>
 @stop

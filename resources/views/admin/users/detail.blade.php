@@ -6,7 +6,7 @@
 
     <div class="container">
 
-        <div class="breadcrumbs bordered padded small-margin">
+        <div class="breadcrumbs bordered medium-padding small-margin">
             <a href="/users/">Users</a> &rightarrow; {{ $user->email }}
         </div>
 

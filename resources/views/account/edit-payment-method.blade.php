@@ -6,12 +6,12 @@
 
 <div class="container">
 
-    <div class="breadcrumbs bordered padded small-margin">
+    <div class="breadcrumbs bordered small-padding">
         <a href="/">Account</a> &rightarrow; Edit
     </div>
 
-    <div class="padded bordered small-margin">
-        <ul class="nav nav-inline">
+    <div class="small-padding bordered small-margin">
+        <ul class="nav nav-inline no-margin">
             <li><strong>Edit: </strong></li>
             <li><a href="/edit" class="">Billing Info</a></li>
             <li><a href="/edit/payment" class="strong">Payment Method</a></li>
