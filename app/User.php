@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Hash;
  * @property string $state
  * @property string $password
  * @property boolean $is_admin
- * @property boolean $force_password_reset
+ * @property string $moneybird_contact_id
  * @property \DateTime created_at
  * @property \DateTime updated_at
  */

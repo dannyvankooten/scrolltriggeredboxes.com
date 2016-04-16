@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string currency
  * @property double subtotal
  * @property double tax
+ * @property string $moneybird_invoice_id
  * @property \DateTime created_at
  * @property \DateTime updated_at
  */

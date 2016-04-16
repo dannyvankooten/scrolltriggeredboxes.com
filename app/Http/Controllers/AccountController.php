@@ -9,9 +9,7 @@ use App\User;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use App\License;
-use Stripe\Stripe;
 use DateTime;
-use Hash;
 
 class AccountController extends Controller {
 
