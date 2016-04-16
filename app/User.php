@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-
+use Illuminate\Support\Facades\Hash;
 /**
  * Class User
  *
@@ -28,7 +28,9 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
  * @property string $city
  * @property string $zip
  * @property string $state
- * @proeprty boolean $is_admin
+ * @property string $password
+ * @property boolean $is_admin
+ * @property boolean $force_password_reset
  * @property \DateTime created_at
  * @property \DateTime updated_at
  */
@@ -143,8 +145,23 @@ class User extends Model implements AuthenticatableContract,
 	/**
 	 * @return bool
 	 */
-	function isAdmin() {
+	public function isAdmin() {
 		return (bool) $this->is_admin;
+	}
+
+	/**
+	 * @param string $password
+	 * @return boolean
+	 */
+	public function verifyPassword( $password ) {
+		return Hash::check( $password, $this->password );
+	}
+
+	/**
+	 * @param string $password
+	 */
+	public function setPassword( $password ) {
+		$this->password = Hash::make( $password );
 	}
 
 }

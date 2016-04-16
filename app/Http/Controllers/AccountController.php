@@ -54,14 +54,7 @@ class AccountController extends Controller {
 	public function updateCredentials( Request $request ) {
 		$user = $this->auth->user();
 
-		// confirm if current password is correct
-		$valid = $this->auth->validate( array(
-				'email' => $user->email,
-				'password' => $request->input('current_password')
-			)
-		);
-
-		if( ! $valid ) {
+		if( ! $user->verifyPassword( $request->input('current_password') ) ) {
 			return redirect()->back()->withErrors(['The given current password does not match with your actual password.']);
 		}
 
@@ -80,7 +73,7 @@ class AccountController extends Controller {
 		// only update password if given
 		$new_password = $request->input('new_password', null);
 		if( $new_password ) {
-			$user->password = Hash::make($request->input('new_password'));
+			$user->password = $user->setPassword( $new_password );
 		}
 
 		$user->save();
@@ -116,13 +109,13 @@ class AccountController extends Controller {
 		$user = $this->auth->user();
 
 		$this->validate( $request, [
-			'token' => 'required'
+			'payment_token' => 'required'
 		]);
 
 		$user->fill($request->input('user'));
 
 		$charger = new Charger();
-		$user = $charger->customer($user, $request->input('token'));
+		$user = $charger->customer($user, $request->input('payment_token'));
 
 		$user->save();
 
@@ -155,10 +148,11 @@ class AccountController extends Controller {
 
 		// validate new values
 		$this->validate( $request, [
-			'token' => 'required',
+			'payment_token' => 'required',
 			'user.email' => 'required|email|unique:users,email',
 			'user.country' => 'required',
-			'user.vat_number' => 'sometimes|vat_number'
+			'user.vat_number' => 'sometimes|vat_number',
+			'password' => 'required|confirmed|between:6,60'
 		], array(
 			'email' => 'Please enter a valid email address.',
 			'vat_number' => 'Please enter a valid VAT number.',
@@ -167,27 +161,15 @@ class AccountController extends Controller {
 
 		// create user
 		$user = new User($request->input('user'));
-		$user->password = Hash::make( str_random() );
+		$user->setPassword($request->input('password'));
 		$user->save();
 
 		// login user
 		$this->auth->loginUsingId( $user->id );
 
 		// create customer in Stripe
-		Stripe::setApiKey(config('services.stripe.secret'));
-		$token = $request->input('token');
-		$customer = \Stripe\Customer::create([
-			"source" => $token,
-			"description" => "User #{$user->id}",
-			'email' => $user->email,
-			"metadata" => array(
-				"user" => $user->id
-			),
-			'business_vat_id' => $request->input('user.vat_number'),
-		]);
-
-		// update user
-		$user->stripe_customer_id = $customer->id;
+		$charger = new Charger();
+		$charger->customer($user, $request->input('payment_token'));
 		$user->save();
 
 		// proceed with charge
@@ -223,7 +205,6 @@ class AccountController extends Controller {
 		$subscription->save();
 
 		// finally, charge subscription so that license starts
-		$charger = new Charger();
 		try {
 			$success = $charger->subscription( $subscription );
 		} catch( Exception $e ) {

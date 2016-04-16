@@ -42,14 +42,32 @@
 
         <div class="step medium-margin">
 
-            <h2 class="slashes">2. Billing Info</h2>
+            <h2 class="slashes">2. Account & Billing Info</h2>
 
             <div class="form-group">
                 <label>Email address</label>
 
                 <div class="form-element">
                     <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" required>
-                    <i class="fa fa-at form-element-icon"></i>
+                    <i class="fa fa-at form-element-icon" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>New password</label>
+
+                <div class="form-element">
+                    <input type="password" name="password" value="" required minlength="6">
+                    <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm password</label>
+
+                <div class="form-element">
+                    <input type="password" name="password_confirmation" value="" required minlength="6">
+                    <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                 </div>
             </div>
 
@@ -86,7 +104,7 @@
 
                     <div class="form-element">
                         <input type="text" data-stripe="number" placeholder="**** **** **** ****" required>
-                        <i class="fa fa-credit-card form-element-icon"></i>
+                        <i class="fa fa-credit-card form-element-icon" aria-hidden="true"></i>
                     </div>
                 </div>
 
@@ -112,7 +130,7 @@
 
                     <div class="form-element" style="width: 120px;">
                         <input type="text" data-stripe="cvc" maxlength="4" required>
-                        <i class="fa fa-lock form-element-icon"></i>
+                        <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                     </div>
 
                 </div>
@@ -126,7 +144,7 @@
                 <input type="submit" value="Complete purchase" name="submit_button" />
             </div>
 
-            <input type="hidden" name="token" value="" />
+            <input type="hidden" name="payment_token" value="" />
             <input type="hidden" name="user[card_last_four]" value="" />
 
         </div>
@@ -207,7 +225,7 @@
                 error(response.error.message);
             } else {
                 form.elements.namedItem('user[card_last_four]').value = response.card.last4;
-                form.elements.namedItem('token').value = response.id;
+                form.elements.namedItem('payment_token').value = response.id;
                 form.submit();
             }
         });

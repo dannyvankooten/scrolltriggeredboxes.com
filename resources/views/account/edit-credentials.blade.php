@@ -50,7 +50,7 @@
             <label>New password <span class="muted pull-right">(optional)</span></label>
 
             <div class="form-element">
-                <input type="password" name="new_password" value="">
+                <input type="password" name="new_password" value="" minlength="6">
                 <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
             </div>
         </div>
