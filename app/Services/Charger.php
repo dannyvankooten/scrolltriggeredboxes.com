@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\License;
+use App\User;
 use App\Subscription;
 use App\Payment;
 
@@ -18,6 +18,37 @@ class Charger {
      */
     public function __construct() {
         Stripe::setApiKey(config('services.stripe.secret'));
+    }
+
+    /**
+     * @param User $user
+     * @param string $token
+     * 
+     * @return User
+     */
+    public function customer( User $user, $token ) {
+        if( $user->stripe_customer_id ) {
+            // update existing customer in Stripe
+            $customer = \Stripe\Customer::retrieve($user->stripe_customer_id);
+            $customer->source = $token;
+            $customer->save();
+        } else {
+
+            // create a new customer in Stripe
+            $customer = \Stripe\Customer::create([
+                "source" => $token,
+                "description" => "User #{$user->id}",
+                'email' => $user->email,
+                "metadata" => array(
+                    "user" => $user->id
+                ),
+                'business_vat_id' => $user->vat_number,
+            ]);
+
+            $user->stripe_customer_id = $customer->id;
+        }
+
+        return $user;
     }
 
     /**

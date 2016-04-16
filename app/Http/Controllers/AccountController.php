@@ -114,31 +114,15 @@ class AccountController extends Controller {
 	 */
 	public function updatePaymentMethod( Request $request ) {
 		$user = $this->auth->user();
-		Stripe::setApiKey(config('services.stripe.secret'));
 
-		$token = $request->input('token');
+		$this->validate( $request, [
+			'token' => 'required'
+		]);
+
 		$user->fill($request->input('user'));
 
-		if( $user->stripe_customer_id ) {
-			// update existing customer in Stripe
-			$customer = \Stripe\Customer::retrieve($user->stripe_customer_id);
-			$customer->source = $token;
-			$customer->save();
-		} else {
-
-			// create a new customer in Stripe
-			$customer = \Stripe\Customer::create([
-				"source" => $token,
-				"description" => "User #{$user->id}",
-				'email' => $user->email,
-				"metadata" => array(
-					"user" => $user->id
-				),
-				'business_vat_id' => $user->vat_number,
-			]);
-
-			$user->stripe_customer_id = $customer->id;
-		}
+		$charger = new Charger();
+		$user = $charger->customer($user, $request->input('token'));
 
 		$user->save();
 
@@ -162,7 +146,6 @@ class AccountController extends Controller {
 
 	/**
 	 * TODO: Refactor this method into jobs
-	 * TODO: Validate request before proceeding
 	 * TODO: Force user to set password
 	 *
 	 * @param Request $request
