@@ -4,6 +4,7 @@
 @import "tables";
 @import "notices";
 @import "utils";
+@import "content";
 
 body {
   font-family: "Helvetica Neue", "Helvetica", Arial, Verdana, sans-serif;
@@ -82,7 +83,7 @@ h1, h2, h3, h4, h5 {
 }
 
 .page-title{
-  text-shadow: 1px 1px 1px #ccc;
+  text-shadow: 1px 1px 1px #efefef;
 }
 
 .nav-inline {
@@ -142,3 +143,5 @@ input,
 button {
   border-radius: 3px;
 }
+
+

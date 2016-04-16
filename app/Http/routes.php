@@ -16,9 +16,11 @@ Route::group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['we
 	// account
 	Route::get( '/', 'AccountController@overview' );
 
-	Route::get( '/edit', 'AccountController@editBillingInfo' );
-	Route::post( '/edit', 'AccountController@updateBillingInfo' );
 
+	Route::get( '/edit', 'AccountController@editCredentials' );
+	Route::post( '/edit', 'AccountController@updateCredentials' );
+	Route::get( '/edit/billing', 'AccountController@editBillingInfo' );
+	Route::post( '/edit/billing', 'AccountController@updateBillingInfo' );
 	Route::get( '/edit/payment', 'AccountController@editPaymentMethod' );
 	Route::post( '/edit/payment', 'AccountController@updatePaymentMethod' );
 

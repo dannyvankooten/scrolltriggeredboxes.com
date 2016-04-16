@@ -44,6 +44,49 @@ class AccountController extends Controller {
 		return view( 'account.edit-payment-method', [ 'user' => $this->auth->user() ] );
 	}
 
+	public function editCredentials() {
+		return view( 'account.edit-credentials', [ 'user' => $this->auth->user() ] );
+	}
+
+	/**
+	 * @param Request $request
+	 */
+	public function updateCredentials( Request $request ) {
+		$user = $this->auth->user();
+
+		// confirm if current password is correct
+		$valid = $this->auth->validate( array(
+				'email' => $user->email,
+				'password' => $request->input('current_password')
+			)
+		);
+
+		if( ! $valid ) {
+			return redirect()->back()->withErrors(['The given current password does not match with your actual password.']);
+		}
+
+		// validate request
+		$this->validate( $request, [
+			'user.email' => 'required|email|unique:users,email,'. $user->id,
+			'current_password' => 'required',
+			'new_password' => 'sometimes|confirmed|between:6,60'
+		], [
+			'unique' => 'That email address is already taken'
+		]);
+
+		// update email address
+		$user->email = $request->input('user.email');
+
+		// only update password if given
+		$new_password = $request->input('new_password', null);
+		if( $new_password ) {
+			$user->password = Hash::make($request->input('new_password'));
+		}
+
+		$user->save();
+		return redirect()->back()->with('message', 'Changes saved!');
+	}
+
 	/**
 	 * @param Request $request
 	 *
@@ -54,7 +97,6 @@ class AccountController extends Controller {
 
 		// validate new values
 		$this->validate( $request, [
-			'user.email' => 'required|email',
 			'user.country' => 'required',
 			'user.vat_number' => 'sometimes|vat_number'
 		], array(

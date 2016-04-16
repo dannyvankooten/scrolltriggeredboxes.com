@@ -549,6 +549,9 @@ button:focus,
   color: #999;
   margin-right: 15px; }
 
+#content ul li {
+  padding: 3px 0; }
+
 body {
   font-family: "Helvetica Neue", "Helvetica", Arial, Verdana, sans-serif;
   font-size: 16px;
@@ -606,7 +609,7 @@ h1, h2, h3, h4, h5 {
   color: #eee; }
 
 .page-title {
-  text-shadow: 1px 1px 1px #ccc; }
+  text-shadow: 1px 1px 1px #efefef; }
 
 .nav-inline {
   padding: 0;

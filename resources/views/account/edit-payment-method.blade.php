@@ -13,7 +13,8 @@
     <div class="small-padding bordered small-margin">
         <ul class="nav nav-inline no-margin">
             <li><strong>Edit: </strong></li>
-            <li><a href="/edit" class="">Billing Info</a></li>
+            <li><a href="/edit" class="">Account Info</a></li>
+            <li><a href="/edit/billing" class="">Billing Info</a></li>
             <li><a href="/edit/payment" class="strong">Payment Method</a></li>
         </ul>
     </div>
@@ -72,7 +73,7 @@
 
 
             <div class="form-group">
-                <input type="submit" name="submit_button" value="Save" />
+                <input type="submit" value="Save Changes" />
             </div>
 
             <input type="hidden" name="token" value="" />
