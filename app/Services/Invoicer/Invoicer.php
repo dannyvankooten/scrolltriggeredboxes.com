@@ -39,8 +39,6 @@ class Invoicer {
      */
     public function contact( User $user ) {
 
-        // TODO: If user has moneybird_contact_id, update instead.
-
         // create contact
         $contact = [
             'firstname' => $user->getFirstName(),
@@ -55,13 +53,48 @@ class Invoicer {
             'email' => $user->email,
         ];
 
-        $data = $this->post( 'contacts', [ 'contact' => $contact ]);
-        $user->moneybird_contact_id = $data->id;
+        if( $user->moneybird_contact_id ) {
+            $this->updateContact( $user->moneybird_contact_id, $contact );
+        } else {
+            $data = $this->createContact( $contact );
+            $user->moneybird_contact_id = $data->id;
+        }
+
         return $user;
     }
 
-    public function invoice( Payment $Payment ) {
-        // TODO: Everything
+    /**
+     * @param Payment $payment
+     * @return Payment
+     *
+     * TODO: Include subscription period in description
+     * TODO: Resolve proper tax rate ID here (we need access to new MoneyBird.com interface for that first)
+     */
+    public function invoice( Payment $payment ) {
+
+        $invoice = [
+            'contact_id' => $payment->user->moneybird_contact_id,
+            'currency' => $payment->currency,
+            'invoice_data' => $payment->created_at->format('Y-m-d'),
+            'prices_are_incl_tax' => false,
+            'details_attributes' => [
+                [
+                    'description' => 'Your Boxzilla subscription',
+                    'price' => $payment->subtotal,
+                   // 'tax_rate_id' => '',
+                ]
+            ]
+
+        ];
+
+        if( $payment->moneybird_invoice_id ) {
+            $this->updateInvoice( $payment->moneybird_invoice_id, $invoice );
+        } else {
+            $data = $this->createInvoice( $invoice );
+            $payment->moneybird_invoice_id = $data->id;
+        }
+
+        return $payment;
     }
 
     /**
@@ -69,7 +102,7 @@ class Invoicer {
      * @return object
      */
     public function createContact( $data ) {
-        return $this->request( 'POST', 'contacts', $data );
+        return $this->request( 'POST', 'contacts', [ 'contact' => $data ]);
     }
 
     /**
@@ -78,7 +111,7 @@ class Invoicer {
      * @return object
      */
     public function updateContact( $id, $data ) {
-        return $this->request( 'PATCH', 'contacts/'.$id, $data );
+        return $this->request( 'PATCH', 'contacts/'.$id, [ 'contact' => $data ]);
     }
 
     /**
@@ -86,7 +119,7 @@ class Invoicer {
      * @return object
      */
     public function createInvoice( $data ) {
-        return $this->request( 'POST', 'sales_invoices', $data );
+        return $this->request( 'POST', 'sales_invoices', [ 'sales_invoice' => $data ]);
     }
 
     /**
@@ -95,7 +128,7 @@ class Invoicer {
      * @return object
      */
     public function updateInvoice( $id, $data ) {
-        return $this->request( 'POST', 'sales_invoices/'.$id, $data );
+        return $this->request( 'POST', 'sales_invoices/'.$id, [ 'sales_invoice' => $data ]);
     }
 
     /**

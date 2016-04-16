@@ -46,6 +46,11 @@ return [
 
 	'helpscout' => [
 		'secret' => env('HELPSCOUT_SECRET_KEY', '')
+	],
+
+	'moneybird' => [
+		'administration' => env( 'MONEYBIRD_ADMINISTRATION_ID', '' ),
+		'token' => env( 'MONEYBIRD_ACCESS_TOKEN', '' )
 	]
 
 ];

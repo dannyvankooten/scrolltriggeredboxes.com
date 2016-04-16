@@ -4,6 +4,8 @@ use HelpScoutApp\DynamicApp;
 use Illuminate\Support\ServiceProvider;
 use GuzzleHttp;
 
+use App\Services\Invoicer\Invoicer;
+
 class AppServiceProvider extends ServiceProvider {
 
 	/**
@@ -25,6 +27,11 @@ class AppServiceProvider extends ServiceProvider {
 	{
 		$this->app->singleton( DynamicApp::class, function ($app) {
 			return new DynamicApp( config('services.helpscout')['secret'] );
+		});
+
+		$this->app->singleton( Invoicer::class, function ($app) {
+			$config = config('services.moneybird');
+			return new Invoicer( $config['administration'], $config['token'] );
 		});
 
 	}

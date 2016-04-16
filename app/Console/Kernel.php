@@ -1,6 +1,7 @@
 <?php namespace App\Console;
 
 use App\Console\Commands\ChargeSubscriptions;
+use App\Console\Commands\CreateInvoices;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Symfony\Component\Process\Process;
@@ -13,11 +14,14 @@ class Kernel extends ConsoleKernel {
 	 * @var array
 	 */
 	protected $commands = [
-		ChargeSubscriptions::class
+		ChargeSubscriptions::class,
+		CreateInvoices::class
 	];
 
 	/**
 	 * Define the application's command schedule.
+	 *
+	 * TODO: Use this over system cronjobs
 	 *
 	 * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
 	 * @return void
