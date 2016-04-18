@@ -4,6 +4,7 @@ namespace App\Services\Invoicer;
 
 use App\User;
 use App\Payment;
+use DateTime;
 use GuzzleHttp\Client;
 
 class Invoicer {
@@ -72,7 +73,7 @@ class Invoicer {
      */
     public function invoice( Payment $payment ) {
 
-        $invoice = [
+        $invoiceData = [
             'contact_id' => $payment->user->moneybird_contact_id,
             'currency' => $payment->currency,
             'invoice_data' => $payment->created_at->format('Y-m-d'),
@@ -81,53 +82,90 @@ class Invoicer {
                 [
                     'description' => 'Your Boxzilla subscription',
                     'price' => $payment->subtotal,
-                   // 'tax_rate_id' => '',
+                   // 'tax_rate_id' => '', // TODO: Fetch correct tax rate ID here.
                 ]
             ]
 
         ];
 
+
         if( $payment->moneybird_invoice_id ) {
-            $this->updateInvoice( $payment->moneybird_invoice_id, $invoice );
+            // invoice exists, update it
+            $this->updateInvoice( $payment->moneybird_invoice_id, $invoiceData );
         } else {
-            $data = $this->createInvoice( $invoice );
+            // create new invoice
+            $data = $this->createInvoice( $invoiceData );
             $payment->moneybird_invoice_id = $data->id;
+
+            // mark invoice as sent
+            $sendingData = [
+                'delivery_method' => 'Manual'
+            ];
+            $this->createInvoiceSending( $data->id, $sendingData );
+
+            // register invoice payment
+            // IMPORTANT: Take notice, as we're getting the total price & base price from MoneyBird here. This means we're using MoneyBirds currency exchange rate....
+            $paymentData = [
+                'payment_date' => $payment->created_at->format('Y-m-d H:i:s'),
+                'price' => $data->total_price_incl_tax,
+                'price_base' => $data->total_price_incl_tax_base
+            ];
+
+            $this->createInvoicePayment( $data->id, $paymentData );
         }
 
         return $payment;
     }
 
     /**
-     * @param $data
+     * @param array $data
      * @return object
      */
-    public function createContact( $data ) {
+    public function createContact( array $data ) {
         return $this->request( 'POST', 'contacts', [ 'contact' => $data ]);
     }
 
     /**
-     * @param $id
-     * @param $data
+     * @param int $id
+     * @param array $data
      * @return object
      */
-    public function updateContact( $id, $data ) {
+    public function updateContact( $id, array $data ) {
         return $this->request( 'PATCH', 'contacts/'.$id, [ 'contact' => $data ]);
     }
 
     /**
-     * @param $data
+     * @param array $data
      * @return object
      */
-    public function createInvoice( $data ) {
+    public function createInvoice( array $data ) {
         return $this->request( 'POST', 'sales_invoices', [ 'sales_invoice' => $data ]);
     }
 
     /**
-     * @param $id
-     * @param $data
+     * @param int $invoiceId
+     * @param array $data
      * @return object
      */
-    public function updateInvoice( $id, $data ) {
+    public function createInvoiceSending( $invoiceId, array $data ) {
+        return $this->request( 'PATCH', 'sales_invoices/' . $invoiceId . '/send_invoice', [ 'sales_invoice_sending' => $data ]);
+    }
+
+    /**
+     * @param int $invoiceId
+     * @param array $data
+     * @return object
+     */
+    public function createInvoicePayment( $invoiceId, array $data ) {
+        return $this->request( 'PATCH', 'sales_invoices/' . $invoiceId . '/register_payment', [ 'payment' => $data ]);
+    }
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return object
+     */
+    public function updateInvoice( $id, array $data ) {
         return $this->request( 'POST', 'sales_invoices/'.$id, [ 'sales_invoice' => $data ]);
     }
 
