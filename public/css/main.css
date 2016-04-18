@@ -373,7 +373,8 @@ select,
 textarea {
   padding: 8px;
   display: inline-block;
-  background: white; }
+  background: white;
+  margin-bottom: 3px; }
 
 select {
   -webkit-appearance: menulist-button;
@@ -548,6 +549,11 @@ button:focus,
   content: "//";
   color: #999;
   margin-right: 15px; }
+
+.help {
+  font-size: 85%;
+  font-style: italic;
+  color: #888; }
 
 #content ul li {
   padding: 3px 0; }
