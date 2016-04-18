@@ -45,6 +45,15 @@
             <h2 class="slashes">2. Account & Billing Info</h2>
 
             <div class="form-group">
+                <label>Name</label>
+
+                <div class="form-element">
+                    <input type="text" name="user[name]" value="{{ old('user.name', '' ) }}" required>
+                    <i class="fa fa-user form-element-icon" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label>Email address</label>
 
                 <div class="form-element">
@@ -54,7 +63,7 @@
             </div>
 
             <div class="form-group">
-                <label>New password</label>
+                <label>Password</label>
 
                 <div class="form-element">
                     <input type="password" name="password" value="" required minlength="6">
@@ -84,6 +93,7 @@
             <div class="form-group eu-only" style="display: none;">
                 <label>VAT Number</label>
                 <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" />
+                <p class="help">If you're buying as a Europe based company, please enter your company VAT number here.</p>
             </div>
 
         </div>

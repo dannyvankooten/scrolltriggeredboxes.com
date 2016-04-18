@@ -89,8 +89,9 @@ class AccountController extends Controller {
 
 		// validate new values
 		$this->validate( $request, [
-			'user.country' => 'required',
-			'user.vat_number' => 'sometimes|vat_number'
+			'user.name' 		=> 'required',
+			'user.country' 		=> 'required',
+			'user.vat_number' 	=> 'sometimes|vat_number'
 		], array(
 			'vat_number' => 'Please supply a valid VAT number.'
 		));
@@ -144,11 +145,12 @@ class AccountController extends Controller {
 
 		// validate new values
 		$this->validate( $request, [
-			'payment_token' => 'required',
-			'user.email' => 'required|email|unique:users,email',
-			'user.country' => 'required',
-			'user.vat_number' => 'sometimes|vat_number',
-			'password' => 'required|confirmed|between:6,60'
+			'user.name' 		=> 'required',
+			'user.email' 		=> 'required|email|unique:users,email',
+			'user.country' 		=> 'required',
+			'user.vat_number' 	=> 'sometimes|vat_number',
+			'password' 			=> 'required|confirmed|between:6,60',
+			'payment_token' 	=> 'required',
 		], array(
 			'email' => 'Please enter a valid email address.',
 			'vat_number' => 'Please enter a valid VAT number.',
