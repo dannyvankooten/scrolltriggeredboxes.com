@@ -16,18 +16,22 @@
         <thead>
         <tr>
             <th>License Key</th>
-            <th width="20%">Used on # sites</th>
+            <th width="20%">Used #</th>
             <th>Created at</th>
         </tr>
         </thead>
         <tbody>
-        @foreach($user->licenses as $license)
+        @forelse($user->licenses as $license)
         <tr>
             <td><a href="/licenses/{{ $license->id }}">{{ $license->license_key }}</a></td>
             <td>{{ count( $license->activations ) }}</td>
             <td>{{ $license->created_at->format('F d, Y') }}</td>
         </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="3">You don't have any licenses yet. Why not <a href="/licenses/new">buy one now</a>?</td>
+            </tr>
+        @endforelse
         </tbody>
     </table>
 
