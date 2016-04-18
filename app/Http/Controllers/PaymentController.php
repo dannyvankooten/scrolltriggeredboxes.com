@@ -59,13 +59,11 @@ class PaymentController extends Controller {
         }
 
         // check if payment has invoice
-        if( ! $payment->moneybird_invoice_id ) {
+        if( ! $invoicer->hasInvoice( $payment ) ) {
             return view('payments.invoice-not-ready');
         }
 
-        $data = $invoicer->getInvoice( $payment->moneybird_invoice_id );
-
-        return redirect( $data->url . '.pdf' );
+        return redirect( $invoicer->getInvoiceUrl( $payment ) );
     }
 
 }

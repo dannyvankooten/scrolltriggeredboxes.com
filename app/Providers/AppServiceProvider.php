@@ -1,5 +1,6 @@
 <?php namespace App\Providers;
 
+use App\Services\Invoicer\Moneybird;
 use HelpScoutApp\DynamicApp;
 use Illuminate\Support\ServiceProvider;
 use GuzzleHttp;
@@ -31,7 +32,8 @@ class AppServiceProvider extends ServiceProvider {
 
 		$this->app->singleton( Invoicer::class, function ($app) {
 			$config = config('services.moneybird');
-			return new Invoicer( $config['administration'], $config['token'] );
+			$moneybird = new Moneybird( $config['administration'], $config['token'] );
+			return new Invoicer( $moneybird );
 		});
 
 	}

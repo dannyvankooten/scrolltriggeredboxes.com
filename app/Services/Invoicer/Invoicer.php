@@ -5,40 +5,35 @@ namespace App\Services\Invoicer;
 use App\User;
 use App\Payment;
 use DateTime;
-use GuzzleHttp\Client;
 
 class Invoicer {
 
     /**
-     * @var string
+     * @var Moneybird
      */
-    protected $url;
+    protected $moneybird;
 
     /**
      * Invoicer constructor.
      *
-     * @param string $administrationId
-     * @param string $token
+     * @param Moneybird $moneybird
      */
-    public function __construct( $administrationId, $token ) {
-
-        $this->url = 'https://moneybird.com/api/v2/' . $administrationId . '/';
-        $this->token = $token;
-
-        $this->client = new Client([
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->token,
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-             ]
-        ]);
+    public function __construct( Moneybird $moneybird ) {
+       $this->moneybird = $moneybird;
     }
 
     /**
      * @param User $user
+     * @param bool $updateContact
+     *
      * @return User
      */
-    public function contact( User $user ) {
+    public function contact( User $user, $updateContact = false ) {
+
+        // bail early if user has contact already & update flag is disabled
+        if( ! empty( $user->moneybird_contact_id ) && ! $updateContact ) {
+            return $user;
+        }
 
         // create contact
         $contact = [
@@ -54,10 +49,10 @@ class Invoicer {
             'email' => $user->email,
         ];
 
-        if( $user->moneybird_contact_id ) {
-            $this->updateContact( $user->moneybird_contact_id, $contact );
+        if( ! empty( $user->moneybird_contact_id ) ) {
+            $this->moneybird->updateContact( $user->moneybird_contact_id, $contact );
         } else {
-            $data = $this->createContact( $contact );
+            $data = $this->moneybird->createContact( $contact );
             $user->moneybird_contact_id = $data->id;
         }
 
@@ -85,23 +80,21 @@ class Invoicer {
                    // 'tax_rate_id' => '', // TODO: Fetch correct tax rate ID here.
                 ]
             ]
-
         ];
-
-
+        
         if( $payment->moneybird_invoice_id ) {
             // invoice exists, update it
-            $this->updateInvoice( $payment->moneybird_invoice_id, $invoiceData );
+            $this->moneybird->updateInvoice( $payment->moneybird_invoice_id, $invoiceData );
         } else {
             // create new invoice
-            $data = $this->createInvoice( $invoiceData );
+            $data = $this->moneybird->createInvoice( $invoiceData );
             $payment->moneybird_invoice_id = $data->id;
 
             // mark invoice as sent
             $sendingData = [
                 'delivery_method' => 'Manual'
             ];
-            $this->createInvoiceSending( $data->id, $sendingData );
+            $this->moneybird->createInvoiceSending( $data->id, $sendingData );
 
             // register invoice payment
             // IMPORTANT: Take notice, as we're getting the total price & base price from MoneyBird here. This means we're using MoneyBirds currency exchange rate....
@@ -111,93 +104,52 @@ class Invoicer {
                 'price_base' => $data->total_price_incl_tax_base
             ];
 
-            $this->createInvoicePayment( $data->id, $paymentData );
+            $this->moneybird->createInvoicePayment( $data->id, $paymentData );
         }
 
         return $payment;
     }
 
-
     /**
-     * @param array $data
-     * @return object
-     */
-    public function createContact( array $data ) {
-        return $this->request( 'POST', 'contacts', [ 'contact' => $data ]);
-    }
-
-    /**
-     * @param int $id
-     * @param array $data
-     * @return object
-     */
-    public function updateContact( $id, array $data ) {
-        return $this->request( 'PATCH', 'contacts/'.$id, [ 'contact' => $data ]);
-    }
-
-    /**
-     * @param int $id
-     * @return object
-     */
-    public function getInvoice( $id ) {
-        return $this->request( 'GET', 'sales_invoices/'.$id );
-    }
-
-    /**
-     * @param int $id
-     * @param array $data
-     * @return object
-     */
-    public function updateInvoice( $id, array $data ) {
-        return $this->request( 'POST', 'sales_invoices/'.$id, [ 'sales_invoice' => $data ]);
-    }
-
-
-    /**
-     * @param array $data
-     * @return object
-     */
-    public function createInvoice( array $data ) {
-        return $this->request( 'POST', 'sales_invoices', [ 'sales_invoice' => $data ]);
-    }
-
-    /**
-     * @param int $invoiceId
-     * @param array $data
-     * @return object
-     */
-    public function createInvoiceSending( $invoiceId, array $data ) {
-        return $this->request( 'PATCH', 'sales_invoices/' . $invoiceId . '/send_invoice', [ 'sales_invoice_sending' => $data ]);
-    }
-
-    /**
-     * @param int $invoiceId
-     * @param array $data
-     * @return object
-     */
-    public function createInvoicePayment( $invoiceId, array $data ) {
-        return $this->request( 'PATCH', 'sales_invoices/' . $invoiceId . '/register_payment', [ 'payment' => $data ]);
-    }
-
-
-
-    /**
-     * @param string $method
-     * @param string $resource
-     * @param array|object $data
+     * @param Payment $payment
      *
-     * @return object
+     * @return bool
      */
-    private function request( $method, $resource, $data = array() ) {
-        $url = $this->url . $resource . '.json';
+    public function hasInvoice( Payment $payment ) {
+        return ! empty( $payment->moneybird_invoice_id );
+    }
 
-        $response = $this->client->request( $method, $url, [
-            'body' => json_encode( $data )
-        ]);
+    /**
+     * @param Payment $payment
+     *
+     * @return string
+     */
+    public function getInvoiceUrl( Payment $payment ) {
+        $data = $this->moneybird->getInvoice( $payment->moneybird_invoice_id );
+        return $data->url . '.pdf';
+    }
 
-        $body = $response->getBody();
-        $data = json_decode( $body );
-        return $data;
+    /**
+     * @param Payment $payment
+     */
+    public function creditInvoice( Payment $payment ) {
+        if( ! $payment->moneybird_invoice_id ) {
+            return;
+        }
+
+        $data = $this->moneybird->createCreditInvoice( $payment->moneybird_invoice_id );
+        $sendingData = [
+            'delivery_method' => 'Manual'
+        ];
+        $this->moneybird->createInvoiceSending( $data->id, $sendingData );
+
+        $paymentData = [
+            'payment_date' => $payment->created_at->format('Y-m-d H:i:s'),
+            'price' => $data->total_price_incl_tax,
+            'price_base' => $data->total_price_incl_tax_base
+        ];
+
+        $this->moneybird->createInvoicePayment( $data->id, $paymentData );
     }
 
 
