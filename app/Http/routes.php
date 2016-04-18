@@ -35,11 +35,9 @@ Route::group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['we
 	Route::get('/plugins', 'PluginController@overview' );
 	Route::get('/plugins/{id}/download', 'PluginController@download' )->name('plugins_download');
 
-	Route::get('/invoices', 'PaymentController@overview' );
-
-	//Route::get('/invoices', 'AccountController@invoices' );
-	//Route::get('/invoices/{id}', 'AccountController@downloadInvoice');
-
+	Route::get('/payments', 'PaymentController@overview' );
+	Route::get('/payments/{id}/invoice', 'PaymentController@invoice' );
+	
 	// TODO: allow login out a license from the account page
 	//Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
 

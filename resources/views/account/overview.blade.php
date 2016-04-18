@@ -13,6 +13,7 @@
         <ul>
             <li><a href="/plugins">Download plugins</a></li>
             <li><a href="/licenses">View your licenses</a></li>
+            <li><a href="/payments">View your payments</a></li>
             <li><a href="/edit">Edit account information</a></li>
             <li><a href="/edit/billing">Edit billing information</a></li>
             <li><a href="/edit/payment">Edit payment method</a></li>

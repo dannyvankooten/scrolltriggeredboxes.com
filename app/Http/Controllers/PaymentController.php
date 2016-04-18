@@ -25,8 +25,47 @@ class PaymentController extends Controller {
         $this->middleware('auth.user');
     }
 
+    /**
+     * Overview of payments by the logged-in users
+     *
+     * @return mixed
+     */
     public function overview() {
-       // TODO list all payments + invoices for this users
+        $user = $this->auth->user();
+        $payments = Payment::where('user_id', $user->id)
+            ->with('subscription.license')
+            ->orderBy('created_at', 'DESC')
+            ->get();
+        return view('payments.overview', [ 'payments' => $payments ]);
+    }
+
+    /**
+     * Download PDF invoice
+     *
+     * @param $id
+     * @param Invoicer $invoicer
+     */
+    public function invoice( $id, Invoicer $invoicer ) {
+
+        /** @var User $user */
+        $user = $this->auth->user();
+
+        /** @var Payment $payment */
+        $payment = Payment::findOrFail($id);
+
+        // check if payment belongs to user
+        if( ! $payment->belongsToUser( $user ) ) {
+            abort( 403 );
+        }
+
+        // check if payment has invoice
+        if( ! $payment->moneybird_invoice_id ) {
+            return view('payments.invoice-not-ready');
+        }
+
+        $data = $invoicer->getInvoice( $payment->moneybird_invoice_id );
+
+        return redirect( $data->url . '.pdf' );
     }
 
 }
