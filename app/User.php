@@ -105,7 +105,7 @@ class User extends Model implements AuthenticatableContract,
 	public function getLastName() {
 		$pos = strpos( $this->name, ' ' );
 		if( ! $pos ) {
-			return $this->name;
+			return '';
 		}
 
 		return substr( $this->name, $pos );
