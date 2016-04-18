@@ -17,10 +17,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Payment extends Model
 {
-
 	protected $table = 'payments';
 	public $timestamps = true;
 	protected $fillable = [];
+
+	protected $dates =  [ 'created_at', 'updated_at' ];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

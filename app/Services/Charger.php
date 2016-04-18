@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\CreatePaymentCreditInvoice;
 use App\Jobs\CreatePaymentInvoice;
 use App\User;
 use App\Subscription;
@@ -75,9 +76,6 @@ class Charger {
 
         }
 
-        // TODO: Dispatch job to create credit invoice in Moneybird
-
-
         $payment->delete();
 
         $subscription = $payment->subscription;
@@ -86,6 +84,9 @@ class Charger {
         // substract one interval from license expiration date
         $license->expires_at = $license->expires_at->modify("-1 {$subscription->interval}");
         $license->save();
+
+        // dispatch job to create an invoice for this payment
+        $this->dispatch(new CreatePaymentCreditInvoice($payment));
 
         return false;
     }
