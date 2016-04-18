@@ -117,6 +117,7 @@ class Invoicer {
         return $payment;
     }
 
+
     /**
      * @param array $data
      * @return object
@@ -133,6 +134,24 @@ class Invoicer {
     public function updateContact( $id, array $data ) {
         return $this->request( 'PATCH', 'contacts/'.$id, [ 'contact' => $data ]);
     }
+
+    /**
+     * @param int $id
+     * @return object
+     */
+    public function getInvoice( $id ) {
+        return $this->request( 'GET', 'sales_invoices/'.$id );
+    }
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return object
+     */
+    public function updateInvoice( $id, array $data ) {
+        return $this->request( 'POST', 'sales_invoices/'.$id, [ 'sales_invoice' => $data ]);
+    }
+
 
     /**
      * @param array $data
@@ -160,14 +179,7 @@ class Invoicer {
         return $this->request( 'PATCH', 'sales_invoices/' . $invoiceId . '/register_payment', [ 'payment' => $data ]);
     }
 
-    /**
-     * @param int $id
-     * @param array $data
-     * @return object
-     */
-    public function updateInvoice( $id, array $data ) {
-        return $this->request( 'POST', 'sales_invoices/'.$id, [ 'sales_invoice' => $data ]);
-    }
+
 
     /**
      * @param string $method
@@ -176,8 +188,9 @@ class Invoicer {
      *
      * @return object
      */
-    private function request( $method, $resource, $data ) {
+    private function request( $method, $resource, $data = array() ) {
         $url = $this->url . $resource . '.json';
+
         $response = $this->client->request( $method, $url, [
             'body' => json_encode( $data )
         ]);
