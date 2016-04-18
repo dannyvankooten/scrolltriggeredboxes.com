@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Activation;
+use App\Jobs\EmailLicenseDetails;
 use App\Plugin;
 use App\Services\Charger;
 use App\Subscription;
@@ -78,11 +79,10 @@ class LicenseController extends Controller {
 
 		// finally, charge subscription so that license starts
 		$charger = new Charger();
-		try {
-			$success = $charger->subscription( $subscription );
-		} catch( Exception $e ) {
-			return redirect('/')->with('error', $e->getMessage());
-		}
+		$charger->subscription( $subscription );
+
+		// dispatch job to send license details over email
+		$this->dispatch( new EmailLicenseDetails( $license ) );
 
 		return redirect('/licenses/' . $license->id )->with('message', 'You now have a new license!');
 	}
@@ -94,7 +94,7 @@ class LicenseController extends Controller {
 	 * @return \Illuminate\View\View
 	 */
 	public function details($id) {
-		$license = License::with('activations')->findOrFail($id);
+		$license = License::with(['activations', 'subscription'])->findOrFail($id);
 		$user = $this->auth->user();
 
 		// check if license belongs to user

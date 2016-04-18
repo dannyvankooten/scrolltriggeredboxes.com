@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\EmailLicenseDetails;
 use App\Services\Charger;
 use App\Subscription;
 use App\User;
@@ -136,9 +137,6 @@ class AccountController extends Controller {
 	}
 
 	/**
-	 * TODO: Refactor this method into jobs
-	 * TODO: Force user to set password
-	 *
 	 * @param Request $request
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
@@ -162,7 +160,7 @@ class AccountController extends Controller {
 		$user->setPassword($request->input('password'));
 		$user->save();
 
-		// login user
+		// log user in automatically
 		$this->auth->loginUsingId( $user->id );
 
 		// create customer in Stripe
@@ -203,11 +201,10 @@ class AccountController extends Controller {
 		$subscription->save();
 
 		// finally, charge subscription so that license starts
-		try {
-			$success = $charger->subscription( $subscription );
-		} catch( Exception $e ) {
-			return redirect('/')->with('error', $e->getMessage());
-		}
+		$charger->subscription( $subscription );
+
+		// dispatch job to send license details over email
+		$this->dispatch( new EmailLicenseDetails( $license ) );
 
 		return redirect('/')->with('message', "You're all set!");
 	}

@@ -2,16 +2,20 @@
 
 namespace App\Services;
 
+use App\Jobs\CreatePaymentInvoice;
 use App\User;
 use App\Subscription;
 use App\Payment;
 
 
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Stripe\Stripe;
 use DateTime;
 use Exception;
 
 class Charger {
+
+    use DispatchesJobs;
 
     /**
      * Charger constructor.
@@ -70,6 +74,9 @@ class Charger {
         } catch( \Stripe\Error\InvalidRequest $e ) {
 
         }
+
+        // TODO: Dispatch job to create credit invoice in Moneybird
+
 
         $payment->delete();
 
@@ -131,6 +138,9 @@ class Charger {
         // set new charge date
         $subscription->next_charge_at = $license->expires_at->modify('-1 week');
         $subscription->save();
+
+        // dispatch job to create an invoice for this payment
+        $this->dispatch(new CreatePaymentInvoice($payment));
 
         return true;
     }
