@@ -76,4 +76,13 @@ class Payment extends Model
 
 		return $map[ $this->currency ];
 	}
+
+	/**
+	 * @param User $user
+	 *
+	 * @return bool
+	 */
+	public function belongsToUser( User $user ) {
+		return $this->user_id == $user->id;
+	}
 }

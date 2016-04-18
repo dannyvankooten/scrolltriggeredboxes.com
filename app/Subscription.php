@@ -97,4 +97,13 @@ class Subscription extends Model {
 		return $this->getAmount() + $this->getTaxAmount();
 	}
 
+	/**
+	 * @param User $user
+	 *
+	 * @return bool
+	 */
+	public function belongsToUser( User $user ) {
+		return $this->user_id == $user->id;
+	}
+
 }

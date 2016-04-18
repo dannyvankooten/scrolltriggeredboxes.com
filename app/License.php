@@ -124,4 +124,5 @@ class License extends Model {
 
 		return $key;
 	}
+	
 }
