@@ -508,6 +508,9 @@ button:focus,
 .small {
   font-size: 80%; }
 
+.big {
+  font-size: 120%; }
+
 .strong {
   font-weight: bold; }
 
@@ -555,6 +558,9 @@ button:focus,
   font-style: italic;
   color: #888; }
 
+.red {
+  color: #cc0300; }
+
 #content ul li {
   padding: 3px 0; }
 
@@ -562,7 +568,7 @@ body {
   font-family: "Helvetica Neue", "Helvetica", Arial, Verdana, sans-serif;
   font-size: 16px;
   line-height: 1.4;
-  color: #333;
+  color: #444;
   overflow-y: scroll; }
 
 * {

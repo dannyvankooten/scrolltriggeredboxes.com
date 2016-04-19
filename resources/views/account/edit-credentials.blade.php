@@ -27,7 +27,7 @@
         {!! csrf_field() !!}
 
         <div class="form-group">
-            <label>Email address</label>
+            <label>Email address <span class="big red">*</span></label>
 
             <div class="form-element">
                 <input type="email" name="user[email]" value="{{ old('user.email', $user->email ) }}" required>
@@ -36,7 +36,7 @@
         </div>
 
         <div class="form-group">
-            <label>Current password</label>
+            <label>Current password <span class="big red">*</span></label>
 
             <div class="form-element">
                 <input type="password" name="current_password" value="" required>

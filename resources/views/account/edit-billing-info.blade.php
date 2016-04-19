@@ -27,7 +27,7 @@
             {!! csrf_field() !!}
 
             <div class="form-group">
-                <label>Name</label>
+                <label>Name <span class="big red">*</span></label>
                 <div class="form-element">
                     <input type="text" name="user[name]" value="{{ old('user.name', $user->name ) }}">
                     <i class="fa fa-user form-element-icon"></i>
@@ -35,7 +35,7 @@
             </div>
 
             <div class="form-group">
-                <label>Country</label>
+                <label>Country <span class="big red">*</span></label>
                 <select name="user[country]" id="country-input">
                     @foreach(Countries::all() as $code => $country)
                         <option value="{{ $code }}"
@@ -73,7 +73,7 @@
             </div>
 
             <div class="form-group eu-only">
-                <label>Company Name <span class="muted pull-right">(optional)</span></label>
+                <label>Company Name <span class="small muted pull-right">(optional)</span></label>
                 <div class="form-element">
                     <input type="text" name="user[company]" value="{{ old('user.company', $user->company ) }}">
                     <i class="fa fa-building form-element-icon"></i>
@@ -81,7 +81,7 @@
             </div>
 
             <div class="form-group eu-only" style="@if(!$user->inEurope()) display: none; @endif">
-                <label>VAT Number <span class="muted pull-right">(optional)</span></label>
+                <label>VAT Number <span class="small muted pull-right">(optional)</span></label>
                 <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', $user->vat_number ) }}"/>
             </div>
 

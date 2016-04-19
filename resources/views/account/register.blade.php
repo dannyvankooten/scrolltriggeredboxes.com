@@ -45,7 +45,7 @@
             <h2 class="slashes">2. Account & Billing Info</h2>
 
             <div class="form-group">
-                <label>Name</label>
+                <label>Name <span class="big red">*</span></label>
 
                 <div class="form-element">
                     <input type="text" name="user[name]" value="{{ old('user.name', '' ) }}" required>
@@ -54,7 +54,7 @@
             </div>
 
             <div class="form-group">
-                <label>Email address</label>
+                <label>Email address <span class="big red">*</span></label>
 
                 <div class="form-element">
                     <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" required>
@@ -63,7 +63,7 @@
             </div>
 
             <div class="form-group">
-                <label>Password</label>
+                <label>Password <span class="big red">*</span></label>
 
                 <div class="form-element">
                     <input type="password" name="password" value="" required minlength="6">
@@ -72,7 +72,7 @@
             </div>
 
             <div class="form-group">
-                <label>Confirm password</label>
+                <label>Confirm password <span class="big red">*</span></label>
 
                 <div class="form-element">
                     <input type="password" name="password_confirmation" value="" required minlength="6">
@@ -81,7 +81,7 @@
             </div>
 
             <div class="form-group">
-                <label>Country</label>
+                <label>Country <span class="big red">*</span></label>
                 <select name="user[country]" id="country-input" data-stripe="address_country" required>
                     <option value="" disabled {{ old('user.country','') === '' ? 'selected' : '' }}>Select your country..</option>
                     @foreach(Countries::all() as $code => $country)
@@ -91,7 +91,7 @@
             </div>
 
             <div class="form-group eu-only" style="display: none;">
-                <label>VAT Number</label>
+                <label>VAT Number <span class="small pull-right muted">(optional)</span></label>
                 <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" />
                 <p class="help">If you're buying as a Europe based company, please enter your company VAT number here.</p>
             </div>
@@ -110,7 +110,7 @@
             <div class="well small-margin">
 
                 <div class="form-group">
-                    <label>Credit Card Number</label>
+                    <label>Credit Card Number <span class="big red">*</span></label>
 
                     <div class="form-element">
                         <input type="text" data-stripe="number" placeholder="**** **** **** ****" required>
@@ -119,7 +119,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Expiration</label>
+                    <label>Expiration <span class="big red">*</span></label>
                     <select data-stripe="exp_month" style="width: 80px; display: inline;" required>
                         <option value="" disabled selected>Month</option>
                         @for ($i = 1; $i <= 12; $i++)
@@ -136,7 +136,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>CVC</label>
+                    <label>CVC <span class="big red">*</span></label>
 
                     <div class="form-element" style="width: 120px;">
                         <input type="text" data-stripe="cvc" maxlength="4" required>

@@ -36,7 +36,7 @@
             <div class="card-errors"></div>
 
             <div class="form-group">
-                <label>Credit Card Number</label>
+                <label>Credit Card Number <span class="big red">*</span></label>
 
                 <div class="form-element">
                     <input type="text" data-stripe="number" placeholder="**** **** **** ****" required>
@@ -45,7 +45,7 @@
             </div>
 
             <div class="form-group">
-                <label>Expiration</label>
+                <label>Expiration <span class="big red">*</span></label>
                 <select data-stripe="exp_month" style="width: 80px; display: inline;" required>
                     <option disabled value="" selected>Month</option>
                     @for ($i = 1; $i <= 12; $i++)
@@ -62,7 +62,7 @@
             </div>
 
             <div class="form-group">
-                <label>CVC</label>
+                <label>CVC <span class="big red">*</span></label>
 
                 <div class="form-element" style="width: 120px;">
                     <input type="text" data-stripe="cvc" required maxlength="4">
