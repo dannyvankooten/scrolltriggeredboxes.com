@@ -26,8 +26,8 @@ Route::group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['we
 
 	// licenses
 	Route::get('/licenses', 'LicenseController@overview');
-	Route::get('/licenses/new', 'LicenseController@_new' );
-	Route::post('/licenses/new', 'LicenseController@process' );
+	Route::get('/licenses/new', 'LicenseController@create' );
+	Route::post('/licenses/new', 'LicenseController@store' );
 	Route::get('/licenses/{id}', 'LicenseController@details' );
 	Route::post('/licenses/{id}', 'LicenseController@update' );
 

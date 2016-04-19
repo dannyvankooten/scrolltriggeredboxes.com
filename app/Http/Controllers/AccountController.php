@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\EmailLicenseDetails;
+use App\Jobs\UpdateInvoiceContact;
 use App\Services\Charger;
-use App\Subscription;
+use App\Services\Purchaser;
 use App\User;
 
+use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
-use App\License;
-use DateTime;
+
 
 class AccountController extends Controller {
 
 	/**
-	 * @var Guard
+	 * @var SessionGuard
 	 */
 	protected $auth;
 
@@ -51,6 +51,8 @@ class AccountController extends Controller {
 	 * @param Request $request
 	 */
 	public function updateCredentials( Request $request ) {
+
+		/** @var User $user */
 		$user = $this->auth->user();
 
 		if( ! $user->verifyPassword( $request->input('current_password') ) ) {
@@ -98,6 +100,9 @@ class AccountController extends Controller {
 
 		$user->fill( $request->input('user') );
 		$user->save();
+
+		$this->dispatch(new UpdateInvoiceContact($user));
+
 		return redirect()->back()->with('message', 'Changes saved!');
 	}
 
@@ -139,9 +144,11 @@ class AccountController extends Controller {
 
 	/**
 	 * @param Request $request
+	 * @param Purchaser $purchaser
+	 *
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
-	public function create( Request $request ) {
+	public function create( Request $request, Purchaser $purchaser ) {
 
 		// validate new values
 		$this->validate( $request, [
@@ -163,50 +170,15 @@ class AccountController extends Controller {
 		$user->save();
 
 		// log user in automatically
-		$this->auth->loginUsingId( $user->id );
+		$this->auth->loginUsingId($user->id);
 
 		// create customer in Stripe
-		$charger = new Charger();
-		$charger->customer($user, $request->input('payment_token'));
-		$user->save();
+		$purchaser->user($user, $request->input('payment_token'));
 
 		// proceed with charge
-		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
 		$quantity = (int) $request->input('quantity', 1);
-
-		$discount_percentage = $quantity > 5 ? 30 : $quantity > 1 ? 20 : 0;
-		$item_price = $interval == 'month' ? 5 : 50;
-
-		// calculate amount based on number of activations & discount
-		$amount = $item_price * $quantity;
-		if( $discount_percentage > 0 ) {
-			$amount = $amount * ( ( 100 - $discount_percentage ) / 100 );
-		}
-
-		// First, create license.
-		$license = new License();
-		$license->license_key = License::generateKey();
-		$license->user()->associate( $user );
-		$license->site_limit = $quantity;
-		$license->expires_at = new \DateTime("now");
-		$license->save();
-
-		// Then, create subscription
-		$subscription = new Subscription([
-			'interval' => $interval,
-			'active' => 1,
-			'next_charge_at' => new DateTime("now")
-		]);
-		$subscription->amount = $amount;
-		$subscription->license()->associate( $license );
-		$subscription->user()->associate( $user );
-		$subscription->save();
-
-		// finally, charge subscription so that license starts
-		$charger->subscription( $subscription );
-
-		// dispatch job to send license details over email
-		$this->dispatch( new EmailLicenseDetails( $license ) );
+		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
+		$purchaser->license($user, $quantity, $interval);
 
 		return redirect('/')->with('message', "You're all set!");
 	}

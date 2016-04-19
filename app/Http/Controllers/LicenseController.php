@@ -2,23 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Activation;
-use App\Jobs\EmailLicenseDetails;
-use App\Plugin;
+use App\Activation;;
 use App\Services\Charger;
+use App\Services\Purchaser;
 use App\Subscription;
-use Exception;
+use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\License;
-use Stripe\Stripe;
-use DateTime;
 
 class LicenseController extends Controller {
 
 	/**
-	 * @var Guard
+	 * @var SessionGuard
 	 */
 	protected $auth;
 
@@ -39,50 +36,25 @@ class LicenseController extends Controller {
 	/**
 	 * @return \Illuminate\View\View
 	 */
-	public function _new( ) {
+	public function create( ) {
 		return view('license.new');
 	}
 
-	public function process( Request $request  ) {
+	/**
+	 * @param Request $request
+	 * @param Purchaser $purchaser
+	 *
+	 * @return Response
+	 */
+	public function store( Request $request, Purchaser $purchaser ) {
+
+		/** @var User $user */
 		$user = $this->auth->user();
 
-		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
 		$quantity = (int) $request->input('quantity', 1);
+		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
 
-		$discount_percentage = $quantity > 5 ? 30 : $quantity > 1 ? 20 : 0;
-		$item_price = $interval == 'month' ? 5 : 50;
-
-		// calculate amount based on number of activations & discount
-		$amount = $item_price * $quantity;
-		if( $discount_percentage > 0 ) {
-			$amount = $amount * ( ( 100 - $discount_percentage ) / 100 );
-		}
-
-		// First, create license.
-		$license = new License();
-		$license->license_key = License::generateKey();
-		$license->user()->associate( $user );
-		$license->site_limit = $quantity;
-		$license->expires_at = new \DateTime("now");
-		$license->save();
-
-		// Then, create subscription
-		$subscription = new Subscription([
-			'interval' => $interval,
-			'active' => 1,
-			'next_charge_at' => new DateTime("now")
-		]);
-		$subscription->amount = $amount;
-		$subscription->license()->associate( $license );
-		$subscription->user()->associate( $user );
-		$subscription->save();
-
-		// finally, charge subscription so that license starts
-		$charger = new Charger();
-		$charger->subscription( $subscription );
-
-		// dispatch job to send license details over email
-		$this->dispatch( new EmailLicenseDetails( $license ) );
+		$license = $purchaser->license($user, $quantity, $interval );
 
 		return redirect('/licenses/' . $license->id )->with('message', 'You now have a new license!');
 	}

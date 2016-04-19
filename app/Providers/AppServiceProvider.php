@@ -1,6 +1,8 @@
 <?php namespace App\Providers;
 
+use App\Services\Charger;
 use App\Services\Invoicer\Moneybird;
+use App\Services\Purchaser;
 use App\Services\TaxRateResolver;
 use HelpScoutApp\DynamicApp;
 use Illuminate\Support\ServiceProvider;
@@ -43,6 +45,14 @@ class AppServiceProvider extends ServiceProvider {
 			$cacheDriver = $app['cache']->driver( $defaultCacheDriver );
 
 			return new Invoicer( $moneybird, $app[ TaxRateResolver::class ], $cacheDriver );
+		});
+
+		$this->app->singleton( Charger::class, function ($app) {
+			return new Charger();
+		});
+
+		$this->app->singleton( Purchaser::class, function ($app) {
+			return new Purchaser( $app[Charger::class]);
 		});
 
 	}
