@@ -15,10 +15,11 @@ class PluginController extends Controller {
 	}
 
 	/**
+	 * @param Request $request
 	 */
 	public function index( Request $request ) {
 
-		$pluginQuery = Plugin::query()->where('status','published');
+		$pluginQuery = Plugin::query()->where('status', 'published');
 
 		if( $request->input('ids') ) {
 			$pluginQuery->whereIn( 'id',explode(',', $request->input('ids') ) );
@@ -41,7 +42,7 @@ class PluginController extends Controller {
 	/**
 	 * Get a plugin by its ID or slug
 	 *
-	 * @param $id_or_slug
+	 * @param mixed $id_or_slug
 	 *
 	 * @return Response
 	 */
@@ -59,7 +60,7 @@ class PluginController extends Controller {
 	}
 
 	/**
-	 * @param int $id
+	 * @param mixed $id_or_slug
 	 * @param Request $request
 	 * @return mixed
 	 */
@@ -69,7 +70,7 @@ class PluginController extends Controller {
 		$plugin = Plugin::where('id', $id_or_slug)->orWhere('url', $id_or_slug)->firstOrFail();
 
 		// is a specific version specified? if not, use latest.
-		$version = preg_replace( "/[^0-9\.]/", "" , $request->input( 'version', '' ) );
+		$version = preg_replace( '/[^0-9\.]/', "" , $request->input( 'version', '' ) );
 
 		$downloader = new PluginDownloader( $plugin );
 		$filename = $downloader->download( $version );
