@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\UpdateInvoiceContact;
+use App\Jobs\UpdateStripeCustomer;
 use App\Services\Charger;
 use App\Services\Purchaser;
 use App\User;
@@ -102,6 +103,7 @@ class AccountController extends Controller {
 		$user->save();
 
 		$this->dispatch(new UpdateInvoiceContact($user));
+		$this->dispatch(new UpdateStripeCustomer($user));
 
 		return redirect()->back()->with('message', 'Changes saved!');
 	}

@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Hash;
  * @property string $password
  * @property boolean $is_admin
  * @property string $moneybird_contact_id
+ * @property string $stripe_customer_id
  * @property \DateTime created_at
  * @property \DateTime updated_at
  */
