@@ -1,7 +1,7 @@
 <?php namespace App;
 
-use DvK\Laravel\Vat\Facades\Rates as VatRates;
 use DvK\Laravel\Vat\Facades\Countries as Countries;
+use App\Services\TaxRateResolver;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -119,27 +119,19 @@ class User extends Model implements AuthenticatableContract,
 	}
 
 	/**
-	 * @return double
+	 * @return int
 	 */
 	public function getTaxRate() {
+		$resolver = new TaxRateResolver();
+		return $resolver->getRateForUser( $this );
+	}
 
-		// no tax for non-EU customers
-		if( ! $this->inEurope() ) {
-			return 0;
-		}
-
-		// Dutch tax for all NL customers
-		if( $this->country === 'NL' ) {
-			return VatRates::country( 'NL', 'standard' );
-		}
-
-		// Reverse charge for EU businesses (outside of NL)
-		if( ! empty( $this->vat_number ) ) {
-			return 0;
-		}
-
-		// EU tax rate of specific country otherwise
-		return VatRates::country( $this->country, 'standard' );
+	/**
+	 * @return string
+	 */
+	public function getTaxRateCode() {
+		$resolver = new TaxRateResolver();
+		return $resolver->getCodeForUser( $this );
 	}
 
 	/**

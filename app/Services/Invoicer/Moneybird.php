@@ -27,6 +27,13 @@ class Moneybird {
     }
 
     /**
+     * @return array
+     */
+    public function getTaxRates() {
+        return $this->request( 'GET', 'tax_rates' );
+    }
+
+    /**
      * @param array $data
      * @return object
      */
@@ -100,7 +107,7 @@ class Moneybird {
      * @param string $resource
      * @param array|object $data
      *
-     * @return object
+     * @return array|object
      */
     public function request( $method, $resource, $data = array() ) {
         $url = $this->url . $resource . '.json';

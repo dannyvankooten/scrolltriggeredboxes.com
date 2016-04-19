@@ -2,9 +2,11 @@
 
 namespace App\Services\Invoicer;
 
+use App\Services\TaxRateResolver;
 use App\User;
 use App\Payment;
 use DateTime;
+use Illuminate\Contracts\Cache\Repository as Cache;
 
 class Invoicer {
 
@@ -14,12 +16,26 @@ class Invoicer {
     protected $moneybird;
 
     /**
+     * @var TaxRateResolver
+     */
+    protected $taxRateResolver;
+
+    /**
+     * @var Cache
+     */
+    protected $cache;
+
+    /**
      * Invoicer constructor.
      *
      * @param Moneybird $moneybird
+     * @param TaxRateResolver $taxRateResolver
+     * @param Cache $cache
      */
-    public function __construct( Moneybird $moneybird ) {
-       $this->moneybird = $moneybird;
+    public function __construct( Moneybird $moneybird, TaxRateResolver $taxRateResolver, Cache $cache = null ) {
+        $this->moneybird = $moneybird;
+        $this->taxRateResolver = $taxRateResolver;
+        $this->cache = $cache;
     }
 
     /**
@@ -67,6 +83,7 @@ class Invoicer {
      * TODO: Resolve proper tax rate ID here (we need access to new MoneyBird.com interface for that first)
      */
     public function invoice( Payment $payment ) {
+        $taxRate = $this->resolveTaxRate( $payment );
 
         $invoiceData = [
             'contact_id' => $payment->user->moneybird_contact_id,
@@ -77,7 +94,7 @@ class Invoicer {
                 [
                     'description' => 'Your Boxzilla subscription',
                     'price' => $payment->subtotal,
-                   // 'tax_rate_id' => '', // TODO: Fetch correct tax rate ID here.
+                    'tax_rate_id' => $taxRate->id,
                 ]
             ]
         ];
@@ -150,6 +167,39 @@ class Invoicer {
         ];
 
         $this->moneybird->createInvoicePayment( $data->id, $paymentData );
+    }
+
+    /**
+     * Resolves a payment to a tax rate ID in Moneybird
+     *
+     * @param Payment $payment
+     * @return object
+     * @throws \Exception
+     */
+    public function resolveTaxRate( Payment $payment ) {
+
+        if( $this->cache ) {
+            $rates = $this->cache->get('moneybird.tax-rates');
+        }
+
+        if( empty( $rates ) ) {
+            $rates = $this->moneybird->getTaxRates();
+
+            if( $this->cache ) {
+                $this->cache->put('moneybird.tax-rates', $rates, 120);
+            }
+        }
+
+        $code = $this->taxRateResolver->getCodeForUser( $payment->user );
+        dd( $rates );
+
+        foreach( $rates as $rate ) {
+            if( strpos( $rate->name, '[' . $code . ']' ) !== false ) {
+                return $rate;
+            }
+        }
+
+        throw new \Exception( 'No valid tax rate found for code ' . $code );
     }
 
 

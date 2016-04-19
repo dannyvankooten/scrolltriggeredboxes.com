@@ -52,7 +52,7 @@ class PaymentController extends Controller {
 
         /** @var Payment $payment */
         $payment = Payment::findOrFail($id);
-
+        
         // check if payment belongs to user
         if( ! $payment->belongsToUser( $user ) ) {
             abort( 403 );

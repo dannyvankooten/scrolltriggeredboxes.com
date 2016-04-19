@@ -1,6 +1,7 @@
 <?php namespace App\Providers;
 
 use App\Services\Invoicer\Moneybird;
+use App\Services\TaxRateResolver;
 use HelpScoutApp\DynamicApp;
 use Illuminate\Support\ServiceProvider;
 use GuzzleHttp;
@@ -30,10 +31,18 @@ class AppServiceProvider extends ServiceProvider {
 			return new DynamicApp( config('services.helpscout')['secret'] );
 		});
 
+		$this->app->singleton( TaxRateResolver::class, function($app) {
+			return new TaxRateResolver();
+		});
+
 		$this->app->singleton( Invoicer::class, function ($app) {
 			$config = config('services.moneybird');
 			$moneybird = new Moneybird( $config['administration'], $config['token'] );
-			return new Invoicer( $moneybird );
+
+			$defaultCacheDriver = $app['cache']->getDefaultDriver();
+			$cacheDriver = $app['cache']->driver( $defaultCacheDriver );
+
+			return new Invoicer( $moneybird, $app[ TaxRateResolver::class ], $cacheDriver );
 		});
 
 	}
