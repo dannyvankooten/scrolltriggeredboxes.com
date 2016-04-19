@@ -56,9 +56,8 @@ Route::group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['we
 // API url's
 Route::group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', 'namespace' => 'API\\v1', 'middleware' => ['api'] ], function () {
 
-	// global licenses
-	Route::post( '/login', 'AuthController@login' );
-	Route::get( '/logout', 'AuthController@logout' );
+	Route::post( '/license/activations', 'LicenseController@create' );
+	Route::delete( '/license/activations', 'LicenseController@delete' );
 
 	Route::get( '/plugins', 'PluginController@index' );
 	Route::get( '/plugins/{id}', 'PluginController@get' );

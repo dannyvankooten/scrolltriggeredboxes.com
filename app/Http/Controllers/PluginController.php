@@ -46,7 +46,9 @@ class PluginController extends Controller {
 
 		$downloader = new PluginDownloader( $plugin );
 		$filename = $downloader->download();
-
-		return response()->download( $filename );
+		
+		return response()->download( $filename, null, $headers = array(
+			'Content-Type' => 'application/zip',
+		) );
 	}
 }
