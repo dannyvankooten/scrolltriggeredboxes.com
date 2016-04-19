@@ -106,8 +106,8 @@ class Plugin extends Model {
 			'id' => $this->id,
 			'url' => url( '/plugins/' . $this->url ),
 			'homepage' => url( '/plugins/' . $this->url ),
-			'package' => url( '/api/v1/plugins/' . $this->id .'/download' ),
-			'download_url' => url( '/api/v1/plugins/' . $this->id .'/download' ),
+			'package' => url( '/v1/plugins/' . $this->id .'/download' ),
+			'download_url' => url( '/v1/plugins/' . $this->id .'/download' ),
 			'name'      => $this->name,
 			'sections'  => [
 				'changelog'     => $this->getChangelog(),
