@@ -146,9 +146,9 @@ return [
 		App\Providers\EventServiceProvider::class,
 		App\Providers\RouteServiceProvider::class,
 		App\Providers\AuthServiceProvider::class,
-		'GrahamCampbell\Markdown\MarkdownServiceProvider',
-		'GrahamCampbell\GitHub\GitHubServiceProvider',
-		'DvK\Laravel\Vat\VatServiceProvider'
+		GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+		GrahamCampbell\GitHub\GitHubServiceProvider::class,
+		DvK\Laravel\Vat\VatServiceProvider::class
 	],
 
 	/*
