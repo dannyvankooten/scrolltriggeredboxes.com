@@ -31,27 +31,34 @@ class Charger {
      * 
      * @return User
      */
-    public function customer( User $user, $token ) {
-        if( $user->stripe_customer_id ) {
-            // update existing customer in Stripe
-            $customer = \Stripe\Customer::retrieve($user->stripe_customer_id);
-            $customer->source = $token;
-            $customer->save();
-        } else {
+    public function customer( User $user, $token = '' ) {
 
-            // create a new customer in Stripe
-            $customer = \Stripe\Customer::create([
-                "source" => $token,
-                "description" => "User #{$user->id}",
-                'email' => $user->email,
-                "metadata" => array(
-                    "user" => $user->id
-                ),
-                'business_vat_id' => $user->vat_number,
-            ]);
+        $customerData = [
+            'email' => $user->email,
+            'business_vat_id' => $user->vat_number,
+            'shipping' => [
+                'address' => [
+                    'line1' => $user->address,
+                    'postal_code' => $user->zip,
+                    'city' => $user->city,
+                    'state' => $user->state,
+                    'country' => $user->country
+                ],
+                'name' => $user->name
+            ]
+        ];
 
-            $user->stripe_customer_id = $customer->id;
+        if( ! empty( $token ) ) {
+            $customerData['source'] = $token;
         }
+
+        if( $user->stripe_customer_id ) {
+            $customer = $this->updateCustomer( $user->stripe_customer_id, $customerData );
+        } else {
+            $customer = $this->createCustomer( $customerData );
+        }
+
+        $user->stripe_customer_id = $customer->id;
 
         return $user;
     }
@@ -70,11 +77,8 @@ class Charger {
             'reason' => 'requested_by_customer'
         );
 
-        try {
-            $refund = \Stripe\Refund::create($args);
-        } catch( \Stripe\Error\InvalidRequest $e ) {
 
-        }
+        $refund = \Stripe\Refund::create($args);
 
         $payment->delete();
 
@@ -100,7 +104,8 @@ class Charger {
      * 
      * @throws Exception
      */
-    public function subscription( Subscription $subscription ) {
+    public function subscription( Subscription $subscription )
+    {
         $user = $subscription->user;
         $today = new DateTime("now");
         $intervalString = "+1 {$subscription->interval}";
@@ -144,6 +149,42 @@ class Charger {
         $this->dispatch(new CreatePaymentInvoice($payment));
 
         return true;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return \Stripe\Customer
+     */
+    private function createCustomer( array $data )
+    {
+
+        if( empty( $data['source'] ) ) {
+            throw new \InvalidArgumentException('A payment token must be given to create a new customer in Stripe.');
+        }
+
+        $customer = \Stripe\Customer::create($data);
+        return $customer;
+    }
+
+    /**
+     * @param string $id
+     * @param array $data
+     *
+     * @return \Stripe\Customer
+     */
+    private function updateCustomer( $id, array $data )
+    {
+        $customer = \Stripe\Customer::retrieve($id);
+
+        foreach( $data as $property => $value ) {
+            if( ! empty( $value ) && $customer->$property != $value ) {
+                $customer->$property = $value;
+            }
+        }
+
+        $customer->save();
+        return $customer;
     }
 
 
