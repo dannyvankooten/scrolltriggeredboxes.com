@@ -16,21 +16,21 @@ class TaxRateResolver {
     public function getCodeForUser( User $user ) {
         // no tax for non-EU customers
         if( ! $user->inEurope() ) {
-            return 'NOVAT';
+            return 'NO VAT';
         }
 
         // Dutch tax for all NL customers
         if( $user->country === 'NL' ) {
-            return 'NL-STANDARD';
+            return 'NL STANDARD';
         }
 
         // Reverse charge for EU businesses (outside of NL)
         if( ! empty( $user->vat_number ) ) {
-            return 'REVERSECHARGED';
+            return 'REVERSE CHARGED';
         }
 
         // EU tax rate of specific country otherwise
-        return $user->country . '-STANDARD';
+        return $user->country . ' STANDARD';
     }
 
     /**
@@ -40,15 +40,15 @@ class TaxRateResolver {
      */
     public function getRateForCode( $code ) {
        static $map = [
-           'NOVAT' => 0,
-           'REVERSECHARGED' => 0
+           'NO VAT' => 0,
+           'REVERSE CHARGED' => 0
        ];
 
         if( isset( $map[ $code ] ) ) {
             return $map[ $code ];
         }
 
-        $country = substr( $code, 0, 2 );
+        $country = strtoupper( substr( $code, 0, 2 ) );
         $rate = strtolower( substr( $code, 3 ) );
 
         return VatRates::country( $country, $rate );

@@ -193,7 +193,7 @@ class Invoicer {
         $code = $this->taxRateResolver->getCodeForUser( $payment->user );
 
         foreach( $rates as $rate ) {
-            if( strpos( $rate->name, '[' . $code . ']' ) !== false ) {
+            if( stripos( $rate->name, $code ) !== false ) {
                 return $rate;
             }
         }
