@@ -10,7 +10,7 @@ body {
   font-family: "Helvetica Neue", "Helvetica", Arial, Verdana, sans-serif;
   font-size: 16px;
   line-height: 1.4;
-  color: #444;
+  color: #494949;
   overflow-y: scroll;
 }
 
@@ -25,9 +25,29 @@ a {
   cursor: pointer;
 }
 
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, h6 {
   color: #000;
   margin: 24px 0 12px;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+h4 {
+  font-size: 18px;
+}
+
+h5, h6 {
+  font-size: 16px;
 }
 
 .site-title,
@@ -46,8 +66,7 @@ h1, h2, h3, h4, h5 {
 
 .header {
   color: white;
-  background-color: $primary_color;
-  background-url: url("http://www.transparenttextures.com/patterns/absurdity.png");
+  background: $primary_color url("../img/bg-pattern.png");
   line-height: 100px;
 
   a {
@@ -73,8 +92,8 @@ h1, h2, h3, h4, h5 {
 
 
 .footer {
-  background: #111;
-  color: #eee;
+  background: #333 url("../img/bg-pattern.png");
+  color: #ddd;
   text-align: center;
 }
 
@@ -102,7 +121,8 @@ h1, h2, h3, h4, h5 {
 
 
 .main-container p,
-.main-container table {
+.main-container table,
+.main-container img {
   margin: 0 0 20px 0;
 }
 
@@ -143,5 +163,6 @@ input,
 button {
   border-radius: 3px;
 }
+
 
 

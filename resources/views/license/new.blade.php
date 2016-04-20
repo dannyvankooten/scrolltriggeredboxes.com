@@ -33,7 +33,7 @@
                 <label class="unstyled"><input type="radio" name="interval" value="year"> Yearly</label>
             </div>
 
-            <p>Your card ending in <strong>{{ Auth::user()->card_last_four }}</strong> (<a href="/edit/payment">edit</a>) will be charged <span class="total strong">$10 per month</span>.</p>
+            <p>Your card ending in <strong>{{ Auth::user()->card_last_four }}</strong> (<a href="/edit/payment">edit</a>) will be charged <span class="total strong">$6 per month</span>.</p>
 
             <div class="form-group">
                 <input type="submit" value="Pay" class="btn btn-primary">
@@ -51,7 +51,7 @@
 
     function total(amount, interval) {
         var isYearly = interval === 'year';
-        var price = isYearly ? 50 : 5;
+        var price = isYearly ? 60 : 6;
         var total = amount * price;
         total = price + ( ( amount - 1 ) * price * 0.5 );
 

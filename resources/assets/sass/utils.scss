@@ -18,7 +18,7 @@
 }
 
 .muted {
-  color: #aaa;
+  color: #888;
   font-weight: normal;
 }
 
@@ -94,4 +94,20 @@
 
 .red {
   color: #cc0300;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.center {
+  margin: 0 auto;
+}
+
+.divider {
+  clear: both;
+  display: block;
+  height: 1px;
+  background: #eee;
+  border: 0;
 }

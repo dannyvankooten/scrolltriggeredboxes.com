@@ -33,7 +33,7 @@
                 <label class="unstyled"><input type="radio" name="interval" value="year" {{ old('interval') === 'year' ? 'checked' : '' }}> Yearly</label>
             </div>
 
-            <p>You will be charged <span class="total strong">$10 per month</span>.</p>
+            <p>You will be charged <span class="total strong">$6 per month</span>.</p>
 
         </div>
         <!-- / Step -->
@@ -170,12 +170,9 @@
 
     function total(amount, interval) {
         var isYearly = interval === 'year';
-        var price = isYearly ? 50 : 5;
+        var price = isYearly ? 60 : 6;
         var total = amount * price;
-        var discount = amount > 5 ? 30 : amount > 1 ? 20 : 0;
-        if( discount > 0 ) {
-            total = total * ( ( 100 - discount ) / 100 );
-        }
+        total = price + ( ( amount - 1 ) * price * 0.5 );
 
         var elements = document.querySelectorAll('.total');
         [].forEach.call(elements,function(el) {

@@ -72,6 +72,16 @@ button:focus,
   border-color: darken( $primary_color, 6% );
 }
 
+.button-secondary {
+  background: $secondary_color;
+  border: 2px solid $secondary_color;
+}
+.button-secondary:focus,
+.button-secondary:hover {
+  background: darken( $secondary_color, 6% );
+  border-color: darken( $secondary_color, 6% );
+}
+
 .form-element {
   position: relative;
 }
