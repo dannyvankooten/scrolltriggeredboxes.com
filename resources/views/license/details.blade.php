@@ -28,6 +28,7 @@
                 </td>
                 <td class="row-action"></td>
             </tr>
+            @if( $license->subscription )
             <tr>
                 <th>Status</th>
                 <td class="clearfix">
@@ -70,6 +71,7 @@
                     @endif
                 </td>
             </tr>
+            @endif
         </table>
 
         <div class="medium-margin"></div>
