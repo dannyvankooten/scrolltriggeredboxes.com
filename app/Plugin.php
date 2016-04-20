@@ -60,6 +60,10 @@ class Plugin extends Model {
 	 */
 	public function getUpdateInfo() {
 
+		if( empty( $this->github_repo ) ) {
+			return array();
+		}
+
 		$cacheKey = "plugins.{$this->url}.update-info";
 		$fileContent = Cache::get( $cacheKey );
 
@@ -94,6 +98,10 @@ class Plugin extends Model {
 	 * @return string
 	 */
 	public function getChangelog() {
+		if( empty( $this->github_repo ) ) {
+			return '';
+		}
+
 		$cacheKey = "plugins.{$this->url}.changelog";
 		$html = Cache::get( $cacheKey );
 
