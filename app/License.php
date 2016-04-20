@@ -2,21 +2,25 @@
 
 
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class License
  *
  * @package App
  *
+ * @property int $id
  * @property User $user
  * @property Activation[] $activations
  * @property Subscription $subscription
- * @property \DateTime $expires_at
- * @property \DateTime created_at
- * @property \DateTime updated_at
+ * @property int $user_id
+ * @property int $site_limit
+ * @property DateTime $expires_at
+ * @property DateTime $created_at
+ * @property DateTime $updated_at
+ * @property DateTime $deleted_at
  */
 class License extends Model {
 

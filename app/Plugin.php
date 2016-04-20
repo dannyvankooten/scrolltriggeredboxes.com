@@ -4,7 +4,25 @@ use GrahamCampbell\GitHub\Facades\GitHub;
 use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use DateTime;
 
+/**
+ * Class Plugin
+ *
+ * @property Activation[] $sites
+ * @property int $id
+ * @property string $url
+ * @property string $slug
+ * @property string $github_repo
+ * @property string $description
+ * @property string $name
+ * @property string $image_path
+ * @property DateTime $created_at
+ * @property DateTime $updated_at
+ *
+ *
+ * @package App
+ */
 class Plugin extends Model {
 
 	protected $table = 'plugins';

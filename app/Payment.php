@@ -1,6 +1,7 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DateTime;
 
 /**
  * Class Payment
@@ -8,13 +9,15 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property User $user
  * @property Subscription $subscription
- * @property string currency
- * @property double subtotal
- * @property double tax
+ * @property string $currency
+ * @property double $subtotal
+ * @property double $tax
  * @property string $moneybird_invoice_id
  * @property string $stripe_id
- * @property \DateTime created_at
- * @property \DateTime updated_at
+ * @property DateTime $created_at
+ * @property DateTime $updated_at
+ * @property int $user_id
+ * @property int $subscription_id
  */
 class Payment extends Model
 {

@@ -14,8 +14,10 @@ use DateTime;
  * @property Payment[] $payments
  * @property bool $active
  * @property DateTime $next_charge_at
- * @property \DateTime created_at
- * @property \DateTime updated_at
+ * @property DateTime $created_at
+ * @property DateTime $updated_at
+ * @property int $user_id
+ * @property int $license_id
  */
 class Subscription extends Model {
 

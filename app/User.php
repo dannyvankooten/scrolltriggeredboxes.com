@@ -11,6 +11,8 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Support\Facades\Hash;
+use DateTime;
+
 /**
  * Class User
  *
@@ -18,6 +20,7 @@ use Illuminate\Support\Facades\Hash;
  *
  * @property License[] $licenses
  * @property Payment[] $payments
+ * @property Subscription[] $subscriptions
  * @property string $email
  * @property string $name
  * @property string $country
@@ -32,8 +35,9 @@ use Illuminate\Support\Facades\Hash;
  * @property boolean $is_admin
  * @property string $moneybird_contact_id
  * @property string $stripe_customer_id
- * @property \DateTime created_at
- * @property \DateTime updated_at
+ * @property DateTime $created_at
+ * @property DateTime $updated_at
+ * @property DateTime $last_login_at
  */
 class User extends Model implements AuthenticatableContract,
 	AuthorizableContract,
@@ -74,6 +78,14 @@ class User extends Model implements AuthenticatableContract,
 	public function payments()
 	{
 		return $this->hasMany('App\Payment', 'user_id', 'id');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function subscriptions()
+	{
+		return $this->hasMany('App\Subscription', 'user_id', 'id');
 	}
 
 	/**
