@@ -6,9 +6,7 @@ use App\User;
 use DvK\Laravel\Vat\Facades\Rates as VatRates;
 
 class TaxRateResolver {
-
-    public function __construct( ) {}
-
+    
     /**
      * @param User $user
      * @return string

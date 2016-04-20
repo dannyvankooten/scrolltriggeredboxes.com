@@ -10,7 +10,9 @@ use App\User;
 
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 
 
 class AccountController extends Controller {
@@ -50,14 +52,17 @@ class AccountController extends Controller {
 
 	/**
 	 * @param Request $request
+	 * @param Redirector $redirector
+	 *
+	 * @return RedirectResponse
 	 */
-	public function updateCredentials( Request $request ) {
+	public function updateCredentials( Request $request, Redirector $redirector ) {
 
 		/** @var User $user */
 		$user = $this->auth->user();
 
 		if( ! $user->verifyPassword( $request->input('current_password') ) ) {
-			return redirect()->back()->withErrors(['The given current password does not match with your actual password.']);
+			return $redirector->back()->withErrors(['The given current password does not match with your actual password.']);
 		}
 
 		// validate request
@@ -79,15 +84,18 @@ class AccountController extends Controller {
 		}
 
 		$user->save();
-		return redirect()->back()->with('message', 'Changes saved!');
+		return $redirector->back()->with('message', 'Changes saved!');
 	}
 
 	/**
 	 * @param Request $request
+	 * @param Redirector $redirector
 	 *
-	 * @return \Illuminate\Http\RedirectResponse
+	 * @return RedirectResponse
 	 */
-	public function updateBillingInfo( Request $request ) {
+	public function updateBillingInfo( Request $request, Redirector $redirector  ) {
+
+		/** @var User $user */
 		$user = $this->auth->user();
 
 		// validate new values
@@ -105,14 +113,17 @@ class AccountController extends Controller {
 		$this->dispatch(new UpdateInvoiceContact($user));
 		$this->dispatch(new UpdateStripeCustomer($user));
 
-		return redirect()->back()->with('message', 'Changes saved!');
+		return $redirector->back()->with('message', 'Changes saved!');
 	}
 
 	/**
 	 * @param Request $request
-	 * @return \Illuminate\Http\RedirectResponse
+	 * @param Redirector $redirector
+	 *
+	 * @return RedirectResponse
 	 */
-	public function updatePaymentMethod( Request $request ) {
+	public function updatePaymentMethod( Request $request, Redirector $redirector  ) {
+		/** @var User $user */
 		$user = $this->auth->user();
 
 		$this->validate( $request, [
@@ -126,13 +137,14 @@ class AccountController extends Controller {
 
 		$user->save();
 
-		return redirect()->back()->with('message', 'Changes saved!');
+		return $redirector->back()->with('message', 'Changes saved!');
 	}
 
 	/**
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function overview() {
+		/** @var User $user */
 		$user = $this->auth->user();
 		return view( 'account.overview', [ 'user' => $user ] );
 	}
@@ -147,10 +159,11 @@ class AccountController extends Controller {
 	/**
 	 * @param Request $request
 	 * @param Purchaser $purchaser
+	 * @param Redirector $redirector
 	 *
-	 * @return \Illuminate\Http\RedirectResponse
+	 * @return RedirectResponse
 	 */
-	public function create( Request $request, Purchaser $purchaser ) {
+	public function create( Request $request, Purchaser $purchaser, Redirector $redirector  ) {
 
 		// validate new values
 		$this->validate( $request, [
@@ -181,7 +194,7 @@ class AccountController extends Controller {
 		$quantity = (int) $request->input('quantity', 1);
 		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
 		$purchaser->license($user, $quantity, $interval);
-
-		return redirect('/')->with('message', "You're all set!");
+		
+		return $redirector->to('/')->with('message', "You're all set!");
 	}
 }

@@ -6,18 +6,22 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Subscription;
 use App\Services\Charger;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 
 class SubscriptionController extends Controller {
 
     /**
      * @param int $id
      * @param Request $request
+     * @param Redirector $redirector
      *
-     * @return mixed
+     * @return RedirectResponse
      */
-    public function update( $id, Request $request ) {
+    public function update( $id, Request $request, Redirector $redirector ) {
 
+        /** @var Subscription $subscription */
         $subscription = Subscription::findOrFail($id);
         $subscription->fill( $request->input('subscription') );
 
@@ -31,7 +35,7 @@ class SubscriptionController extends Controller {
             $charger->subscription( $subscription );
         }
 
-        return redirect()->back()->with('message', 'Changes saved!');
+        return $redirector->back()->with('message', 'Changes saved!');
     }
 
 }

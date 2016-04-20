@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 
 use App\Plugin;
 use App\Services\PluginDownloader;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PluginController extends Controller {
 
@@ -38,7 +39,7 @@ class PluginController extends Controller {
 	/**
 	 * @param int $id
 	 *
-	 * @return Response
+	 * @return BinaryFileResponse
 	 */
 	public function download( $id ) {
 		/** @var Plugin $plugin */
@@ -47,8 +48,8 @@ class PluginController extends Controller {
 		$downloader = new PluginDownloader( $plugin );
 		$filename = $downloader->download();
 		
-		return response()->download( $filename, null, $headers = array(
+		return new BinaryFileResponse( $filename, 200, array(
 			'Content-Type' => 'application/zip',
-		) );
+		));
 	}
 }

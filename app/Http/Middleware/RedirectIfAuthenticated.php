@@ -3,23 +3,49 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 
 class RedirectIfAuthenticated
 {
 	/**
+	 * @var Guard
+	 */
+	protected $guard;
+
+	/**
+	 * @var Redirector
+	 */
+	protected $redirector;
+
+	/**
+	 * Admin constructor.
+	 *
+	 * @param Guard $guard
+	 * @param Redirector $redirector
+	 */
+	public function __construct( Guard $guard, Redirector $redirector ) {
+		$this->guard = $guard;
+		$this->redirector = $redirector;
+	}
+
+	/**
 	 * Handle an incoming request.
 	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure  $next
-	 * @param  string|null  $guard
-	 * @return mixed
+	 * @param  Request  $request
+	 * @param  Closure  $next
+	 * 
+	 * @return Response
 	 */
-	public function handle($request, Closure $next, $guard = null)
+	public function handle(Request $request, Closure $next)
 	{
-		if (Auth::guard($guard)->check()) {
-			return redirect('/');
+		if ($this->guard->check()) {
+			return $this->redirector->to('/');
 		}
+
 		return $next($request);
 	}
 }

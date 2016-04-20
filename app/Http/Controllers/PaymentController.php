@@ -6,7 +6,9 @@ use App\Payment;
 use App\Services\Invoicer\Invoicer;
 use App\User;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 
 class PaymentController extends Controller {
 
@@ -42,8 +44,10 @@ class PaymentController extends Controller {
     /**
      * Download PDF invoice
      *
-     * @param $id
+     * @param int $id
      * @param Invoicer $invoicer
+     *
+     * @return RedirectResponse
      */
     public function invoice( $id, Invoicer $invoicer ) {
 
@@ -63,7 +67,7 @@ class PaymentController extends Controller {
             return view('payments.invoice-not-ready');
         }
 
-        return redirect( $invoicer->getInvoiceUrl( $payment ) );
+        return new RedirectResponse($invoicer->getInvoiceUrl($payment));
     }
 
 }

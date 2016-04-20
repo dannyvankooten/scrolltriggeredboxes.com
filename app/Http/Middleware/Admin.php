@@ -1,25 +1,41 @@
 <?php namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Contracts\Auth\Guard;
 
 class Admin {
 
 	/**
+	 * @var Guard
+	 */
+	protected $guard;
+
+	/**
+	 * Admin constructor.
+	 *
+	 * @param Guard $guard
+	 */
+	public function __construct( Guard $guard ) {
+		$this->guard = $guard;
+	}
+
+	/**
 	 * Handle an incoming request.
 	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure  $next
-	 * @return mixed
+	 * @param  Request $request
+	 * @param  \Closure $next
+	 * @return Response
 	 */
-	public function handle($request, Closure $next)
+	public function handle( Request $request, Closure $next )
 	{
-		if ( Auth::check() && Auth::user()->isAdmin() )
+		if ( $this->guard->check() && $this->guard->user()->isAdmin() )
 		{
             return $next($request);
         }
 
-		return response('Unauthorized.', 401);
+		return new Response('Unauthorized.', 401);
 	}
 
 }

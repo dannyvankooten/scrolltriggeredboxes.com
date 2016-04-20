@@ -2,6 +2,8 @@
 
 use Closure;
 use HelpScoutApp\DynamicApp as HelpScoutApp;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class VerifyHelpScoutSignature {
 
@@ -22,18 +24,19 @@ class VerifyHelpScoutSignature {
 	/**
 	 * Handle an incoming request.
 	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure  $next
-	 * @return mixed
+	 * @param  Request  $request
+	 * @param  Closure  $next
+	 *
+	 * @return Response
 	 */
-	public function handle($request, Closure $next )
+	public function handle( Request $request, Closure $next )
 	{
 		if( config('app.env') !== 'production' ) {
 			return $next($request);
 		}
 
 		if( ! $this->helpscout->isSignatureValid() ) {
-			return response( 'Invalid signature', '401' );
+			return new Response( 'Invalid signature', 401 );
 		}
 
 		return $next($request);

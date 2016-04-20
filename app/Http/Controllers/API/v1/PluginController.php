@@ -3,9 +3,11 @@
 use App\Http\Controllers\Controller;
 use App\Services\PluginDownloader;
 use GuzzleHttp;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Plugin;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PluginController extends Controller {
 
@@ -16,6 +18,7 @@ class PluginController extends Controller {
 
 	/**
 	 * @param Request $request
+	 * @return JsonResponse
 	 */
 	public function index( Request $request ) {
 
@@ -36,7 +39,7 @@ class PluginController extends Controller {
 		foreach( $plugins as $plugin ) {
 			$response['data'][] = ( $wpFormat ? $plugin->toWpArray() : $plugin->toArray() );
 		}
-		return response()->json($response);
+		return new JsonResponse($response);
 	}
 
 	/**
@@ -44,7 +47,7 @@ class PluginController extends Controller {
 	 *
 	 * @param mixed $id_or_slug
 	 *
-	 * @return Response
+	 * @return JsonResponse
 	 */
 	public function get($id_or_slug)
 	{
@@ -56,13 +59,14 @@ class PluginController extends Controller {
 			'data' => $plugin->toWpArray()
 		];
 
-		return response()->json($response);
+		return new JsonResponse($response);
 	}
 
 	/**
-	 * @param mixed $id_or_slug
+	 * @param int|string $id_or_slug
 	 * @param Request $request
-	 * @return mixed
+	 *
+	 * @return BinaryFileResponse
 	 */
 	public function download($id_or_slug, Request $request) {
 
@@ -75,6 +79,6 @@ class PluginController extends Controller {
 		$downloader = new PluginDownloader( $plugin );
 		$filename = $downloader->download( $version );
 
-		return response()->download( $filename );
+		return new BinaryFileResponse( $filename );
 	}
 }

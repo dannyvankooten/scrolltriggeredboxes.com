@@ -2,28 +2,39 @@
 
 use App\Services\LicenseGuard;
 use Closure;
-Use App\License;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthenticateLicense  {
+
+	/**
+	 * @var LicenseGuard
+	 */
+	protected $guard;
+
+	/**
+	 * Admin constructor.
+	 *
+	 * @param LicenseGuard $guard
+	 */
+	public function __construct( LicenseGuard $guard ) {
+		$this->guard = $guard;
+	}
 
 	/**
 	 * Handle an incoming request.
 	 *
 	 * @param Request  $request
 	 * @param  Closure  $next
-	 * @return mixed
+	 *
+	 * @return JsonResponse
 	 */
 	public function handle( Request $request, Closure $next) {
 
-		/** @var LicenseGuard $guard */
-		$guard = Auth::guard('api');
-
-		if( $guard->guest() ) {
-			return response()->json([
+		if( $this->guard->guest() ) {
+			return new JsonResponse([
 				'error' => [
-					'message' => $guard->getErrorMessage()
+					'message' => $this->guard->getErrorMessage()
 				]
 			], 401 );
 		}

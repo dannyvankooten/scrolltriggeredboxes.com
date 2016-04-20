@@ -4,12 +4,13 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use App\Services\LicenseGuard;
+use Illuminate\Contracts\Logging\Log;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 use App\License;
 use App\Activation;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 
 class LicenseController extends Controller {
 
@@ -19,18 +20,25 @@ class LicenseController extends Controller {
     protected $auth;
 
     /**
+     * @var Log
+     */
+    protected $log;
+
+    /**
      * AuthController constructor.
      *
      * @param LicenseGuard $auth
+     * @param Log $log
      */
-    public function __construct( LicenseGuard $auth ) {
+    public function __construct( LicenseGuard $auth, Log $log ) {
         $this->middleware( [ 'throttle', 'auth.license' ] );
         $this->auth = $auth;
+        $this->log = $log;
     }
 
     /**
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
     public function create( Request $request ) {
         /** @var License $license */
@@ -38,7 +46,7 @@ class LicenseController extends Controller {
 
         // check if license is expired
         if( $license->isExpired() ) {
-            return response()->json([
+            return new JsonResponse([
                 'error' => [
                     'message' => sprintf( "Your license has expired.", $license->site_limit )
                 ]
@@ -55,7 +63,7 @@ class LicenseController extends Controller {
 
             // check if license is at limit
             if( $license->isAtSiteLimit() ) {
-                return response()->json([
+                return new JsonResponse([
                     'error' => [
                         'message' => sprintf( "Your license is at its activation limit of %d sites.", $license->site_limit )
                     ]
@@ -69,23 +77,22 @@ class LicenseController extends Controller {
             ]);
             $activation->license()->associate($license);
 
-            Log::info( "Activated license #{$license->id} on {$domain}" );
+            $this->log->info( "Activated license #{$license->id} on {$domain}" );
         }
 
         $activation->touch();
         $activation->save();
 
-        return response()->json([
+        return new JsonResponse([
             'data' => [
                 'message' => sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeft() )
-            ],
-
+            ]
         ]);
     }
 
     /**
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
     public function delete( Request $request ) {
 
@@ -98,11 +105,11 @@ class LicenseController extends Controller {
         $activation = $license->findDomainActivation( $domain );
         
         if( $activation ) {
-            Log::info( "Deactivated license #{$license->id} on {$domain}" );
+            $this->log->info( "Deactivated license #{$license->id} on {$domain}" );
             $activation->delete();
         }
 
-        return response()->json([
+        return new JsonResponse([
             'data' => [
                 'message' => 'Your license was successfully deactivated. You can use it on any other domain now.'
             ]

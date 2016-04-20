@@ -6,11 +6,14 @@ use App\Activation;;
 use App\Services\Charger;
 use App\Services\Purchaser;
 use App\Subscription;
+use App\User;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\License;
+use Illuminate\Routing\Redirector;
 
 class LicenseController extends Controller {
 
@@ -43,10 +46,11 @@ class LicenseController extends Controller {
 	/**
 	 * @param Request $request
 	 * @param Purchaser $purchaser
+	 * @param Redirector $redirector
 	 *
-	 * @return Response
+	 * @return RedirectResponse
 	 */
-	public function store( Request $request, Purchaser $purchaser ) {
+	public function store( Request $request, Purchaser $purchaser, Redirector $redirector  ) {
 
 		/** @var User $user */
 		$user = $this->auth->user();
@@ -56,7 +60,9 @@ class LicenseController extends Controller {
 
 		$license = $purchaser->license($user, $quantity, $interval );
 
-		return redirect('/licenses/' . $license->id )->with('message', 'You now have a new license!');
+		return $redirector
+			->to('/licenses/' . $license->id )
+			->with('message', 'You now have a new license!');
 	}
 
 
@@ -80,9 +86,11 @@ class LicenseController extends Controller {
 	/**
 	 * @param int $id
 	 * @param Request $request
-	 * @return \Illuminate\Http\RedirectResponse
+	 * @param Redirector $redirector
+	 *
+	 * @return RedirectResponse
 	 */
-	public function update($id, Request $request ) {
+	public function update($id, Request $request, Redirector $redirector  ) {
 		$license = License::with('subscription')->findOrFail($id);
 		
 		// check if license belongs to user
@@ -108,26 +116,30 @@ class LicenseController extends Controller {
 			$charger->subscription( $subscription );
 		}
 
-		return redirect()->back()->with('message', 'Changes saved!');
+		return $redirector->back()->with('message', 'Changes saved!');
 	}
 
 	/**
 	 * @param int $license_id
 	 * @param int $activation_id
+	 * @param Redirector $redirector
 	 *
-	 * @return \Illuminate\Http\RedirectResponse
+	 * @return RedirectResponse
 	 */
-	public function deleteActivation( $license_id, $activation_id ) {
+	public function deleteActivation( $license_id, $activation_id, Redirector $redirector  ) {
+		/** @var Activation $activation */
 		$activation = Activation::with(['license', 'license.user'])->findOrFail($activation_id);
+
+		/** @var User $user */
 		$user = $this->auth->user();
 
 		// check if activation belongs to user
-		if( $activation->license->id !== $license_id || $activation->license->user->id !== $user->id ) {
+		if( ! $activation->license->belongsToUser($user) ) {
 			abort(403);
 		}
 
 		$activation->delete();
-		return redirect()->back();
+		return $redirector->back();
 	}
 	
 }
