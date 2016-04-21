@@ -46,6 +46,7 @@
         <div class="medium-margin"></div>
 
         <h3>Subscription</h3>
+        @if( $license->subscription )
         <table class="table row-scoped">
             <tr>
                 <th>Status</th>
@@ -107,10 +108,12 @@
                 </tr>
             @endforelse
         </table>
+        @else
+            <p>This license has no subscription.</p>
+        @endif
+
 
         <p><a href="javascript:history.go(-1);">&leftarrow; Go back.</a></p>
-
-
 
 
     </div>
