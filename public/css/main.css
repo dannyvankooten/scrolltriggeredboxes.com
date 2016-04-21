@@ -400,10 +400,10 @@ label {
 input[type="submit"],
 button,
 .button {
-  background: #CC1616;
+  background: #5F4477;
   padding: 8px 24px;
   display: inline-block;
-  border: 2px solid #CC1616;
+  border: 2px solid #5F4477;
   color: white;
   font-size: 16px;
   text-decoration: none; }
@@ -419,8 +419,8 @@ button:hover,
 button:focus,
 .button:hover,
 .button:focus {
-  background: #b01313;
-  border-color: #b01313; }
+  background: #4f3964;
+  border-color: #4f3964; }
 
 .button-secondary {
   background: #0073CC;
@@ -530,19 +530,24 @@ button:focus,
   padding: 10px; }
 
 .big-margin {
-  margin: 80px 0; }
+  margin-top: 80px;
+  margin-bottom: 80px; }
 
 .medium-margin {
-  margin: 50px 0; }
+  margin-top: 50px;
+  margin-bottom: 50px; }
 
 .small-margin {
-  margin: 20px 0; }
+  margin-top: 20px;
+  margin-bottom: 20px; }
 
 .tiny-margin {
-  margin: 10px 0; }
+  margin-top: 10px;
+  margin-bottom: 10px; }
 
 .no-margin {
-  margin: 0; }
+  margin-top: 0;
+  margin-bottom: 0; }
 
 .pull-left {
   float: left; }
@@ -583,8 +588,60 @@ button:focus,
   background: #eee;
   border: 0; }
 
+.jumbotron {
+  color: white;
+  background: #5F4477 url("../img/jumbotron.jpg");
+  background-size: cover; }
+  .jumbotron h1, .jumbotron h2, .jumbotron h3, .jumbotron p, .jumbotron a {
+    color: white; }
+  .jumbotron .header {
+    background: none; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0; }
+
 #content ul li {
   padding: 3px 0; }
+
+#content blockquote {
+  margin: 20px; }
+
+.row {
+  margin-left: -20px;
+  margin-right: -20px; }
+
+.col {
+  float: left;
+  padding-left: 20px;
+  padding-right: 20px; }
+
+.col-1 {
+  width: 25%; }
+
+.col-2 {
+  width: 50%; }
+
+.col-3 {
+  width: 75%; }
+
+@media (max-width: 680px) {
+  .break-on-mobile {
+    float: none;
+    margin-bottom: 20px;
+    display: table; }
+  .hide-on-mobile {
+    display: none !important; } }
+
+@media (min-width: 680px) {
+  .hide-on-desktop {
+    display: none !important; } }
 
 body {
   font-family: "Helvetica Neue", "Helvetica", Arial, Verdana, sans-serif;
@@ -597,7 +654,7 @@ body {
   box-sizing: border-box; }
 
 a {
-  color: #CC1616;
+  color: #5F4477;
   cursor: pointer; }
 
 h1, h2, h3, h4, h5, h6 {
@@ -619,6 +676,9 @@ h4 {
 h5, h6 {
   font-size: 16px; }
 
+img {
+  max-width: 100%; }
+
 .site-title,
 .site-title a {
   color: white;
@@ -633,7 +693,8 @@ h5, h6 {
 
 .header {
   color: white;
-  background: #CC1616 url("../img/bg-pattern.png");
+  background: #5F4477 url("../img/jumbotron.jpg");
+  background-size: cover;
   line-height: 100px; }
   .header a {
     color: white;
@@ -665,7 +726,7 @@ h5, h6 {
 
 .nav-inline li {
   display: inline-block;
-  margin: 0 20px 0 0; }
+  margin: 0 10px 0 0; }
 
 .nav a {
   padding: 3px; }
