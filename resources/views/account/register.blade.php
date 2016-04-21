@@ -23,14 +23,14 @@
 
             <div class="form-group">
                 <label class="control-label">How many site activations do you need?</label>
-                <input type="number" name="quantity" class="form-control" value="{{ old('quantity', 1) }}" step="1" min="1" required />
+                <input type="number" name="quantity" class="form-control" value="{{ old('quantity', request('quantity', 1)) }}" step="1" min="1" required />
             </div>
 
             <div class="form-group radio">
                 <label class="control-label">Would you like to pay monthly or yearly?</label>
 
-                <label class="unstyled"><input type="radio" name="interval" value="month" {{ old('interval', 'month') === 'month' ? 'checked' : '' }}> Monthly</label>
-                <label class="unstyled"><input type="radio" name="interval" value="year" {{ old('interval') === 'year' ? 'checked' : '' }}> Yearly</label>
+                <label class="unstyled"><input type="radio" name="interval" value="month" {{ old('interval', request('interval', 'month')) === 'month' ? 'checked' : '' }}> Monthly</label>
+                <label class="unstyled"><input type="radio" name="interval" value="year" {{ old('interval', request('interval')) === 'year' ? 'checked' : '' }}> Yearly</label>
             </div>
 
             <p>You will be charged <span class="total strong">$6 per month</span>.</p>
@@ -203,6 +203,8 @@
         total(this.quantity.value, this.interval.value);
         toggleEuFields();
     });
+
+    total(form.quantity.value, form.interval.value);
 
     form.addEventListener( 'submit', function(event) {
 
