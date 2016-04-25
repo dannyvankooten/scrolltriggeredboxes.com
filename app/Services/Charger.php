@@ -168,7 +168,6 @@ class Charger {
      */
     private function createCustomer( array $data )
     {
-
         if( empty( $data['source'] ) ) {
             throw new \InvalidArgumentException('A payment token must be given to create a new customer in Stripe.');
         }

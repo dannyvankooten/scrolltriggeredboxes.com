@@ -59,7 +59,13 @@ class LicenseController extends Controller {
 		$quantity = (int) $request->input('quantity', 1);
 		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
 
-		$license = $purchaser->license($user, $quantity, $interval );
+		try {
+			$license = $purchaser->license($user, $quantity, $interval);
+		} catch( Exception $e ) {
+			$errorMessage = $e->getMessage();
+			$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
+			return $redirector->back()->with('error', $errorMessage );
+		}
 
 		return $redirector
 			->to('/licenses/' . $license->id )
@@ -121,7 +127,9 @@ class LicenseController extends Controller {
 			try {
 				$charger->subscription( $subscription );
 			} catch( Exception $e ) {
-				return $redirector->back()->with('error', $e->getMessage());
+				$errorMessage = $e->getMessage();
+				$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
+				return $redirector->back()->with('error', $errorMessage );
 			}
 		}
 
