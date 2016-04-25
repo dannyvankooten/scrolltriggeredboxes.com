@@ -11,13 +11,13 @@ class PaymentController extends Controller {
     /**
      * @param int $id
      * @param Redirector $redirector
-     *
+     * @param Charger $charger
+     * 
      * @return RedirectResponse
      */
-    public function delete( $id, Redirector $redirector  ) {
+    public function delete( $id, Redirector $redirector, Charger $charger  ) {
 
         $payment = Payment::findOrFail( $id );
-        $charger = new Charger();
         $charger->refund( $payment );
 
         return $redirector->back();

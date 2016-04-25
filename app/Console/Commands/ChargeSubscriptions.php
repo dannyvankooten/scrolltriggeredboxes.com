@@ -26,13 +26,20 @@ class ChargeSubscriptions extends Command
     protected $description = 'Charge all subscriptions with a due payment.';
 
     /**
+     * @var Charger
+     */
+    protected $charger;
+
+    /**
      * Create a new command instance.
      *
-     * @return void
+     * @param Charger $charger
      */
-    public function __construct()
+    public function __construct( Charger $charger )
     {
         parent::__construct();
+
+        $this->charger = $charger;
     }
 
     /**
@@ -49,17 +56,15 @@ class ChargeSubscriptions extends Command
             ->with(['license', 'user'])
             ->get();
 
-        // charge user
-        $charger = new Charger();
 
         // charge subscriptions
         foreach( $subscriptions as $subscription ) {
 
             // charge
             try {
-                $success = $charger->subscription( $subscription );
+                $success = $this->charger->subscription( $subscription );
             } catch( Exception $e ) {
-                $this->error( $e->getMessage() );
+                $this->error( sprintf( 'Charge for subscription #%d failed because of error: %s', $subscription->id, $e->getMessage() ) );
                 continue;
             }
 

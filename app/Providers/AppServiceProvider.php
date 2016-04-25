@@ -48,7 +48,8 @@ class AppServiceProvider extends ServiceProvider {
 		});
 
 		$this->app->singleton( Charger::class, function ($app) {
-			return new Charger();
+			$stripeSecret = config('services.stripe.secret');
+			return new Charger( $stripeSecret );
 		});
 
 		$this->app->singleton( Purchaser::class, function ($app) {

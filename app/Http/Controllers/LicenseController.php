@@ -7,6 +7,7 @@ use App\Services\Charger;
 use App\Services\Purchaser;
 use App\Subscription;
 use App\User;
+use Exception;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\RedirectResponse;
@@ -87,14 +88,19 @@ class LicenseController extends Controller {
 	 * @param int $id
 	 * @param Request $request
 	 * @param Redirector $redirector
+	 * @param Charger $charger
 	 *
 	 * @return RedirectResponse
 	 */
-	public function update($id, Request $request, Redirector $redirector  ) {
+	public function update($id, Request $request, Redirector $redirector, Charger $charger ) {
+		/** @var License $license */
 		$license = License::with('subscription')->findOrFail($id);
+
+		/** @var User $user */
+		$user = $this->auth->user();
 		
 		// check if license belongs to user
-		if( ! $license->belongsToUser( $this->auth->user() ) ) {
+		if( ! $license->belongsToUser( $user ) ) {
 			abort( 403 );
 		}
 
@@ -112,8 +118,11 @@ class LicenseController extends Controller {
 
 		// if a payment is due, try to charge right away
 		if( $subscription->isPaymentDue() ) {
-			$charger = new Charger();
-			$charger->subscription( $subscription );
+			try {
+				$charger->subscription( $subscription );
+			} catch( Exception $e ) {
+				return $redirector->back()->with('error', $e->getMessage());
+			}
 		}
 
 		return $redirector->back()->with('message', 'Changes saved!');

@@ -16,10 +16,11 @@ class SubscriptionController extends Controller {
      * @param int $id
      * @param Request $request
      * @param Redirector $redirector
+     * @param Charger $charger
      *
      * @return RedirectResponse
      */
-    public function update( $id, Request $request, Redirector $redirector ) {
+    public function update( $id, Request $request, Redirector $redirector, Charger $charger ) {
 
         /** @var Subscription $subscription */
         $subscription = Subscription::findOrFail($id);
@@ -31,7 +32,6 @@ class SubscriptionController extends Controller {
 
         // if a payment is due, try to charge right away
         if( $subscription->isPaymentDue() ) {
-            $charger = new Charger();
             $charger->subscription( $subscription );
         }
 

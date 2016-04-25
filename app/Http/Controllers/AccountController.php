@@ -119,10 +119,11 @@ class AccountController extends Controller {
 	/**
 	 * @param Request $request
 	 * @param Redirector $redirector
+	 * @param Charger $charger
 	 *
 	 * @return RedirectResponse
 	 */
-	public function updatePaymentMethod( Request $request, Redirector $redirector  ) {
+	public function updatePaymentMethod( Request $request, Redirector $redirector, Charger $charger  ) {
 		/** @var User $user */
 		$user = $this->auth->user();
 
@@ -132,7 +133,6 @@ class AccountController extends Controller {
 
 		$user->fill($request->input('user'));
 
-		$charger = new Charger();
 		$user = $charger->customer($user, $request->input('payment_token'));
 
 		$user->save();

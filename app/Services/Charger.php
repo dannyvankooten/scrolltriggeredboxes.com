@@ -20,9 +20,11 @@ class Charger {
 
     /**
      * Charger constructor.
+     *
+     * @param string $stripeSecret
      */
-    public function __construct() {
-        Stripe::setApiKey(config('services.stripe.secret'));
+    public function __construct( $stripeSecret ) {
+        Stripe::setApiKey( $stripeSecret );
     }
 
     /**
@@ -125,18 +127,14 @@ class Charger {
         // calculate amount in cents
         $amountInCents = $subscription->getAmountInclTax() * 100;
 
-        try {
-            $charge = \Stripe\Charge::create([
-                "amount" => $amountInCents,
-                "currency" => "USD",
-                "customer" => $user->stripe_customer_id,
-                "metadata" => array(
-                    "subscription_id" => $subscription->id
-                )
-            ]);
-        } catch(\Stripe\Error\Card $e) {
-           throw new Exception( $e->getMessage(), $e->getCode() );
-        }
+        $charge = \Stripe\Charge::create([
+            "amount" => $amountInCents,
+            "currency" => "USD",
+            "customer" => $user->stripe_customer_id,
+            "metadata" => array(
+                "subscription_id" => $subscription->id
+            )
+        ]);
 
         $payment = new Payment();
         $payment->user_id = $user->id;
