@@ -107,7 +107,13 @@ class AccountController extends Controller {
 			'vat_number' => 'Please supply a valid VAT number.'
 		));
 
-		$user->fill( $request->input('user') );
+		$user->name = $request->input('user.name');
+		$user->country = $request->input('user.country' );
+		$user->vat_number = $request->input( 'user.vat_number' );
+		$user->address = $request->input( 'user.address' );
+		$user->zip = $request->input('user.zip');
+		$user->state = $request->input('user.state');
+		$user->company = $request->input('user.company');
 		$user->save();
 
 		$this->dispatch(new UpdateInvoiceContact($user));
@@ -131,8 +137,7 @@ class AccountController extends Controller {
 			'payment_token' => 'required'
 		]);
 
-		$user->fill($request->input('user'));
-
+		$user->card_last_four = $request->input('user.card_last_four');
 		$user = $charger->customer($user, $request->input('payment_token'));
 
 		$user->save();

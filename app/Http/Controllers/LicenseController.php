@@ -108,8 +108,8 @@ class LicenseController extends Controller {
 		$subscription = $license->subscription;
 
 		$data = $request->input('subscription');
-		if( $data ) {
-			$subscription->fill( $data );
+		if( isset( $data['active'] ) ) {
+			$subscription->active = $data['active'];
 
 			// update next charge date
 			$subscription->next_charge_at = $license->expires_at->modify('-1 week');
@@ -117,7 +117,7 @@ class LicenseController extends Controller {
 		}
 
 		// if a payment is due, try to charge right away
-		if( $subscription->isPaymentDue() ) {
+		if( $subscription->isActive() && $subscription->isPaymentDue() ) {
 			try {
 				$charger->subscription( $subscription );
 			} catch( Exception $e ) {
