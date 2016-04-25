@@ -30,7 +30,7 @@
             </tr>
             @if( $license->subscription )
             <tr>
-                <th>Status</th>
+                <th>Subscription</th>
                 <td class="clearfix">
                     @if( $license->subscription->active )
                         Active
@@ -44,7 +44,7 @@
 
                         @if( $license->subscription->active )
                             <input type="hidden" name="subscription[active]" value="0" />
-                            <button class="button-small">Deactivate</button>
+                            <button class="button-small" data-confirm="Are you sure you want to deactivate auto-renewal for this license?">Deactivate</button>
                         @else
                             <input type="hidden" name="subscription[active]" value="1" />
                             <button class="button-small">Reactivate</button>
@@ -53,23 +53,31 @@
                     </form>
                 </td>
             </tr>
-            <tr>
-                <th>Payment</th>
-                <td>
-                    @if( $license->subscription->active )
+                @if( $license->subscription->active )
+                <tr>
+                    <th>Payment</th>
+                    <td>
                         You will be charged <strong>${{ $license->subscription->amount + 0 }}</strong> on <strong>{{ $license->subscription->getNextChargeDate()->format('m/d/Y') }}</strong>.
-                    @else
-                        No payment due.
-                    @endif
+                    </td>
+                    <td class="row-action">
+                        @if( $license->subscription->isPaymentDue() )
+                            <form method="post" action="/licenses/{{ $license->id }}">
+                                {!! csrf_field() !!}
+                                <button class="button-small">Pay Now</button>
+                            </form>
+                        @endif
+                    </td>
+                </tr>
+                @endif
+            @endif
+
+            @if( ! $license->subscription || ! $license->subscription->active )
+            <tr>
+                <th>Expire{{ $license->isExpired() ? 'd' : 's' }}</th>
+                <td>
+                    {{ $license->expires_at->format('M j, Y') }}
                 </td>
-                <td class="row-action">
-                    @if( $license->subscription->isPaymentDue() )
-                        <form method="post" action="/licenses/{{ $license->id }}">
-                            {!! csrf_field() !!}
-                            <button class="button-small">Pay Now</button>
-                        </form>
-                    @endif
-                </td>
+                <td class="row-action"></td>
             </tr>
             @endif
         </table>
@@ -105,17 +113,4 @@
         </div>
 
     </div>
-@stop
-
-@section('foot')
-    <script>
-        (function() {
-            var actions = document.querySelectorAll('[data-confirm]');
-            for( var i=0; i<actions.length; i++) {
-                actions[i].onclick = function(e) {
-                    return confirm(this.getAttribute('data-confirm'));
-                }.bind(actions[i])
-            }
-        })();
-    </script>
 @stop

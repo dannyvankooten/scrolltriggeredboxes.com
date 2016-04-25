@@ -341,6 +341,7 @@ var creditCardForms = document.querySelectorAll('form[data-credit-card]');
 var europeElements = document.querySelectorAll('.europe-only');
 var countryInputs = document.querySelectorAll('.country-input');
 var pricingForms = document.querySelectorAll('form[data-pricing]');
+var confirmationElements = document.querySelectorAll('[data-confirm]');
 
 [].forEach.call(emailInputs, function (input) {
     input.addEventListener('blur', helpers.checkEmail);
@@ -396,6 +397,17 @@ var pricingForms = document.querySelectorAll('form[data-pricing]');
     });
 
     helpers.calculatePrice(form.quantity.value, form.interval.value);
+});
+
+[].forEach.call(confirmationElements, function (element) {
+    element.addEventListener('click', function (event) {
+        var sure = confirm(this.getAttribute('data-confirm'));
+
+        if (!sure) {
+            event.preventDefault();
+            return false;
+        }
+    });
 });
 
 window.app = app;
