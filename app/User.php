@@ -21,6 +21,7 @@ use DateTime;
  * @property License[] $licenses
  * @property Payment[] $payments
  * @property Subscription[] $subscriptions
+ * @property int $id
  * @property string $email
  * @property string $name
  * @property string $country
