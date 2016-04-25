@@ -10,6 +10,8 @@
 
     <h1 class="page-title">Register</h1>
 
+    <p>Registering for a Boxzilla+ account gives you access to all the premium add-on plugins.</p>
+
     @include('partials.form-messages')
 
     <form method="post" id="buy-form">

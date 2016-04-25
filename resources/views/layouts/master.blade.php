@@ -49,7 +49,7 @@
             </h2>
             <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
                 <ul class="nav nav-inline">
-                    <li role="presentation"><a href="/">Home</a></li>
+
                 </ul>
             </nav>
         </div>
