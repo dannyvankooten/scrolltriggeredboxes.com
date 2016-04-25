@@ -14,7 +14,7 @@
 
     @include('partials.form-messages')
 
-    <form method="post" id="buy-form">
+    <form method="post" id="buy-form" data-credit-card="true" data-pricing="true">
         {!! csrf_field() !!}
 
         <!-- Step 1: License -->
@@ -35,7 +35,7 @@
                 <label class="unstyled"><input type="radio" name="interval" value="year" {{ old('interval', request('interval')) === 'year' ? 'checked' : '' }}> Yearly</label>
             </div>
 
-            <p>You will be charged <span class="total strong">$6 per month</span>.</p>
+            <p>You will be charged <span class="price strong">$6 per month</span>.</p>
 
         </div>
         <!-- / Step -->
@@ -84,7 +84,7 @@
 
             <div class="form-group">
                 <label>Country <span class="big red">*</span></label>
-                <select name="user[country]" id="country-input" data-stripe="address_country" required>
+                <select name="user[country]" class="country-input" data-stripe="address_country" required>
                     <option value="" disabled {{ old('user.country','') === '' ? 'selected' : '' }}>Select your country..</option>
                     @foreach(Countries::all() as $code => $country)
                     <option value="{{ $code }}" {{ old('user.country') == $code ? 'selected' : '' }}>{{ $country }}</option>
@@ -92,7 +92,7 @@
                 </select>
             </div>
 
-            <div class="form-group eu-only" style="display: none;">
+            <div class="form-group europe-only" style="display: none;">
                 <label>VAT Number <span class="small pull-right muted">(optional)</span></label>
                 <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" />
                 <p class="help">If you're buying as a Europe based company, please enter your company VAT number here.</p>
@@ -169,102 +169,6 @@
 @section('foot')
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script>
-
-    function total(amount, interval) {
-        var isYearly = interval === 'year';
-        var price = isYearly ? 60 : 6;
-        var total = amount * price;
-        total = price + ( ( amount - 1 ) * price * 0.5 );
-
-        var elements = document.querySelectorAll('.total');
-        [].forEach.call(elements,function(el) {
-            el.innerHTML = '$' + total + ( isYearly ? ' per year' : ' per month' );
-        });
-    }
-
-    function toggleEuFields() {
-        var euCountries = [ 'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK' ];
-        var isEu = euCountries.indexOf(countryElement.value.toUpperCase()) > -1;
-
-        [].forEach.call(euOnlyFields, function(el) {
-            el.style.display = isEu ? '' : 'none';
-        });
-    }
-
-    function error(msg) {
-        var errorElement = form.querySelector('.errors');
-        errorElement.className += " notice notice-warning";
-        errorElement.innerText = msg;
-    }
-
-    var form  = document.getElementById('buy-form');
-    var euOnlyFields = document.querySelectorAll('.eu-only');
-    var countryElement = document.getElementById('country-input');
-
-    form.addEventListener('change', function(event) {
-        total(this.quantity.value, this.interval.value);
-        toggleEuFields();
-    });
-
-    total(form.quantity.value, form.interval.value);
-
-    form.addEventListener( 'submit', function(event) {
-
-        event.preventDefault();
-
-        // soft-validate credit card
-        var creditCardNumber = form.querySelector('[data-stripe="number"]').value;
-        if( ! Stripe.card.validateCardNumber(creditCardNumber) ) {
-            error( "That credit card number doesn't seem right.");
-            return false;
-        }
-
-        // disable button
-        var submitButton = form.elements.namedItem('submit_button');
-        var buttonText = submitButton.value;
-
-        submitButton.disabled = true;
-        submitButton.value = "Please wait";
-
-        Stripe.card.createToken(this, function(status, response) {
-
-            // re-enable button
-            submitButton.value = buttonText;
-            submitButton.removeAttribute('disabled');
-
-            if (response.error) {
-                error(response.error.message);
-            } else {
-                form.elements.namedItem('user[card_last_four]').value = response.card.last4;
-                form.elements.namedItem('payment_token').value = response.id;
-                form.submit();
-            }
-        });
-
-        return false;
-    });
-
-    //var steps = new Steps('.step');
-
     Stripe.setPublishableKey('{{ config('services.stripe.key') }}');
-
-    // try to get country from ipinfo.io
-    if( countryElement.value === '' ) {
-        var req = new XMLHttpRequest();
-        req.onreadystatechange = function() {
-            if (req.readyState != XMLHttpRequest.DONE || req.status != 200) {
-                return;
-            }
-
-            var res = JSON.parse(req.responseText);
-            countryElement.value = res.country;
-            toggleEuFields();
-        };
-        req.open("GET", "http://ipinfo.io");
-        req.setRequestHeader('Accept','application/json');
-        req.send();
-    }
-
-
 </script>
 @stop

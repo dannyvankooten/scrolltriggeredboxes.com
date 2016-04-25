@@ -63,6 +63,12 @@
                 {!! session('message') !!}
             </div>
             @endif
+
+            @if (session('error'))
+                <div class="notice notice-warning">
+                    {!! session('error') !!}
+                </div>
+            @endif
         </div>
 
         @yield('content')

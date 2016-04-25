@@ -44,35 +44,35 @@
                 </select>
             </div>
 
-            <div class="form-group eu-only">
+            <div class="form-group">
                 <label>Address</label>
                 <div class="form-element">
                     <input type="text" name="user[address]" value="{{ old('user.address', $user->address ) }}">
                 </div>
             </div>
 
-            <div class="form-group eu-only">
+            <div class="form-group">
                 <label>City</label>
                 <div class="form-element">
                     <input type="text" name="user[city]" value="{{ old('user.city', $user->city ) }}">
                 </div>
             </div>
 
-            <div class="form-group eu-only">
+            <div class="form-group">
                 <label>ZIP / Postal code</label>
                 <div class="form-element">
                     <input type="text" name="user[zip]" value="{{ old('user.zip', $user->zip ) }}">
                 </div>
             </div>
 
-            <div class="form-group eu-only">
+            <div class="form-group">
                 <label>State / Province</label>
                 <div class="form-element">
                     <input type="text" name="user[state]" value="{{ old('user.state', $user->state ) }}">
                 </div>
             </div>
 
-            <div class="form-group eu-only">
+            <div class="form-group">
                 <label>Company Name <span class="small muted pull-right">(optional)</span></label>
                 <div class="form-element">
                     <input type="text" name="user[company]" value="{{ old('user.company', $user->company ) }}">
@@ -80,7 +80,7 @@
                 </div>
             </div>
 
-            <div class="form-group eu-only" style="@if(!$user->inEurope()) display: none; @endif">
+            <div class="form-group europe-only" style="@if(!$user->inEurope()) display: none; @endif">
                 <label>VAT Number <span class="small muted pull-right">(optional)</span></label>
                 <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', $user->vat_number ) }}"/>
             </div>
