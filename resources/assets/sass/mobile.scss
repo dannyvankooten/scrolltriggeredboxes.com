@@ -8,6 +8,11 @@
   .hide-on-mobile {
     display: none !important;
   }
+
+  .scale-on-mobile {
+    max-width: 50%;
+    height: auto;
+  }
 }
 
 @media( min-width: 680px ) {

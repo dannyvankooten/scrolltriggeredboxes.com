@@ -132,7 +132,12 @@
   background: $primary_color url('../img/jumbotron.jpg');
   background-size: cover;
 
-  h1, h2, h3, p, a {
+  h1, h2, h3, p {
+    color: white;
+    text-shadow: 1px 1px 2px #222;
+  }
+
+  a {
     color: white;
   }
 
@@ -148,4 +153,8 @@
   overflow: hidden;
   clip: rect(0,0,0,0);
   border: 0;
+}
+
+.stretch {
+  width: 100%;
 }

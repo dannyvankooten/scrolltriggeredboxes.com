@@ -406,12 +406,18 @@ button,
   border: 2px solid #5F4477;
   color: white;
   font-size: 16px;
-  text-decoration: none; }
+  text-decoration: none;
+  text-shadow: 0 1px 3px #333; }
 
 .button-small,
 input[type="submit"].button-small {
   padding: 3px 4px;
   font-size: 14px; }
+
+.button-big,
+input[type="submit"].button-big {
+  padding: 10px 30px;
+  font-size: 18px; }
 
 input[type="submit"]:hover,
 input[type="submit"]:focus,
@@ -422,14 +428,21 @@ button:focus,
   background: #4f3964;
   border-color: #4f3964; }
 
+input[type="submit"].button-secondary,
 .button-secondary {
   background: #0073CC;
   border: 2px solid #0073CC; }
 
+input[type="submit"].button-secondary:focus,
+input[type="submit"].button-secondary:hover,
 .button-secondary:focus,
 .button-secondary:hover {
   background: #0062ad;
   border-color: #0062ad; }
+
+input[disabled],
+button[disabled] {
+  opacity: 0.7; }
 
 .form-element {
   position: relative; }
@@ -592,7 +605,10 @@ button:focus,
   color: white;
   background: #5F4477 url("../img/jumbotron.jpg");
   background-size: cover; }
-  .jumbotron h1, .jumbotron h2, .jumbotron h3, .jumbotron p, .jumbotron a {
+  .jumbotron h1, .jumbotron h2, .jumbotron h3, .jumbotron p {
+    color: white;
+    text-shadow: 1px 1px 2px #222; }
+  .jumbotron a {
     color: white; }
   .jumbotron .header {
     background: none; }
@@ -606,6 +622,9 @@ button:focus,
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0; }
+
+.stretch {
+  width: 100%; }
 
 #content ul li {
   padding: 3px 0; }
@@ -637,7 +656,10 @@ button:focus,
     margin-bottom: 20px;
     display: table; }
   .hide-on-mobile {
-    display: none !important; } }
+    display: none !important; }
+  .scale-on-mobile {
+    max-width: 50%;
+    height: auto; } }
 
 @media (min-width: 680px) {
   .hide-on-desktop {
@@ -654,7 +676,7 @@ body {
   box-sizing: border-box; }
 
 a {
-  color: #5F4477;
+  color: #cc4444;
   cursor: pointer; }
 
 h1, h2, h3, h4, h5, h6 {
