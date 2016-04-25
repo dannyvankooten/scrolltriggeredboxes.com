@@ -35,18 +35,30 @@ class Charger {
 
         $customerData = [
             'email' => $user->email,
-            'business_vat_id' => $user->vat_number,
-            'shipping' => [
+            'metadata' => [
+                'country' => $user->country,
+                'user_id' => $user->id
+            ]
+        ];
+
+        // add vat number if we have it
+        if( ! empty( $user->vat_number ) ) {
+            $customerData['business_vat_id'] = $user->vat_number;
+        }
+
+        // add address info if we have it
+        if( count( array_filter([ $user->address, $user->city, $user->country ]) ) === 3 ) {
+            $customerData['shipping'] = [
+                'name' => $user->name,
                 'address' => [
                     'line1' => $user->address,
                     'postal_code' => $user->zip,
                     'city' => $user->city,
                     'state' => $user->state,
                     'country' => $user->country
-                ],
-                'name' => $user->name
-            ]
-        ];
+                ]
+            ];
+        }
 
         if( ! empty( $token ) ) {
             $customerData['source'] = $token;
