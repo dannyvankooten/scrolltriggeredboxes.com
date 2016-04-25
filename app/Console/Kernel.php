@@ -21,15 +21,13 @@ class Kernel extends ConsoleKernel {
 	/**
 	 * Define the application's command schedule.
 	 *
-	 * TODO: Use this over system cronjobs
-	 *
 	 * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
 	 * @return void
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-//		$schedule->command('inspire')
-//				 ->hourly();
+		$schedule->command('subscriptions:charge')
+				 ->daily();
 	}
 
 }
