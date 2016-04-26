@@ -47,11 +47,26 @@
                     <img src="{{ asset('img/logo-text-white.png') }}" height="40" width="150" alt="boxzilla" />
                 </a>
             </h2>
-            <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
-                <ul class="nav nav-inline">
 
-                </ul>
-            </nav>
+            @if(Auth::check())
+                <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+                    <ul class="nav nav-inline">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle">Menu</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/plugins">Download plugins</a></li>
+                                <li><a href="/licenses">View your licenses</a></li>
+                                <li><a href="/payments">View your payments</a></li>
+                                <li><a href="/edit">Edit account information</a></li>
+                                <li><a href="/edit/billing">Edit billing information</a></li>
+                                <li><a href="/edit/payment">Edit payment method</a></li>
+                                <li><a href="/licenses/new">Purchase a new license</a></li>
+                                <li class="last" style="border-top: 2px solid #eee;"><a href="/logout">Log out</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            @endif
         </div>
     </div>
 

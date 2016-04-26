@@ -8,6 +8,7 @@ var europeElements = document.querySelectorAll('.europe-only');
 var countryInputs = document.querySelectorAll('.country-input');
 var pricingForms = document.querySelectorAll('form[data-pricing]');
 var confirmationElements = document.querySelectorAll('[data-confirm]');
+var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
 
 [].forEach.call( emailInputs, function(input) {
     input.addEventListener('blur', helpers.checkEmail);
@@ -84,6 +85,13 @@ var confirmationElements = document.querySelectorAll('[data-confirm]');
            return false;
        }
    });
+});
+
+[].forEach.call(dropdownToggles, function(element) {
+    element.addEventListener('click', function() {
+        this.parentNode.classList.toggle('open');
+    });
+
 });
 
 window.app = app;
