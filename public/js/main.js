@@ -355,7 +355,17 @@ var confirmationElements = document.querySelectorAll('[data-confirm]');
         // soft-validate credit card
         var creditCardNumber = form.querySelector('[data-stripe="number"]').value;
         if (!Stripe.card.validateCardNumber(creditCardNumber)) {
-            helpers.showFormError(form, "That credit card number doesn't seem right.");
+            helpers.showFormError(form, "That credit card number doesn't seem right, sorry.");
+            return false;
+        }
+
+        // validate cvc
+        var exp = {
+            month: form.querySelector('[data-stripe="exp_month"]').value,
+            year: form.querySelector('[data-stripe="exp_year"]').value
+        };
+        if (!Stripe.card.validateExpiry(exp.month, exp.year)) {
+            helpers.showFormError(form, "That expiration date doesn't seem right, sorry.");
             return false;
         }
 
