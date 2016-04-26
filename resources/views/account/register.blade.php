@@ -10,7 +10,7 @@
 
     <h1 class="page-title">Register</h1>
 
-    <p>Registering for a Boxzilla+ account gives you access to all the premium add-on plugins.</p>
+    <p>Registering for a Boxzilla+ account gives you instant access to all premium add-on plugins.</p>
 
     @include('partials.form-messages')
 
@@ -32,7 +32,7 @@
                 <label class="control-label">Would you like to pay monthly or yearly?</label>
 
                 <label class="unstyled"><input type="radio" name="interval" value="month" {{ old('interval', request('interval', 'month')) === 'month' ? 'checked' : '' }}> Monthly</label>
-                <label class="unstyled"><input type="radio" name="interval" value="year" {{ old('interval', request('interval')) === 'year' ? 'checked' : '' }}> Yearly</label>
+                <label class="unstyled"><input type="radio" name="interval" value="year" {{ old('interval', request('interval')) === 'year' ? 'checked' : '' }}> Yearly <small class="muted">(2 free months)</small></label>
             </div>
 
             <p>You will be charged <span class="price strong">$6 per month</span>.</p>
@@ -50,7 +50,7 @@
                 <label>Name <span class="big red">*</span></label>
 
                 <div class="form-element">
-                    <input type="text" name="user[name]" value="{{ old('user.name', '' ) }}" required>
+                    <input type="text" name="user[name]" value="{{ old('user.name', '' ) }}" placeholder="Your name.." data-stripe="name" required>
                     <i class="fa fa-user form-element-icon" aria-hidden="true"></i>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                 <label>Email address <span class="big red">*</span></label>
 
                 <div class="form-element">
-                    <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" required>
+                    <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" placeholder="Your email address.." required>
                     <i class="fa fa-at form-element-icon" aria-hidden="true"></i>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                 <label>Password <span class="big red">*</span></label>
 
                 <div class="form-element">
-                    <input type="password" name="password" value="" required minlength="6">
+                    <input type="password" name="password" value=""  placeholder="Your password.." required minlength="6">
                     <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                 </div>
             </div>
@@ -77,7 +77,7 @@
                 <label>Confirm password <span class="big red">*</span></label>
 
                 <div class="form-element">
-                    <input type="password" name="password_confirmation" value="" required minlength="6">
+                    <input type="password" name="password_confirmation" value="" placeholder="Repeat your password.." required minlength="6">
                     <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                 </div>
             </div>
@@ -90,6 +90,7 @@
                     <option value="{{ $code }}" {{ old('user.country') == $code ? 'selected' : '' }}>{{ $country }}</option>
                     @endforeach
                 </select>
+                <p class="help">We need to know your country for taxes.</p>
             </div>
 
             <div class="form-group europe-only" style="display: none;">
