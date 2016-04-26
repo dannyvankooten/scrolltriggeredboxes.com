@@ -112,6 +112,7 @@ class AccountController extends Controller {
 		$user->country = $request->input('user.country' );
 		$user->vat_number = $request->input( 'user.vat_number' );
 		$user->address = $request->input( 'user.address' );
+		$user->city = $request->input('user.city');
 		$user->zip = $request->input('user.zip');
 		$user->state = $request->input('user.state');
 		$user->company = $request->input('user.company');
