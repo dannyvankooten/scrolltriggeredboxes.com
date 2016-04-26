@@ -142,7 +142,7 @@
                     <label>CVC <span class="big red">*</span></label>
 
                     <div class="form-element" style="width: 120px;">
-                        <input type="text" data-stripe="cvc" maxlength="4" required>
+                        <input type="password" data-stripe="cvc" maxlength="4" required>
                         <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                     </div>
 
