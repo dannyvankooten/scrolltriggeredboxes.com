@@ -10,6 +10,7 @@ use App\Payment;
 
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Stripe\Error\InvalidRequest;
 use Stripe\Stripe;
 use DateTime;
 use Exception;
@@ -181,10 +182,20 @@ class Charger {
      * @param array $data
      *
      * @return \Stripe\Customer
+     *
+     * @throws InvalidRequest
      */
     private function updateCustomer( $id, array $data )
     {
-        $customer = \Stripe\Customer::retrieve($id);
+        try {
+            $customer = \Stripe\Customer::retrieve($id);
+        } catch( InvalidRequest $e ) {
+            if( $e->getHttpStatus() == 404 ) {
+                return $this->createCustomer( $data );
+            }
+
+            throw $e;
+        }
 
         foreach( $data as $property => $value ) {
             if( ! empty( $value ) && $customer->$property != $value ) {
@@ -193,6 +204,7 @@ class Charger {
         }
 
         $customer->save();
+
         return $customer;
     }
 
