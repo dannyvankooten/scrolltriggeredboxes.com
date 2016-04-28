@@ -16,6 +16,7 @@ use DateTime;
  * @property string $short_description
  * @property string $github_repo
  * @property string $description
+ * @property string $type
  * @property string $name
  * @property string $image_path
  * @property DateTime $created_at
@@ -143,6 +144,7 @@ class Plugin extends Model {
 			'short_description' => $this->short_description,
 			'page_url' => domain_url( '/add-ons/' . $this->url ),
 			'image_url' => domain_url( $this->image_path ),
+			'type' => $this->type,
 		];
 	}
 
