@@ -13,6 +13,7 @@ use DateTime;
  * @property int $id
  * @property string $url
  * @property string $slug
+ * @property string $short_description
  * @property string $github_repo
  * @property string $description
  * @property string $name
@@ -28,10 +29,6 @@ class Plugin extends Model {
 	protected $table = 'plugins';
 	public $timestamps = true;
 	protected $fillable = [];
-
-	// hidden from json export
-	protected $hidden = array( 'id', 'created_at', 'updated_at', 'changelog', 'description', 'url', 'slug', 'upgrade_notice', 'tested', 'image_path', 'status' );
-	protected $appends = [ 'page_url', 'image_url' ];
 	
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -118,10 +115,37 @@ class Plugin extends Model {
 	/**
 	 * @return string
 	 */
-	public function getVersion() {
+	public function getVersion()
+	{
 		$info = $this->getUpdateInfo();
-		return isset( $info['version'] ) ? $info['version'] : '';
+		return isset($info['version']) ? $info['version'] : '';
 	}
+
+	/**
+	 * @param array $options
+	 *
+	 * @return array
+	 */
+	public function toJson( $options = array() ) {
+		static $defaults = [ 'format' => 'default' ];
+		$options = array_replace( $defaults, $options );
+		$method = 'to' . ucfirst( $options['format'] ) . 'Array';
+		$data = $this->$method();
+		return json_encode( $data );
+	}
+
+	/**
+	 * @return array
+	 */
+	public function toArray() {
+		return [
+			'name' => $this->name,
+			'short_description' => $this->short_description,
+			'page_url' => domain_url( '/add-ons/' . $this->url ),
+			'image_url' => domain_url( $this->image_path ),
+		];
+	}
+
 
 	/**
 	 * @return array
@@ -149,21 +173,5 @@ class Plugin extends Model {
 		$data = array_merge( $data, $updateInfo );
 
 		return $data;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getImageUrlAttribute()
-	{
-		return asset( $this->image_path );
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getPageUrlAttribute()
-	{
-		return url( sprintf( '/plugins/%s', $this->url ) );
 	}
 }
