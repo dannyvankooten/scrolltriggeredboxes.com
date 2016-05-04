@@ -155,8 +155,8 @@ class Plugin extends Model {
 
 		$data = [
 			'id' => $this->id,
-			'url' => url( '/plugins/' . $this->sid ),
-			'homepage' => domain_url( '/plugins/' . $this->sid ),
+			'url' => $this->getPageUrl(),
+			'homepage' => domain_url( '/' ),
 			'package' => url( '/v1/plugins/' . $this->id .'/download' ),
 			'download_url' => url( '/v1/plugins/' . $this->id .'/download' ),
 			'name'      => $this->name,
