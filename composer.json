@@ -12,7 +12,8 @@
         "helpscout/apps": "^1.1",
 		"graham-campbell/github": "^4.2",
 		"stripe/stripe-php": "^3.12",
-		"dannyvankooten/laravel-vat": "dev-master"
+		"dannyvankooten/laravel-vat": "dev-master",
+		"doctrine/dbal": "^2.5"
 	},
 	"require-dev": {
 		"fzaninotto/faker": "~1.4",

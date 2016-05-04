@@ -11,7 +11,7 @@ use DateTime;
  *
  * @property Activation[] $sites
  * @property int $id
- * @property string $url
+ * @property string $sid
  * @property string $slug
  * @property string $short_description
  * @property string $github_repo
@@ -62,7 +62,7 @@ class Plugin extends Model {
 			return array();
 		}
 
-		$cacheKey = "plugins.{$this->url}.update-info";
+		$cacheKey = "plugins.{$this->sid}.update-info";
 		$fileContent = Cache::get( $cacheKey );
 
 		if( ! $fileContent ) {
@@ -100,7 +100,7 @@ class Plugin extends Model {
 			return '';
 		}
 
-		$cacheKey = "plugins.{$this->url}.changelog";
+		$cacheKey = "plugins.{$this->sid}.changelog";
 		$html = Cache::get( $cacheKey );
 
 		if( ! $html ) {
@@ -142,7 +142,7 @@ class Plugin extends Model {
 		return [
 			'name' => $this->name,
 			'short_description' => $this->short_description,
-			'page_url' => domain_url( '/add-ons/' . $this->url ),
+			'page_url' => domain_url( '/add-ons/' . $this->sid ),
 			'image_url' => domain_url( $this->image_path ),
 			'type' => $this->type,
 		];
@@ -156,8 +156,8 @@ class Plugin extends Model {
 
 		$data = [
 			'id' => $this->id,
-			'url' => url( '/plugins/' . $this->url ),
-			'homepage' => domain_url( '/plugins/' . $this->url ),
+			'url' => url( '/plugins/' . $this->sid ),
+			'homepage' => domain_url( '/plugins/' . $this->sid ),
 			'package' => url( '/v1/plugins/' . $this->id .'/download' ),
 			'download_url' => url( '/v1/plugins/' . $this->id .'/download' ),
 			'name'      => $this->name,

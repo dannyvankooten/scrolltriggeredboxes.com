@@ -26,8 +26,11 @@ class PluginController extends Controller {
 
 		if( $request->input('ids') ) {
 			$pluginQuery->whereIn( 'id',explode(',', $request->input('ids') ) );
+		} else if( $request->input('sids') ) {
+			$pluginQuery->whereIn( 'sid', explode(',', $request->input('sids') ) );
 		}
 
+		/** @var Plugin[] $plugins */
 		$plugins = $pluginQuery->get();
 
 		$response = [
@@ -45,14 +48,14 @@ class PluginController extends Controller {
 	/**
 	 * Get a plugin by its ID or slug
 	 *
-	 * @param mixed $id_or_slug
+	 * @param int|string $id
 	 *
 	 * @return JsonResponse
 	 */
-	public function get($id_or_slug)
+	public function get($id)
 	{
-		// then, retrieve plugin that user is trying to activate
-		$plugin = Plugin::where('id', $id_or_slug)->orWhere('url', $id_or_slug)->firstOrFail();
+		/** @var Plugin $plugin */
+		$plugin = Plugin::where('id', $id)->orWhere('sid', $id)->firstOrFail();
 
 		// build response
 		$response = [
@@ -63,15 +66,15 @@ class PluginController extends Controller {
 	}
 
 	/**
-	 * @param int|string $id_or_slug
+	 * @param int|string $id
 	 * @param Request $request
 	 *
 	 * @return BinaryFileResponse
 	 */
-	public function download($id_or_slug, Request $request) {
+	public function download($id, Request $request) {
 
 		/** @var Plugin $plugin */
-		$plugin = Plugin::where('id', $id_or_slug)->orWhere('url', $id_or_slug)->firstOrFail();
+		$plugin = Plugin::where('id', $id)->orWhere('sid', $id)->firstOrFail();
 
 		// is a specific version specified? if not, use latest.
 		$version = preg_replace( '/[^0-9\.]/', "" , $request->input( 'version', '' ) );
