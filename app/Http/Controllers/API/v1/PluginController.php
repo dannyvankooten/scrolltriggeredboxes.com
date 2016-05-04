@@ -80,8 +80,11 @@ class PluginController extends Controller {
 		$version = preg_replace( '/[^0-9\.]/', "" , $request->input( 'version', '' ) );
 
 		$downloader = new PluginDownloader( $plugin );
-		$filename = $downloader->download( $version );
+		$file = $downloader->download( $version );
+		$filename = $plugin->slug . '.zip';
 
-		return new BinaryFileResponse( $filename );
+		$response = new BinaryFileResponse( $file, 200 );
+		$response->setContentDisposition( 'attachment', $filename );
+		return $response;
 	}
 }

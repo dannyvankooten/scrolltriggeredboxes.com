@@ -46,10 +46,11 @@ class PluginController extends Controller {
 		$plugin = Plugin::findOrFail($id);
 
 		$downloader = new PluginDownloader( $plugin );
-		$filename = $downloader->download();
-		
-		return new BinaryFileResponse( $filename, 200, array(
-			'Content-Type' => 'application/zip',
-		));
+		$file = $downloader->download();
+		$filename = $plugin->slug . '.zip';
+
+		$response = new BinaryFileResponse( $file, 200 );
+		$response->setContentDisposition( 'attachment', $filename );
+		return $response;
 	}
 }
