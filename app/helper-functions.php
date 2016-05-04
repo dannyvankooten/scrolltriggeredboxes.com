@@ -18,5 +18,8 @@ function domain_url( $path = '/', $subdomain = '' ) {
 	if( ! empty( $subdomain ) ) {
 		$domain = sprintf( '%s.%s', $subdomain, $domain );
 	}
-	return '//' . rtrim( $domain, '/' ) . '/' . ltrim( $path, '/' );
+
+	/** @var Illuminate\Http\Request $request */
+	$request = app('request');
+	return $request->getScheme() . '://' . rtrim( $domain, '/' ) . '/' . ltrim( $path, '/' );
 }
