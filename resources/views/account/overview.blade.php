@@ -1,71 +1,27 @@
 @extends('layouts.master')
 
-@section('title','Account - Scroll Triggered Boxes')
+@section('title','Account - Boxzilla')
 
 @section('content')
-    @include('account.parts.masthead')
 
     <div class="container">
-        <h1>Account</h1>
-
-        @if (session('message'))
-            <div class="bs-callout bs-callout-success">
-                {!! session('message') !!}
-            </div>
-        @endif
 
         <p>Welcome, <strong>{{ $user->name }}</strong>.</p>
+        <p>Your last login was on <em>{{ $user->last_login_at->format( 'F j, Y' ) }}</em> at <em>{{ $user->last_login_at->format( 'H:i' ) }}</em>.</p>
 
-        <h3>Licenses</h3>
-        <p>You have the following license keys. You can use these keys to configure the plugin for automatic update checks.</p>
+        <h4>Actions</h4>
+        <ul>
+            <li><a href="/plugins">Download plugins</a></li>
+            <li><a href="/licenses">View your licenses</a></li>
+            <li><a href="/payments">View your payments</a></li>
+            <li><a href="/edit">Edit account information</a></li>
+            <li><a href="/edit/billing">Edit billing information</a></li>
+            <li><a href="/edit/payment">Edit payment method</a></li>
+            <li><a href="/licenses/new">Purchase a new license</a></li>
+        </ul>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>License Key</th>
-                    <th width="20%">Used on # sites</th>
-                    <th>Created at</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach($user->licenses as $license)
-                <tr>
-                    <td><a href="/account/licenses/{{ $license->id }}">{{ $license->license_key }}</a></td>
-                    <td>{{ count( $license->activations ) }}</td>
-                    <td>{{ $license->created_at->format('F d, Y') }}</td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
+        <p>Alternatively, <a href="/logout">click here to log out</a>.</p>
 
-        <h3>Plugins</h3>
-        <p>The core Scroll Triggered Boxes plugin can be downloaded from WordPress.org <a href="https://wordpress.org/plugins/scroll-triggered-boxes/">here</a>.</p>
-
-        @if($user->hasValidLicense())
-        <p>Since you have a valid license, you have access to the following plugin downloads.</p>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Plugin</th>
-                    <th>Version</th>
-                    <th width="1"></th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach($plugins as $plugin)
-                <tr>
-                    <td><a href="{{ url('/plugins/' . $plugin->url )}}">{{ $plugin->name }}</a></td>
-                    <td>{{ $plugin->version }}</td>
-                    <td><a href="{{ url('/plugins/' . $plugin->url . '/download') }}">Download</a></td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-
-        <p>If you need help installing a plugin, please have a look at the <a href="http://scrolltriggeredboxes.readme.io/v1.0/docs/installing-add-on-plugins">installation instructions</a>.</p>
-        @else
-            <p>It seems you have no valid license. Please <a href="/pricing">purchase one of the premium plans in order to get access to the premium add-on plugins</a>.</p>
-        @endif
 
     </div>
 @stop

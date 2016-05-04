@@ -2,23 +2,36 @@
 
 
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * Class License
+ *
+ * @package App
+ *
+ * @property int $id
+ * @property User $user
+ * @property Activation[] $activations
+ * @property Subscription $subscription
+ * @property int $user_id
+ * @property int $site_limit
+ * @property DateTime $expires_at
+ * @property DateTime $created_at
+ * @property DateTime $updated_at
+ * @property DateTime $deleted_at
+ */
 class License extends Model {
 
 	use SoftDeletes;
 
 	protected $table = 'licenses';
-	protected $fillable = ['license_key', 'expires_at', 'sendowl_order_id'];
-	protected $guarded = ['id'];
+	protected $fillable = [];
 
-	// hidden from json export
-	protected $hidden = array( 'id', 'sendowl_order_id', 'user_id', 'created_at', 'updated_at', 'deleted_at' );
 
 	public $timestamps = true;
-	protected $dates = ['deleted_at', 'expires_at' ];
+	protected $dates = [ 'created_at', 'updated_at', 'deleted_at', 'expires_at' ];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -35,17 +48,11 @@ class License extends Model {
 	}
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-	 */
-	public function plugins() {
-		return $this->belongsToMany('App\Plugin', 'plugin_licenses', 'license_id', 'plugin_id' );
-	}
-
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */
-	public function plan() {
-		return $this->belongsTo('App\Plan', 'plan_id', 'id');
+	public function subscription() {
+		return $this->hasOne('App\Subscription');
 	}
 
 	/**
@@ -89,6 +96,22 @@ class License extends Model {
 	}
 
 	/**
+	 * @return float
+	 */
+	public function usagePercentage() {
+		return count( $this->activations ) / $this->site_limit * 100;
+	}
+
+	/**
+	 * @param User $user
+	 * 
+	 * @return bool
+	 */
+	public function belongsToUser( User $user ) {
+		return $this->user_id == $user->id;
+	}
+
+	/**
 	 * Generate a truly unique license key
 	 *
 	 * @return string
@@ -105,85 +128,5 @@ class License extends Model {
 
 		return $key;
 	}
-//
-//	/**
-//	 * @param $plugin
-//	 *
-//	 * @return bool
-//	 */
-//	public function grantsAccessTo( $plugin ) {
-//		return $this->plugins->contains( $plugin->id );
-//	}
-//
-//	/**
-//	 * @param $plugin
-//	 */
-//	public function grantAccessTo( $plugin ) {
-//
-//		if( $plugin instanceof Collection ) {
-//			$plugins = $plugin;
-//		} else {
-//			$plugins = array( $plugin );
-//		}
-//
-//		foreach( $plugins as $plugin ) {
-//
-//			if( $this->grantsAccessTo($plugin) ) {
-//				continue;
-//			}
-//
-//			$this->plugins()->attach( $plugin );
-//		}
-//
-//		// reload plugins
-//		$this->load('plugins');
-//	}
-//
-//	/**
-//	 * @param $plugin
-//	 *
-//	 * @return Collection
-//	 */
-//	public function getPluginActivations( $plugin ) {
-//		return $this->activations->filter(function($a) use($plugin) {
-//			return $a->plugin->id === $plugin->id;
-//		});
-//	}
-//
-//	/**
-//	 * @return bool
-//	 */
-//	public function isAtSiteLimitForPlugin($plugin) {
-//		return count( $this->getPluginActivations($plugin) ) >= $this->site_limit;
-//	}
-//
-//	/**
-//	 * @param $plugin
-//	 *
-//	 * @return int
-//	 */
-//	public function getActivationsLeftForPlugin($plugin) {
-//		$this->load('activations');
-//		return $this->site_limit - count( $this->getPluginActivations($plugin) );
-//	}
-//
-//	/**
-//	 * @return bool
-//	 */
-//	public function allowsActivationForPlugin($plugin) {
-//		return $this->allowsActivation() && ! $this->isAtSiteLimitForPlugin( $plugin );
-//	}
-//
-//	/**
-//	 * @param $domain
-//	 * @param $plugin
-//	 *
-//	 * @return static
-//	 */
-//	public function findDomainActivationForPlugin($domain, $plugin) {
-//		$this->load('activations');
-//		return $this->getPluginActivations($plugin)->filter(function($activation) use($domain){
-//			return $activation->domain === $domain;
-//		})->first();
-//	}
+	
 }

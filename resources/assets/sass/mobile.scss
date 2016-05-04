@@ -1,0 +1,24 @@
+@media(max-width: 680px) {
+  .break-on-mobile {
+    float: none;
+    margin-bottom: 20px;
+    display: table;
+  }
+
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  .scale-on-mobile {
+    max-width: 50%;
+    height: auto;
+  }
+}
+
+@media( min-width: 680px ) {
+
+  .hide-on-desktop {
+    display: none !important;
+  }
+
+}

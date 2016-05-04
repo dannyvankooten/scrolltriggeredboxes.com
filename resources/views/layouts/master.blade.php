@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>@yield('title', 'Scroll Triggered Boxes')</title>
+    <title>@yield('title', 'Boxzilla')</title>
 
-    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/main.css') }}" rel="stylesheet">
 
-    <meta name="twitter:site" content="@dannyvankooten">
-    <meta name="twitter:creator" content="@dannyvankooten">
+    <meta name="twitter:site" content="@boxzillaplugin">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -20,6 +18,10 @@
     <![endif]-->
 
     <script>
+        // util
+        document.documentElement.className = document.documentElement.className.replace('no-js','js');
+
+        // google analytics
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -30,116 +32,100 @@
     </script>
 
     @yield('head')
+
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 </head>
 
 <body>
+<div id="page-wrap">
 
-<div class="header clearfix">
-    <div class="container">
-        <h2 class="site-title pull-left">
-            <a href="{{ url('/') }}">
-                <img src="{{ asset('img/logo-small.png') }}" class="logo" width="64" height="64" />
-                <span>Scroll Triggered Boxes</span>
-            </a>
-        </h2>
-        <input type="checkbox" id="toggle" />
-        <nav class="header-nav" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
-            <label for="toggle" class="glyphicon toggle" onclick></label>
-            <ul class="menu">
-                <li role="presentation"><a href="{{ url('/plugins') }}" class="{{ (Request::is('plugins') ? 'active' : '') }}">Plugins</a></li>
-                <li role="presentation"><a href="{{ url('/pricing') }}" class="{{ (Request::is('pricing') ? 'active' : '') }}">Pricing</a></li>
-                <li role="presentation"><a href="http://demo.scrolltriggeredboxes.com/" target="_blank">Demo</a></li>
-                <li role="presentation"><a href="{{ url('/contact') }}" class="{{ (Request::is('contact') ? 'active' : '') }}">Contact</a></li>
-            </ul>
-        </nav>
-    </div>
-</div>
-
-@yield('masthead')
-
-<div role="main" itemprop="mainContentOfPage">
-    @yield('content')
-</div>
-
-<footer class="footer">
-
-    <!-- start footer -->
-    <div class="footer-1">
+    <div id="header" class="header clearfix">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h3>Scroll Triggered Boxes</h3>
-                    <ul class="unstyled">
-                        <li><a href="{{ url('/') }}">Home</a></li>
-                        <li><a href="{{ url('/plugins') }}">Plugins</a></li>
-                        <li><a href="{{ url('/pricing') }}">Pricing</a></li>
-                        <li><a href="{{ url('/account') }}">Your Account</a></li>
-                        <li><a href="{{ url('/kb') }}">Documentation</a></li>
-                        <li><a href="http://demo.scrolltriggeredboxes.com/">Demo</a></li>
+            <h2 class="site-title pull-left">
+                <a href="{{ url('/') }}">
+                    <img src="{{ asset('img/logo-text-white.png') }}" height="40" width="150" alt="boxzilla" />
+                </a>
+            </h2>
+
+            @if(Auth::check())
+                <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+                    <ul class="nav nav-inline">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle">Menu</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/plugins">Download plugins</a></li>
+                                <li><a href="/licenses">View your licenses</a></li>
+                                <li><a href="/payments">View your payments</a></li>
+                                <li><a href="/edit">Edit account information</a></li>
+                                <li><a href="/edit/billing">Edit billing information</a></li>
+                                <li><a href="/edit/payment">Edit payment method</a></li>
+                                <li><a href="/licenses/new">Purchase a new license</a></li>
+                                <li class="last" style="border-top: 2px solid #eee;"><a href="/logout">Log out</a></li>
+                            </ul>
+                        </li>
                     </ul>
-                </div>
-                <div class="col-md-6">
-                    <!-- Begin MailChimp Signup Form -->
-                    <div id="mc_embed_signup">
-                        <form action="//dannyvankooten.us1.list-manage.com/subscribe/post?u=a2d08947dcd3683512ce174c5&amp;id=e3e1e0f8d8" method="post" name="mc-embedded-subscribe-form" target="_blank">
-                            <div class="form-inline">
-                                <h3>Subscribe to our mailing list</h3>
-
-                                <p>Everything related to Scroll Triggered Boxes, straight from your inbox.</p>
-
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <div class="input-group-addon">@</div>
-                                        <input type="email" name="EMAIL"  class="form-control" placeholder="Your email address..">
-                                    </div>
-                                </div>
-
-                                <div class="form-group ">
-                                    <input type="submit" value="Subscribe" name="subscribe" class="btn btn-cta">
-                                </div>
-
-                                <p class="muted" style="margin-top: 25px; font-size: 80%; font-style: italic;">* No spam, unsubscribe at any time.</p>
-
-
-                            </div>
-                            <div style="position: absolute; left: -5000px;"><input type="text" name="b_a2d08947dcd3683512ce174c5_e3e1e0f8d8" tabindex="-1" value=""></div>
-
-                        </form>
-                    </div>
-
-                    <!--End mc_embed_signup-->
-                </div>
-            </div>
+                </nav>
+            @endif
         </div>
     </div>
-        <!-- End top footer -->
 
-    <!-- Start sub footer -->
-    <div class="footer-2">
+    <div id="content" class="main-container medium-margin" role="main" itemprop="mainContentOfPage">
+
         <div class="container">
-            <p class="margined-elements">
-                <a href="{{ url('/about') }}">About</a>
-                <a href="{{ url('/refund-policy') }}">Refund Policy</a>
-                <a href="{{ url('/kb') }}">Documentation</a>
-                <a href="#top">Back to top</a>
-            </p>
-            <p style="font-style: italic;">
-                <a class="unstyled" href="{{ url('/') }}">Scroll Triggered Boxes</a> is a WordPress plugin built by &nbsp;
+            @if (session('message'))
+            <div class="notice notice-success">
+                {!! session('message') !!}
+            </div>
+            @endif
+
+            @if (session('error'))
+                <div class="notice notice-warning">
+                    {!! session('error') !!}
+                </div>
+            @endif
+        </div>
+
+        @yield('content')
+    </div>
+
+    <footer id="footer" class="footer medium-padding">
+        <div class="container">
+
+            <ul class="small-margin nav nav-inline">
+                <li><a href="{{ domain_url('/about') }}">About</a></li>
+                <li><a href="{{ domain_url('/refund-policy') }}">Refund Policy</a></li>
+                <li><a href="{{ domain_url('/kb') }}">Documentation</a></li>
+                <li><a href="{{ domain_url('/contact') }}">Contact</a></li>
+            </ul>
+
+            <p class="medium-margin" style="font-style: italic;">
+                <a class="unstyled" href="{{ domain_url() }}">Boxzilla</a> is a WordPress plugin built by &nbsp;
                 <a href="https://ibericode.com" rel="external author">
-                    <img src="{{ asset('img/ibericode-logo-white.png') }}" height="25">
+                    <img src="{{ asset('img/ibericode-logo-white.png') }}" height="25" style="vertical-align: bottom;">
                 </a>
             </p>
         </div>
-    </div>
-    <!-- End sub footer -->
+    </footer>
+</div>
 
+<script>
+    // expand footer
+    var pageWrap = document.getElementById('page-wrap');
+    var footer = document.getElementById('footer');
+    if( pageWrap.clientHeight < window.innerHeight ) {
+        footer.style.height = footer.clientHeight + ( window.innerHeight - pageWrap.clientHeight ) + "px";
+    }
 
-</footer>
-
-
-<script type="text/javascript" src="https://transactions.sendowl.com/assets/sendowl.js" ></script>
-<script src="{{ asset('js/plugins.js') }}"></script>
+    // font awesome
+    var linkElement = document.createElement('link');
+    linkElement.rel = "stylesheet";
+    linkElement.href = "{{ asset('css/font-awesome.min.css') }}";
+    document.head.appendChild(linkElement);
+</script>
+<script src="{{ asset('js/main.js') }}" type="text/javascript"></script>
 
 @yield('foot')
+
 </body>
 </html>

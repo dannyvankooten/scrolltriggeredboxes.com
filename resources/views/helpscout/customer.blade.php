@@ -5,9 +5,6 @@
         <div class="toggle indent">
             <p>
                 <span class="muted">{{ $license->created_at }}</span> <br />
-                @if( $license->sendowl_order_id )
-                    <span class="muted"><a href="https://www.sendowl.com/manage_orders/{{ $license->sendowl_order_id }}">Payment in SendOwl</a></span>
-                @endif
             </p>
             @if(count($license->activations) > 0 )
             <div class="toggleGroup nested">

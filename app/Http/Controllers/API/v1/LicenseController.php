@@ -1,56 +1,130 @@
-<?php namespace App\Http\Controllers\API\v1;
+<?php
 
-use App\Events\UserCreated;
-use App\Http\Requests;
+namespace App\Http\Controllers\API\v1;
+
 use App\Http\Controllers\Controller;
-use App\Jobs\CreateUser;
-use App\Jobs\PurchasePlan;
-use DB, App\License, App\User, App\Activation, App\Plan, App\Plugin;
-
+use App\Services\LicenseGuard;
+use Illuminate\Contracts\Logging\Log;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+
+use App\License;
+use App\Activation;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
 
 class LicenseController extends Controller {
 
-	/**
-	 * Create a new license key for a new SendOwl order or add plugin access to an existing one (for bundle orders)
-	 *
-	 * @param Request $request
-	 * @return Response
-	 */
-	public function create( Request $request)
-	{
-		if(env('VERIFY_SIGNATURES', true)) {
-			$sendowl_config     = config( 'services.sendowl' );
-			$message            = sprintf( "buyer_email=%s&buyer_name=%s&order_id=%s&product_id=%d&secret=%s",
-				$request->input( 'buyer_email' ),
-				$request->input( 'buyer_name' ),
-				$request->input( 'order_id' ),
-				$request->input( 'product_id' ),
-				$sendowl_config['api_secret'] );
-			$key                = $sendowl_config['api_key'] . '&' . $sendowl_config['api_secret'];
-			$expected_signature = base64_encode( hash_hmac( 'sha1', $message, $key, true ) );
-			if ( $expected_signature != $request->input( 'signature' ) ) {
-				abort( 403 );
-			}
-		}
+    /**
+     * @var LicenseGuard
+     */
+    protected $auth;
 
-		// query user by email
-		$user = User::where('email', $request->input('buyer_email'))->first();
-		if( ! $user ) {
-			$command = new CreateUser( $request->input('buyer_email'), $request->input('buyer_name' ) );
-			$this->dispatch( $command );
-			$user = $command->getUser();
-		}
+    /**
+     * @var Log
+     */
+    protected $log;
 
-		// get local information about SendOwl product
-		$plan = Plan::where('sendowl_product_id', $request->input('product_id'))->firstOrFail();
+    /**
+     * AuthController constructor.
+     *
+     * @param LicenseGuard $auth
+     * @param Log $log
+     */
+    public function __construct( LicenseGuard $auth, Log $log ) {
+        $this->middleware( [ 'throttle', 'auth.license' ] );
+        $this->auth = $auth;
+        $this->log = $log;
+    }
 
-		$command = new PurchasePlan( $plan, $user, $request->input('order_id') );
-		$this->dispatch( $command );
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function create( Request $request ) {
+        /** @var License $license */
+        $license = $this->auth->license();
 
-		return $command->getLicense()->license_key;
-	}
+        // check if license is expired
+        if( $license->isExpired() ) {
+            return new JsonResponse([
+                'error' => [
+                    'message' => sprintf( "Your license has expired.", $license->site_limit )
+                ]
+            ]);
+        }
+
+        // check if this site is already activated
+        $siteUrl = $request->input('site_url');
+        $domain = $this->getDomainFromSiteUrl($siteUrl);
+
+        $activation = $license->findDomainActivation($domain);
+
+        if( ! $activation ) {
+
+            // check if license is at limit
+            if( $license->isAtSiteLimit() ) {
+                return new JsonResponse([
+                    'error' => [
+                        'message' => sprintf( "Your license is at its activation limit of %d sites.", $license->site_limit )
+                    ]
+                ]);
+            }
+
+            // activate license on given site
+            $activation = new Activation([
+                'url' => $siteUrl,
+                'domain' => $domain
+            ]);
+            $activation->license()->associate($license);
+
+            $this->log->info( "Activated license #{$license->id} on {$domain}" );
+        }
+
+        $activation->touch();
+        $activation->save();
+
+        return new JsonResponse([
+            'data' => [
+                'message' => sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeft() )
+            ]
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function delete( Request $request ) {
+
+        /** @var License $license */
+        $license = $this->auth->license();
+
+        // now, delete activation (aka logout)
+        $siteUrl = $request->input('site_url');
+        $domain = $this->getDomainFromSiteUrl($siteUrl);
+        $activation = $license->findDomainActivation( $domain );
+        
+        if( $activation ) {
+            $this->log->info( "Deactivated license #{$license->id} on {$domain}" );
+            $activation->delete();
+        }
+
+        return new JsonResponse([
+            'data' => [
+                'message' => 'Your license was successfully deactivated. You can use it on any other domain now.'
+            ]
+        ]);
+    }
+
+    /**
+     * @param string $siteUrl
+     *
+     * @return string
+     */
+    protected function getDomainFromSiteUrl( $siteUrl ) {
+        $siteUrl = 'http://' . str_replace( array( 'http://', 'https://', '://' ), '', $siteUrl );
+        $domain = parse_url( $siteUrl, PHP_URL_HOST );
+        return $domain;
+    }
 
 }

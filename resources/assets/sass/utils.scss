@@ -1,0 +1,160 @@
+.no-js .hide-if-no-js {
+  display: none;
+}
+
+.js .hide-if-js {
+  display: none;
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.bordered {
+  border: 1px solid #eee;
+  padding: 6px;
+}
+
+.muted {
+  color: #888;
+  font-weight: normal;
+}
+
+.small {
+  font-size: 80%;
+}
+
+.big {
+  font-size: 120%;
+}
+
+.strong {
+  font-weight: bold;
+}
+
+.medium-padding {
+  padding: 20px;
+}
+
+.small-padding {
+  padding: 10px;
+}
+
+.big-margin {
+  margin: {
+    top: 80px;
+    bottom: 80px;
+  }
+}
+
+.medium-margin {
+  margin: {
+    top: 50px;
+    bottom: 50px;
+  }
+}
+
+.small-margin {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.tiny-margin{
+  margin: {
+    top: 10px;
+    bottom: 10px;
+  }
+}
+
+.no-margin {
+  margin: {
+    top: 0;
+    bottom: 0;
+  }
+}
+
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+
+.unstyled {
+  border: 0;
+  text-decoration: none;
+  font-weight: normal;
+  color: inherit;
+  padding: initial;
+}
+
+.slashes {
+  &:before {
+    content: "//";
+    color: #999;
+    margin-right: 15px;
+  }
+}
+
+.help {
+  font-size: 85%;
+  font-style: italic;
+  color: #888;
+}
+
+.red {
+  color: #cc0300;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.center {
+  margin: 0 auto;
+}
+
+.divider {
+  clear: both;
+  display: block;
+  height: 1px;
+  background: #eee;
+  border: 0;
+}
+
+.jumbotron {
+  color: white;
+
+  // background: url('https://images.unsplash.com/photo-1442876906995-6761040d1f0b?crop=entropy&dpr=2&fit=crop&fm=jpg&h=1025&ixjsv=2.1.0&ixlib=rb-0.3.5&q=50&w=1525');
+  background: $primary_color url('../img/jumbotron.jpg');
+  background-size: cover;
+
+  h1, h2, h3, p {
+    color: white;
+    text-shadow: 1px 1px 2px #222;
+  }
+
+  a {
+    color: white;
+  }
+
+  .header { background: none; }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+.stretch {
+  width: 100%;
+}

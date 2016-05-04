@@ -1,59 +1,47 @@
 <?php namespace App\Http\Middleware;
 
+use App\Services\LicenseGuard;
 use Closure;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
-Use App\License;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class AuthenticateLicense  {
 
 	/**
+	 * @var LicenseGuard
+	 */
+	protected $guard;
+
+	/**
+	 * Admin constructor.
+	 *
+	 * @param LicenseGuard $guard
+	 */
+	public function __construct( LicenseGuard $guard ) {
+		$this->guard = $guard;
+	}
+
+	/**
 	 * Handle an incoming request.
 	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure  $next
-	 * @return mixed
+	 * @param Request  $request
+	 * @param  Closure  $next
+	 *
+	 * @return JsonResponse
 	 */
-	public function handle($request, Closure $next)
-	{
-		$key = urldecode( $request->server('PHP_AUTH_PW') );
-		$site = urldecode( $request->server('PHP_AUTH_USER') );
+	public function handle( Request $request, Closure $next) {
 
-		if( ! $key || ! $site ) {
-			// no license key or site given
-			return response()->json([
+		if( $this->guard->guest() ) {
+			return new JsonResponse([
 				'error' => [
-					'message' => 'Please provide your license key and site URL.'
-				]
-			], 400 );
-		}
-
-		$license = License::where('license_key', $key)->with('activations')->first();
-		if( ! $license ) {
-			// license key was not found
-			return response()->json([
-				'error' => [
-					'message' => sprintf( "Your license seems to be invalid. Please check <a href=\"%s\">your account</a> for the correct license key.", url( '/account' ) )
-				]
-			], 401 );
-		} elseif( $license->isExpired() ) {
-			// license has expired
-			return response()->json([
-				'error' => [
-					'message' => sprintf( "Your license expired on %s.", $license->expires_at->format('F j, Y') )
+					'message' => $this->guard->getErrorMessage()
 				]
 			], 401 );
 		}
-
-		// todo: add check for revoked licenses (refunds, disputes, etc..)
-
-		$request->license = $license;
-		$request->site = $site;
-
-		// parse domain from site url
-		$domain = parse_url( $site, PHP_URL_HOST );
-		$request->domain = $domain;
 
 		return $next($request);
 	}
+
+
 
 }

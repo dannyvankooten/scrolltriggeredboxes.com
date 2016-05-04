@@ -1,29 +1,36 @@
 <?php namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
+use App\Services\PluginDownloader;
+use GuzzleHttp;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Plugin, App\Activation, App\License;
-use Illuminate\Support\Facades\Storage;
+use App\Plugin;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PluginController extends Controller {
 
 
 	public function __construct() {
-		$this->middleware('auth.license', ['only' => 'download']);
-		$this->middleware('auth.license+site', ['only' => 'download']);
+		$this->middleware('auth.license', [ 'only' => 'download' ]);
 	}
 
 	/**
+	 * @param Request $request
+	 * @return JsonResponse
 	 */
 	public function index( Request $request ) {
 
-		$pluginQuery = Plugin::query()->where('status','published');
+		$pluginQuery = Plugin::query()->where('status', 'published');
 
 		if( $request->input('ids') ) {
 			$pluginQuery->whereIn( 'id',explode(',', $request->input('ids') ) );
+		} else if( $request->input('sids') ) {
+			$pluginQuery->whereIn( 'sid', explode(',', $request->input('sids') ) );
 		}
 
+		/** @var Plugin[] $plugins */
 		$plugins = $pluginQuery->get();
 
 		$response = [
@@ -33,53 +40,51 @@ class PluginController extends Controller {
 		$wpFormat = $request->input('format','') === 'wp';
 
 		foreach( $plugins as $plugin ) {
-			$response['data'][] = ( $wpFormat ? $plugin->toWPArray() : $plugin->toArray() );
+			$response['data'][] = ( $wpFormat ? $plugin->toWpArray() : $plugin->toArray() );
 		}
-		return response()->json($response);
+		return new JsonResponse($response);
 	}
 
 	/**
 	 * Get a plugin by its ID or slug
 	 *
-	 * @param $id_or_slug
+	 * @param int|string $id
 	 *
-	 * @return Response
+	 * @return JsonResponse
 	 */
-	public function get($id_or_slug)
+	public function get($id)
 	{
-		// then, retrieve plugin that user is trying to activate
-		$plugin = Plugin::where('id', $id_or_slug)->orWhere('url', $id_or_slug)->firstOrFail();
+		/** @var Plugin $plugin */
+		$plugin = Plugin::where('id', $id)->orWhere('sid', $id)->firstOrFail();
 
 		// build response
 		$response = [
-			'data' => $plugin->toWPJSON()
+			'data' => $plugin->toWpArray()
 		];
 
-		return response()->json($response);
+		return new JsonResponse($response);
 	}
 
 	/**
-	 * @param int $id
+	 * @param int|string $id
 	 * @param Request $request
-	 * @return mixed
+	 *
+	 * @return BinaryFileResponse
 	 */
 	public function download($id, Request $request) {
 
-		// then, retrieve plugin that user is trying to activate
-		$plugin = Plugin::find($id)->firstOrFail();
+		/** @var Plugin $plugin */
+		$plugin = Plugin::where('id', $id)->orWhere('sid', $id)->firstOrFail();
 
 		// is a specific version specified? if not, use latest.
-		$version = preg_replace( "/[^0-9\.]/", "" ,$request->input( 'version', $plugin->version ) );
+		$version = preg_replace( '/[^0-9\.]/', "" , $request->input( 'version', '' ) );
 
-		// check if plugin file exists
-		$file = sprintf( 'app/plugins/%s/%s-%s.zip', $plugin->slug, $plugin->slug, $version );
-		$storage = Storage::disk('local');
-		$exists = $storage->exists( $file );
-		if( $exists ) {
-			return response()->download( storage_path( $file ) );
-		}
+		$downloader = new PluginDownloader( $plugin );
+		$file = $downloader->download( $version );
+		$filename = $plugin->slug . '.zip';
 
-		// serve fallback
-		return response( 'Plugin package is temporarily unavailable.', 404 );
+		$response = new BinaryFileResponse( $file, 200 );
+		$response->setContentDisposition( 'attachment', $filename );
+		return $response;
 	}
 }

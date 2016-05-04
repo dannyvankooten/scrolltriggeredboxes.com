@@ -1,18 +1,11 @@
 @extends('layouts.admin')
 
-@section('title','Account - Scroll Triggered Boxes')
+@section('title','Licenses - Boxzilla')
 
 @section('content')
 
     <div class="container">
         <h1>Licenses</h1>
-
-        @if (session('message'))
-            <div class="bs-callout bs-callout-success">
-                {!! session('message') !!}
-            </div>
-        @endif
-
 
         <table class="table table-striped">
             <thead>

@@ -1,16 +1,15 @@
 @extends('layouts.master')
 
-@section('title','Reset Password - Scroll Triggered Boxes')
+@section('title','Reset Password - Boxzilla')
 
 @section('content')
 
-    <hr class="header-divider">
-
-    <div class="container bodyContent">
-        <div class="content col-lg-offset-1 col-lg-10">
+    <div class="container medium-margin">
 
             <h3>Reset Password</h3>
             <p>Now, please enter your new password and click <strong>Reset Password</strong></strong>.</p>
+
+            @include('partials.form-messages')
 
             <form role="form" method="POST" action="{{ url('/password/reset') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -18,9 +17,9 @@
 
                 <div class="form-group">
                     <label class="control-label">Email address</label>
-                    <div class="input-group">
-                        <span class="input-group-addon">@</span>
-                        <input type="email" class="form-control" name="email" value="{{ Request::input('email') }}">
+                    <div class="form-element">
+                        <input type="email" class="form-control" name="email" value="{{ Request::input('email') }}" >
+                        <i class="fa fa-at form-element-icon"></i>
                     </div>
                 </div>
 
@@ -40,19 +39,7 @@
                     </button>
                 </div>
 
-                <p class="text-muted">If you don't want to reset your password, just leave this page. :)</p>
+                <p class="text-muted">If you don't want to reset your password, please just leave this page. <strong>:)</strong></p>
             </form>
-
-            @if (count($errors) > 0)
-                <div class="bs-callout bs-callout-warning">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-        </div>
     </div>
 @stop

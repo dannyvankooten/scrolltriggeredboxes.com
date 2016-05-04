@@ -1,39 +1,30 @@
 <?php namespace App\Http\Controllers\API\v1;
 
-use App\Events\UserCreated;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Jobs\CreateUser;
-use App\Jobs\PurchasePlan;
-use DB, App\License, App\User, App\Activation, App\Plan, App\Plugin;
+use App\User;
 
 use HelpScoutApp\DynamicApp as HelpScoutApp;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\View;
 
 class HelpScoutController extends Controller {
 
 	/**
+	 * HelpScoutController constructor.
+	 */
+	public function __construct(  ) {
+		$this->middleware('helpscout.signature');
+	}
+
+	/**
 	 * Create a new license key for a new SendOwl order or add plugin access to an existing one (for bundle orders)
 	 *
-	 * @param Request $request
-	 * @return Response
+	 * @return JsonResponse
 	 */
-	public function get( Request $request)
+	public function get( HelpScoutApp $helpscout )
 	{
-
-		$helpscoutApp = new HelpScoutApp( config('services.helpscout')['secret'] );
-
-		if(env('VERIFY_SIGNATURES', true)) {
-			if( ! $helpscoutApp->isSignatureValid() ) {
-				abort( 403 );
-			}
-		}
-
-		$customer = $helpscoutApp->getCustomer();
+		$customer = $helpscout->getCustomer();
 		$email = $customer->getEmail();
 		$user = User::where('email', $email)->first();
 

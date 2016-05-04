@@ -7,15 +7,33 @@ class Kernel extends HttpKernel {
 	/**
 	 * The application's global HTTP middleware stack.
 	 *
+	 * These middleware are run during every request to your application.
+	 *
 	 * @var array
 	 */
 	protected $middleware = [
-		'Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode',
-		'Illuminate\Cookie\Middleware\EncryptCookies',
-		'Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse',
-		'Illuminate\Session\Middleware\StartSession',
-		'Illuminate\View\Middleware\ShareErrorsFromSession',
-		//'App\Http\Middleware\VerifyCsrfToken',
+		\Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+	];
+	/**
+	 * The application's route middleware groups.
+	 *
+	 * @var array
+	 */
+	protected $middlewareGroups = [
+		'web' => [
+			\App\Http\Middleware\EncryptCookies::class,
+			\Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+			\Illuminate\Session\Middleware\StartSession::class,
+			\Illuminate\View\Middleware\ShareErrorsFromSession::class,
+			\App\Http\Middleware\VerifyCsrfToken::class,
+		],
+		'api' => [
+			
+		],
+		'admin' => [
+			\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+			Middleware\Admin::class
+		]
 	];
 
 	/**
@@ -24,12 +42,14 @@ class Kernel extends HttpKernel {
 	 * @var array
 	 */
 	protected $routeMiddleware = [
-		'auth.user' => 'App\Http\Middleware\AuthenticateUser',
-		'auth.user+license' => 'App\Http\Middleware\AuthenticateUserAndLicense',
-		'auth.license' => 'App\Http\Middleware\AuthenticateLicense',
-		'auth.license+site' => 'App\Http\Middleware\AuthenticateLicenseAndSite',
-		'auth.admin' => 'App\Http\Middleware\AuthenticateAdmin',
-		'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
+		'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+		'auth.user' => Middleware\AuthenticateUser::class,
+		'auth.license' => Middleware\AuthenticateLicense::class,
+		'admin' => Middleware\Admin::class,
+		'guest' => Middleware\RedirectIfAuthenticated::class,
+		'helpscout.signature' => Middleware\VerifyHelpScoutSignature::class,
+		'can' => \Illuminate\Foundation\Http\Middleware\Authorize::class,
+		'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 	];
 
 }

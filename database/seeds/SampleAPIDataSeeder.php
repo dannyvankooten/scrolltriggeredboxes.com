@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use App\Plugin, App\Plan;
 use App\License, App\User;
+use Illuminate\Support\Facades\DB;
 
 class SampleAPIDataSeeder extends Seeder {
 
@@ -14,6 +15,7 @@ class SampleAPIDataSeeder extends Seeder {
 	 */
 	public function run()
 	{
+
 		Model::unguard();
 
 		DB::table('users')->delete();
@@ -24,61 +26,47 @@ class SampleAPIDataSeeder extends Seeder {
 		DB::table('plans')->delete();
 		DB::table('activations')->delete();
 
-		$this->createPlugins();
 		$this->createPlans();
+		$this->createPlugins();
 		$this->createLicenses();
-
 	}
 
 	public function createPlugins() {
-		// create plugins
-		Plugin::create([
+		$plugin = new Plugin([
+			'name' => 'Exit Intent',
+			'url' => 'exit-intent',
+			'slug' => 'stb-exit-intent',
+			'description' => "Exit Intent add-on for Scroll Triggered Boxes",
+			'short_description' => "Exit Intent add-on",
+			"github_repo" => "ibericode/stb-exit-intent",
+		]);
+		$plugin->save();
+
+		$plugin = new Plugin([
 			'name' => 'Theme Pack',
-			'slug' => 'stb-theme-pack',
 			'url' => 'theme-pack',
-			'changelog' => 'Changelog text',
-			'description' => 'A beautiful set of eye-catching themes for your boxes',
-			'short_description' => 'A beautiful set of eye-catching themes for your boxes.',
-			'version' => '1.0',
-			'author' => 'Danny van Kooten',
-			'image_path' => '/img/plugins/theme-pack.jpg',
-			'type' => 'premium'
+			'slug' => 'stb-theme-pack',
+			'description' => "Theme Pack add-on for Scroll Triggered Boxes",
+			'short_description' => "Theme Pack add-on",
+			"github_repo" => "ibericode/stb-theme-pack",
 		]);
+		$plugin->save();
 
-		Plugin::create([
-			'name' => 'MailChimp Sign-Up',
-			'slug' => 'mailchimp-for-wp',
-			'url' => 'mailchimp',
-			'version' => '2.2.9',
-			'changelog' => '',
-			'short_description' => 'Sign-up forms for your MailChimp list, with ease.',
-			'description' => 'MailChimp for WordPress allows you to place a sign-up form in your boxes.',
-			'author' => 'Danny van Kooten',
-			'image_path' => '/img/plugins/mailchimp.jpg',
-			'external_url' => 'https://wordpress.org/plugins/mailchimp-for-wp/',
-			'type' => 'free'
+		$plugin = new Plugin([
+			'name' => 'Google Analytics',
+			'url' => 'google-analytics',
+			'slug' => 'stb-google-analytics',
+			'description' => "Google Analytics add-on for Scroll Triggered Boxes",
+			'short_description' => "Google Analytics add-on",
+			"github_repo" => "ibericode/stb-google-analytics",
 		]);
-
-		Plugin::create([
-			'name' => 'Related Posts',
-			'slug' => 'related-posts-for-wp',
-			'url' => 'related-posts',
-			'version' => '1.8.2',
-			'changelog' => '',
-			'description' => 'Rated Posts for WordPress allows you to show visitors a highly related post once they are done reading the current one. A perfect way to decrease your bounce rate.',
-			'short_description' => 'Ask visitors to read a related post when they\'re done reading.',
-			'author' => 'Danny van Kooten',
-			'image_path' => '/img/plugins/related-posts.jpg',
-			'external_url' => 'https://relatedpostsforwp.com/',
-			'type' => 'free'
-		]);
-
-		$this->command->info('plugins table seeded!');
+		$plugin->save();
 	}
 
 	// create sample sale for 1st sendowl product
 	public function createLicenses() {
-		$plugins = Plugin::all();
+
+
 		$user = new User([
 			'name' => 'Danny van Kooten',
 			'email' => 'dannyvankooten@gmail.com',
@@ -97,17 +85,13 @@ class SampleAPIDataSeeder extends Seeder {
 		$license->user()->associate($user);
 		$license->save();
 
-		// grant access to all plugins
-		//$license->plugins()->attach( $plugins->lists('id') );
-
 		$this->command->info('licenses table seeded!');
 	}
 
 	public function createPlans() {
-		$plugins = Plugin::all();
-
 		// personal license
 		$plan_1 = new Plan([
+			'id' => 1,
 			'name' => "Personal License",
 			'site_limit' => 1,
 			'sendowl_product_id' => 169390
@@ -116,15 +100,12 @@ class SampleAPIDataSeeder extends Seeder {
 
 		// developer license
 		$plan_2 = new Plan([
+			'id' => 2,
 			'name' => "Developer License",
 			'site_limit' => 10,
 			'sendowl_product_id' => 169391
 		]);
 		$plan_2->save();
-
-		// grant access to all plugins
-		$plan_1->plugins()->attach( $plugins->lists('id') );
-		$plan_2->plugins()->attach( $plugins->lists('id') );
 
 		$this->command->info('plans table seeded!');
 	}

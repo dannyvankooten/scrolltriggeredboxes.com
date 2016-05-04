@@ -1,26 +1,31 @@
 @extends('layouts.master')
 
-@section('title','New Password - Scroll Triggered Boxes')
+@section('title','New Password - Boxzilla')
 
 @section('content')
 
-    <hr class="header-divider">
-
     <div class="container bodyContent">
-        <div class="content col-lg-offset-1 col-lg-10">
 
-            <h3>Request a new password</h3>
+            <h1 class="page-title">Request a new password</h1>
 
-            <p>If you forgot your password then you can request a new one by filling out the form below. Please use the same email address as when you <a href="/pricing">purchased your premium plan</a>.</p>
+            <p>If you forgot your password then you can request a new one by filling out the form below.</p>
+
+            @if (session('status'))
+                <div class="notice notice-success">
+                    <p>{{ session('status') }}</p>
+                </div>
+            @endif
+
+            @include('partials.form-messages')
 
             <form  role="form" method="POST" action="{{ url('/password/email') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                 <div class="form-group">
-                    <label class="control-label">E-Mail Address</label>
-                    <div class="input-group">
-                        <span class="input-group-addon">@</span>
-                        <input type="email" class="form-control" name="email" value="{{ old('email') }}">
+                    <label class="control-label">Email Address</label>
+                    <div class="form-element">
+                        <input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Your email address..">
+                        <i class="fa fa-at form-element-icon"></i>
                     </div>
                 </div>
 
@@ -30,23 +35,5 @@
                     </button>
                 </div>
             </form>
-
-            @if (session('status'))
-                <div class="bs-callout bs-callout-success">
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            @if (count($errors) > 0)
-                <div class="bs-callout bs-callout-warning">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-        </div>
     </div>
 @stop

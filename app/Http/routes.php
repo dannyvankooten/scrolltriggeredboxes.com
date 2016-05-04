@@ -1,52 +1,45 @@
 <?php
 
-Route::group(['domain' => env('APP_DOMAIN')], function () {
+$domain = config('app.domain');
 
-	// pages
-	Route::get( '/', 'PagesController@getIndex' );
-	Route::get( '/pricing', 'PagesController@getPricing' );
-	Route::get( '/contact', 'PagesController@getContact' );
-	Route::get( '/about', 'PagesController@getAbout' );
-	Route::get( '/refund-policy', 'PagesController@getRefundPolicy' );
-
-	// plugins
-	Route::get( '/plugins', 'PluginsController@index' );
-	Route::get( '/plugins/{slug}', 'PluginsController@show' );
-	Route::get( '/plugins/{plugin_id_or_slug}/download', 'PluginsController@download' );
-	Route::get( '/plugins/{plugin_id_or_slug}/download/sendowl', 'PluginsController@downloadFromSendowl' );
+Route::group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['web']], function () {
 
 	// auth
-	Route::get( '/auth/login/purchase', 'Auth\AuthController@getLoginFromPurchase' );
-	Route::get( '/auth/login', 'Auth\AuthController@getLogin' );
-	Route::post( '/auth/login', 'Auth\AuthController@postLogin' );
-	Route::get( '/auth/logout', 'Auth\AuthController@getLogout' );
+	$this->get('/login', 'Auth\AuthController@showLoginForm');
+	$this->post('/login', 'Auth\AuthController@login');
+	$this->get('/logout', 'Auth\AuthController@logout');
+
+	// checkout
+	Route::get( '/register', 'AccountController@register' );
+	Route::post( '/register', 'AccountController@create' );
 
 	// account
-	Route::get( '/account', 'AccountController@overview' );
-	Route::get( '/account/licenses/{id}', 'AccountController@license' );
+	Route::get( '/', 'AccountController@overview' );
 
-	// todo: allow login out a license from the account page
+
+	Route::get( '/edit', 'AccountController@editCredentials' );
+	Route::post( '/edit', 'AccountController@updateCredentials' );
+	Route::get( '/edit/billing', 'AccountController@editBillingInfo' );
+	Route::post( '/edit/billing', 'AccountController@updateBillingInfo' );
+	Route::get( '/edit/payment', 'AccountController@editPaymentMethod' );
+	Route::post( '/edit/payment', 'AccountController@updatePaymentMethod' );
+
+	// licenses
+	Route::get('/licenses', 'LicenseController@overview');
+	Route::get('/licenses/new', 'LicenseController@create' );
+	Route::post('/licenses/new', 'LicenseController@store' );
+	Route::get('/licenses/{id}', 'LicenseController@details' );
+	Route::post('/licenses/{id}', 'LicenseController@update' );
+
+	// plugins
+	Route::get('/plugins', 'PluginController@overview' );
+	Route::get('/plugins/{id}/download', 'PluginController@download' )->name('plugins_download');
+
+	Route::get('/payments', 'PaymentController@overview' );
+	Route::get('/payments/{id}/invoice', 'PaymentController@invoice' );
+	
+	// TODO: allow login out a license from the account page
 	//Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
-
-	// API Url's
-	Route::group( [ 'prefix' => '/api/v1', 'namespace' => 'API\\v1' ], function () {
-		// Controllers Within The "App\Http\Controllers\API" Namespace
-		Route::get( '/licenses/create', 'LicenseController@create' );
-
-		// global licenses
-		Route::post( '/login', 'AuthController@login' );
-		Route::get( '/logout', 'AuthController@logout' );
-
-		// individual plugins
-		//Route::post('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@activate');
-		//Route::delete('/licenses/{key}/activations/{plugin_id_or_slug}', 'LicenseController@deactivate');
-
-		Route::get( '/plugins', 'PluginController@index' );
-		Route::get( '/plugins/{id}', 'PluginController@get' );
-		Route::get( '/plugins/{id}/download', 'PluginController@download' );
-
-		Route::any( '/helpscout', 'HelpScoutController@get' );
-	} );
 
 	// auth
 	Route::controller( 'password', 'Auth\PasswordController' );
@@ -56,13 +49,36 @@ Route::group(['domain' => env('APP_DOMAIN')], function () {
 		return redirect( 'http://scrolltriggeredboxes.readme.io/v1.0' );
 	} );
 
+
+
 });
 
-Route::group(['domain' => sprintf( 'admin.%s', env('APP_DOMAIN') )], function () {
+// API url's
+Route::group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', 'namespace' => 'API\\v1', 'middleware' => ['api'] ], function () {
+
+	Route::post( '/license/activations', 'LicenseController@create' );
+	Route::delete( '/license/activations', 'LicenseController@delete' );
+
+	Route::get( '/plugins', 'PluginController@index' );
+	Route::get( '/plugins/{id}', 'PluginController@get' );
+	Route::get( '/plugins/{id}/download', 'PluginController@download' );
+
+	Route::any( '/helpscout', 'HelpScoutController@get' );
+} );
+
+// Admin url's
+Route::group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['admin'] ], function () {
 	Route::get( '/', function() {
 		return redirect( '/licenses' );
 	} );
+
+	Route::get( '/users', 'Admin\UserController@overview' );
+	Route::get( '/users/{id}', 'Admin\UserController@detail' );
+
 	Route::get( '/licenses', 'Admin\LicenseController@overview' );
 	Route::get( '/licenses/{id}', 'Admin\LicenseController@detail' );
-	Route::get( '/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index' );
+
+	Route::post( '/subscriptions/{id}', 'Admin\SubscriptionController@update' );
+
+	Route::delete( '/payments/{id}', 'Admin\PaymentController@delete' );
 });
