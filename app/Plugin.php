@@ -18,7 +18,6 @@ use DateTime;
  * @property string $description
  * @property string $type
  * @property string $name
- * @property string $image_path
  * @property DateTime $created_at
  * @property DateTime $updated_at
  *
@@ -142,8 +141,8 @@ class Plugin extends Model {
 		return [
 			'name' => $this->name,
 			'short_description' => $this->short_description,
-			'page_url' => domain_url( '/add-ons/' . $this->sid ),
-			'image_url' => domain_url( $this->image_path ),
+			'page_url' => $this->getPageUrl(),
+			'image_url' => $this->getImageUrl(),
 			'type' => $this->type,
 		];
 	}
@@ -167,7 +166,7 @@ class Plugin extends Model {
 			],
 			'last_updated' => $this->updated_at->format( 'F, Y' ),
 			'banners'   => [
-				'high'      => asset( $this->image_path )
+				'high'      => $this->getImageUrl()
 			]
 		];
 
@@ -175,5 +174,19 @@ class Plugin extends Model {
 		$data = array_merge( $data, $updateInfo );
 
 		return $data;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getPageUrl() {
+		return domain_url( sprintf( '/add-ons/%s' , $this->sid ) );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getImageUrl() {
+		return domain_url( sprintf( '/assets/img/plugins/%s.png', $this->sid ) );
 	}
 }
