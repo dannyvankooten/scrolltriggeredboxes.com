@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 use DateTime;
@@ -13,9 +14,9 @@ use DateTime;
  * @property License $license
  * @property Payment[] $payments
  * @property bool $active
- * @property DateTime $next_charge_at
- * @property DateTime $created_at
- * @property DateTime $updated_at
+ * @property Carbon $next_charge_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property int $user_id
  * @property int $license_id
  */
@@ -68,6 +69,20 @@ class Subscription extends Model {
 	 */
 	public function getNextChargeDate() {
 		return $this->isPaymentDue() ? new DateTime('now') : $this->next_charge_at;
+	}
+
+	/**
+	 * @param DateTime $date
+	 *
+	 * @return boolean
+	 */
+	public function shouldTryPayment( $date ) {
+
+		if( $date instanceof DateTime ) {
+			$date = Carbon::instance( $date );
+		}
+		
+		return ( $this->next_charge_at->diffInDays( $date ) % 4 ) === 0;
 	}
 
 	/**
