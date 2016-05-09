@@ -38,15 +38,19 @@ class PluginController extends Controller {
 
 	/**
 	 * @param int $id
+	 * @param Request $request
 	 *
 	 * @return BinaryFileResponse
 	 */
-	public function download( $id ) {
+	public function download( $id, Request $request ) {
 		/** @var Plugin $plugin */
 		$plugin = Plugin::findOrFail($id);
 
+		// is a specific version specified? if not, use latest.
+		$version = preg_replace( '/[^0-9\.]/', "" , $request->input( 'version', '' ) );
+
 		$downloader = new PluginDownloader( $plugin );
-		$file = $downloader->download();
+		$file = $downloader->download( $version );
 		$filename = $plugin->slug . '.zip';
 
 		$response = new BinaryFileResponse( $file, 200 );
