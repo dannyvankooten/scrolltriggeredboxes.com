@@ -55,8 +55,8 @@ return [
 	*/
 
 	'from' => [
-		'address' => "support@scrolltriggeredboxes.com",
-		'name' => "Scroll Triggered Boxes"
+		'address' => "support@boxzillaplugin.com",
+		'name' => "Boxzilla Plugin"
 	],
 
 	/*

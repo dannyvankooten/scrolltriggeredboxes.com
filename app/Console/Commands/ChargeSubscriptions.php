@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\License;
+use App\Events\SubscriptionChargeFailed;
 use App\Services\Charger;
 use App\Subscription;
 use Illuminate\Console\Command;
@@ -11,6 +11,7 @@ use Exception;
 
 class ChargeSubscriptions extends Command
 {
+
     /**
      * The name and signature of the console command.
      *
@@ -50,21 +51,31 @@ class ChargeSubscriptions extends Command
     public function handle()
     {
         // find all subscriptions with a due payment
-        $today = new DateTime('today 00:00:00');
-        $subscriptions = Subscription::where('next_charge_at', '<', $today)
+        $todayEnd = new DateTime('today 23:59:59');
+
+        $subscriptions = Subscription::where('next_charge_at', '<', $todayEnd)
             ->where('active', 1)
             ->with(['license', 'user'])
             ->get();
 
+        if( empty( $subscriptions ) ) {
+            $this->info( 'No subscriptions with a payment due.' );
+        }
 
         // charge subscriptions
         foreach( $subscriptions as $subscription ) {
+
+            /** @var Subscription $subscription */
+            if( ! $subscription->shouldTryPayment( $todayEnd ) ) {
+                continue;
+            }
 
             // charge
             try {
                 $success = $this->charger->subscription( $subscription );
             } catch( Exception $e ) {
                 $this->error( sprintf( 'Charge for subscription #%d failed because of error: %s', $subscription->id, $e->getMessage() ) );
+                event(new SubscriptionChargeFailed($subscription));
                 continue;
             }
 

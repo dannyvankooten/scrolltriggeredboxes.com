@@ -11,14 +11,11 @@ class EventServiceProvider extends ServiceProvider {
 	 * @var array
 	 */
 	protected $listen = [
-		'App\Events\UserCreated' => [
-			'App\Listeners\Events\EmailUserCredentials',
-		],
 		'Illuminate\Auth\Events\Login' => [
 			'App\Listeners\UserLoginHandler',
 		],
-		'App\Events\LicenseCreated' => [
-			'App\Listeners\Events\PushNewLicenseNotification',
+		'App\Events\SubscriptionChargeFailed' => [
+			'App\Listeners\EmailFailedChargeNotification',
 		],
 	];
 
