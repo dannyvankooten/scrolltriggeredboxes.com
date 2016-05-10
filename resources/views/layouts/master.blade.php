@@ -66,6 +66,12 @@
                         </li>
                     </ul>
                 </nav>
+            @elseif(!Request::is('register'))
+                <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+                    <ul class="nav nav-inline">
+                        <li><a href="{{ domain_url( '/' ) }}">Back to main site</a></li>
+                    </ul>
+                </nav>
             @endif
         </div>
     </div>
