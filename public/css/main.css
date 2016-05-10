@@ -400,10 +400,10 @@ label {
 input[type="submit"],
 button,
 .button {
-  background: #5F4477;
+  background: #0073CC;
   padding: 8px 24px;
   display: inline-block;
-  border: 2px solid #5F4477;
+  border: 2px solid #0073CC;
   color: white;
   font-size: 16px;
   text-decoration: none;
@@ -425,20 +425,20 @@ button:hover,
 button:focus,
 .button:hover,
 .button:focus {
-  background: #4f3964;
-  border-color: #4f3964; }
+  background: #0062ad;
+  border-color: #0062ad; }
 
 input[type="submit"].button-secondary,
 .button-secondary {
-  background: #0073CC;
-  border: 2px solid #0073CC; }
+  background: #cc4444;
+  border: 2px solid #cc4444; }
 
 input[type="submit"].button-secondary:focus,
 input[type="submit"].button-secondary:hover,
 .button-secondary:focus,
 .button-secondary:hover {
-  background: #0062ad;
-  border-color: #0062ad; }
+  background: #be3434;
+  border-color: #be3434; }
 
 input[disabled],
 button[disabled] {
@@ -603,7 +603,7 @@ button[disabled] {
 
 .jumbotron {
   color: white;
-  background: #5F4477 url("../img/jumbotron.jpg");
+  background: #0073CC url("../img/jumbotron.jpg");
   background-size: cover; }
   .jumbotron h1, .jumbotron h2, .jumbotron h3, .jumbotron p {
     color: white;
@@ -676,7 +676,7 @@ body {
   box-sizing: border-box; }
 
 a {
-  color: #cc4444;
+  color: #0073CC;
   cursor: pointer; }
 
 h1, h2, h3, h4, h5, h6 {
@@ -715,7 +715,7 @@ img {
 
 .header {
   color: white;
-  background: #5F4477 url("../img/jumbotron.jpg");
+  background: #0073CC url("../img/jumbotron.jpg");
   background-size: cover;
   padding: 20px 0; }
   .header a {
@@ -812,7 +812,7 @@ button {
       padding: 4px 8px;
       min-width: 240px; }
       .dropdown .dropdown-menu li:hover {
-        background: #cc4444;
+        background: #0073CC;
         color: white; }
       .dropdown .dropdown-menu li a {
         display: block;

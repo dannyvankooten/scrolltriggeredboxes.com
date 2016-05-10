@@ -44,7 +44,7 @@
         <div class="container">
             <h2 class="site-title pull-left">
                 <a href="{{ url('/') }}">
-                    <img src="{{ asset('img/logo-text-white.png') }}" height="40" width="150" alt="boxzilla" />
+                    <img src="{{ asset('img/logo-text-white.png') }}" height="40" alt="boxzilla plugin logo" />
                 </a>
             </h2>
 
