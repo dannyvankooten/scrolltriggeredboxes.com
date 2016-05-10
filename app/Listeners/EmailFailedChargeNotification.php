@@ -41,7 +41,8 @@ class EmailFailedChargeNotification implements ShouldQueue
              */
            $email
                ->to( $user->email, $user->name )
-               ->subject( 'Boxzilla - Payment Failure' );
+               ->subject( 'Boxzilla Plugin - Payment Failure' );
         });
+
     }
 }
