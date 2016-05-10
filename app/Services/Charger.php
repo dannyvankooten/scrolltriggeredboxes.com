@@ -163,6 +163,15 @@ class Charger {
     }
 
     /**
+     * @param Subscription $subscription
+     * 
+     * @return boolean
+     */
+    public function chargable( Subscription $subscription ) {
+        return ! empty( $subscription->user->stripe_customer_id );
+    }
+
+    /**
      * @param array $data
      *
      * @return \Stripe\Customer

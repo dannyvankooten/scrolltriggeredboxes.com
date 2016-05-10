@@ -70,6 +70,10 @@ class ChargeSubscriptions extends Command
                 continue;
             }
 
+            if( ! $this->charger->chargable( $subscription ) ) {
+                continue;
+            }
+
             // charge
             try {
                 $success = $this->charger->subscription( $subscription );
