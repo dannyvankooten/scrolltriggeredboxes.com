@@ -10,7 +10,7 @@
     </div>
 
     <h1 class="page-title">Plugins</h1>
-    <p>The core Boxzilla plugin can be downloaded from WordPress.org <a href="https://wordpress.org/plugins/scroll-triggered-boxes/">here</a>.</p>
+    <p>You can <a href="https://boxzillaplugin.com/download/">download the core Boxzilla plugin here</a>.</p>
 
     @if($user->hasValidLicense())
     <p>Since you have a valid license, you have access to the following plugin downloads.</p>
