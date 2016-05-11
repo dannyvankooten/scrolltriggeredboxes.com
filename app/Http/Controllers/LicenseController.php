@@ -10,6 +10,7 @@ use App\User;
 use Exception;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -24,12 +25,20 @@ class LicenseController extends Controller {
 	protected $auth;
 
 	/**
+	 * @var Log
+	 */
+	protected $log;
+
+	/**
 	 * AccountController constructor.
 	 *
 	 * @param Guard $auth
+	 * @param Log $log
 	 */
-	public function __construct( Guard $auth ) {
+	public function __construct( Guard $auth, Log $log  ) {
 		$this->auth = $auth;
+		$this->log = $log;
+
 		$this->middleware('auth.user');
 	}
 
@@ -55,7 +64,6 @@ class LicenseController extends Controller {
 
 		/** @var User $user */
 		$user = $this->auth->user();
-
 		$quantity = (int) $request->input('quantity', 1);
 		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
 
@@ -66,6 +74,8 @@ class LicenseController extends Controller {
 			$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
 			return $redirector->back()->with('error', $errorMessage );
 		}
+
+		$this->log->info( sprintf( 'New license key for %s (per %s, %d activations)', $user->email, $interval, $quantity ) );
 
 		return $redirector
 			->to('/licenses/' . $license->id )
@@ -79,7 +89,10 @@ class LicenseController extends Controller {
 	 * @return \Illuminate\View\View
 	 */
 	public function details($id) {
+		/** @var License $license */
 		$license = License::with(['activations', 'subscription'])->findOrFail($id);
+		
+		/** @var User $user */
 		$user = $this->auth->user();
 
 		// check if license belongs to user

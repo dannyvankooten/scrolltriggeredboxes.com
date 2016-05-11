@@ -10,6 +10,7 @@ use App\User;
 
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
@@ -23,12 +24,20 @@ class AccountController extends Controller {
 	protected $auth;
 
 	/**
+	 * @var Log
+	 */
+	protected $log;
+
+	/**
 	 * AccountController constructor.
 	 *
 	 * @param Guard $auth
+	 * @param Log $log
 	 */
-	public function __construct( Guard $auth ) {
+	public function __construct( Guard $auth, Log $log ) {
 		$this->auth = $auth;
+		$this->log = $log;
+
 		$this->middleware('auth.user', [ 'except' => [ 'register', 'create' ] ]);
 		$this->middleware('guest', [ 'only' => [ 'register', 'create' ] ]);
 	}
@@ -196,12 +205,14 @@ class AccountController extends Controller {
 
 		// create customer in Stripe
 		$purchaser->user($user, $request->input('payment_token'));
+		$this->log->info( sprintf( 'New user registration: #%d  %s <%s>', $user->id, $user->name, $user->email ) );
 
 		// proceed with charge
 		$quantity = (int) $request->input('quantity', 1);
-		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
-		$purchaser->license($user, $quantity, $interval);
+		$interval = $request->input('interval', 'year') == 'month' ? 'month' : 'year';
+		$license = $purchaser->license($user, $quantity, $interval);
+		$this->log->info( sprintf( 'New license key for %s (per %s, %d activations)', $user->email, $interval, $quantity ) );
 		
-		return $redirector->to('/')->with('message', "You're all set!");
+		return $redirector->to('/')->with('message', "Success! You can now download the premium add-ons & be on your way.");
 	}
 }
