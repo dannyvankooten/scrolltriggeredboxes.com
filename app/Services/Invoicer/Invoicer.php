@@ -65,9 +65,6 @@ class Invoicer {
             'email' => $user->email,
         ];
 
-        // filter empty values
-        $contact = array_filter( $contact );
-
         if( ! empty( $user->moneybird_contact_id ) ) {
             $this->moneybird->updateContact( $user->moneybird_contact_id, $contact );
         } else {
