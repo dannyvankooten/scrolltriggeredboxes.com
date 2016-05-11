@@ -1,7 +1,6 @@
 @media(max-width: 680px) {
   .break-on-mobile {
-    float: none;
-    margin-bottom: 20px;
+    float: none !important;
     display: table;
   }
 
@@ -13,6 +12,11 @@
     max-width: 50%;
     height: auto;
   }
+
+  .bottom-margin-on-mobile {
+    margin-bottom: 20px !important;
+  }
+
 }
 
 @media( min-width: 680px ) {

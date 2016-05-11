@@ -56,14 +56,6 @@ img{
   max-width: 100%;
 }
 
-code {
-  padding: 2px 4px;
-  font-size: 90%;
-  color: #c7254e;
-  background-color: #f9f2f4;
-  border-radius: 4px;
-}
-
 .site-title,
 .site-title a{
   color: white;
@@ -132,8 +124,8 @@ code {
 
 .nav a {
   padding: 3px;
+  display: inline-block;
 }
-
 
 .main-container p,
 .main-container table,

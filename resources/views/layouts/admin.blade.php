@@ -23,12 +23,12 @@
 
 <div class="header clearfix">
     <div class="container">
-        <h2 class="site-title pull-left">
+        <h2 class="site-title pull-left break-on-mobile bottom-margin-on-mobile">
             <a href="{{ url('/') }}">
                 <img src="{{ asset('img/logo-text-white.png') }}" height="40" alt="boxzilla" />
             </a>
         </h2>
-        <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+        <nav class="header-nav pull-right break-on-mobile" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
             <ul class="nav nav-inline">
                 <li role="presentation"><a href="/users">Users</a></li>
                 <li role="presentation"><a href="/licenses">Licenses</a></li>

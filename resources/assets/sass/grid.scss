@@ -1,23 +1,24 @@
-.row {
-  margin-left: -20px;
-  margin-right: -20px;
-}
+@media(min-width: 520px) {
+  .row {
+    margin-left: -20px;
+    margin-right: -20px;
+  }
 
-.col {
-  float: left;
-  padding-left: 20px;
-  padding-right: 20px;
-}
+  .col {
+    float: left;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 
-.col-1 {
-  width: 25%;
-}
+  .col-1 {
+    width: 25%;
+  }
 
-.col-2 {
-  width: 50%;
-}
+  .col-2 {
+    width: 50%;
+  }
 
-.col-3 {
-  width: 75%;
+  .col-3 {
+    width: 75%;
+  }
 }
-
