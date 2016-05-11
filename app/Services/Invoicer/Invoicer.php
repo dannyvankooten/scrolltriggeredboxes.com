@@ -66,11 +66,13 @@ class Invoicer {
         ];
 
         if( ! empty( $user->moneybird_contact_id ) ) {
-            $this->moneybird->updateContact( $user->moneybird_contact_id, $contact );
+            $data = $this->moneybird->updateContact( $user->moneybird_contact_id, $contact );
         } else {
             $data = $this->moneybird->createContact( $contact );
-            $user->moneybird_contact_id = $data->id;
         }
+
+        $user->moneybird_contact_id = $data->id;
+        $user->save();
 
         return $user;
     }

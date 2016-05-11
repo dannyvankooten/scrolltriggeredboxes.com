@@ -3,6 +3,7 @@
 namespace App\Services\Invoicer;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class Moneybird {
 
@@ -46,8 +47,21 @@ class Moneybird {
      * @param array $data
      * @return object
      */
-    public function updateContact( $id, array $data ) {
-        return $this->request( 'PATCH', 'contacts/'.$id, [ 'contact' => $data ]);
+    public function updateContact( $id, array $data )
+    {
+        try {
+            $response = $this->request('PATCH', 'contacts/' . $id, ['contact' => $data]);
+        } catch( ClientException $e ) {
+
+            // if 404, just create new contact
+            if( $e->getCode() == 404 ) {
+                return $this->createContact($data);
+            }
+
+            throw $e;
+        }
+
+        return $response;
     }
 
     /**
