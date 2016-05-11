@@ -30,11 +30,13 @@ class Purchaser {
 
     /**
      * @param User $user
+     * @return User
      */
     public function user( User $user, $paymentToken )
     {
         $this->charger->customer($user, $paymentToken );
         $user->save();
+        return $user;
     }
 
     /**
