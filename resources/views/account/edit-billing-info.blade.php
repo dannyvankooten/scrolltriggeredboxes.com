@@ -37,6 +37,7 @@
             <div class="form-group">
                 <label>Country <span class="big red">*</span></label>
                 <select name="user[country]" id="country-input">
+                    <option value="" disabled>Select a country..</option>
                     @foreach(Countries::all() as $code => $country)
                         <option value="{{ $code }}"
                                 @if($user->country == $code) selected="selected" @endif>{{ $country }}</option>
