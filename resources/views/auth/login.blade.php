@@ -6,9 +6,8 @@
 
     <div class="container">
 
-        <h1 class="page-title">Login to your account</h1>
-
-        <p>The account area is where you manage your licenses and download all premium add-on plugins.</p>
+        <h1 class="page-title">Log in to your account</h1>
+        <p>Please log in to manage your downloads, licenses and account info.</p>
 
         @include('partials.form-messages')
 
