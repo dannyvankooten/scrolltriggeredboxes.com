@@ -99,9 +99,10 @@
         <div class="container">
 
             <ul class="small-margin nav nav-inline">
+                <li><a href="{{ url('/') }}">Account</a></li>
                 <li><a href="{{ domain_url('/about') }}">About</a></li>
-                <li><a href="{{ domain_url('/refund-policy') }}">Refund Policy</a></li>
-                <li><a href="{{ domain_url('/kb') }}">Documentation</a></li>
+                <li><a href="{{ domain_url('/terms') }}">Terms</a></li>
+                <li><a href="{{ domain_url('/', 'kb') }}">Documentation</a></li>
                 <li><a href="{{ domain_url('/contact') }}">Contact</a></li>
             </ul>
 
