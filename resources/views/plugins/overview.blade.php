@@ -33,7 +33,7 @@
         </tbody>
     </table>
 
-    <p>If you need help installing a plugin, please have a look at the <a href="http://scrolltriggeredboxes.readme.io/v1.0/docs/installing-add-on-plugins">installation instructions</a>.</p>
+    <p>If you need help installing a plugin, please have a look at the <a href="https://kb.boxzillaplugin.com/installing-add-on-plugins/">installation instructions</a>.</p>
     @else
     <p>It seems you have no valid license. Please <a href="{{ domain_url('/pricing') }}">purchase one of the premium plans in order to get access to the premium add-on plugins</a>.</p>
     @endif
