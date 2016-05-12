@@ -1,51 +1,55 @@
 <?php
 
-$domain = config('app.domain');
+/** @var Illuminate\Routing\Router $router */
 
-Route::group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['web']], function () {
+$domain = config('app.domain');
+$router->group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['web']], function () use( $router ) {
 
 	// auth
-	$this->get('/login', 'Auth\AuthController@showLoginForm');
-	$this->post('/login', 'Auth\AuthController@login');
-	$this->get('/logout', 'Auth\AuthController@logout');
+	$router->get('/login', 'Auth\AuthController@showLoginForm');
+	$router->post('/login', 'Auth\AuthController@login');
+	$router->get('/logout', 'Auth\AuthController@logout');
 
 	// checkout
-	Route::get( '/register', 'AccountController@register' );
-	Route::post( '/register', 'AccountController@create' );
+	$router->get( '/register', 'AccountController@register' );
+	$router->post( '/register', 'AccountController@create' );
 
 	// account
-	Route::get( '/', 'AccountController@overview' );
-
-
-	Route::get( '/edit', 'AccountController@editCredentials' );
-	Route::post( '/edit', 'AccountController@updateCredentials' );
-	Route::get( '/edit/billing', 'AccountController@editBillingInfo' );
-	Route::post( '/edit/billing', 'AccountController@updateBillingInfo' );
-	Route::get( '/edit/payment', 'AccountController@editPaymentMethod' );
-	Route::post( '/edit/payment', 'AccountController@updatePaymentMethod' );
+	$router->get( '/', 'AccountController@overview' );
+	$router->get( '/welcome', 'AccountController@welcome' );
+	$router->get( '/edit', 'AccountController@editCredentials' );
+	$router->post( '/edit', 'AccountController@updateCredentials' );
+	$router->get( '/edit/billing', 'AccountController@editBillingInfo' );
+	$router->post( '/edit/billing', 'AccountController@updateBillingInfo' );
+	$router->get( '/edit/payment', 'AccountController@editPaymentMethod' );
+	$router->post( '/edit/payment', 'AccountController@updatePaymentMethod' );
 
 	// licenses
-	Route::get('/licenses', 'LicenseController@overview');
-	Route::get('/licenses/new', 'LicenseController@create' );
-	Route::post('/licenses/new', 'LicenseController@store' );
-	Route::get('/licenses/{id}', 'LicenseController@details' );
-	Route::post('/licenses/{id}', 'LicenseController@update' );
+	$router->get('/licenses', 'LicenseController@overview');
+	$router->get('/licenses/new', 'LicenseController@create' );
+	$router->post('/licenses/new', 'LicenseController@store' );
+	$router->get('/licenses/{id}', 'LicenseController@details' );
+	$router->post('/licenses/{id}', 'LicenseController@update' );
 
 	// plugins
-	Route::get('/plugins', 'PluginController@overview' );
-	Route::get('/plugins/{id}/download', 'PluginController@download' )->name('plugins_download');
+	$router->get('/plugins', 'PluginController@overview' );
+	$router->get('/plugins/{id}/download', 'PluginController@download' )->name('plugins_download');
 
-	Route::get('/payments', 'PaymentController@overview' );
-	Route::get('/payments/{id}/invoice', 'PaymentController@invoice' );
+	$router->get('/payments', 'PaymentController@overview' );
+	$router->get('/payments/{id}/invoice', 'PaymentController@invoice' );
 	
 	// TODO: allow login out a license from the account page
-	//Route::delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
+	//$router->delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
 
 	// auth
-	Route::controller( 'password', 'Auth\PasswordController' );
+	$router->get('/password/reset', 'Auth\PasswordController@getReset');
+	$router->post('/password/reset', 'Auth\PasswordController@postReset');
+	$router->get('/password/email', 'Auth\PasswordController@getEmail');
+	$router->post('/password/email', 'Auth\PasswordController@postEmail');
+	//$router->controller( 'password', 'Auth\PasswordController' );
 
 	// redirects
-	Route::get( '/kb', function () {
+	$router->get( '/kb', function () {
 		return redirect( 'http://scrolltriggeredboxes.readme.io/v1.0' );
 	} );
 
@@ -54,31 +58,31 @@ Route::group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['we
 });
 
 // API url's
-Route::group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', 'namespace' => 'API\\v1', 'middleware' => ['api'] ], function () {
+$router->group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', 'namespace' => 'API\\v1', 'middleware' => ['api'] ], function () use( $router ) {
 
-	Route::post( '/license/activations', 'LicenseController@create' );
-	Route::delete( '/license/activations', 'LicenseController@delete' );
+	$router->post( '/license/activations', 'LicenseController@create' );
+	$router->delete( '/license/activations', 'LicenseController@delete' );
 
-	Route::get( '/plugins', 'PluginController@index' );
-	Route::get( '/plugins/{id}', 'PluginController@get' );
-	Route::get( '/plugins/{id}/download', 'PluginController@download' );
+	$router->get( '/plugins', 'PluginController@index' );
+	$router->get( '/plugins/{id}', 'PluginController@get' );
+	$router->get( '/plugins/{id}/download', 'PluginController@download' );
 
-	Route::any( '/helpscout', 'HelpScoutController@get' );
+	$router->any( '/helpscout', 'HelpScoutController@get' );
 } );
 
 // Admin url's
-Route::group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['admin'] ], function () {
-	Route::get( '/', function() {
+$router->group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['admin'] ], function () use( $router ) {
+	$router->get( '/', function() {
 		return redirect( '/licenses' );
 	} );
 
-	Route::get( '/users', 'Admin\UserController@overview' );
-	Route::get( '/users/{id}', 'Admin\UserController@detail' );
+	$router->get( '/users', 'Admin\UserController@overview' );
+	$router->get( '/users/{id}', 'Admin\UserController@detail' );
 
-	Route::get( '/licenses', 'Admin\LicenseController@overview' );
-	Route::get( '/licenses/{id}', 'Admin\LicenseController@detail' );
+	$router->get( '/licenses', 'Admin\LicenseController@overview' );
+	$router->get( '/licenses/{id}', 'Admin\LicenseController@detail' );
 
-	Route::post( '/subscriptions/{id}', 'Admin\SubscriptionController@update' );
+	$router->post( '/subscriptions/{id}', 'Admin\SubscriptionController@update' );
 
-	Route::delete( '/payments/{id}', 'Admin\PaymentController@delete' );
+	$router->delete( '/payments/{id}', 'Admin\PaymentController@delete' );
 });
