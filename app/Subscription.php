@@ -17,6 +17,7 @@ use DateTime;
  * @property Carbon $next_charge_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property double $amount
  * @property int $user_id
  * @property int $license_id
  */

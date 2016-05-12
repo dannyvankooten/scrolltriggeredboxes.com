@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @package App
  *
  * @property int $id
+ * @property string $license_key
  * @property User $user
  * @property Activation[] $activations
  * @property Subscription $subscription
