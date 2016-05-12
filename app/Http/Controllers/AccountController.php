@@ -7,6 +7,7 @@ use App\Jobs\UpdateStripeCustomer;
 use App\Services\Charger;
 use App\Services\Purchaser;
 use App\User;
+use Exception;
 
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Auth\Guard;
@@ -210,7 +211,15 @@ class AccountController extends Controller {
 		// proceed with charge
 		$quantity = (int) $request->input('quantity', 1);
 		$interval = $request->input('interval', 'year') == 'month' ? 'month' : 'year';
-		$license = $purchaser->license($user, $quantity, $interval);
+
+		try {
+			$license = $purchaser->license($user, $quantity, $interval);
+		} catch( Exception $e ) {
+			$errorMessage = $e->getMessage();
+			$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
+			return $redirector->to('/')->with('error', $errorMessage );
+		}
+
 		$this->log->info( sprintf( 'New license key for %s (per %s, %d activations)', $user->email, $interval, $quantity ) );
 		
 		return $redirector->to('/')->with('message', "Success! You can now download the premium add-ons & be on your way.");
