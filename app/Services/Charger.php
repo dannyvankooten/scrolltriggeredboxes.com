@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use InvalidArgumentException;
 use App\Jobs\CreatePaymentCreditInvoice;
 use App\Jobs\CreatePaymentInvoice;
-use App\Services\Exceptions\ChargeException;
 use App\User;
 use App\Subscription;
 use App\Payment;
@@ -49,27 +49,30 @@ class Charger {
             $customerData['business_vat_id'] = $user->vat_number;
         }
 
-        // add address info if we have it
-        if( count( array_filter([ $user->address, $user->city, $user->country ]) ) === 3 ) {
-            $customerData['shipping'] = [
-                'name' => $user->name,
-                'address' => [
-                    'line1' => $user->address,
-                    'postal_code' => $user->zip,
-                    'city' => $user->city,
-                    'state' => $user->state,
-                    'country' => $user->country
-                ]
-            ];
-        }
-
-        if( ! empty( $token ) ) {
-            $customerData['source'] = $token;
-        }
+//        // add address info if we have it
+//        if( count( array_filter([ $user->address, $user->city, $user->country ]) ) === 3 ) {
+//            $customerData['shipping'] = [
+//                'name' => $user->name,
+//                'address' => [
+//                    'line1' => $user->address,
+//                    'postal_code' => $user->zip,
+//                    'city' => $user->city,
+//                    'state' => $user->state,
+//                    'country' => $user->country
+//                ]
+//            ];
+//        }
 
         if( $user->stripe_customer_id ) {
             $customer = $this->updateCustomer( $user->stripe_customer_id, $customerData );
         } else {
+
+            // token is required for new customers
+            if( empty( $token ) ) {
+                throw new InvalidArgumentException( 'Invalid card details.' );
+            }
+
+            $customerData['source'] = $token;
             $customer = $this->createCustomer( $customerData );
         }
 
