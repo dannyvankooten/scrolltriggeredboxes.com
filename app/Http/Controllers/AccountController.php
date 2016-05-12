@@ -150,7 +150,13 @@ class AccountController extends Controller {
 		]);
 
 		$user->card_last_four = $request->input('user.card_last_four');
-		$user = $charger->customer($user, $request->input('payment_token'));
+
+		try {
+			$user = $charger->customer($user, $request->input('payment_token'));
+		} catch( Exception $e ) {
+			$errorMessage = $e->getMessage();
+			return $redirector->back()->with('error', $errorMessage );
+		}
 
 		$user->save();
 
@@ -204,15 +210,15 @@ class AccountController extends Controller {
 		// log user in automatically
 		$this->auth->loginUsingId($user->id);
 
-		// create customer in Stripe
-		$purchaser->user($user, $request->input('payment_token'));
-		$this->log->info( sprintf( 'New user registration: #%d  %s <%s>', $user->id, $user->name, $user->email ) );
-
-		// proceed with charge
-		$quantity = (int) $request->input('quantity', 1);
-		$interval = $request->input('interval', 'year') == 'month' ? 'month' : 'year';
-
 		try {
+			// create customer in Stripe
+			$purchaser->user($user, $request->input('payment_token'));
+			$this->log->info( sprintf( 'New user registration: #%d  %s <%s>', $user->id, $user->name, $user->email ) );
+
+			// proceed with charge
+			$quantity = (int) $request->input('quantity', 1);
+			$interval = $request->input('interval', 'year') == 'month' ? 'month' : 'year';
+
 			$license = $purchaser->license($user, $quantity, $interval);
 		} catch( Exception $e ) {
 			$errorMessage = $e->getMessage();

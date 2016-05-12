@@ -36,7 +36,7 @@ class Purchaser {
      */
     public function user( User $user, $paymentToken )
     {
-        $this->charger->customer($user, $paymentToken );
+        $user = $this->charger->customer($user, $paymentToken );
         $user->save();
         return $user;
     }
