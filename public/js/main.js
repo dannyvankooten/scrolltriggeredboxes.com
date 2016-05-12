@@ -307,9 +307,10 @@ helpers.isCountryInEurope = function (country) {
 
 helpers.calculatePrice = function (amount, interval) {
     var isYearly = interval === 'year';
-    var price = isYearly ? 60 : 6;
-    var total = amount * price;
-    total = price + (amount - 1) * price * 0.5;
+    var basePrice = isYearly ? 40 : 4;
+    var unitPrice = 0.5 * basePrice;
+    var total = basePrice + amount * unitPrice;
+    total = total.toFixed(2);
 
     var elements = document.querySelectorAll('.price');
     [].forEach.call(elements, function (el) {

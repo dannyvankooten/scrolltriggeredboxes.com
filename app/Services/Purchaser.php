@@ -40,6 +40,20 @@ class Purchaser {
     }
 
     /**
+     * @param float $quantity
+     * @param float $interval
+     *
+     * @return int
+     */
+    public function calculatePrice( $quantity, $interval ) {
+        $base_price = $interval == 'month' ? 4 : 40;
+        $unit_price = 0.5 * $base_price;
+        $amount = $base_price + ( $unit_price * $quantity );
+        $amount = round( $amount, 2 );
+        return $amount;
+    }
+
+    /**
      * @param User $user
      * @param $quantity
      * @param $interval
@@ -48,14 +62,7 @@ class Purchaser {
      */
     public function license( User $user, $quantity, $interval )
     {
-        $discount_percentage = $quantity > 5 ? 30 : $quantity > 1 ? 20 : 0;
-        $item_price = $interval == 'month' ? 5 : 50;
-
-        // calculate amount based on number of activations & discount
-        $amount = $item_price * $quantity;
-        if( $discount_percentage > 0 ) {
-            $amount = $amount * ( ( 100 - $discount_percentage ) / 100 );
-        }
+        $amount = $this->calculatePrice( $quantity, $interval );
 
         // First, create license.
         $license = new License();
