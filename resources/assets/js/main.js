@@ -20,7 +20,7 @@ var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
         event.preventDefault();
 
         // soft-validate credit card
-        var creditCardNumber = form.querySelector('[data-stripe="number"]').value;
+        var creditCardNumber = form.querySelector('[data-stripe="number"]').value.trim();
         if( ! Stripe.card.validateCardNumber(creditCardNumber) ) {
             helpers.showFormError(form, "That credit card number doesn't seem right, sorry.");
             return false;
@@ -28,8 +28,8 @@ var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
 
         // validate cvc
         var exp = {
-            month: form.querySelector('[data-stripe="exp_month"]').value,
-            year: form.querySelector('[data-stripe="exp_year"]').value
+            month: form.querySelector('[data-stripe="exp_month"]').value.trim(),
+            year: form.querySelector('[data-stripe="exp_year"]').value.trim()
         };
         if( ! Stripe.card.validateExpiry(exp.month, exp.year) ) {
             helpers.showFormError(form, "That expiration date doesn't seem right, sorry.");
