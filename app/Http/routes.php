@@ -42,7 +42,7 @@ $router->group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['
 	//$router->delete('/account/licenses/{license_id}/activations/{activation_id}', 'AccountController@deleteActivation');
 
 	// auth
-	$router->get('/password/reset', 'Auth\PasswordController@getReset');
+	$router->get('/password/reset/{token}', 'Auth\PasswordController@getReset');
 	$router->post('/password/reset', 'Auth\PasswordController@postReset');
 	$router->get('/password/email', 'Auth\PasswordController@getEmail');
 	$router->post('/password/email', 'Auth\PasswordController@postEmail');
