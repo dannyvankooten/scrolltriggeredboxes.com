@@ -57,7 +57,7 @@
                 <tr>
                     <th>Payment</th>
                     <td>
-                        You will be charged <strong>${{ $license->subscription->amount + 0 }}</strong> on <strong>{{ $license->subscription->getNextChargeDate()->format('m/d/Y') }}</strong>.
+                        You will be charged <strong>${{ $license->subscription->getAmountInclTax() + 0 }}</strong> on <strong>{{ $license->subscription->getNextChargeDate()->format('m/d/Y') }}</strong>.
                     </td>
                     <td class="row-action">
                         @if( $license->subscription->isPaymentDue() )

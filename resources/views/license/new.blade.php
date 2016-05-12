@@ -37,7 +37,11 @@
                 <label class="unstyled"><input type="radio" name="interval" value="year" @if( old('interval', 'month') == 'year' ) checked @endif> Yearly</label>
             </div>
 
-            <p>Your card ending in <strong>{{ Auth::user()->card_last_four }}</strong> (<a href="/edit/payment">edit</a>) will be charged <span class="price strong">$6 per month</span>.</p>
+            <p>
+                Your card ending in <strong>{{ Auth::user()->card_last_four }}</strong> (<a href="/edit/payment">edit</a>) will be charged <span class="price strong">$6 per month</span>
+                @if(Auth::user()->getTaxRate() > 0) <span>(excl. {{ Auth::user()->getTaxRate() }}% tax)</span> @endif
+                .
+            </p>
 
             <div class="form-group">
                 <input type="submit" value="Purchase" class="btn btn-primary">

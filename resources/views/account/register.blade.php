@@ -35,7 +35,7 @@
                 <label class="unstyled"><input type="radio" name="interval" value="year" {{ old('interval', request('interval')) === 'year' ? 'checked' : '' }}> Yearly <small class="muted">(2 free months)</small></label>
             </div>
 
-            <p>You will be charged <span class="price strong">$6 per month</span>.</p>
+            <p>You will be charged <span class="price strong">$6 per month</span> <span class="europe-only">(excl. tax, if applicable)</span>.</p>
 
         </div>
         <!-- / Step -->
