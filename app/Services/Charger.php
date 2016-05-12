@@ -111,6 +111,50 @@ class Charger {
     }
 
     /**
+     * @param User $user
+     * @param double $amount
+     *
+     * @return object
+     */
+    public function charge( User $user, $amount, $metadata = array() ) {
+
+        // add tax
+        $taxRate = $user->getTaxRate();
+        $tax = 0.00;
+        if( $taxRate > 0 ) {
+            $tax = $amount * ( $taxRate / 100 );
+            $amount = $amount + $tax;
+        }
+
+        // calculate amount in cents
+        $amountInCents = $amount * 100;
+
+        $data = [
+            "amount" => $amountInCents,
+            "currency" => "USD",
+            "customer" => $user->stripe_customer_id,
+        ];
+
+        if( ! empty( $metadata ) ) {
+            $data['metadata'] = $metadata;
+        }
+
+        $charge = \Stripe\Charge::create($data);
+
+        $payment = new Payment();
+        $payment->user_id = $user->id;
+        $payment->subtotal = $amount;
+        $payment->tax = $tax;
+        $payment->stripe_id = $charge->id;
+        $payment->save();
+
+        // dispatch job to create an invoice for this payment
+        $this->dispatch(new CreatePaymentInvoice($payment));
+
+        return $payment;
+    }
+
+    /**
      * Charge a subscription
      *
      * @param Subscription $subscription
@@ -125,25 +169,9 @@ class Charger {
         $today = new DateTime("now");
         $intervalString = "+1 {$subscription->interval}";
 
-        // calculate amount in cents
-        $amountInCents = $subscription->getAmountInclTax() * 100;
-
-        $charge = \Stripe\Charge::create([
-            "amount" => $amountInCents,
-            "currency" => "USD",
-            "customer" => $user->stripe_customer_id,
-            "metadata" => array(
-                "subscription_id" => $subscription->id
-            )
-        ]);
-
-        $payment = new Payment();
-        $payment->user_id = $user->id;
-        $payment->subscription_id = $subscription->id;
-        $payment->subtotal = $subscription->getAmount();
-        $payment->tax = $subscription->getTaxAmount();
-        $payment->stripe_id = $charge->id;
-        $payment->save();
+        $this->charge( $user, $subscription->getAmount(), array(
+            "subscription_id" => $subscription->id
+        ));
 
         // success! extend license
         $license = $subscription->license;
@@ -155,9 +183,6 @@ class Charger {
         // set new charge date
         $subscription->next_charge_at = $license->expires_at->modify('-1 week');
         $subscription->save();
-
-        // dispatch job to create an invoice for this payment
-        $this->dispatch(new CreatePaymentInvoice($payment));
 
         return true;
     }

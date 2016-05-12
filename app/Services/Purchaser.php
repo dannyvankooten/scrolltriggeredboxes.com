@@ -30,6 +30,8 @@ class Purchaser {
 
     /**
      * @param User $user
+     * @param string $paymentToken
+     *
      * @return User
      */
     public function user( User $user, $paymentToken )
@@ -62,29 +64,34 @@ class Purchaser {
      */
     public function license( User $user, $quantity, $interval )
     {
+        // subtotal
         $amount = $this->calculatePrice( $quantity, $interval );
 
-        // First, create license.
+        // charge user
+        $payment = $this->charger->charge( $user, $amount );
+
+        // Create license.
         $license = new License();
         $license->license_key = License::generateKey();
-        $license->user()->associate( $user );
+        $license->user_id = $user->id;
         $license->site_limit = $quantity;
-        $license->expires_at = new DateTime("now");
+        $license->expires_at = new DateTime("+1 $interval");
         $license->save();
 
-        // Then, create subscription
+        // Create subscription
         $subscription = new Subscription([
             'interval' => $interval,
             'active' => 1,
             'next_charge_at' => new DateTime("now")
         ]);
         $subscription->amount = $amount;
-        $subscription->license()->associate( $license );
-        $subscription->user()->associate( $user );
+        $subscription->license_id = $license->id;
+        $subscription->user_id = $user->id;
         $subscription->save();
 
-        // finally, charge subscription so that license starts
-        $this->charger->subscription( $subscription );
+        // Attach payment to subscription
+        $payment->subscription_id = $subscription->id;
+        $payment->save();
 
         // dispatch job to send license details over email
         $this->dispatch( new EmailLicenseDetails( $license ) );
