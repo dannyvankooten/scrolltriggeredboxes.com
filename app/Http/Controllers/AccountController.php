@@ -15,6 +15,7 @@ use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
+use Illuminate\View\View;
 
 
 class AccountController extends Controller {
@@ -173,10 +174,20 @@ class AccountController extends Controller {
 	}
 
 	/**
-	 *
+	 * @return View
 	 */
 	public function register() {
 		return view('account.register');
+	}
+
+	/**
+	 * @return View
+	 */
+	public function welcome() {
+		/** @var User $user */
+		$user = $this->auth->user();
+		$license = $user->licenses->last();
+		return view('account.welcome', [ 'user' => $user, 'license' => $license ]);
 	}
 
 	/**
@@ -228,6 +239,6 @@ class AccountController extends Controller {
 
 		$this->log->info( sprintf( 'New license key for %s (per %s, %d activations)', $user->email, $interval, $quantity ) );
 		
-		return $redirector->to('/')->with('message', "Success! You can now download the premium add-ons & be on your way.");
+		return $redirector->to('/welcome')->with('message', "Success. You're in!");
 	}
 }
