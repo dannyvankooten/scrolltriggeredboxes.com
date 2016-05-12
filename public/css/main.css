@@ -809,7 +809,8 @@ button {
     top: 100%;
     background: #fff;
     border: 1px solid #eee;
-    border-radius: 3px; }
+    border-radius: 3px;
+    z-index: 999; }
     .dropdown .dropdown-menu li {
       display: block;
       margin: 0;
