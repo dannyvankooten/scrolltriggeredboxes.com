@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Jobs\CreatePaymentCreditInvoice;
 use App\Jobs\CreatePaymentInvoice;
+use App\Services\Exceptions\ChargeException;
 use App\User;
 use App\Subscription;
 use App\Payment;
-
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Stripe\Error\InvalidRequest;
@@ -113,10 +113,17 @@ class Charger {
     /**
      * @param User $user
      * @param double $amount
+     * @param array $metadata
      *
      * @return object
+     *
+     * @throws Exception
      */
     public function charge( User $user, $amount, $metadata = array() ) {
+
+        if( empty( $user->stripe_customer_id ) ) {
+            throw new Exception( "Invalid payment method.");
+        }
 
         // add tax
         $taxRate = $user->getTaxRate();
