@@ -401,10 +401,15 @@ var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
     input.addEventListener('change', function () {
         helpers.toggleElements(europeElements, helpers.isCountryInEurope(this.value));
     });
+
+    helpers.toggleElements(europeElements, helpers.isCountryInEurope(input.value));
 });
 
 [].forEach.call(pricingForms, function (form) {
     form.addEventListener('change', function () {
+        helpers.calculatePrice(this.quantity.value, this.interval.value);
+    });
+    form.addEventListener('keyup', function () {
         helpers.calculatePrice(this.quantity.value, this.interval.value);
     });
 
