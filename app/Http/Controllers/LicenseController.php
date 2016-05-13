@@ -63,6 +63,10 @@ class LicenseController extends Controller {
 	 */
 	public function store( Request $request, Purchaser $purchaser, Redirector $redirector  ) {
 
+		$this->validate( $request, [
+			'quantity' => 'min:1'
+		]);
+
 		/** @var User $user */
 		$user = $this->auth->user();
 		$quantity = (int) $request->input('quantity', 1);
