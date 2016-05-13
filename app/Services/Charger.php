@@ -63,16 +63,18 @@ class Charger {
 //            ];
 //        }
 
+        if( $token ) {
+            $customerData['source'] = $token;
+        }
+
         if( $user->stripe_customer_id ) {
             $customer = $this->updateCustomer( $user->stripe_customer_id, $customerData );
         } else {
-
             // token is required for new customers
-            if( empty( $token ) ) {
+            if( empty(  $customerData['source'] ) ) {
                 throw new InvalidArgumentException( 'Invalid card details.' );
             }
 
-            $customerData['source'] = $token;
             $customer = $this->createCustomer( $customerData );
         }
 
