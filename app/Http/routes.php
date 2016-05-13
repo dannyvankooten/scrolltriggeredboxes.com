@@ -46,14 +46,6 @@ $router->group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['
 	$router->post('/password/reset', 'Auth\PasswordController@postReset');
 	$router->get('/password/email', 'Auth\PasswordController@getEmail');
 	$router->post('/password/email', 'Auth\PasswordController@postEmail');
-	//$router->controller( 'password', 'Auth\PasswordController' );
-
-	// redirects
-	$router->get( '/kb', function () {
-		return redirect( 'http://scrolltriggeredboxes.readme.io/v1.0' );
-	} );
-
-
 
 });
 
@@ -72,6 +64,7 @@ $router->group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', '
 
 // Admin url's
 $router->group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['admin'] ], function () use( $router ) {
+
 	$router->get( '/', function() {
 		return redirect( '/licenses' );
 	} );
