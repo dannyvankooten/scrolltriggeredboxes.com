@@ -150,8 +150,6 @@ class AccountController extends Controller {
 			'payment_token' => 'required'
 		]);
 
-		$user->card_last_four = $request->input('user.card_last_four');
-
 		try {
 			$user = $charger->customer($user, $request->input('payment_token'));
 		} catch( Exception $e ) {
@@ -159,6 +157,7 @@ class AccountController extends Controller {
 			return $redirector->back()->with('error', $errorMessage );
 		}
 
+		$user->card_last_four = $request->input('user.card_last_four');
 		$user->save();
 
 		return $redirector->back()->with('message', 'Changes saved!');
@@ -205,7 +204,7 @@ class AccountController extends Controller {
 			'user.email' 		=> 'required|email|unique:users,email',
 			'user.country' 		=> 'required',
 			'user.vat_number' 	=> 'sometimes|vat_number',
-			'password' 			=> 'required|confirmed|between:6,60',
+			'password' 			=> 'required|confirmed|min:6',
 			'payment_token' 	=> 'required',
 		], array(
 			'email' => 'Please enter a valid email address.',
@@ -234,7 +233,7 @@ class AccountController extends Controller {
 		} catch( Exception $e ) {
 			$errorMessage = $e->getMessage();
 			$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
-			return $redirector->to('/')->with('error', $errorMessage );
+			return $redirector->back()->with('error', $errorMessage );
 		}
 
 		$this->log->info( sprintf( 'New license key for %s (per %s, %d activations)', $user->email, $interval, $quantity ) );
