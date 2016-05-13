@@ -63,7 +63,7 @@ class Charger {
 //            ];
 //        }
 
-        if( $token ) {
+        if( ! empty( $token ) ) {
             $customerData['source'] = $token;
         }
 
@@ -79,7 +79,6 @@ class Charger {
         }
 
         $user->stripe_customer_id = $customer->id;
-
         return $user;
     }
 
