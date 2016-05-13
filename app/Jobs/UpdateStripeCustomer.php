@@ -38,6 +38,8 @@ class UpdateStripeCustomer extends Job implements ShouldQueue
      */
     public function handle( Charger $charger )
     {
-        $charger->customer( $this->user );
+        if( $this->user->stripe_customer_id ) {
+            $charger->customer( $this->user );
+        }
     }
 }
