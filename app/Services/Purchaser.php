@@ -82,7 +82,7 @@ class Purchaser {
         $subscription = new Subscription([
             'interval' => $interval,
             'active' => 1,
-            'next_charge_at' => new DateTime("now")
+            'next_charge_at' => $license->expires_at->modify('-5 days')
         ]);
         $subscription->amount = $amount;
         $subscription->license_id = $license->id;
