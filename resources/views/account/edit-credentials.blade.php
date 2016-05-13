@@ -44,25 +44,32 @@
             </div>
         </div>
 
-        <p></p>
+       <div class="row clearfix">
+           <div class="col col-3">
+               <div class="form-group">
+                   <label>New password <span class="muted pull-right">(optional)</span></label>
 
-        <div class="form-group">
-            <label>New password <span class="muted pull-right">(optional)</span></label>
+                   <div class="form-element">
+                       <input type="password" name="new_password" value="" minlength="6">
+                       <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
+                   </div>
+               </div>
+           </div>
+           <div class="col col-3">
 
-            <div class="form-element">
-                <input type="password" name="new_password" value="" minlength="6">
-                <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
-            </div>
-        </div>
+               <div class="form-group">
+                   <label>Confirm new password <span class="muted pull-right">(optional)</span></label>
 
-        <div class="form-group">
-            <label>Confirm new password <span class="muted pull-right">(optional)</span></label>
+                   <div class="form-element">
+                       <input type="password" name="new_password_confirmation" minlength="6" value="">
+                       <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
+                   </div>
+               </div>
+           </div>
+       </div>
 
-            <div class="form-element">
-                <input type="password" name="new_password_confirmation" minlength="6" value="">
-                <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
-            </div>
-        </div>
+
+
 
         <div class="form-group">
             <input type="submit" value="Save Changes" />

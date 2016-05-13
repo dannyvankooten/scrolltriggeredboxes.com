@@ -75,7 +75,6 @@ var askForConfirmation = function(event) {
     input.addEventListener('change', function() {
         helpers.toggleElements(europeElements, helpers.isCountryInEurope(this.value));
     });
-
     helpers.toggleElements(europeElements, helpers.isCountryInEurope(input.value));
 });
 

@@ -40,11 +40,50 @@
         </div>
         <!-- / Step -->
 
-        <!-- Step 2: Billing Info -->
-
+        <!-- Step 2: Account Info -->
         <div class="step medium-margin">
 
-            <h2 class="slashes">2. Account & Billing Info</h2>
+            <h2 class="slashes">2. Account Info</h2>
+
+            <div class="form-group">
+                <label>Email address <span class="big red">*</span></label>
+
+                <div class="form-element">
+                    <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" placeholder="Your email address.." required>
+                    <i class="fa fa-at form-element-icon" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <div class="row clearfix">
+                <div class="col col-3">
+                    <div class="form-group">
+                        <label>Password <span class="big red">*</span></label>
+
+                        <div class="form-element">
+                            <input type="password" name="password" value=""  placeholder="Your password.." required minlength="6">
+                            <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <div class="form-group">
+                        <label>Confirm password <span class="big red">*</span></label>
+
+                        <div class="form-element">
+                            <input type="password" name="password_confirmation" value="" placeholder="Repeat your password.." required minlength="6">
+                            <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- / Step -->
+
+        <!-- Step 3: Billing Info -->
+        <div class="step medium-margin">
+
+            <h2 class="slashes">3. Billing Info</h2>
 
             <div class="form-group">
                 <label>Name <span class="big red">*</span></label>
@@ -56,96 +95,124 @@
             </div>
 
             <div class="form-group">
-                <label>Email address <span class="big red">*</span></label>
-
-                <div class="form-element">
-                    <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" placeholder="Your email address.." required>
-                    <i class="fa fa-at form-element-icon" aria-hidden="true"></i>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Password <span class="big red">*</span></label>
-
-                <div class="form-element">
-                    <input type="password" name="password" value=""  placeholder="Your password.." required minlength="6">
-                    <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Confirm password <span class="big red">*</span></label>
-
-                <div class="form-element">
-                    <input type="password" name="password_confirmation" value="" placeholder="Repeat your password.." required minlength="6">
-                    <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
-                </div>
-            </div>
-
-            <div class="form-group">
                 <label>Country <span class="big red">*</span></label>
                 <select name="user[country]" class="country-input" data-stripe="address_country" required>
                     <option value="" disabled {{ old('user.country','') === '' ? 'selected' : '' }}>Select your country..</option>
                     @foreach(Countries::all() as $code => $country)
-                    <option value="{{ $code }}" {{ old('user.country') == $code ? 'selected' : '' }}>{{ $country }}</option>
+                        <option value="{{ $code }}" {{ old('user.country') == $code ? 'selected' : '' }}>{{ $country }}</option>
                     @endforeach
                 </select>
                 <p class="help">We need to know your country for taxes.</p>
             </div>
 
-            <div class="form-group europe-only" style="display: none;">
-                <label>VAT Number <span class="small pull-right muted">(optional)</span></label>
-                <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" />
-                <p class="help">If you're buying as a Europe based company, please enter your company VAT number here.</p>
+            <div class="form-group europe-only">
+                <label>Address</label>
+                <div class="form-element">
+                    <input type="text" name="user[address]" value="{{ old('user.address' ) }}" placeholder="Address line 1">
+                </div>
+            </div>
+
+            <div class="row clearfix europe-only">
+                <div class="col col-3">
+                    <div class="form-group">
+                        <label>Postal code</label>
+                        <div class="form-element">
+                            <input type="text" name="user[zip]" value="{{ old('user.zip' ) }}" placeholder="ZIP or Postal Code">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col col-3">
+                    <div class="form-group">
+                        <label>City</label>
+                        <div class="form-element">
+                            <input type="text" name="user[city]" value="{{ old('user.city' ) }}" placeholder="City">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="europe-only">
+                <p class="help">If you're buying as a Europe based company, please enter your company details here.</p>
+                <div class="row europe-only clearfix">
+
+                    <div class="col col-3">
+                        <div class="form-group">
+                            <label>Company Name <span class="small muted pull-right">(optional)</span></label>
+                            <div class="form-element">
+                                <input type="text" name="user[company]" value="{{ old('user.company') }}" placeholder="Company Name">
+                                <i class="fa fa-building form-element-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-3">
+                        <div class="form-group">
+                            <label>VAT Number <span class="small pull-right muted">(optional)</span></label>
+                            <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" placeholder="VAT Number" />
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
         <!-- / Step -->
 
-        <!-- Step 3: Payment -->
+        <!-- Step 4: Payment -->
 
         <div class="step medium-margin">
 
-            <h2 class="slashes">3. Payment</h2>
+            <h2 class="slashes">4. Payment</h2>
 
             <div class="errors"></div>
 
             <div class="well small-margin">
 
-                <div class="form-group">
-                    <label>Credit Card Number <span class="big red">*</span></label>
+                <div class="row clearfix">
+                    <div class="col col-5">
+                        <div class="form-group stretch">
+                            <label>Credit Card Number <span class="big red">*</span></label>
 
-                    <div class="form-element">
-                        <input type="text" data-stripe="number" placeholder="**** **** **** ****" required>
-                        <i class="fa fa-credit-card form-element-icon" aria-hidden="true"></i>
+                            <div class="form-element">
+                                <input type="text" class="" data-stripe="number" placeholder="**** **** **** ****" required>
+                                <i class="fa fa-credit-card form-element-icon" aria-hidden="true"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Expiration <span class="big red">*</span></label>
-                    <select data-stripe="exp_month" style="width: 80px; display: inline;" required>
-                        <option value="" disabled selected>Month</option>
-                        @for ($i = 1; $i <= 12; $i++)
-                        <option>{{ $i }}</option>
-                        @endfor
-                    </select>
+                <div class="row clearfix">
 
-                    <select data-stripe="exp_year" style="width: 80px; display: inline;" required>
-                        <option value="" disabled selected>Year</option>
-                        @for ($i = 0; $i < 10; $i++)
-                        <option value="{{ date('Y') + $i }}">{{ date('y') + $i }}</option>
-                        @endfor
-                    </select>
-                </div>
+                    <div class="col col-3">
+                        <div class="form-group">
+                            <label>Expiration <span class="big red">*</span></label>
+                            <select data-stripe="exp_month" style="width: 100px; display: inline;" required>
+                                <option value="" disabled selected>Month</option>
+                                @for ($i = 1; $i <= 12; $i++)
+                                <option>{{ $i }}</option>
+                                @endfor
+                            </select>
 
-                <div class="form-group">
-                    <label>CVC <span class="big red">*</span></label>
-
-                    <div class="form-element" style="width: 120px;">
-                        <input type="password" data-stripe="cvc" maxlength="4" required>
-                        <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
+                            <select data-stripe="exp_year" style="width: 100px; display: inline;" required>
+                                <option value="" disabled selected>Year</option>
+                                @for ($i = 0; $i < 10; $i++)
+                                <option value="{{ date('Y') + $i }}">{{ date('y') + $i }}</option>
+                                @endfor
+                            </select>
+                        </div>
                     </div>
 
+                    <div class="col col-2">
+
+                        <div class="form-group">
+                            <label>CVC <span class="big red">*</span></label>
+
+                            <div class="form-element stretch">
+                                <input type="password" data-stripe="cvc" maxlength="4" required>
+                                <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
 
                 <p class="muted" style="font-style: italic;">This is a 256bit SSL encrypted payment. Your credit card is safe.</p>

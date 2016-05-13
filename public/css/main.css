@@ -361,8 +361,7 @@ textarea {
   -webkit-appearance: none; }
 
 .form-group {
-  margin-bottom: 24px;
-  max-width: 360px; }
+  margin-bottom: 24px; }
 
 .inline {
   display: inline-block;
@@ -425,8 +424,8 @@ button:hover,
 button:focus,
 .button:hover,
 .button:focus {
-  background: #0062ad;
-  border-color: #0062ad; }
+  background: #005699;
+  border-color: #005699; }
 
 input[type="submit"].button-secondary,
 .button-secondary {
@@ -624,7 +623,8 @@ button[disabled] {
   border: 0; }
 
 .stretch {
-  width: 100%; }
+  width: 100%;
+  max-width: 100%; }
 
 .label {
   display: inline-block;
@@ -655,11 +655,17 @@ button[disabled] {
     padding-left: 20px;
     padding-right: 20px; }
   .col-1 {
-    width: 25%; }
+    width: 16.6666666667%; }
   .col-2 {
-    width: 50%; }
+    width: 33.3333333333%; }
   .col-3 {
-    width: 75%; } }
+    width: 50%; }
+  .col-4 {
+    width: 66.6666666667%; }
+  .col-5 {
+    width: 83.3333333333%; }
+  .col-6 {
+    width: 100%; } }
 
 @media (max-width: 680px) {
   .break-on-mobile {

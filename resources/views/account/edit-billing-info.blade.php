@@ -35,55 +35,73 @@
             </div>
 
             <div class="form-group">
-                <label>Country <span class="big red">*</span></label>
-                <select name="user[country]" id="country-input">
-                    <option value="" disabled>Select a country..</option>
-                    @foreach(Countries::all() as $code => $country)
-                        <option value="{{ $code }}"
-                                @if($user->country == $code) selected="selected" @endif>{{ $country }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group">
                 <label>Address</label>
                 <div class="form-element">
-                    <input type="text" name="user[address]" value="{{ old('user.address', $user->address ) }}">
+                    <input type="text" name="user[address]" value="{{ old('user.address', $user->address  ) }}" placeholder="Address line 1">
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>City</label>
-                <div class="form-element">
-                    <input type="text" name="user[city]" value="{{ old('user.city', $user->city ) }}">
+            <div class="row clearfix">
+                <div class="col col-3">
+                    <div class="form-group">
+                        <label>City</label>
+                        <div class="form-element">
+                            <input type="text" name="user[city]" value="{{ old('user.city', $user->city  ) }}" placeholder="City">
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <div class="form-group">
+                        <label>ZIP / Postal code</label>
+                        <div class="form-element">
+                            <input type="text" name="user[zip]" value="{{ old('user.zip', $user->zip  ) }}" placeholder="ZIP or Postal Code">
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>ZIP / Postal code</label>
-                <div class="form-element">
-                    <input type="text" name="user[zip]" value="{{ old('user.zip', $user->zip ) }}">
+            <div class="row clearfix">
+                <div class="col col-3">
+                    <div class="form-group">
+                        <label>Country <span class="big red">*</span></label>
+                        <select name="user[country]" class="country-input" required>
+                            <option value="" disabled {{ old('user.country','') === '' ? 'selected' : '' }}>Select your country..</option>
+                            @foreach(Countries::all() as $code => $country)
+                                <option value="{{ $code }}" {{ old('user.country', $user->country ) == $code ? 'selected' : '' }}>{{ $country }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <div class="form-group">
+                        <label>State / Province</label>
+                        <div class="form-element">
+                            <input type="text" name="user[state]" placeholder="State" value="{{ old('user.state', $user->state  ) }}">
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>State / Province</label>
-                <div class="form-element">
-                    <input type="text" name="user[state]" value="{{ old('user.state', $user->state ) }}">
-                </div>
-            </div>
+            <div class="europe-only"  style="display: none;">
+                <p class="help">If you're buying as a Europe based company, please enter your company details here.</p>
+                <div class="row europe-only clearfix">
 
-            <div class="form-group">
-                <label>Company Name <span class="small muted pull-right">(optional)</span></label>
-                <div class="form-element">
-                    <input type="text" name="user[company]" value="{{ old('user.company', $user->company ) }}">
-                    <i class="fa fa-building form-element-icon"></i>
+                    <div class="col col-3">
+                        <div class="form-group">
+                            <label>Company Name <span class="small muted pull-right">(optional)</span></label>
+                            <div class="form-element">
+                                <input type="text" name="user[company]" value="{{ old('user.company', $user->company ) }}" placeholder="Company Name">
+                                <i class="fa fa-building form-element-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-3">
+                        <div class="form-group">
+                            <label>VAT Number <span class="small pull-right muted">(optional)</span></label>
+                            <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" placeholder="VAT Number" />
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="form-group europe-only" style="@if(!$user->inEurope()) display: none; @endif">
-                <label>VAT Number <span class="small muted pull-right">(optional)</span></label>
-                <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', $user->vat_number ) }}"/>
             </div>
 
             <div class="form-group">
@@ -105,22 +123,6 @@
 @stop
 
 @section('foot')
-    <script>
-        function toggleFields() {
-            var euCountries = ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'];
-            var isEu = euCountries.indexOf(countryElement.value.toUpperCase()) > -1;
 
-            [].forEach.call(euOnlyFields, function (el) {
-                el.style.display = isEu ? '' : 'none';
-            });
-        }
-
-        var euOnlyFields = document.querySelectorAll('.eu-only');
-        var countryElement = document.getElementById('country-input');
-        var form = document.getElementById('billing-info-form');
-
-        form.addEventListener('change', toggleFields);
-        toggleFields();
-    </script>
 @stop
 

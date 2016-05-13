@@ -32,8 +32,7 @@ helpers.checkEmail = function() {
 
 helpers.isCountryInEurope = function(country) {
     var europeanCountries = [ 'AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK' ];
-    var isInEurope = europeanCountries.indexOf(country.toUpperCase()) > -1;
-    return isInEurope;
+    return country.length > 0 && europeanCountries.indexOf(country.toUpperCase()) > -1;
 };
 
 helpers.calculatePrice = function(amount, interval) {
@@ -41,7 +40,7 @@ helpers.calculatePrice = function(amount, interval) {
     var basePrice = isYearly ? 40 : 4;
     var unitPrice = 0.5 * basePrice;
     var total = basePrice + ( amount * unitPrice );
-    total = total.toFixed(2);
+    total += 0;
 
     var elements = document.querySelectorAll('.price');
     [].forEach.call(elements,function(el) {

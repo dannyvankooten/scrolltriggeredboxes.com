@@ -2,7 +2,6 @@
 
 .form-group {
   margin-bottom: 24px;
-  max-width: 360px;
 }
 
 .inline {
@@ -75,8 +74,8 @@ button:hover,
 button:focus,
 .button:hover,
 .button:focus {
-  background: darken( $primary_color, 6% );
-  border-color: darken( $primary_color, 6% );
+  background: darken( $primary_color, 10% );
+  border-color: darken( $primary_color, 10% );
 }
 
 input[type="submit"].button-secondary,

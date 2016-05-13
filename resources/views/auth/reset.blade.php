@@ -23,15 +23,21 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="control-label">Password</label>
-                    <input type="password" class="form-control" name="password">
+                <div class="row">
+                    <div class="col col-2">
+                        <div class="form-group">
+                            <label class="control-label">Password</label>
+                            <input type="password" class="form-control" name="password">
+                        </div>
+                    </div>
+                    <div class="col col-2">
+                        <div class="form-group">
+                            <label class="control-label">Confirm Password</label>
+                            <input type="password" class="form-control" name="password_confirmation">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="control-label">Confirm Password</label>
-                    <input type="password" class="form-control" name="password_confirmation">
-                </div>
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">
