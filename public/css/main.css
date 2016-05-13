@@ -626,6 +626,20 @@ button[disabled] {
 .stretch {
   width: 100%; }
 
+.label {
+  display: inline-block;
+  color: white;
+  border-radius: 3px;
+  padding: .2em .6em .3em;
+  font-weight: 500;
+  font-size: 80%; }
+  .label.success {
+    background: #5cb85c; }
+  .label.warning {
+    background: #f0ad4e; }
+  .label.danger {
+    background: #d9534f; }
+
 #content ul li {
   padding: 3px 0; }
 

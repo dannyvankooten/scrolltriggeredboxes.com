@@ -158,3 +158,24 @@
 .stretch {
   width: 100%;
 }
+
+.label {
+  display: inline-block;
+  color: white;
+  border-radius: $border-radius;
+  padding: .2em .6em .3em;
+  font-weight: 500;
+  font-size: 80%;
+
+  &.success {
+    background: #5cb85c;
+  }
+
+  &.warning {
+    background: #f0ad4e;
+  }
+
+  &.danger {
+    background: #d9534f;
+  }
+}
