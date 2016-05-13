@@ -54,6 +54,18 @@
     </div>
 </footer>
 
+
+<script>
+    // util
+    document.documentElement.className = document.documentElement.className.replace('no-js','js');
+
+    // font awesome
+    var linkElement = document.createElement('link');
+    linkElement.rel = "stylesheet";
+    linkElement.href = "{{ asset('css/font-awesome.min.css') }}";
+    document.head.appendChild(linkElement);
+</script>
+<script src="{{ asset('js/main.js') }}" type="text/javascript"></script>
 @yield('foot')
 </body>
 </html>
