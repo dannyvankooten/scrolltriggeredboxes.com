@@ -50,9 +50,9 @@
         <table class="table row-scoped">
             <tr>
                 <th>Status</th>
-                <td>{{ $license->subscription->active ? "Active" : "Inactive" }}</td>
+                <td><span class="label {{ $license->subscription->active ? "success" : "warning" }}">{{ $license->subscription->active ? "Active" : "Inactive" }}</span></td>
                 <td>
-                    <form method="POST" action="/subscriptions/{{ $license->subscription->id }}">
+                    <form method="POST" action="/subscriptions/{{ $license->subscription->id }}" data-confirm="Are you sure you want to toggle this subscription status?">
                         @if( $license->subscription->active )
                             <input type="hidden" name="subscription[active]" value="0" />
                             <button class="button-small">Deactivate</button>
@@ -95,7 +95,7 @@
                     <td>{{ $payment->created_at->format('Y-m-d') }}</td>
                     <td>{{ $payment->getCurrencySign() . ' ' . $payment->getTotal() }}</td>
                     <td>
-                        <form method="POST" action="/payments/{{ $payment->id }}">
+                        <form method="POST" action="/payments/{{ $payment->id }}" data-confirm="Are you sure you want to refund this payment?">
                             <input type="hidden" name="_method" value="DELETE" />
                             <input class="button-small" type="submit" value="Refund" />
                         </form>
