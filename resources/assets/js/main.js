@@ -10,6 +10,15 @@ var pricingForms = document.querySelectorAll('form[data-pricing]');
 var confirmationElements = document.querySelectorAll('[data-confirm]');
 var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
 
+var askForConfirmation = function(event) {
+    var sure = confirm(this.getAttribute('data-confirm'));
+
+    if( ! sure ) {
+        event.preventDefault();
+        return false;
+    }
+};
+
 [].forEach.call( emailInputs, function(input) {
     input.addEventListener('blur', helpers.checkEmail);
 });
@@ -82,14 +91,8 @@ var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
 });
 
 [].forEach.call(confirmationElements, function(element) {
-   element.addEventListener('click', function(event) {
-       var sure = confirm(this.getAttribute('data-confirm'));
-
-       if( ! sure ) {
-           event.preventDefault();
-           return false;
-       }
-   });
+    var event = element.tagName === 'FORM' ? 'submit' : 'click';
+    element.addEventListener(event, askForConfirmation);
 });
 
 [].forEach.call(dropdownToggles, function(element) {
