@@ -10,7 +10,7 @@
 
     <h1 class="page-title">Register</h1>
 
-    <p>Registering for a Boxzilla+ account gives you instant access to all premium add-on plugins. Already an account? Please <a href="/login">log in here</a>.</p>
+    <p>Registering for a Boxzilla+ account gives you instant access to all premium add-on plugins. Already have an account? Please <a href="/login">log in here</a>.</p>
 
     @include('partials.form-messages')
 
