@@ -123,7 +123,7 @@ class LicenseGuard implements Guard {
         }
 
         if( $license->isExpired() ) {
-            $this->errorMessage = sprintf( "Your license expired on %s.", $license->expires_at->format('F j, Y') );
+            $this->errorMessage = sprintf( "Your license expired on %s. Would you like to <a href=\"%s\">renew it now</a>?", $license->expires_at->format('F j, Y'), domain_url( '/licenses/' . $license->id, 'account' ) );
             return false;
         }
 
