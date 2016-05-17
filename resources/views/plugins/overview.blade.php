@@ -27,7 +27,7 @@
         <tr>
             <td><a href="{{ $plugin->getPageUrl() }}">{{ $plugin->name }}</a></td>
             <td>{{ $plugin->getVersion() }}</td>
-            <td><a class="button button-small" href="{{ route('plugins_download', [ $plugin->id ]) }}">Download</a></td>
+            <td><a class="button button-small" href="{{ route('plugins_download', [ $plugin->id ]) }}?version={{ $plugin->getVersion() }}">Download</a></td>
         </tr>
         @endforeach
         </tbody>
