@@ -40,7 +40,7 @@ class LicenseController extends Controller {
      * @param Request $request
      * @return JsonResponse
      */
-    public function create( Request $request ) {
+    public function createActivation( Request $request ) {
         /** @var License $license */
         $license = $this->auth->license();
 
@@ -94,7 +94,7 @@ class LicenseController extends Controller {
      * @param Request $request
      * @return JsonResponse
      */
-    public function delete( Request $request ) {
+    public function deleteActivation( Request $request ) {
 
         /** @var License $license */
         $license = $this->auth->license();

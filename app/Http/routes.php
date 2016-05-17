@@ -52,8 +52,8 @@ $router->group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['
 // API url's
 $router->group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', 'namespace' => 'API\\v1', 'middleware' => ['api'] ], function () use( $router ) {
 
-	$router->post( '/license/activations', 'LicenseController@create' );
-	$router->delete( '/license/activations', 'LicenseController@delete' );
+	$router->post( '/license/activations', 'LicenseController@createActivation' );
+	$router->delete( '/license/activations', 'LicenseController@deleteActivation' );
 
 	$router->get( '/plugins', 'PluginController@index' );
 	$router->get( '/plugins/{id}', 'PluginController@get' );
