@@ -44,15 +44,6 @@ class LicenseController extends Controller {
         /** @var License $license */
         $license = $this->auth->license();
 
-        // check if license is expired
-        if( $license->isExpired() ) {
-            return new JsonResponse([
-                'error' => [
-                    'message' => sprintf( "Your license has expired.", $license->site_limit )
-                ]
-            ]);
-        }
-
         // check if this site is already activated
         $siteUrl = $request->input('site_url');
         $domain = $this->getDomainFromSiteUrl($siteUrl);
