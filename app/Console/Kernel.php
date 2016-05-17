@@ -5,7 +5,6 @@ use App\Console\Commands\CreateInvoices;
 use App\Console\Commands\SendOwlSubscriptions;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Symfony\Component\Process\Process;
 
 class Kernel extends ConsoleKernel {
 
