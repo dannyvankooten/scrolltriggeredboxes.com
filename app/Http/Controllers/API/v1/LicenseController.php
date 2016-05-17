@@ -66,7 +66,7 @@ class LicenseController extends Controller {
                 'url' => $siteUrl,
                 'domain' => $domain
             ]);
-            $activation->license()->associate($license);
+            $activation->license_id = $license->id;
 
             $this->log->info( "Activated license #{$license->id} on {$domain}" );
         }
