@@ -47,7 +47,7 @@ class PluginController extends Controller {
 		$plugin = Plugin::findOrFail($id);
 
 		// is a specific version specified? if not, use latest.
-		$version = preg_replace( '/[^0-9\.]/', "" , $request->input( 'version', '' ) );
+		$version = preg_replace( '/[^0-9\.]/', "" , $request->input( 'version', $plugin->getVersion() ) );
 
 		$downloader = new PluginDownloader( $plugin );
 		$file = $downloader->download( $version );
