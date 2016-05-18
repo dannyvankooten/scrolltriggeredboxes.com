@@ -45,9 +45,10 @@ class LicenseController extends Controller {
         $license = $this->auth->license();
 
         // check if this site is already activated
-        $siteUrl = $request->input('site_url');
+        $siteUrl = trim( $request->input('site_url') );
         $domain = $this->getDomainFromSiteUrl($siteUrl);
 
+        /** @var Activation $activation */
         $activation = $license->findDomainActivation($domain);
 
         if( ! $activation ) {
@@ -62,10 +63,10 @@ class LicenseController extends Controller {
             }
 
             // activate license on given site
-            $activation = new Activation([
-                'url' => $siteUrl,
-                'domain' => $domain
-            ]);
+            $activation = new Activation();
+            $activation->url = $siteUrl;
+            $activation->domain = $domain;
+            $activation->key = Activation::generateKey();
             $activation->license_id = $license->id;
 
             $this->log->info( "Activated license #{$license->id} on {$domain}" );
@@ -76,6 +77,7 @@ class LicenseController extends Controller {
 
         return new JsonResponse([
             'data' => [
+                'key' => $activation->key,
                 'message' => sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeft() )
             ]
         ]);
@@ -91,7 +93,8 @@ class LicenseController extends Controller {
         $license = $this->auth->license();
 
         // now, delete activation (aka logout)
-        $siteUrl = $request->input('site_url');
+        $siteUrl = trim( $request->input('site_url') );
+
         $domain = $this->getDomainFromSiteUrl($siteUrl);
         $activation = $license->findDomainActivation( $domain );
         

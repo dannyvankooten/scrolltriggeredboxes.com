@@ -3,21 +3,18 @@
 use App\Http\Controllers\Controller;
 use App\Services\LicenseGuard;
 use App\Services\PluginDownloader;
+use Doctrine\DBAL\Query\QueryBuilder;
 use GuzzleHttp;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Plugin;
+use App\Activation;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class PluginController extends Controller {
-
-	/**
-	 * @var LicenseGuard
-	 */
-	protected $auth;
 
 	/**
 	 * @var Log
@@ -25,15 +22,19 @@ class PluginController extends Controller {
 	protected $log;
 
 	/**
+	 * @var LicenseGuard
+	 */
+	protected $auth;
+
+	/**
 	 * PluginController constructor.
 	 *
 	 * @param Log $log
 	 * @param LicenseGuard $auth
 	 */
-	public function __construct( LicenseGuard $auth, Log $log ) {
-		$this->auth = $auth;
+	public function __construct( Log $log, LicenseGuard $auth ) {
 		$this->log = $log;
-		$this->middleware('auth.license', [ 'only' => 'download' ]);
+		$this->auth = $auth;
 	}
 
 	/**
@@ -93,10 +94,28 @@ class PluginController extends Controller {
 	 */
 	public function download($id, Request $request) {
 
-		// TODO: Check if license is activated on the actual site requesting the download.
+		$key = $request->input('key', '');
+		$activation = false;
+
+		if( ! empty( $key ) ) {
+			$activation = Activation::where('key', $key)->first();
+		} else {
+			// for Backwards Compatibility with early activations, allow auth by license key here.
+			$license = $this->auth->license();
+
+			if( $license ) {
+				$activation = $license->activations->first();
+			}
+		}
+
+		if( ! $activation ) {
+			return new Response( 'Download is unavailable without a valid key.', 403 );
+		}
 
 		/** @var Plugin $plugin */
-		$plugin = Plugin::where('id', $id)->orWhere('sid', $id)->firstOrFail();
+		$plugin = Plugin::where('id', $id)
+			->orWhere('sid', $id)
+			->firstOrFail();
 
 		// is a specific version specified? if not, use latest.
 		$version = preg_replace( '/[^0-9\.]/', "" , $request->input( 'version', $plugin->getVersion() ) );
@@ -105,7 +124,7 @@ class PluginController extends Controller {
 		$file = $downloader->download( $version );
 		$filename = $plugin->slug . '.zip';
 
-		$this->log->info( sprintf( 'Plugin download: %s v%s for license #%d', $plugin->sid, $version, $this->auth->license()->id ) );
+		$this->log->info( sprintf( 'Plugin download: %s v%s for license #%d', $plugin->sid, $version, $activation->license->id ) );
 
 		$response = new BinaryFileResponse( $file, 200 );
 		$response->setContentDisposition( 'attachment', $filename );
