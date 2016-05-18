@@ -154,7 +154,8 @@ class Plugin extends Model {
 	public function toWpArray() {
 
 		$data = [
-			'id' => $this->id,
+			'id' => $this->sid, // this is to fix a bug in the plugin where it checks for "id" then compares it with local sid
+			'sid' => $this->sid,
 			'url' => $this->getPageUrl(),
 			'homepage' => domain_url( '/' ),
 			'package' => url( '/v1/plugins/' . $this->id .'/download' ),
