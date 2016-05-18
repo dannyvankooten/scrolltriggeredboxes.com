@@ -98,6 +98,8 @@
                 <label>Country <span class="big red">*</span></label>
                 <select name="user[country]" class="country-input" data-stripe="address_country" required>
                     <option value="" disabled {{ old('user.country','') === '' ? 'selected' : '' }}>Select your country..</option>
+                    <option value="US" >United States</option>
+                    <option value="GB" >United Kingdom</option>
                     @foreach(Countries::all() as $code => $country)
                         <option value="{{ $code }}" {{ old('user.country') == $code ? 'selected' : '' }}>{{ $country }}</option>
                     @endforeach
