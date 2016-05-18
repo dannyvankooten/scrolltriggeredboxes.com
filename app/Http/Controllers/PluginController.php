@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -18,12 +20,19 @@ class PluginController extends Controller {
 	protected $auth;
 
 	/**
+	 * @var Log
+	 */
+	protected $log;
+
+	/**
 	 * AccountController constructor.
 	 *
+	 * @param Log $log
 	 * @param Guard $auth
 	 */
-	public function __construct( Guard $auth ) {
+	public function __construct( Guard $auth, Log $log ) {
 		$this->auth = $auth;
+		$this->log = $log;
 		$this->middleware('auth.user');
 	}
 
@@ -43,6 +52,9 @@ class PluginController extends Controller {
 	 * @return BinaryFileResponse
 	 */
 	public function download( $id, Request $request ) {
+		/** @var User $user */
+		$user = $this->auth->user();
+
 		/** @var Plugin $plugin */
 		$plugin = Plugin::findOrFail($id);
 
@@ -52,6 +64,8 @@ class PluginController extends Controller {
 		$downloader = new PluginDownloader( $plugin );
 		$file = $downloader->download( $version );
 		$filename = $plugin->slug . '.zip';
+
+		$this->log->info( sprintf( 'Plugin download: %s v%s for user %s (#%d)', $plugin->sid, $version, $user->email, $user->id ) );
 
 		$response = new BinaryFileResponse( $file, 200 );
 		$response->setContentDisposition( 'attachment', $filename );

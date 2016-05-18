@@ -1,18 +1,38 @@
 <?php namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
+use App\Services\LicenseGuard;
 use App\Services\PluginDownloader;
 use GuzzleHttp;
+use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Plugin;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class PluginController extends Controller {
 
+	/**
+	 * @var LicenseGuard
+	 */
+	protected $auth;
 
-	public function __construct() {
+	/**
+	 * @var Log
+	 */
+	protected $log;
+
+	/**
+	 * PluginController constructor.
+	 *
+	 * @param Log $log
+	 * @param LicenseGuard $auth
+	 */
+	public function __construct( LicenseGuard $auth, Log $log ) {
+		$this->auth = $auth;
+		$this->log = $log;
 		$this->middleware('auth.license', [ 'only' => 'download' ]);
 	}
 
@@ -73,6 +93,8 @@ class PluginController extends Controller {
 	 */
 	public function download($id, Request $request) {
 
+		// TODO: Check if license is activated on the actual site requesting the download.
+
 		/** @var Plugin $plugin */
 		$plugin = Plugin::where('id', $id)->orWhere('sid', $id)->firstOrFail();
 
@@ -82,6 +104,8 @@ class PluginController extends Controller {
 		$downloader = new PluginDownloader( $plugin );
 		$file = $downloader->download( $version );
 		$filename = $plugin->slug . '.zip';
+
+		$this->log->info( sprintf( 'Plugin download: %s v%s for license #%d', $plugin->sid, $version, $this->auth->license()->id ) );
 
 		$response = new BinaryFileResponse( $file, 200 );
 		$response->setContentDisposition( 'attachment', $filename );
