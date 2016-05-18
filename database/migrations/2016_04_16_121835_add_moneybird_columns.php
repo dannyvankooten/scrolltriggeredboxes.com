@@ -35,7 +35,7 @@ class AddMoneybirdColumns extends Migration
         });
 
         Schema::table('payments', function (Blueprint $table) {
-            $table->string('moneybird_invoice_id')->nullable();
+            $table->dropColumn('moneybird_invoice_id');
         });
     }
 }
