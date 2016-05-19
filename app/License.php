@@ -18,10 +18,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Subscription $subscription
  * @property int $user_id
  * @property int $site_limit
- * @property DateTime $expires_at
- * @property DateTime $created_at
- * @property DateTime $updated_at
- * @property DateTime $deleted_at
+ * @property Carbon $expires_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $deleted_at
  */
 class License extends Model {
 

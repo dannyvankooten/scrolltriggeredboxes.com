@@ -37,6 +37,25 @@ class LicenseController extends Controller {
     }
 
     /**
+     * Get license details
+     *
+     * @return JsonResponse
+     */
+    public function getLicense() {
+        /** @var License $license */
+        $license = $this->auth->license();
+        
+        return new JsonResponse([
+            'data' => [
+                'valid' => $license->isValid(),
+                'activations' => count( $license->activations ),
+                'activation_limit' => $license->site_limit,
+                'expires_at' => $license->expires_at->toIso8601String()
+            ]
+        ]);
+    }
+
+    /**
      * @param Request $request
      * @return JsonResponse
      */
@@ -44,7 +63,7 @@ class LicenseController extends Controller {
         /** @var License $license */
         $license = $this->auth->license();
 
-        // check if this site is already activated
+        // check if this domain is already activated
         $siteUrl = trim( $request->input('site_url') );
         $domain = $this->getDomainFromSiteUrl($siteUrl);
 
@@ -85,21 +104,26 @@ class LicenseController extends Controller {
 
     /**
      * @param Request $request
+     * @param string $activationKey
+     *
      * @return JsonResponse
      */
-    public function deleteActivation( Request $request ) {
+    public function deleteActivation( Request $request, $activationKey = '' ) {
 
         /** @var License $license */
         $license = $this->auth->license();
 
-        // now, delete activation (aka logout)
-        $siteUrl = trim( $request->input('site_url') );
+        if( $activationKey ) {
+            $activation = Activation::where('key', $activationKey)->first();
+        } else {
+            // for BC for licenses that didn't get an activation key yet
+            $siteUrl = trim( $request->input('site_url') );
+            $domain = $this->getDomainFromSiteUrl($siteUrl);
+            $activation = $license->findDomainActivation($domain);
+        }
 
-        $domain = $this->getDomainFromSiteUrl($siteUrl);
-        $activation = $license->findDomainActivation( $domain );
-        
         if( $activation ) {
-            $this->log->info( "Deactivated license #{$license->id} on {$domain}" );
+            $this->log->info( "Deactivated license #{$license->id} on {$activation->domain}" );
             $activation->delete();
         }
 
