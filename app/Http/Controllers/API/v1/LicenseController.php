@@ -44,7 +44,7 @@ class LicenseController extends Controller {
     public function getLicense() {
         /** @var License $license */
         $license = $this->auth->license();
-        
+
         return new JsonResponse([
             'data' => [
                 'valid' => $license->isValid(),
@@ -72,13 +72,25 @@ class LicenseController extends Controller {
 
         if( ! $activation ) {
 
+            // check if license expired
+            if( $license->isExpired() ) {
+                return new JsonResponse([
+                    'error' => [
+                        'code' => 'license_expired',
+                        'message' => sprintf( "Your license expired on %s. Would you like to <a href=\"%s\">renew it now</a>?", $license->expires_at->format('F j, Y'), domain_url( '/licenses/' . $license->id, 'account' ) )
+
+                    ]
+                ], 401 );
+            }
+
             // check if license is at limit
             if( $license->isAtSiteLimit() ) {
                 return new JsonResponse([
                     'error' => [
+                        'code' => 'license_at_limit',
                         'message' => sprintf( "Your license is at its activation limit of %d sites.", $license->site_limit )
                     ]
-                ]);
+                ], 401 );
             }
 
             // activate license on given site
@@ -99,7 +111,7 @@ class LicenseController extends Controller {
                 'key' => $activation->key,
                 'message' => sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeft() )
             ]
-        ]);
+        ], 201 );
     }
 
     /**
@@ -131,7 +143,7 @@ class LicenseController extends Controller {
             'data' => [
                 'message' => 'Your license was successfully deactivated. You can use it on any other domain now.'
             ]
-        ]);
+        ], 200 );
     }
 
     /**

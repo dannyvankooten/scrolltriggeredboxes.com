@@ -10,15 +10,15 @@ class AuthenticateLicense  {
 	/**
 	 * @var LicenseGuard
 	 */
-	protected $guard;
+	protected $auth;
 
 	/**
 	 * Admin constructor.
 	 *
-	 * @param LicenseGuard $guard
+	 * @param LicenseGuard $auth
 	 */
-	public function __construct( LicenseGuard $guard ) {
-		$this->guard = $guard;
+	public function __construct( LicenseGuard $auth ) {
+		$this->auth = $auth;
 	}
 
 	/**
@@ -31,10 +31,13 @@ class AuthenticateLicense  {
 	 */
 	public function handle( Request $request, Closure $next) {
 
-		if( $this->guard->guest() ) {
+		$license = $this->auth->license();
+
+		if( ! $license ) {
 			return new JsonResponse([
 				'error' => [
-					'message' => $this->guard->getErrorMessage()
+					'message' => $this->auth->getErrorMessage(),
+					'code' => $this->auth->getErrorCode(),
 				]
 			], 401 );
 		}

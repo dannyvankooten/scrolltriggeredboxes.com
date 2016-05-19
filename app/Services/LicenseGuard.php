@@ -37,6 +37,11 @@ class LicenseGuard implements Guard {
     protected $errorMessage;
 
     /**
+     * @var string
+     */
+    protected $errorCode;
+
+    /**
      * LicenseGuard constructor.
      *
      * @param Request $request
@@ -110,6 +115,7 @@ class LicenseGuard implements Guard {
         $this->attempted = true;
 
         if( empty( $key ) ) {
+            $this->errorCode = 'license_empty';
             $this->errorMessage = 'Please provide a valid license key.';
             return false;
         }
@@ -118,12 +124,8 @@ class LicenseGuard implements Guard {
         $license = License::where('license_key', $key)->with('user')->first();
 
         if( ! $license ) {
-            $this->errorMessage = sprintf( "Your license seems to be invalid. Please check <a href=\"%s\">your account</a> for the correct license key.", domain_url( '/', 'account' ) );
-            return false;
-        }
-
-        if( $license->isExpired() ) {
-            $this->errorMessage = sprintf( "Your license expired on %s. Would you like to <a href=\"%s\">renew it now</a>?", $license->expires_at->format('F j, Y'), domain_url( '/licenses/' . $license->id, 'account' ) );
+            $this->errorCode = 'license_invalid';
+            $this->errorMessage = sprintf( "Your license key seems to be invalid. Please check <a href=\"%s\">your account</a> for the correct license key.", domain_url( '/', 'account' ) );
             return false;
         }
 
@@ -160,13 +162,6 @@ class LicenseGuard implements Guard {
     }
 
     /**
-     * @return string
-     */
-    public function getErrorMessage() {
-        return $this->errorMessage;
-    }
-
-    /**
      * Get the token for the current request.
      *
      * @return string
@@ -198,5 +193,19 @@ class LicenseGuard implements Guard {
 
         $key = $this->getTokenForRequest();
         $this->attempt( $key );
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrorMessage() {
+        return $this->errorMessage;
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrorCode() {
+        return $this->errorCode;
     }
 }
