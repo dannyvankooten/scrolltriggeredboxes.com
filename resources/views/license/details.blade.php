@@ -67,7 +67,7 @@
                 @endif
             @endif
 
-            @if( ! $license->subscription || ! $license->subscription->active )
+            @if( ! $license->hasActiveSubscription() || $license->isExpired() )
             <tr>
                 <th>Expire{{ $license->isExpired() ? 'd' : 's' }}</th>
                 <td>
