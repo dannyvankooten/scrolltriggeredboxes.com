@@ -129,5 +129,12 @@ class License extends Model {
 
 		return $key;
 	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasActiveSubscription() {
+		return $this->subscription && $this->subscription->active;
+	}
 	
 }
