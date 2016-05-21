@@ -77,6 +77,11 @@ class LicenseController extends Controller {
 		} catch( Exception $e ) {
 			$errorMessage = $e->getMessage();
 			$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
+
+			// write to log
+			$price = $purchaser->calculatePrice($quantity, $interval);
+			$this->log->error( sprintf( 'Payment of USD%s for %s failed: %s', $price, $user->email, $e->getMessage() ) );
+
 			return $redirector->back()->with('error', $errorMessage );
 		}
 

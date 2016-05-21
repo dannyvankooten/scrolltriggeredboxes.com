@@ -153,8 +153,8 @@ class AccountController extends Controller {
 		try {
 			$user = $charger->customer($user, $request->input('payment_token'));
 		} catch( Exception $e ) {
-			$errorMessage = $e->getMessage();
-			return $redirector->back()->with('error', $errorMessage );
+			$this->log->error( 'Payment customer creation failed: ' . $e->getMessage() );
+			return $redirector->back()->with('error', $e->getMessage() );
 		}
 
 		$user->card_last_four = $request->input('user.card_last_four');
@@ -221,19 +221,27 @@ class AccountController extends Controller {
 		// log user in automatically
 		$this->auth->loginUsingId($user->id);
 
+		// create customer for payments
 		try {
-			// create customer in Stripe
 			$purchaser->user($user, $request->input('payment_token'));
 			$this->log->info( sprintf( 'New user registration: #%d  %s <%s>', $user->id, $user->name, $user->email ) );
+		} catch( Exception $e ) {
+			$this->log->error( 'Payment customer creation failed: ' . $e->getMessage() );
+			return $redirector->to('/edit/payment')->with('error', $e->getMessage());
+		}
 
-			// proceed with charge
-			$quantity = (int) $request->input('quantity', 1);
-			$interval = $request->input('interval', 'year') == 'month' ? 'month' : 'year';
+		// proceed with payment + creating license
+		$quantity = (int) $request->input('quantity', 1);
+		$interval = $request->input('interval', 'year') == 'month' ? 'month' : 'year';
 
+		try {
 			$license = $purchaser->license($user, $quantity, $interval);
 		} catch( Exception $e ) {
 			$errorMessage = $e->getMessage();
 			$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
+
+			$price = $purchaser->calculatePrice($quantity, $interval);
+			$this->log->error( sprintf( 'Payment of USD%s for %s failed: %s', $price, $user->email, $e->getMessage() ) );
 			return $redirector->back()->with('error', $errorMessage );
 		}
 
