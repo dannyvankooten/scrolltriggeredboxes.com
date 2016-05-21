@@ -7,6 +7,7 @@ use App\Services\Charger;
 use App\Subscription;
 use Illuminate\Console\Command;
 use DateTime;
+use Carbon\Carbon;
 use Exception;
 
 class ChargeSubscriptions extends Command
@@ -66,11 +67,16 @@ class ChargeSubscriptions extends Command
         foreach( $subscriptions as $subscription ) {
 
             /** @var Subscription $subscription */
-            if( ! $subscription->shouldTryPayment( $todayEnd ) ) {
+
+            // should we charge this subscription today?
+            if( ! $this->shouldCharge( $subscription ) ) {
+                $this->info( sprintf( 'Skipping subscription %d. ', $subscription->id ) );
                 continue;
             }
 
-            if( ! $this->charger->chargable( $subscription ) ) {
+            // is subscription even chargeable?
+            if( ! $this->charger->chargeable( $subscription ) ) {
+                $this->warn( sprintf( 'No valid payment method registered for subscription %d. ', $subscription->id ) );
                 continue;
             }
 
@@ -86,6 +92,14 @@ class ChargeSubscriptions extends Command
             // print some info
             $this->info("Successfully renewed license #{$subscription->license->id}");
         }
+    }
 
+    /**
+     * @param Subscription $subscription
+     * 
+     * @return bool
+     */
+    public function shouldCharge( Subscription $subscription ) {
+        return $subscription->next_charge_at->isToday() || ( $subscription->next_charge_at->diffInDays() % 3 ) === 0;
     }
 }

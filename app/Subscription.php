@@ -72,20 +72,7 @@ class Subscription extends Model {
 		return $this->isPaymentDue() ? new DateTime('now') : $this->next_charge_at;
 	}
 
-	/**
-	 * @param DateTime $date
-	 *
-	 * @return boolean
-	 */
-	public function shouldTryPayment( $date ) {
-
-		if( $date instanceof DateTime ) {
-			$date = Carbon::instance( $date );
-		}
-		
-		return ( $this->next_charge_at->diffInDays( $date ) % 4 ) === 0;
-	}
-
+	
 	/**
 	 * @return double
 	 */
