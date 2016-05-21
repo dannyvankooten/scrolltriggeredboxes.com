@@ -203,7 +203,7 @@ class Charger {
      * 
      * @return boolean
      */
-    public function chargable( Subscription $subscription ) {
+    public function chargeable( Subscription $subscription ) {
         return ! empty( $subscription->user->stripe_customer_id );
     }
 
