@@ -16,7 +16,6 @@ class Kernel extends ConsoleKernel {
 	protected $commands = [
 		ChargeSubscriptions::class,
 		CreateInvoices::class,
-		SendOwlSubscriptions::class,
 	];
 
 	/**
