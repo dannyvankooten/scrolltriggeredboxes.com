@@ -35,7 +35,11 @@
 
     <p>If you need help installing a plugin, please have a look at the <a href="https://kb.boxzillaplugin.com/installing-add-on-plugins/">installation instructions</a>.</p>
     @else
-    <p>It seems you have no valid license. Please <a href="{{ domain_url('/pricing') }}">purchase one of the premium plans in order to get access to the premium add-on plugins</a>.</p>
+
+        <div class="notice notice-warning">
+            <p>It seems you have no valid license.</p>
+            <p>Please <a href="/licenses/">purchase a license</a> to get access to the premium add-on plugins.</p>
+        </div>
     @endif
 
     <div class="medium-margin">

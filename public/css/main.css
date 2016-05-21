@@ -483,19 +483,21 @@ button[disabled] {
 
 .notice {
   border: 1px solid #ddd;
-  padding: 16px 16px 16px 16px;
+  padding: 16px 96px 16px 16px;
   margin-bottom: 20px;
   width: 100%;
   position: relative;
   vertical-align: top; }
   .notice:before {
     font-family: "FontAwesome";
-    margin-right: 8px;
-    font-size: 22px;
-    display: inline;
-    line-height: 0;
-    vertical-align: middle; }
+    font-size: 24px;
+    position: absolute;
+    top: 50%;
+    right: 24px;
+    line-height: 0; }
   .notice ul {
+    margin-bottom: 0; }
+  .notice > *:last-child {
     margin-bottom: 0; }
 
 .notice-success {
