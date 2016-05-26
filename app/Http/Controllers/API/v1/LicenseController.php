@@ -152,8 +152,18 @@ class LicenseController extends Controller {
      * @return string
      */
     protected function getDomainFromSiteUrl( $siteUrl ) {
+
+        // set default http:// scheme as it's irrelevant
         $siteUrl = 'http://' . str_replace( array( 'http://', 'https://', '://' ), '', $siteUrl );
+
+        // parse the host
         $domain = parse_url( $siteUrl, PHP_URL_HOST );
+
+        // strip www prefix
+        $domain = str_ireplace( 'www.', '', $domain );
+
+        // TODO: Parse top level subdomain only
+
         return $domain;
     }
 
