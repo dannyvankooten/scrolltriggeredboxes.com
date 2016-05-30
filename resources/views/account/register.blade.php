@@ -150,7 +150,7 @@
                     <div class="col col-3">
                         <div class="form-group">
                             <label>VAT Number <span class="small pull-right muted">(optional)</span></label>
-                            <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" placeholder="VAT Number" />
+                            <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" placeholder="VAT Number" class="vat-number-input" />
                         </div>
                     </div>
                 </div>
@@ -239,6 +239,31 @@
 @section('foot')
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script>
+    function validateVatNumber() {
+        var input = this;
+        var url = '{{ domain_url( '/v1', 'api' ) }}/vat/validate/' + input.value;
+        var request = new XMLHttpRequest();
+        input.className = input.className.replace('valid', '').replace('invalid', '');
+
+        if( input.value.length < 1 ) {
+            return;
+        }
+
+        request.onreadystatechange = function() {
+            if( request.readyState == XMLHttpRequest.DONE && request.status == 200 ) {
+                var data = JSON.parse(request.responseText);
+                input.className = input.className + ' ' + ( data.valid ? 'valid' : 'invalid' );
+            }
+        };
+        request.open('GET', url);
+        request.send();
+    }
+
     Stripe.setPublishableKey('{{ config('services.stripe.key') }}');
+
+    var inputs = document.querySelectorAll('.vat-number-input');
+    [].forEach.call( inputs, function(input) {
+       input.addEventListener('change', validateVatNumber);
+    });
 </script>
 @stop
