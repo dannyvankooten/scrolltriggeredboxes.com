@@ -1,5 +1,6 @@
 <?php namespace App\Http;
 
+use App\Http\Middleware\SetApiAccessControlHeaders;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel {
@@ -28,7 +29,7 @@ class Kernel extends HttpKernel {
 			\App\Http\Middleware\VerifyCsrfToken::class,
 		],
 		'api' => [
-			
+			SetApiAccessControlHeaders::class,
 		],
 		'admin' => [
 			\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
