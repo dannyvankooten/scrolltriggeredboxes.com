@@ -24,25 +24,36 @@ var askForConfirmation = function(event) {
 });
 
 [].forEach.call( creditCardForms, function(form) {
+
+    var creditCardInput = form.querySelector('[data-stripe="number"]');
+    creditCardInput.addEventListener('change', function() {
+        var valid = Stripe.card.validateCardNumber(this.value);
+
+        if( ! valid ) {
+            this.className = this.className + ' invalid';
+        } else {
+            this.className = this.className.replace('invalid', '');
+        }
+    });
+
+
     form.addEventListener('submit', function(event) {
-        var form = this;
+        var form = event.form || event.target || this.form || this;
         event.preventDefault();
 
-        // soft-validate credit card
-        var creditCardNumber = form.querySelector('[data-stripe="number"]').value.trim();
-        if( ! Stripe.card.validateCardNumber(creditCardNumber) ) {
-            helpers.showFormError(form, "That credit card number doesn't seem right, sorry.");
-            return false;
+        // validate expiry date
+        var creditCardInput = form.querySelector('[data-stripe="number"]');
+        var monthInput = form.querySelector('[data-stripe="exp_month"]');
+        var yearInput = form.querySelector('[data-stripe="exp_year"]');
+
+        if( ! Stripe.card.validateCardNumber(creditCardInput.value) ) {
+            helpers.showFormError(form, 'That card number does not look right, sorry.');
+            return;
         }
 
-        // validate cvc
-        var exp = {
-            month: form.querySelector('[data-stripe="exp_month"]').value.trim(),
-            year: form.querySelector('[data-stripe="exp_year"]').value.trim()
-        };
-        if( ! Stripe.card.validateExpiry(exp.month, exp.year) ) {
-            helpers.showFormError(form, "That expiration date doesn't seem right, sorry.");
-            return false;
+        if( ! Stripe.card.validateExpiry(monthInput.value, yearInput.value) ) {
+            helpers.showFormError(form, 'That expiry date does not look right, sorry.');
+            return;
         }
 
         // disable button
