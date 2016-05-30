@@ -63,6 +63,8 @@ $router->group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', '
 	$router->get( '/plugins/{id}', 'PluginController@get' );
 	$router->get( '/plugins/{id}/download', 'PluginController@download' );
 
+	$router->get('/vat/validate/{number}', 'VatController@validate' );
+
 	$router->any( '/helpscout', 'HelpScoutController@get' );
 } );
 
