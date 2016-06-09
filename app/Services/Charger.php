@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Contracts\Logging\Log;
 use InvalidArgumentException;
 use App\Jobs\CreatePaymentCreditInvoice;
 use App\Jobs\CreatePaymentInvoice;
@@ -10,6 +11,7 @@ use App\Subscription;
 use App\Payment;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
+
 use Stripe\Error\InvalidRequest;
 use Stripe\Stripe;
 use DateTime;
@@ -20,12 +22,19 @@ class Charger {
     use DispatchesJobs;
 
     /**
+     * @var Log
+     */
+    protected $logger;
+
+    /**
      * Charger constructor.
      *
      * @param string $stripeSecret
+     * @param Log $logger
      */
-    public function __construct( $stripeSecret ) {
+    public function __construct( $stripeSecret, Log $logger ) {
         Stripe::setApiKey( $stripeSecret );
+        $this->logger = $logger;
     }
 
     /**
@@ -69,6 +78,7 @@ class Charger {
 
         if( $user->stripe_customer_id ) {
             $customer = $this->updateCustomer( $user->stripe_customer_id, $customerData );
+            $this->logger->info( sprintf( 'Updated Stripe customer %s from user %s', $user->stripe_customer_id, $user->email ) );
         } else {
             // token is required for new customers
             if( empty(  $customerData['source'] ) ) {
@@ -76,6 +86,7 @@ class Charger {
             }
 
             $customer = $this->createCustomer( $customerData );
+            $this->logger->info( sprintf( 'Created Stripe customer %s from user %s', $customer->id, $user->email ) );
         }
 
         $user->stripe_customer_id = $customer->id;
@@ -96,20 +107,24 @@ class Charger {
             'reason' => 'requested_by_customer'
         );
 
-
+        // refund payment in stripe
         $refund = \Stripe\Refund::create($args);
 
+        // delete local payment
         $payment->delete();
 
+        // subtract one interval from license expiration date
         $subscription = $payment->subscription;
         $license = $subscription->license;
-
-        // substract one interval from license expiration date
         $license->expires_at = $license->expires_at->modify("-1 {$subscription->interval}");
         $license->save();
 
         // dispatch job to create an invoice for this payment
         $this->dispatch(new CreatePaymentCreditInvoice($payment));
+
+        // log some info
+        $user = $payment->user;
+        $this->logger->info( sprintf( 'Refunded a total amount of %s for user %s', $payment->getCurrencySign() . $payment->getTotal(), $user->email ) );
 
         return false;
     }
@@ -150,8 +165,10 @@ class Charger {
             $data['metadata'] = $metadata;
         }
 
+        // charge credit card in Stripe
         $charge = \Stripe\Charge::create($data);
 
+        // create local payment
         $payment = new Payment();
         $payment->user_id = $user->id;
         $payment->subtotal = $amount;
@@ -161,6 +178,9 @@ class Charger {
 
         // dispatch job to create an invoice for this payment
         $this->dispatch(new CreatePaymentInvoice($payment));
+
+        // log
+        $this->logger->info( sprintf( 'Charged %s for user %s', $payment->getCurrencySign() . $payment->getTotal(), $user->email ) );
 
         return $payment;
     }

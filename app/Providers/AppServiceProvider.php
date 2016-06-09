@@ -5,6 +5,7 @@ use App\Services\Invoicer\Moneybird;
 use App\Services\Purchaser;
 use App\Services\TaxRateResolver;
 use HelpScoutApp\DynamicApp;
+use Illuminate\Contracts\Logging\Log;
 use Illuminate\Support\ServiceProvider;
 use GuzzleHttp;
 
@@ -49,7 +50,8 @@ class AppServiceProvider extends ServiceProvider {
 
 		$this->app->singleton( Charger::class, function ($app) {
 			$stripeSecret = config('services.stripe.secret');
-			return new Charger( $stripeSecret );
+			$log = $app[Log::class];
+			return new Charger( $stripeSecret, $log );
 		});
 
 		$this->app->singleton( Purchaser::class, function ($app) {
