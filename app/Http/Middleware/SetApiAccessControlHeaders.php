@@ -22,6 +22,12 @@ class SetApiAccessControlHeaders
 
         /** @var Response $response */
         $response = $next($request);
+
+        // only set headers if this method exists (it doesn't for BinaryFileResponse)
+        if( ! method_exists( $response, 'header' ) ) {
+            return $response;
+        }
+
         foreach( $origins as $origin ) {
             $response->header( 'Access-Control-Allow-Origin', rtrim( $origin, '/' ) );
         }
