@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Contracts\Auth\Guard;
 
-class Admin {
+class VerifyUserIsAdmin {
 
 	/**
 	 * @var Guard
