@@ -11,7 +11,7 @@
         "graham-campbell/markdown": "^6.0",
         "helpscout/apps": "^1.1",
 		"graham-campbell/github": "^4.2",
-		"stripe/stripe-php": "^3.13",
+		"stripe/stripe-php": "^3.14",
 		"dannyvankooten/laravel-vat": "dev-master",
 		"doctrine/dbal": "^2.5"
 	},
