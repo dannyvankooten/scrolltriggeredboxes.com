@@ -46,7 +46,7 @@ class Payment extends Model
 	 * @return double
 	 */
 	public function getSubtotal() {
-		return $this->total;
+		return $this->subtotal;
 	}
 
 	/**
