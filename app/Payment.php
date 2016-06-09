@@ -79,7 +79,11 @@ class Payment extends Model
 			'EUR' => '€'
 		];
 
-		return $map[ $this->currency ];
+		if( ! empty( $this->currency ) ) {
+			return $map[ $this->currency ];
+		}
+
+		return '$';
 	}
 
 	/**
