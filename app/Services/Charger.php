@@ -153,7 +153,7 @@ class Charger {
         }
 
         // calculate amount in cents
-        $amountInCents = $amount * 100;
+        $amountInCents = round( $amount * 100 );
 
         $data = [
             "amount" => $amountInCents,
