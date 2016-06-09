@@ -10,6 +10,7 @@ use DateTime;
  *
  * @package App
  *
+ * @property int $id
  * @property User $user
  * @property License $license
  * @property Payment[] $payments
