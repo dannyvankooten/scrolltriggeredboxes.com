@@ -99,7 +99,7 @@ class Subscription extends Model {
 	 * Gets the amount for this subscription incl. VAT
 	 */
 	public function getAmountInclTax() {
-		return $this->getAmount() + $this->getTaxAmount();
+		return round( $this->getAmount() + $this->getTaxAmount(), 2 );
 	}
 
 	/**
