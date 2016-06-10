@@ -1,7 +1,7 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use DateTime;
+use Carbon\Carbon;
 
 /**
  * Class Payment
@@ -14,8 +14,8 @@ use DateTime;
  * @property double $tax
  * @property string $moneybird_invoice_id
  * @property string $stripe_id
- * @property DateTime $created_at
- * @property DateTime $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property int $user_id
  * @property int $subscription_id
  */
