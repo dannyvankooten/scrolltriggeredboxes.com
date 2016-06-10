@@ -184,6 +184,7 @@ class Charger {
 
         // create local payment
         $payment = new Payment();
+        $payment->currency = 'USD';
         $payment->user_id = $user->id;
         $payment->subtotal = $amount;
         $payment->tax = $tax;
