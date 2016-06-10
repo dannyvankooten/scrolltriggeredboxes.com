@@ -33,6 +33,7 @@ class PaymentController extends Controller {
      * @return mixed
      */
     public function overview() {
+        /** @var User $user */
         $user = $this->auth->user();
         $payments = Payment::where('user_id', $user->id)
             ->with('subscription.license')
