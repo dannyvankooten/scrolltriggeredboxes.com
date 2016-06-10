@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Events\SubscriptionChargeFailed;
 use App\Services\Payments\Charger;
+use App\Services\Payments\PaymentException;
 use App\Subscription;
 use Illuminate\Console\Command;
 use DateTime;
@@ -76,6 +77,7 @@ class ChargeSubscriptions extends Command
 
             // is subscription even chargeable?
             if( ! $this->charger->chargeable( $subscription ) ) {
+                // TODO: Warn user about this
                 $this->warn( sprintf( 'No valid payment method registered for subscription %d. ', $subscription->id ) );
                 continue;
             }
@@ -83,7 +85,7 @@ class ChargeSubscriptions extends Command
             // charge
             try {
                 $success = $this->charger->subscription( $subscription );
-            } catch( Exception $e ) {
+            } catch( PaymentException $e ) {
                 $this->error( sprintf( 'Charge for subscription #%d failed because of error: %s', $subscription->id, $e->getMessage() ) );
                 event(new SubscriptionChargeFailed($subscription));
                 continue;
