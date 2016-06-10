@@ -8,6 +8,7 @@ use App\License;
 use App\Subscription;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use DateTime;
+use App\Services\Payments\Charger;
 
 class Purchaser {
 

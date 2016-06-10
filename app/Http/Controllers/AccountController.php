@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\UpdateInvoiceContact;
 use App\Jobs\UpdateStripeCustomer;
-use App\Services\Charger;
+use App\Services\Payments\Charger;
 use App\Services\Purchaser;
 use App\User;
 use Exception;

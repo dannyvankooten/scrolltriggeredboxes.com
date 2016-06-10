@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\Payment;
-use App\Services\Charger;
+use App\Services\Payments\Charger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 

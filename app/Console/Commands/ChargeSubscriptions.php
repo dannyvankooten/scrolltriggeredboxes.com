@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Events\SubscriptionChargeFailed;
-use App\Services\Charger;
+use App\Services\Payments\Charger;
 use App\Subscription;
 use Illuminate\Console\Command;
 use DateTime;

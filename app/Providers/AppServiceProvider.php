@@ -1,6 +1,6 @@
 <?php namespace App\Providers;
 
-use App\Services\Charger;
+use App\Services\Payments\Charger;
 use App\Services\Invoicer\Moneybird;
 use App\Services\Purchaser;
 use App\Services\TaxRateResolver;

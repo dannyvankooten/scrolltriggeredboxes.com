@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Payments;
 
 use Illuminate\Contracts\Logging\Log;
 use InvalidArgumentException;
@@ -12,10 +12,12 @@ use App\Payment;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
+use Stripe;
 use Stripe\Error\InvalidRequest;
-use Stripe\Stripe;
 use DateTime;
 use Exception;
+
+use Stripe\Error\Base as StripeException;
 
 class Charger {
 
@@ -33,7 +35,7 @@ class Charger {
      * @param Log $logger
      */
     public function __construct( $stripeSecret, Log $logger ) {
-        Stripe::setApiKey( $stripeSecret );
+        Stripe\Stripe::setApiKey( $stripeSecret );
         $this->logger = $logger;
     }
 
@@ -80,6 +82,7 @@ class Charger {
             $customer = $this->updateCustomer( $user->stripe_customer_id, $customerData );
             $this->logger->info( sprintf( 'Updated Stripe customer %s from user %s', $user->stripe_customer_id, $user->email ) );
         } else {
+
             // token is required for new customers
             if( empty(  $customerData['source'] ) ) {
                 throw new InvalidArgumentException( 'Invalid card details.' );
@@ -99,6 +102,8 @@ class Charger {
      * @param Payment $payment
      *
      * @return boolean
+     *
+     * @throws PaymentException
      */
     public function refund( Payment $payment )
     {
@@ -108,7 +113,11 @@ class Charger {
         );
 
         // refund payment in stripe
-        $refund = \Stripe\Refund::create($args);
+        try {
+            $refund = Stripe\Refund::create($args);
+        } catch( StripeException $e ) {
+            throw new PaymentException( $e->getMessage(), $e->getCode() );
+        }
 
         // delete local payment
         $payment->delete();
@@ -141,7 +150,7 @@ class Charger {
     public function charge( User $user, $amount, $metadata = array() ) {
 
         if( empty( $user->stripe_customer_id ) ) {
-            throw new Exception( "Invalid payment method.");
+            throw new PaymentException( "Invalid payment method.", 000 );
         }
 
         // add tax
@@ -166,7 +175,11 @@ class Charger {
         }
 
         // charge credit card in Stripe
-        $charge = \Stripe\Charge::create($data);
+        try {
+            $charge = Stripe\Charge::create($data);
+        } catch( StripeException $e ) {
+            throw new PaymentException( $e->getMessage(), $e->getCode() );
+        }
 
         // create local payment
         $payment = new Payment();
@@ -200,9 +213,11 @@ class Charger {
         $today = new DateTime("now");
         $intervalString = "+1 {$subscription->interval}";
 
-        $this->charge( $user, $subscription->getAmount(), array(
+        $payment = $this->charge( $user, $subscription->getAmount(), array(
             "subscription_id" => $subscription->id
         ));
+        $payment->subscription_id = $subscription->id;
+        $payment->save();
 
         // success! extend license
         $license = $subscription->license;
@@ -231,14 +246,22 @@ class Charger {
      * @param array $data
      *
      * @return \Stripe\Customer
+     *
+     * @throws PaymentException
+     * @throws InvalidArgumentException
      */
     private function createCustomer( array $data )
     {
         if( empty( $data['source'] ) ) {
-            throw new \InvalidArgumentException('A payment token must be given to create a new customer in Stripe.');
+            throw new InvalidArgumentException('A payment token must be given to create a new customer in Stripe.');
         }
 
-        $customer = \Stripe\Customer::create($data);
+        try {
+            $customer = Stripe\Customer::create($data);
+        } catch( StripeException $e ) {
+            throw new PaymentException( $e->getMessage(), $e->getCode() );
+        }
+
         return $customer;
     }
 
@@ -248,18 +271,21 @@ class Charger {
      *
      * @return \Stripe\Customer
      *
-     * @throws InvalidRequest
+     * @throws PaymentException
      */
     private function updateCustomer( $id, array $data )
     {
         try {
-            $customer = \Stripe\Customer::retrieve($id);
+            $customer = Stripe\Customer::retrieve($id);
         } catch( InvalidRequest $e ) {
+            //  customer does not exist in stripe, so create it.
             if( $e->getHttpStatus() == 404 ) {
                 return $this->createCustomer( $data );
             }
 
-            throw $e;
+            throw new PaymentException( $e->getMessage(), $e->getCode() );
+        } catch( StripeException $e ) {
+            throw new PaymentException( $e->getMessage(), $e->getCode() );
         }
 
         foreach( $data as $property => $value ) {
@@ -269,7 +295,6 @@ class Charger {
         }
 
         $customer->save();
-
         return $customer;
     }
 

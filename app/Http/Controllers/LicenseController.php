@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Activation;;
-use App\Services\Charger;
+use App\Services\Payments\Charger;
+use App\Services\Payments\PaymentException;
 use App\Services\Purchaser;
 use App\Subscription;
 use App\User;
@@ -74,7 +75,7 @@ class LicenseController extends Controller {
 
 		try {
 			$license = $purchaser->license($user, $quantity, $interval);
-		} catch( Exception $e ) {
+		} catch( PaymentException $e ) {
 			$errorMessage = $e->getMessage();
 			$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
 
@@ -149,7 +150,7 @@ class LicenseController extends Controller {
 		if( $subscription->isActive() && $subscription->isPaymentDue() ) {
 			try {
 				$charger->subscription( $subscription );
-			} catch( Exception $e ) {
+			} catch( PaymentException $e ) {
 				$errorMessage = $e->getMessage();
 				$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
 
