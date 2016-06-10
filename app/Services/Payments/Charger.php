@@ -152,20 +152,21 @@ class Charger {
         if( empty( $user->stripe_customer_id ) ) {
             throw new PaymentException( "Invalid payment method.", 000 );
         }
-
+        
         // add tax
+        $amountInclTax = $amount;
         $taxRate = $user->getTaxRate();
         $tax = 0.00;
         if( $taxRate > 0 ) {
             $tax = $amount * ( $taxRate / 100 );
-            $amount = $amount + $tax;
+            $amountInclTax = $amount + $tax;
         }
 
         // calculate amount in cents
-        $amountInCents = round( $amount * 100 );
+        $amountInclTaxInCents = round( $amountInclTax * 100 );
 
         $data = [
-            "amount" => $amountInCents,
+            "amount" => $amountInclTaxInCents,
             "currency" => "USD",
             "customer" => $user->stripe_customer_id,
         ];
