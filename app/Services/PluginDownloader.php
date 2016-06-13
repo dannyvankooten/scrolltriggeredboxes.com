@@ -57,13 +57,11 @@ class PluginDownloader {
             $client = new GuzzleHttp\Client();
 
             try {
-                $res = $client->request( 'GET', $this->plugin->getDownloadUrl( $version ) );
+                $res = $client->request( 'GET', $this->plugin->getDownloadUrl( $version ), [ 'sink' => $filename ] );
             } catch( GuzzleHttp\Exception\ClientException $e ) {
                 abort( $e->getCode() );
                 exit;
             }
-
-            file_put_contents( $filename, $res->getBody() );
 
             // open zip & rename index directory because WordPress expects plugin slug as directory name.
             $zip = new \ZipArchive;
