@@ -13,6 +13,7 @@ class LicenseController extends Controller {
 
 		$query = License::query();
 		$query->with('user');
+		$query->orderBy('created_at', 'desc');
 
 		$filters = $request->query->get('filter', []);
 

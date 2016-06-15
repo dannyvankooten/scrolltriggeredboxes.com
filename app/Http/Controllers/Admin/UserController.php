@@ -10,6 +10,7 @@ class UserController extends Controller {
     public function overview( Request $request ) {
 
         $query = User::query();
+        $query->orderBy('created_at', 'desc');
 
         $filters = $request->query->get('filter', []);
 
