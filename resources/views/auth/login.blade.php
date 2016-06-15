@@ -19,7 +19,7 @@
                 <label for="loginInputEmail">Email address</label>
 
                 <div class="form-element">
-                    <input type="email" name="email" class="form-control" id="loginInputEmail" value="{{ Request::input('email') }}" placeholder="Enter email">
+                    <input type="email" name="email" class="form-control" id="loginInputEmail" value="{{ request('email', old('email')) }}" placeholder="Enter email">
                     <i class="fa fa-at form-element-icon"></i>
                 </div>
             </div>
