@@ -79,7 +79,7 @@ class Subscription extends Model {
 	 * @return double
 	 */
 	public function getAmount() {
-		return $this->amount;
+		return round( $this->amount, 2 );
 	}
 
 	/**
@@ -94,14 +94,35 @@ class Subscription extends Model {
 			$taxAmount = $this->amount * ( $taxRate / 100 );
 		}
 
-		return $taxAmount;
+		return round( $taxAmount, 2 );
 	}
 
 	/**
 	 * Gets the amount for this subscription incl. VAT
 	 */
 	public function getAmountInclTax() {
-		return round( $this->getAmount() + $this->getTaxAmount(), 2 );
+		return $this->getAmount() + $this->getTaxAmount();
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFormattedAmount() {
+		return '$' . $this->getAmount();
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFormattedTaxAmount() {
+		return '$' . $this->getTaxAmount();
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getFormattedAmountInclTax() {
+		return '$' . $this->getAmountInclTax();
 	}
 
 	/**
