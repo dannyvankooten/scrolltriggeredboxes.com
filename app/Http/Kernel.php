@@ -33,7 +33,9 @@ class Kernel extends HttpKernel {
 		],
 		'admin' => [
 			Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-			Middleware\VerifyUserIsAdmin::class
+			Illuminate\Session\Middleware\StartSession::class,
+			Middleware\VerifyUserIsAdmin::class,
+			Middleware\VerifyCsrfToken::class,
 		]
 	];
 
