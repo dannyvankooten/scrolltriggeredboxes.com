@@ -7,20 +7,24 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class LicenseController extends Controller {
+	
+	// show license overview
+	public function overview( Request $request ) {
 
-	/**
-	 * LicenseController constructor.
-	 */
-	public function __construct() {
-		
-	}
+		$query = License::query();
+		$query->with('user');
 
+		$filters = $request->query->get('filter', []);
 
-	/**
- * @return \Illuminate\View\View
- */
-	public function overview() {
-		$licenses = License::with('user')->get();
+		// apply filters
+		foreach( $filters as $filter => $value ) {
+			if( ! empty( $value ) ) {
+				$value = str_replace( '*', '%', $value );
+				$query->where( $filter, 'LIKE', $value );
+			}
+		}
+
+		$licenses = $query->get();
 		return view( 'admin.licenses.overview', [ 'licenses' => $licenses ] );
 	}
 

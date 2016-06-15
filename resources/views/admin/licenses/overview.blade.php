@@ -5,7 +5,28 @@
 @section('content')
 
     <div class="container">
+
+        <!-- Filter form -->
+        <form method="get" class="well">
+            <h4 onclick="var el = document.getElementById('filter-form'); el.style.display = ( el.style.display == 'none' ) ? '' : 'none';" style="cursor: pointer; margin: 0;">
+                Filter results.. &nbsp;
+                <i class="fa fa-search" aria-hidden="true"></i>
+            </h4>
+            <div id="filter-form" style="{{ request('filter') ? '' : 'display: none;' }}">
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>License Key</label>
+                    <input type="text" name="filter[license_key]" value="{{ request('filter.email') }}" placeholder="Filter by key" />
+                </div>
+
+                <input type="submit" class="button" value="Filter" />
+                @if( request('filter') )
+                    &nbsp; <a href="?">Clear filters</a>
+                @endif
+            </div>
+        </form>
+
         <h1>Licenses</h1>
+        <p>{{ count( $licenses ) }} licenses found.</p>
 
         <table class="table table-striped">
             <thead>
