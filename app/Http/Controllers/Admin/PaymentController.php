@@ -15,7 +15,7 @@ class PaymentController extends Controller {
      * 
      * @return RedirectResponse
      */
-    public function delete( $id, Redirector $redirector, Charger $charger  ) {
+    public function destroy( $id, Redirector $redirector, Charger $charger  ) {
 
         $payment = Payment::findOrFail( $id );
         $charger->refund( $payment );

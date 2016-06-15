@@ -102,6 +102,12 @@ input[type="submit"].button-secondary,
   border: 2px solid $secondary_color;
 }
 
+input[type="submit"].button-danger,
+.button-danger {
+  background: red;
+  border: 2px solid red;
+}
+
 input[type="submit"].button-secondary:focus,
 input[type="submit"].button-secondary:hover,
 .button-secondary:focus,

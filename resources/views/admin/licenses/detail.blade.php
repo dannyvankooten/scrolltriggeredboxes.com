@@ -7,10 +7,8 @@
     <div class="container">
 
         <div class="breadcrumbs bordered medium-padding small-margin">
-            <a href="/users">Users</a> &rightarrow; <a href="/users/{{$license->user->id }}">{{ $license->user->email }}</a> &rightarrow; License
+            <a href="/users">Users</a> &rightarrow; <a href="/users/{{$license->user->id }}">{{ $license->user->email }}</a> &rightarrow; License {{ $license->id }}
         </div>
-
-        <h1>License: <small><code>{{ $license->license_key }}</code></small></h1>
 
         @if (session('message'))
             <div class="bs-callout bs-callout-success">
@@ -20,7 +18,29 @@
 
         <div class="medium-margin"></div>
 
-        <h3>Activations</h3>
+        <h3>License &nbsp;<a href="/licenses/{{ $license->id }}/edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></h3>
+        <table class="table table-striped">
+            <tr>
+                <th>Key</th>
+                <td><code>{{ $license->license_key }}</code></td>
+            </tr>
+            <tr>
+                <th>Activations</th>
+                <td>{{ count($license->activations) . '/' . $license->site_limit }}</td>
+            </tr>
+            <tr>
+                <th>Created</th>
+                <td>{{ $license->created_at->format('Y-m-d') }}</td>
+            </tr>
+            <tr>
+                <th>Expires</th>
+                <td>{{ $license->expires_at->format('Y-m-d') }}</td>
+            </tr>
+        </table>
+
+        <div class="medium-margin"></div>
+
+        <h3>Activations <small>({{ count($license->activations) }}/{{ $license->site_limit }})</small></h3>
 
         <table class="table table-striped">
             <thead>
@@ -53,6 +73,7 @@
                 <td><span class="label {{ $license->subscription->active ? "success" : "warning" }}">{{ $license->subscription->active ? "Active" : "Inactive" }}</span></td>
                 <td>
                     <form method="POST" action="/subscriptions/{{ $license->subscription->id }}" data-confirm="Are you sure you want to toggle this subscription status?">
+                        {!! csrf_field() !!}
                         @if( $license->subscription->active )
                             <input type="hidden" name="subscription[active]" value="0" />
                             <button class="button-small">Deactivate</button>
@@ -62,11 +83,6 @@
                         @endif
                     </form>
                 </td>
-            </tr>
-            <tr>
-                <th>Expires</th>
-                <td>{{ $license->expires_at->format('Y-m-d') }}</td>
-                <td></td>
             </tr>
             <tr>
                 <th>Interval</th>
@@ -96,6 +112,7 @@
                     <td>{{ $payment->getCurrencySign() . ' ' . $payment->getTotal() }}</td>
                     <td>
                         <form method="POST" action="/payments/{{ $payment->id }}" data-confirm="Are you sure you want to refund this payment?">
+                            {!! csrf_field() !!}
                             <input type="hidden" name="_method" value="DELETE" />
                             <input class="button-small" type="submit" value="Refund" />
                         </form>
@@ -111,6 +128,16 @@
         @else
             <p>This license has no subscription.</p>
         @endif
+
+        <div class="medium-margin"></div>
+
+        <form method="post" action="/licenses/{{ $license->id }}">
+            {!! csrf_field() !!}
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" class="button button-small button-danger" value="Delete License" data-confirm="Are you sure you want to delete this license?" />
+        </form>
+
+        <div class="medium-margin"></div>
 
 
         <p><a href="javascript:history.go(-1);">&leftarrow; Go back.</a></p>

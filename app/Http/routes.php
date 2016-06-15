@@ -80,8 +80,12 @@ $router->group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['ad
 
 	$router->get( '/licenses', 'Admin\LicenseController@overview' );
 	$router->get( '/licenses/{id}', 'Admin\LicenseController@detail' );
+	$router->get( '/licenses/{id}/edit', 'Admin\LicenseController@edit' );
+	$router->put( '/licenses/{id}', 'Admin\LicenseController@update' );
+	$router->delete( '/licenses/{id}', 'Admin\LicenseController@destroy' );
 
 	$router->post( '/subscriptions/{id}', 'Admin\SubscriptionController@update' );
 
-	$router->delete( '/payments/{id}', 'Admin\PaymentController@delete' );
+	$router->delete( '/payments/{id}', 'Admin\PaymentController@destroy' );
+
 });

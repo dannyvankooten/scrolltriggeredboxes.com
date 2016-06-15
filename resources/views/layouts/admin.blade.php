@@ -39,11 +39,13 @@
 
 <div role="main" class="big-margin" itemprop="mainContentOfPage">
 
+    <div class="container">
     @if (session('message'))
         <div class="notice notice-success">
             {!! session('message') !!}
         </div>
     @endif
+    </div>
 
     @yield('content')
 </div>

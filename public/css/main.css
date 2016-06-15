@@ -449,6 +449,11 @@ input[type="submit"].button-secondary,
   background: #cc4444;
   border: 2px solid #cc4444; }
 
+input[type="submit"].button-danger,
+.button-danger {
+  background: red;
+  border: 2px solid red; }
+
 input[type="submit"].button-secondary:focus,
 input[type="submit"].button-secondary:hover,
 .button-secondary:focus,
