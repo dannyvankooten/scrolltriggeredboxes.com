@@ -8,7 +8,7 @@
 			padding: 0;
 			width: 100%;
 			height: 100%;
-			color: #999;
+			color: #AAA;
 			display: table;
 			font-weight: 300;
 			font-family: 'Lato';
@@ -45,8 +45,9 @@
 <body>
 <div class="container">
 	<div class="content">
-		<div class="title">We're doing some maintenance.</div>
-		<p>We should be back in a minute.</p>
+		<div class="title">Something went terribly wrong.</div>
+		<p>We've been notified of the error and will take a good look at it!</p>
+		<p><a href="javascript:history.go(-1);">&leftarrow; Back</a></p>
 	</div>
 </div>
 </body>
