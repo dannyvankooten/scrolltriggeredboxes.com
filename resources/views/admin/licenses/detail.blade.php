@@ -27,8 +27,8 @@
                 <td>{{ $license->created_at->format('Y-m-d') }}</td>
             </tr>
             <tr>
-                <th>Expires</th>
-                <td>{{ $license->expires_at->format('Y-m-d') }}</td>
+                <th>Expire{{ $license->isExpired() ? 'd' : 's' }}</th>
+                <td><span class="label {{ $license->isExpired() ? 'warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</td>
             </tr>
         </table>
 
