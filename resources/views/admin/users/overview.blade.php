@@ -49,7 +49,7 @@
             @forelse($users as $user)
                 <tr>
                     <td><a href="{{ url('/users/' . $user->id) }}">{{ $user->email }}</a></td>
-                    <td>{{ str_limit( $user->name, 18 ) }}</td>
+                    <td>{{ str_limit( $user->name, 22 ) }}</td>
                     <td>{{ $user->created_at->format('M j') }}</td>
                 </tr>
             @empty
