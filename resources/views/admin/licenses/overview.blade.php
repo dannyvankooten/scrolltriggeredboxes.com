@@ -25,7 +25,9 @@
             </div>
         </form>
 
-        <h1>Licenses</h1>
+        <div class="small-margin"></div>
+
+        <h1 class="page-title">Licenses</h1>
         <p>{{ count( $licenses ) }} licenses found.</p>
 
         <table class="table table-striped">
@@ -37,13 +39,13 @@
                     <th>Created</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody style="font-size: 15px;">
             @foreach($licenses as $license)
                 <tr>
                     <td><a href="{{ url('/licenses/' . $license->id) }}">{{ $license->license_key }}</a></td>
                     <td>{{ $license->user->email }}</td>
                     <td>{{ count( $license->activations ) . '/' . $license->site_limit }}</td>
-                    <td>{{ $license->created_at->format('Y-m-d') }}</td>
+                    <td>{{ $license->created_at->format('M j') }}</td>
                 </tr>
             @endforeach
             </tbody>

@@ -31,9 +31,9 @@
         </form>
 
 
-        <div class="medium-margin"></div>
+        <div class="small-margin"></div>
 
-        <h1>Users</h1>
+        <h1 class="page-title">Users</h1>
 
         <p>{{ count( $users ) }} users found.</p>
 
@@ -45,12 +45,12 @@
                     <th>Joined</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody style="font-size: 15px;">
             @forelse($users as $user)
                 <tr>
                     <td><a href="{{ url('/users/' . $user->id) }}">{{ $user->email }}</a></td>
                     <td>{{ $user->name }}</td>
-                    <td>{{ $user->created_at->format('F d, Y') }}</td>
+                    <td>{{ $user->created_at->format('M j') }}</td>
                 </tr>
             @empty
                 <tr>
