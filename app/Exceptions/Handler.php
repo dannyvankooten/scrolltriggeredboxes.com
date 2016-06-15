@@ -3,6 +3,7 @@
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -56,8 +57,10 @@ class Handler extends ExceptionHandler {
 		}
 
 
-		// turn regular exception into 500 exceptions.
-		if (!$this->isHttpException($e)) $e = new HttpException(500);
+		// some customized errors
+		if( $e instanceof TokenMismatchException ) {
+			$e = new HttpException(403);
+		}
 
 		return parent::render($request, $e);
 	}
