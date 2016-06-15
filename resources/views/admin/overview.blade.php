@@ -64,7 +64,7 @@
                     <tbody>
                     @foreach($recentActivations as $activation)
                         <tr>
-                            <td><a href="{{ $activation->domain }}">{{ str_limit( $activation->domain, 18 ) }}</a></td>
+                            <td><a href="http://{{ $activation->domain }}">{{ str_limit( $activation->domain, 18 ) }}</a></td>
                             <td>{{ count($activation->license->activations) . '/' . $activation->license->site_limit }}</td>
                         </tr>
                     @endforeach
