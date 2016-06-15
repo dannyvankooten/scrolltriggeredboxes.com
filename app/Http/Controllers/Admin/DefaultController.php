@@ -16,7 +16,7 @@ class DefaultController extends Controller {
         $activationCount = Activation::query()->count();
 
         $recentUsers = User::query()->take(5)->orderBy('created_at', 'desc')->get();
-        $recentActivations = Activation::query()->with('license')->take(5)->orderBy('created_at', 'desc')->get();
+        $recentActivations = Activation::query()->with(['license', 'license.activations'])->take(5)->orderBy('created_at', 'desc')->get();
 
         return view( 'admin.overview', [
             'userCount' => $userCount,
