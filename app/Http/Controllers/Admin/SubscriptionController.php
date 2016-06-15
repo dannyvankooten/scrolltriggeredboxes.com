@@ -6,11 +6,19 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Subscription;
 use App\Services\Payments\Charger;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Routing\Redirector;
 
 class SubscriptionController extends Controller {
+
+    // form for editing a subscription
+    public function edit($id) {
+        /** @var Subscription $subscription */
+        $subscription = Subscription::findOrFail($id);
+        $license = $subscription->license;
+        return view( 'admin.subscriptions.edit', [ 'subscription' => $subscription, 'license' => $license ]);
+    }
 
     /**
      * @param int $id
@@ -24,18 +32,32 @@ class SubscriptionController extends Controller {
 
         /** @var Subscription $subscription */
         $subscription = Subscription::findOrFail($id);
-        $subscription->fill( $request->input('subscription') );
+
+        $data = $request->request->get('subscription');
+
+        if( isset( $data['active'] ) ) {
+            $subscription->active = (int) $data['active'];
+        }
+
+        if( ! empty( $data['interval'] ) ) {
+            $subscription->interval = $data['interval'];
+        }
+
+        if( ! empty( $data['amount'] )  ) {
+            $subscription->amount = floatval( $data['amount'] );
+        }
 
         // update next charge date
         $subscription->next_charge_at = $subscription->license->expires_at->modify('-1 week');
         $subscription->save();
 
         // if a payment is due, try to charge right away
-        if( $subscription->isPaymentDue() ) {
+        // TODO: Move this out from this method.
+        if( $subscription->isPaymentDue() && $charger->chargeable( $subscription ) ) {
             $charger->subscription( $subscription );
         }
 
-        return $redirector->back()->with('message', 'Changes saved!');
+        return $redirector->to('/licenses/'. $subscription->license->id )->with('message', 'Changes saved!');
     }
 
 }

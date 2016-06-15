@@ -24,6 +24,12 @@ class LicenseController extends Controller {
 		return view( 'admin.licenses.overview', [ 'licenses' => $licenses ] );
 	}
 
+	// show license details
+	public function detail($id) {
+		$license = License::with(['activations', 'user'])->findOrFail($id);
+		return view( 'admin.licenses.detail', [ 'license' => $license ] );
+	}
+
 	// form for creating new license
 	public function create() {
 		$license = new License();
@@ -32,12 +38,6 @@ class LicenseController extends Controller {
 		$license->user_id = '';
 		$license->site_limit = 1;
 		return view('admin.licenses.create', [ 'license' => $license ]);
-	}
-
-	// show license details
-	public function detail($id) {
-		$license = License::with(['activations', 'user'])->findOrFail($id);
-		return view( 'admin.licenses.detail', [ 'license' => $license ] );
 	}
 
 	// form for editing a license
