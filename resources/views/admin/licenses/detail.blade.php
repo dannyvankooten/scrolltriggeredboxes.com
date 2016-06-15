@@ -77,6 +77,10 @@
                 <th>Amount</th>
                 <td>${{ $license->subscription->amount }}</td>
             </tr>
+            <tr>
+                <th>Next Charge</th>
+                <td>{{ $license->subscription->next_charge_at->format('Y-m-d') }}</td>
+            </tr>
 
         </table>
 
