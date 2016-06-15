@@ -76,6 +76,58 @@
         <div class="medium-margin"></div>
 
 
+        <div class="row clearfix">
+            <!-- Recent payments -->
+            <div class="col col-3">
+                <h3>Last 5 payments</h3>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($recentPayments as $payment)
+                        <tr>
+                            <td><a href="/users/{{ $payment->user->id }}">{{ str_limit( $payment->user->name, 18 ) }}</a></td>
+                            <td>{{ $payment->getFormattedTotal() }}</td>
+                            <td>{{ $payment->created_at->format('M j') }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Upcoming payments -->
+            <div class="col col-3">
+                <h3>Upcoming payments</h3>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($upcomingPayments as $subscription)
+                        <tr>
+                            <td><a href="/users/{{ $subscription->user->id }}">{{ str_limit( $subscription->user->name, 18 ) }}</a></td>
+                            <td>{{ $subscription->getFormattedAmountInclTax() }}</td>
+                            <td>{{ $subscription->next_charge_at->format('M j') }}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div class="medium-margin"></div>
+
+
 
     </div>
 
