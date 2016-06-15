@@ -24,19 +24,39 @@ class LicenseController extends Controller {
 		return view( 'admin.licenses.overview', [ 'licenses' => $licenses ] );
 	}
 
-	/**
-	 * @return \Illuminate\View\View
-	 */
+	// form for creating new license
+	public function create() {
+		$license = new License();
+		$license->license_key = License::generateKey();
+		$license->expires_at = new \DateTime('+1 year');
+		$license->user_id = '';
+		$license->site_limit = 1;
+		return view('admin.licenses.create', [ 'license' => $license ]);
+	}
+
+	// show license details
 	public function detail($id) {
 		$license = License::with(['activations', 'user'])->findOrFail($id);
 		return view( 'admin.licenses.detail', [ 'license' => $license ] );
 	}
 
-	// edit license
+	// form for editing a license
 	public function edit($id) {
 		/** @var License $license */
 		$license = License::findOrFail($id);
 		return view( 'admin.licenses.edit', [ 'license' => $license ]);
+	}
+
+	// store new license
+	public function store( Request $request, Redirector $redirector ) {
+		$data = $request->request->get('license');
+		$license = new License();
+		$license->license_key = License::generateKey();
+		$license->expires_at = ! empty( $data['expires_at'] ) ? $data['expires_at'] : strtotime('+1 year');
+		$license->site_limit = ! empty( $data['site_limit'] ) ? (int) $data['site_limit'] : 1;
+		$license->user_id = (int) $data['user_id'];
+		$license->save();
+		return $redirector->to('/licenses/' . $license->id)->with('message', 'License created');
 	}
 
 	// update license details

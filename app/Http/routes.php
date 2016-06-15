@@ -79,6 +79,8 @@ $router->group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['ad
 	$router->get( '/users/{id}', 'Admin\UserController@detail' );
 
 	$router->get( '/licenses', 'Admin\LicenseController@overview' );
+	$router->get( '/licenses/create', 'Admin\LicenseController@create' );
+	$router->post( '/licenses', 'Admin\LicenseController@store' );
 	$router->get( '/licenses/{id}', 'Admin\LicenseController@detail' );
 	$router->get( '/licenses/{id}/edit', 'Admin\LicenseController@edit' );
 	$router->put( '/licenses/{id}', 'Admin\LicenseController@update' );
