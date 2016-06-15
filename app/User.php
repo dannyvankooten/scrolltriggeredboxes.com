@@ -171,4 +171,24 @@ class User extends Model implements AuthenticatableContract,
 		$this->password = Hash::make( $password );
 	}
 
+	/**
+	 * Return the full address as a single, comma-separated, string.
+	 *
+	 * @return string
+	 */
+	public function getFullAddress() {
+		$parts = [
+			$this->address,
+			$this->city,
+			$this->zip,
+			$this->state,
+			$this->country
+		];
+
+		// remove empty element
+		$parts = array_filter( $parts );
+
+		return join(', ', $parts);
+	}
+
 }
