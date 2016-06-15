@@ -36,6 +36,7 @@ use DateTime;
  * @property boolean $is_admin
  * @property string $moneybird_contact_id
  * @property string $stripe_customer_id
+ * @property string $ip_address
  * @property DateTime $created_at
  * @property DateTime $updated_at
  * @property DateTime $last_login_at
