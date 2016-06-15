@@ -13,7 +13,7 @@
                     <th>License Key</th>
                     <th>Owner</th>
                     <th width="20%">Activations</th>
-                    <th>Created at</th>
+                    <th>Created</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,7 +22,7 @@
                     <td><a href="{{ url('/licenses/' . $license->id) }}">{{ $license->license_key }}</a></td>
                     <td>{{ $license->user->email }}</td>
                     <td>{{ count( $license->activations ) . '/' . $license->site_limit }}</td>
-                    <td>{{ $license->created_at->format('F d, Y') }}</td>
+                    <td>{{ $license->created_at->format('Y-m-d') }}</td>
                 </tr>
             @endforeach
             </tbody>
