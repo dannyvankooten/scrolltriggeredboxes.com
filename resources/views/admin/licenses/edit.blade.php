@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title','View License - Boxzilla')
+@section('title','Edit License - Boxzilla')
 
 @section('content')
 
