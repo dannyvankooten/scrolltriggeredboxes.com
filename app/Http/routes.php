@@ -71,9 +71,7 @@ $router->group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', '
 // Admin url's
 $router->group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['admin'] ], function () use( $router ) {
 
-	$router->get( '/', function() {
-		return redirect( '/licenses' );
-	} );
+	$router->get( '/', 'Admin\DefaultController@overview' );
 
 	$router->get( '/users', 'Admin\UserController@overview' );
 	$router->get( '/users/{id}', 'Admin\UserController@detail' );
