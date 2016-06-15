@@ -46,7 +46,7 @@ class Payment extends Model
 	 * @return double
 	 */
 	public function getSubtotal() {
-		return $this->subtotal;
+		return round( $this->subtotal, 2 );
 	}
 
 	/**
@@ -60,14 +60,14 @@ class Payment extends Model
 	 * @return double
 	 */
 	public function getTotal() {
-		return number_format( $this->subtotal + $this->tax, 2 );
+		return $this->getSubtotal() + $this->getTax();
 	}
 
 	/**
 	 * @return double
 	 */
 	public function getTax() {
-		return $this->tax;
+		return round( $this->tax, 2 );
 	}
 
 	/**

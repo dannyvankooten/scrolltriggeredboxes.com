@@ -152,7 +152,7 @@ class Charger {
         if( empty( $user->stripe_customer_id ) ) {
             throw new PaymentException( "Invalid payment method.", 000 );
         }
-        
+
         // add tax
         $amountInclTax = $amount;
         $taxRate = $user->getTaxRate();
