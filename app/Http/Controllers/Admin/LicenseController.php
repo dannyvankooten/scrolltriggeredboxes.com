@@ -12,7 +12,7 @@ class LicenseController extends Controller {
 	public function overview( Request $request ) {
 
 		$query = License::query();
-		$query->with('user');
+		$query->with(['user', 'activations']);
 		$query->orderBy('created_at', 'desc');
 
 		$filters = $request->query->get('filter', []);
