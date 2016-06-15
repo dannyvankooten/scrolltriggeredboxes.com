@@ -3,6 +3,8 @@
 namespace App\Listeners;
 
 use DateTime;
+use App\User;
+
 use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
 
@@ -20,9 +22,11 @@ class UserLoginHandler
     public function handle( Login $login )
     {
         // store user ip
-        $login->user->ip_address = $this->request->getClientIp();
-        $login->user->last_login_at = new DateTime('now');
-        $login->user->save();
+        /** @var User $user */
+        $user = $login->user;
+        $user->ip_address = $this->request->getClientIp();
+        $user->last_login_at = new DateTime('now');
+        $user->save();
     }
 
 }
