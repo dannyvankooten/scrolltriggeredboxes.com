@@ -1,20 +1,26 @@
-## scrolltriggeredboxes.com [[>](https://scrolltriggeredboxes.com/)]
+## Boxzilla App
 
-This is the site repository for [scrolltriggeredboxes.com](https://scrolltriggeredboxes.com), built using [Laravel](http://laravel.com/docs).
+This is the site repository for [boxzillaplugin.com](https://account.boxzillaplugin.com).
 
-The code here takes care of the following functionalities.
+The application takes care of the following.
 
+- Account Area
+- Admin Panel
 - License API
-- Plugin Updates API
-- General site content
+- Plugin API
+- HelpScout API
+
 
 ### Running this site locally
 
-To run this site locally, clone this repository and create a `.env` file with your database settings. Then, run the following from the root folder to build the database schema.
+To run locally, clone this repository and create a `.env` file with your database settings. Then, run the following from the root folder to build the database schema.
 
-```
+```sh
+git clone https://github.com/dannyvankooten/boxzillaplugin.com.git
+cd boxzillaplugin.com
+cp .env.example .env
 php artisan migrate --force
 ```
 
 ### Issues
-Spotted an issue with the site? [Please open an issue!](https://github.com/dannyvankooten/scrolltriggeredboxes.com/issues)
+Something to improve? [Please open an issue!](https://github.com/dannyvankooten/boxzillaplugin.com/issues)
