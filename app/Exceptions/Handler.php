@@ -55,6 +55,10 @@ class Handler extends ExceptionHandler {
 			], 404 );
 		}
 
+
+		// turn regular exception into 500 exceptions.
+		if (!$this->isHttpException($e)) $e = new HttpException(500);
+
 		return parent::render($request, $e);
 	}
 
