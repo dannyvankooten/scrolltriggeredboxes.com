@@ -19,6 +19,7 @@ use DateTime;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property double $amount
+ * @property string $interval
  * @property int $user_id
  * @property int $license_id
  */
