@@ -10,6 +10,7 @@ use Illuminate\Console\Command;
 use DateTime;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Contracts\Logging\Log;
 
 class ChargeSubscriptions extends Command
 {
@@ -34,15 +35,21 @@ class ChargeSubscriptions extends Command
     protected $charger;
 
     /**
+     * @var Log
+     */
+    protected $log;
+
+    /**
      * Create a new command instance.
      *
      * @param Charger $charger
      */
-    public function __construct( Charger $charger )
+    public function __construct( Charger $charger, Log $log )
     {
         parent::__construct();
 
         $this->charger = $charger;
+        $this->log = $log;
     }
 
     /**
@@ -58,6 +65,7 @@ class ChargeSubscriptions extends Command
         $subscriptions = Subscription::where('next_charge_at', '<', $todayEnd)
             ->where('active', 1)
             ->with(['license', 'user'])
+            ->orderBy('next_charge_at', 'desc') // start with new ones as they are most likely to succeed
             ->get();
 
         if( empty( $subscriptions ) ) {
@@ -68,7 +76,6 @@ class ChargeSubscriptions extends Command
         foreach( $subscriptions as $subscription ) {
 
             /** @var Subscription $subscription */
-
             // should we charge this subscription today?
             if( ! $this->shouldCharge( $subscription ) ) {
                 $this->info( sprintf( 'Skipping subscription %d. ', $subscription->id ) );
@@ -78,7 +85,9 @@ class ChargeSubscriptions extends Command
             // is subscription even chargeable?
             if( ! $this->charger->chargeable( $subscription ) ) {
                 // TODO: Warn user about this
-                $this->warn( sprintf( 'No valid payment method registered for subscription %d. ', $subscription->id ) );
+                $message = sprintf( 'No valid payment method registered for subscription %d for user %s.', $subscription->id, $subscription->user->email );
+                $this->log->warning( $message );
+                $this->warn( $message );
                 continue;
             }
 
@@ -86,13 +95,17 @@ class ChargeSubscriptions extends Command
             try {
                 $success = $this->charger->subscription( $subscription );
             } catch( PaymentException $e ) {
-                $this->error( sprintf( 'Charge for subscription #%d failed because of error: %s', $subscription->id, $e->getMessage() ) );
+                $message = sprintf( 'Charge for subscription #%d failed because of error: %s', $subscription->id, $e->getMessage() );
+                $this->log->error( $message );
+                $this->error( $message );
                 event(new SubscriptionChargeFailed($subscription));
                 continue;
             }
 
             // print some info
-            $this->info("Successfully renewed license #{$subscription->license->id}");
+            $message = "Successfully renewed license #{$subscription->license->id} for user {$subscription->user->email}.";
+            $this->log->info($message);
+            $this->info($message);
         }
     }
 
