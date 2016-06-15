@@ -10,12 +10,6 @@
             <a href="/users">Users</a> &rightarrow; <a href="/users/{{$license->user->id }}">{{ $license->user->email }}</a> &rightarrow; License {{ $license->id }}
         </div>
 
-        @if (session('message'))
-            <div class="bs-callout bs-callout-success">
-                {!! session('message') !!}
-            </div>
-        @endif
-
         <div class="medium-margin"></div>
 
         <h3>License &nbsp;<a href="/licenses/{{ $license->id }}/edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></h3>
@@ -48,12 +42,14 @@
                 <th>Domain</th>
                 @if( $license->activation && $license->activation[0]->plugin )<th>Plugin</th>@endif
                 <th>Activated on</th>
+                <th></th>
             </tr>
             </thead>
             @foreach($license->activations as $activation)
                 <tr>
                     <td><a href="{{ $activation->url }}">{{ $activation->domain }}</a></td>
                     <td>{{ $activation->updated_at->format('F j, Y') }}</td>
+                    <td><form method="post" action="/activations/{{ $activation->id }}" data-confirm="Delete site activation?">{!! csrf_field() !!}<input type="hidden" name="_method" value="DELETE" /><input type="submit" value="Delete" class="button button-danger button-small" /></form></td>
                 </tr>
             @endforeach
             @if( count( $license->activations ) == 0 )
@@ -65,34 +61,21 @@
 
         <div class="medium-margin"></div>
 
-        <h3>Subscription</h3>
+
         @if( $license->subscription )
+        <h3>Subscription &nbsp; <a href="/subscriptions/{{ $license->subscription->id }}/edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></h3>
         <table class="table row-scoped">
             <tr>
                 <th>Status</th>
                 <td><span class="label {{ $license->subscription->active ? "success" : "warning" }}">{{ $license->subscription->active ? "Active" : "Inactive" }}</span></td>
-                <td>
-                    <form method="POST" action="/subscriptions/{{ $license->subscription->id }}" data-confirm="Are you sure you want to toggle this subscription status?">
-                        {!! csrf_field() !!}
-                        @if( $license->subscription->active )
-                            <input type="hidden" name="subscription[active]" value="0" />
-                            <button class="button-small">Deactivate</button>
-                        @else
-                            <input type="hidden" name="subscription[active]" value="1" />
-                            <button class="button-small">Reactivate</button>
-                        @endif
-                    </form>
-                </td>
             </tr>
             <tr>
                 <th>Interval</th>
                 <td>{{ ucfirst( $license->subscription->interval ) . "ly" }}</td>
-                <td></td>
             </tr>
             <tr>
                 <th>Amount</th>
                 <td>${{ $license->subscription->amount }}</td>
-                <td></td>
             </tr>
 
         </table>
@@ -125,8 +108,6 @@
                 </tr>
             @endforelse
         </table>
-        @else
-            <p>This license has no subscription.</p>
         @endif
 
         <div class="medium-margin"></div>
