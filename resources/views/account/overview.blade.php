@@ -14,10 +14,9 @@
             <li><a href="/plugins">Download plugins</a></li>
             <li><a href="/licenses">View your licenses</a></li>
             <li><a href="/payments">View your payments</a></li>
-            <li><a href="/edit">Edit account information</a></li>
-            <li><a href="/edit/billing">Edit billing information</a></li>
-            <li><a href="/edit/payment">Edit payment method</a></li>
+            <li><a href="/edit">Edit account & payment information</a></li>
             <li><a href="/licenses/new">Purchase a new license</a></li>
+            <li><a href="mailto:support@boxzillaplugin.com">Contact support</a></li>
         </ul>
 
         <p>Alternatively, <a href="/logout">click here to log out</a>.</p>
