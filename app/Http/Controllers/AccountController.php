@@ -92,7 +92,7 @@ class AccountController extends Controller {
 		// only update password if given
 		$new_password = $request->input('new_password', null);
 		if( $new_password ) {
-			$user->password = $user->setPassword( $new_password );
+			$user->setPassword( $new_password );
 		}
 
 		$user->save();
