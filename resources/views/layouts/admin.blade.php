@@ -50,6 +50,14 @@
     @endif
     </div>
 
+    <div class="container">
+        @if (session('error'))
+            <div class="notice notice-warning">
+                {!! session('error') !!}
+            </div>
+        @endif
+    </div>
+
     @yield('content')
 </div>
 
