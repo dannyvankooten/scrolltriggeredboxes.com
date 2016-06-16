@@ -66,6 +66,8 @@
             </tbody>
         </table>
 
+        <p class="medium-margin"><a href="/licenses/create?license[user_id]={{ $user->id }}">Add new license for user</a></p>
+
         <p><a href="javascript:history.go(-1);">&leftarrow; Go back.</a></p>
 
     </div>

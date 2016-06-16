@@ -60,6 +60,10 @@
             </tbody>
         </table>
 
+        <div class="medium-margin">
+            <a href="/users/create">Add new user</a>
+        </div>
+
 
     </div>
 @stop

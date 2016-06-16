@@ -51,6 +51,9 @@
             </tbody>
         </table>
 
+        <div class="medium-margin">
+            <a href="/licenses/create">Add new license</a>
+        </div>
 
     </div>
 @stop
