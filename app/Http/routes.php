@@ -71,10 +71,12 @@ $router->group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', '
 // Admin url's
 $router->group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['admin'] ], function () use( $router ) {
 
-	$router->get( '/', 'Admin\DefaultController@overview' );
+	$router->get('/', 'Admin\DefaultController@overview' );
 
-	$router->get( '/users', 'Admin\UserController@overview' );
-	$router->get( '/users/{id}', 'Admin\UserController@detail' );
+	$router->get('/users', 'Admin\UserController@overview' );
+	$router->post('/users', 'Admin\UserController@store' );
+	$router->get('/users/create', 'Admin\UserController@create' );
+	$router->get('/users/{id}', 'Admin\UserController@detail' );
 
 	$router->get( '/licenses', 'Admin\LicenseController@overview' );
 	$router->get( '/licenses/create', 'Admin\LicenseController@create' );
