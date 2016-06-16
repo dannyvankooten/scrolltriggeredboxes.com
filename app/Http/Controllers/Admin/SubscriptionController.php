@@ -50,13 +50,7 @@ class SubscriptionController extends Controller {
         // update next charge date
         $subscription->next_charge_at = $subscription->license->expires_at->modify('-1 week');
         $subscription->save();
-
-        // if a payment is due, try to charge right away
-        // TODO: Move this out from this method.
-        if( $subscription->isPaymentDue() && $charger->chargeable( $subscription ) ) {
-            $charger->subscription( $subscription );
-        }
-
+        
         return $redirector->to('/licenses/'. $subscription->license->id )->with('message', 'Changes saved!');
     }
 

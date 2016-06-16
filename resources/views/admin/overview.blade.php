@@ -43,7 +43,7 @@
                     <tbody>
                         @foreach($recentUsers as $user)
                         <tr>
-                            <td>{{ str_limit($user->name, 18) }}</td>
+                            <td><a href="/users/{{ $user->id }}">{{ str_limit($user->name, 18) }}</a></td>
                             <td><a href="mailto:{{$user->email}}">{{ $user->email }}</a></td>
                         </tr>
                         @endforeach

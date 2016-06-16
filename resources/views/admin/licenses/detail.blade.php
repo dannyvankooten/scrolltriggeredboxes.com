@@ -79,7 +79,16 @@
             </tr>
             <tr>
                 <th>Next Charge</th>
-                <td>{{ $license->subscription->next_charge_at->format('Y-m-d') }}</td>
+                <td>
+                    {{ $license->subscription->next_charge_at->format('Y-m-d') }}
+
+                    <form method="post" action="/payments" class="pull-right" data-confirm="Are you sure you watn to charge this subscription now?">
+                        {!! csrf_field() !!}
+                        <input type="hidden" name="payment[subscription_id]" value="{{ $license->subscription->id }}" />
+                        <input type="submit" value="Charge Now" class="button button-small" />
+                    </form>
+
+                </td>
             </tr>
 
         </table>

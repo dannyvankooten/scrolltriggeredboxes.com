@@ -15,7 +15,7 @@
         <table class="table table-striped">
             <tr>
                 <th>Email</th>
-                <td>{{ $user->email }}</td>
+                <td><a href="mailto:{{$user->email}}">{{ $user->email }}</a></td>
             </tr>
             <tr>
                 <th>Name</th>
