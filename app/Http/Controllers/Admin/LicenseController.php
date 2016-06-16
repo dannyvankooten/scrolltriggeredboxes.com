@@ -4,7 +4,7 @@ use App\Http\Controllers\Controller;
 use App\License;
 use Illuminate\Routing\Redirector;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
 
 class LicenseController extends Controller {
 	
@@ -36,11 +36,11 @@ class LicenseController extends Controller {
 	}
 
 	// form for creating new license
-	public function create() {
+	public function create( Request $request ) {
 		$license = new License();
 		$license->license_key = License::generateKey();
 		$license->expires_at = new \DateTime('+1 year');
-		$license->user_id = '';
+		$license->user_id = $request->input('license.user_id', '');
 		$license->site_limit = 1;
 		return view('admin.licenses.create', [ 'license' => $license ]);
 	}
