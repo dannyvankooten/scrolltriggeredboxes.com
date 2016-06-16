@@ -58,7 +58,7 @@ class Handler extends ExceptionHandler {
 
 
 		// some customized errors
-		if( $e instanceof TokenMismatchException ) {
+		if( ! config('app.debug' ) && $e instanceof TokenMismatchException ) {
 			$e = new HttpException(403);
 		}
 
