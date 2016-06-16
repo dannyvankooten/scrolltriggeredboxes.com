@@ -205,7 +205,7 @@ class Charger {
      *
      * @param Subscription $subscription
      *
-     * @return bool
+     * @return Payment
      * 
      * @throws Exception
      */
@@ -232,7 +232,7 @@ class Charger {
         $subscription->next_charge_at = $license->expires_at->modify('-1 week');
         $subscription->save();
 
-        return true;
+        return $payment;
     }
 
     /**
