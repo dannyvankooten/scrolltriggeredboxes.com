@@ -18,8 +18,6 @@ class HelpScoutController extends Controller {
 	}
 
 	/**
-	 * Create a new license key for a new SendOwl order or add plugin access to an existing one (for bundle orders)
-	 *
 	 * @return JsonResponse
 	 */
 	public function get( HelpScoutApp $helpscout )
