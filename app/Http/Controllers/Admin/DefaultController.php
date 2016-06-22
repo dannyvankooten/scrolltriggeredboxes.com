@@ -27,6 +27,7 @@ class DefaultController extends Controller {
             'recentPayments'    => $recentPayments,
             'upcomingPayments' => $upcomingPayments,
             'totals' => $totals,
+            'timeframeOptions' => array( 30, 60, 90, 180, 360 ),
         ]);
     }
 

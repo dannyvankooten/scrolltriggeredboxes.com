@@ -46,6 +46,17 @@
                 <small class="muted">(last 30 days)</small>
             </div>
         </div>
+        <div class="clearfix text-center medium-margin">
+            <form method="GET" onchange="this.submit()">
+                <p class="muted small">Select a different timeframe:
+                    <select name="days" style="width: auto; height: auto;">
+                        @foreach( $timeframeOptions as $option )
+                            <option value="{{ $option }}" {{ request('days') == $option ? 'selected' : '' }}>{{ $option }} days</option>
+                        @endforeach
+                    </select>
+                </p>
+            </form>
+        </div>
 
         <div class="medium-margin"></div>
 
