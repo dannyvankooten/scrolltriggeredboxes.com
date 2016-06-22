@@ -25,7 +25,7 @@
                     <?php $percentage = $totals->calculatePercentageDifference( $totals->new_users_this_month, $totals->new_users_last_month ); ?>
                     <span class="percentage {{ ( $percentage > 0  ) ? 'pos' : ( ( $percentage < 0 ) ? 'neg' : 'neutral' ) }}">{{ $percentage }}%</span>
                 </span>
-                <small class="muted">(last 30 days)</small>
+                <small class="muted">(last {{ request('days', 30 ) }} days)</small>
             </div>
             <div class="col col-2 text-center">
                 <h4 class="no-margin">New licenses</h4>
@@ -34,7 +34,7 @@
                     <?php $percentage = $totals->calculatePercentageDifference( $totals->new_licenses_this_month, $totals->new_licenses_last_month ); ?>
                     <span class="percentage {{ ( $percentage > 0  ) ? 'pos' : ( ( $percentage < 0 ) ? 'neg' : 'neutral' ) }}">{{ $percentage }}%</span>
                 </span>
-                <small class="muted">(last 30 days)</small>
+                <small class="muted">(last {{ request('days', 30 ) }} days)</small>
             </div>
             <div class="col col-2 text-center">
                 <h4 class="no-margin">Total revenue</h4>
@@ -43,7 +43,7 @@
                     <?php $percentage = $totals->calculatePercentageDifference( $totals->total_revenue_this_month, $totals->total_revenue_last_month ); ?>
                     <span class="percentage {{ ( $percentage > 0  ) ? 'pos' : ( ( $percentage < 0 ) ? 'neg' : 'neutral' ) }}">{{ $percentage }}%</span>
                 </span>
-                <small class="muted">(last 30 days)</small>
+                <small class="muted">(last {{ request('days', 30 ) }} days)</small>
             </div>
         </div>
         <div class="clearfix text-center medium-margin">
