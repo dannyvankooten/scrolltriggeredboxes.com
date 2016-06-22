@@ -7,9 +7,45 @@
     <style type="text/css">
         .count { font-size: 36px; display: block; }
         .count a{ text-decoration: none; color: inherit; }
+        .percentage { font-size: 24px; }
+        .percentage.pos { color: limegreen; }
+        .percentage.neg { color: orangered; }
+        .timeframe { display: block; }
     </style>
 
     <div class="container">
+
+        <div class="row clearfix">
+            <div class="col col-2 text-center">
+                <h4 class="no-margin">New users</h4>
+                <span class="count">
+                    +{{ $totals->new_users_this_month }}
+                    <?php $percentage = $totals->calculatePercentageDifference( $totals->new_users_this_month, $totals->new_users_last_month ); ?>
+                    <span class="percentage {{ $percentage > 0 ? 'pos' : 'neg' }}">{{ $percentage }}%</span>
+                </span>
+                <small class="muted">(last 30 days)</small>
+            </div>
+            <div class="col col-2 text-center">
+                <h4 class="no-margin">New licenses</h4>
+                <span class="count">
+                    +{{ $totals->new_licenses_this_month }}
+                    <?php $percentage = $totals->calculatePercentageDifference( $totals->new_licenses_this_month, $totals->new_licenses_last_month ); ?>
+                    <span class="percentage {{ $percentage > 0 ? 'pos' : 'neg' }}">{{ $percentage }}%</span>
+                </span>
+                <small class="muted">(last 30 days)</small>
+            </div>
+            <div class="col col-2 text-center">
+                <h4 class="no-margin">Total revenue</h4>
+                <span class="count">
+                    ${{ round( $totals->total_revenue_this_month ) }}
+                    <?php $percentage = $totals->calculatePercentageDifference( $totals->total_revenue_this_month, $totals->total_revenue_last_month ); ?>
+                    <span class="percentage {{ $percentage > 0 ? 'pos' : 'neg' }}">{{ $percentage }}%</span>
+                </span>
+                <small class="muted">(last 30 days)</small>
+            </div>
+        </div>
+
+        <div class="medium-margin"></div>
 
         <div class="row clearfix">
             <div class="col col-2 text-center">

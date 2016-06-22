@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\License;
 use App\Payment;
 use App\Subscription;
+use App\Totals;
 use App\User;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,8 @@ class DefaultController extends Controller {
         $recentPayments = Payment::query()->with(['user'])->take(5)->orderBy('created_at', 'desc')->get();
         $upcomingPayments = Subscription::query()->with('user')->where('active', 1)->where('next_charge_at', '>=', new \DateTime('now'))->orderBy('next_charge_at', 'asc' )->take(5)->get();
 
+        $totals = Totals::query();
+        
         return view( 'admin.overview', [
             'userCount' => $userCount,
             'licenseCount' => $licenseCount,
@@ -30,6 +33,7 @@ class DefaultController extends Controller {
             'recentActivations' => $recentActivations,
             'recentPayments'    => $recentPayments,
             'upcomingPayments' => $upcomingPayments,
+            'totals' => $totals,
         ]);
     }
 
