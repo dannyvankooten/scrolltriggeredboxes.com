@@ -9,6 +9,7 @@
         .count a{ text-decoration: none; color: inherit; }
         .percentage { font-size: 24px; }
         .percentage.pos { color: limegreen; }
+        .percentage.pos:before { content:"+" }
         .percentage.neg { color: orangered; }
         .timeframe { display: block; }
     </style>
@@ -19,7 +20,7 @@
             <div class="col col-2 text-center">
                 <h4 class="no-margin">New users</h4>
                 <span class="count">
-                    +{{ $totals->new_users_this_month }}
+                    {{ $totals->new_users_this_month }}
                     <?php $percentage = $totals->calculatePercentageDifference( $totals->new_users_this_month, $totals->new_users_last_month ); ?>
                     <span class="percentage {{ $percentage > 0 ? 'pos' : 'neg' }}">{{ $percentage }}%</span>
                 </span>
@@ -28,7 +29,7 @@
             <div class="col col-2 text-center">
                 <h4 class="no-margin">New licenses</h4>
                 <span class="count">
-                    +{{ $totals->new_licenses_this_month }}
+                    {{ $totals->new_licenses_this_month }}
                     <?php $percentage = $totals->calculatePercentageDifference( $totals->new_licenses_this_month, $totals->new_licenses_last_month ); ?>
                     <span class="percentage {{ $percentage > 0 ? 'pos' : 'neg' }}">{{ $percentage }}%</span>
                 </span>
