@@ -8,27 +8,20 @@ use App\Subscription;
 use App\Totals;
 use App\User;
 
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
 
 class DefaultController extends Controller {
 
     // show users overview
-    public function overview() {
-        $userCount = User::query()->count();
-        $licenseCount = License::query()->count();
-        $activationCount = Activation::query()->count();
-
+    public function overview( Request $request ) {
         $recentUsers = User::query()->take(5)->orderBy('created_at', 'desc')->get();
         $recentActivations = Activation::query()->with(['license', 'license.activations'])->take(5)->orderBy('created_at', 'desc')->get();
         $recentPayments = Payment::query()->with(['user'])->take(5)->orderBy('created_at', 'desc')->get();
         $upcomingPayments = Subscription::query()->with('user')->where('active', 1)->where('next_charge_at', '>=', new \DateTime('now'))->orderBy('next_charge_at', 'asc' )->take(5)->get();
 
-        $totals = Totals::query();
+        $totals = Totals::query( $request->query->getInt( 'days', 30 ) );
         
         return view( 'admin.overview', [
-            'userCount' => $userCount,
-            'licenseCount' => $licenseCount,
-            'activationCount' => $activationCount,
             'recentUsers' => $recentUsers,
             'recentActivations' => $recentActivations,
             'recentPayments'    => $recentPayments,
@@ -36,6 +29,8 @@ class DefaultController extends Controller {
             'totals' => $totals,
         ]);
     }
+
+
 
 
 

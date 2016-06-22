@@ -11,6 +11,7 @@
         .percentage.pos { color: limegreen; }
         .percentage.pos:before { content:"+" }
         .percentage.neg { color: orangered; }
+        .percentage.neutral { color: #999; display: none; }
         .timeframe { display: block; }
     </style>
 
@@ -22,7 +23,7 @@
                 <span class="count">
                     {{ $totals->new_users_this_month }}
                     <?php $percentage = $totals->calculatePercentageDifference( $totals->new_users_this_month, $totals->new_users_last_month ); ?>
-                    <span class="percentage {{ $percentage > 0 ? 'pos' : 'neg' }}">{{ $percentage }}%</span>
+                    <span class="percentage {{ ( $percentage > 0  ) ? 'pos' : ( ( $percentage < 0 ) ? 'neg' : 'neutral' ) }}">{{ $percentage }}%</span>
                 </span>
                 <small class="muted">(last 30 days)</small>
             </div>
@@ -31,7 +32,7 @@
                 <span class="count">
                     {{ $totals->new_licenses_this_month }}
                     <?php $percentage = $totals->calculatePercentageDifference( $totals->new_licenses_this_month, $totals->new_licenses_last_month ); ?>
-                    <span class="percentage {{ $percentage > 0 ? 'pos' : 'neg' }}">{{ $percentage }}%</span>
+                    <span class="percentage {{ ( $percentage > 0  ) ? 'pos' : ( ( $percentage < 0 ) ? 'neg' : 'neutral' ) }}">{{ $percentage }}%</span>
                 </span>
                 <small class="muted">(last 30 days)</small>
             </div>
@@ -40,26 +41,9 @@
                 <span class="count">
                     ${{ round( $totals->total_revenue_this_month ) }}
                     <?php $percentage = $totals->calculatePercentageDifference( $totals->total_revenue_this_month, $totals->total_revenue_last_month ); ?>
-                    <span class="percentage {{ $percentage > 0 ? 'pos' : 'neg' }}">{{ $percentage }}%</span>
+                    <span class="percentage {{ ( $percentage > 0  ) ? 'pos' : ( ( $percentage < 0 ) ? 'neg' : 'neutral' ) }}">{{ $percentage }}%</span>
                 </span>
                 <small class="muted">(last 30 days)</small>
-            </div>
-        </div>
-
-        <div class="medium-margin"></div>
-
-        <div class="row clearfix">
-            <div class="col col-2 text-center">
-                <span class="count"><a href="/users">{{ $userCount }}</a></span>
-                <span class="muted">users</span>
-            </div>
-            <div class="col col-2 text-center">
-                <span class="count"><a href="/licenses">{{ $licenseCount }}</a></span>
-                <span class="muted">licenses</span>
-            </div>
-            <div class="col col-2 text-center">
-                <span class="count">{{ $activationCount }}</span>
-                <span class="muted">activations</span>
             </div>
         </div>
 

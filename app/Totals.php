@@ -15,23 +15,28 @@ class Totals {
 
 
     /**
+     * @param int $days
+     *
      * @return Totals
      */
-    public static function query() {
-        $results = DB::select(
-            DB::raw(
+    public static function query( $days = 30 ) {
+
+        $sql =
 <<<SQL
             SELECT 
-            ( SELECT COUNT(*) FROM users u WHERE u.created_at > DATE_SUB(CURDATE(), INTERVAL 30 DAY) ) AS new_users_this_month,
-            ( SELECT COUNT(*) FROM users u WHERE u.created_at < DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND u.created_at > DATE_SUB(CURDATE(), INTERVAL 60 DAY) ) AS new_users_last_month,
-            ( SELECT COUNT(*) FROM licenses l WHERE l.created_at > DATE_SUB(CURDATE(), INTERVAL 30 DAY) ) AS new_licenses_this_month,
-            ( SELECT COUNT(*) FROM licenses l WHERE l.created_at < DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND l.created_at > DATE_SUB(CURDATE(), INTERVAL 60 DAY) ) AS new_licenses_last_month,
-            ( SELECT SUM(subtotal) FROM payments p WHERE p.created_at > DATE_SUB(CURDATE(), INTERVAL 30 DAY) ) AS total_revenue_this_month,
-            ( SELECT SUM(subtotal) FROM payments p WHERE p.created_at < DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND p.created_at > DATE_SUB(CURDATE(), INTERVAL 60 DAY) ) AS total_revenue_last_month
-SQL
-          )
-        );
+            ( SELECT DATE_SUB(CURDATE(), INTERVAL %d DAY ) ) AS date_1,
+            ( SELECT DATE_SUB(date_1, INTERVAL %d DAY ) ) AS date_2,
+            ( SELECT COUNT(*) FROM users u WHERE u.created_at > date_1 ) AS new_users_this_month,
+            ( SELECT COUNT(*) FROM users u WHERE u.created_at < date_1 AND u.created_at > date_2 ) AS new_users_last_month,
+            ( SELECT COUNT(*) FROM licenses l WHERE l.created_at > date_1 ) AS new_licenses_this_month,
+            ( SELECT COUNT(*) FROM licenses l WHERE l.created_at < date_1 AND l.created_at > date_2 ) AS new_licenses_last_month,
+            ( SELECT SUM(subtotal) FROM payments p WHERE p.created_at > date_1 ) AS total_revenue_this_month,
+            ( SELECT SUM(subtotal) FROM payments p WHERE p.created_at < date_1 AND p.created_at > date_2 ) AS total_revenue_last_month
+SQL;
 
+        $query = sprintf( $sql, $days, $days );
+
+        $results = DB::select(DB::raw($query));
         $results = array_pop( $results );
 
         $instance = new Totals();
@@ -49,6 +54,10 @@ SQL
      * @return float
      */
     public function calculatePercentageDifference( $new, $old ) {
+        if( $old == 0 ) {
+            return 0;
+        }
+
         return round( $new / $old * 100 - 100 );
     }
 }
