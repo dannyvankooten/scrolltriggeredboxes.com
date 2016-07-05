@@ -11,6 +11,8 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+
 use DateTime;
 
 /**
@@ -189,6 +191,24 @@ class User extends Model implements AuthenticatableContract,
 		$parts = array_filter( $parts );
 
 		return join(', ', $parts);
+	}
+
+	/**
+	 * TODO: Move this out of User model.
+	 *
+	 * @return double
+	 */
+	public function getLifetimeValue() {
+		$query = "SELECT SUM(subtotal) AS ltv FROM payments p WHERE p.user_id = %d";
+		$query = sprintf( $query, $this->id );
+		$results = DB::select(DB::raw($query));
+
+		if( empty( $results ) ) {
+			return 0.00;
+		}
+
+		$result = array_pop( $results );
+		return 0 + round( $result->ltv, 2 );
 	}
 
 }
