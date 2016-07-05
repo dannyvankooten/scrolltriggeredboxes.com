@@ -1,6 +1,6 @@
 
 <p>
-    <a href="{{ domain_url( '/users/' . $user->id, 'admin' ) }}">{{ $user->name }}</a> &lt;{{ $user->email }}&gt; <br />
+    <a href="{{ domain_url( '/users/' . $user->id, 'admin' ) }}">{{ $user->name }}</a><br /><br />
     <span class="muted">User since {{ $user->created_at->format( 'j M Y') }}.</span><br />
     <strong>Lifetime Value:</strong> ${{ $user->getLifetimeValue() }}<br />
 </p>
