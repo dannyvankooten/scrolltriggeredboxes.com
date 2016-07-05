@@ -27,19 +27,19 @@
         {!! csrf_field() !!}
 
         <div class="form-group">
-            <label>Email address <span class="big red">*</span></label>
+            <label for="emailAddressInput">Email address <span class="big red">*</span></label>
 
             <div class="form-element">
-                <input type="email" name="user[email]" value="{{ old('user.email', $user->email ) }}" required>
+                <input type="email" name="user[email]" value="{{ old('user.email', $user->email ) }}" id="emailAddressInput" required>
                 <i class="fa fa-at form-element-icon" aria-hidden="true"></i>
             </div>
         </div>
 
         <div class="form-group">
-            <label>Current password <span class="big red">*</span></label>
+            <label for="passwordInput">Current password <span class="big red">*</span></label>
 
             <div class="form-element">
-                <input type="password" name="current_password" value="" required>
+                <input type="password" name="current_password" value="" id="passwordInput" required>
                 <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
             </div>
         </div>
@@ -47,10 +47,10 @@
        <div class="row clearfix">
            <div class="col col-3">
                <div class="form-group">
-                   <label>New password <span class="muted pull-right">(optional)</span></label>
+                   <label for="newPasswordInput">New password <span class="muted pull-right">(optional)</span></label>
 
                    <div class="form-element">
-                       <input type="password" name="new_password" value="" minlength="6">
+                       <input type="password" name="new_password" value="" minlength="6" id="newPasswordInput">
                        <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                    </div>
                </div>
@@ -58,24 +58,19 @@
            <div class="col col-3">
 
                <div class="form-group">
-                   <label>Confirm new password <span class="muted pull-right">(optional)</span></label>
+                   <label for="newPasswordConfirmationInput">Confirm new password <span class="muted pull-right">(optional)</span></label>
 
                    <div class="form-element">
-                       <input type="password" name="new_password_confirmation" minlength="6" value="">
+                       <input type="password" name="new_password_confirmation" minlength="6" value="" id="newPasswordConfirmationInput">
                        <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                    </div>
                </div>
            </div>
        </div>
 
-
-
-
         <div class="form-group">
             <input type="submit" value="Save Changes" />
         </div>
-
-
 
         <p>
         <a href="/">&leftarrow; Go back</a>

@@ -26,8 +26,8 @@
             <h3>License details</h3>
 
             <div class="form-group">
-                <label class="control-label">How many site activations do you need?</label>
-                <input type="number" name="quantity" class="form-control" value="{{ old('quantity', '1') }}" step="1" min="1" required />
+                <label for="quantityInput" class="control-label">How many site activations do you need?</label>
+                <input type="number" name="quantity" class="form-control" value="{{ old('quantity', '1') }}" step="1" min="1" id="quantityInput" required />
             </div>
 
             <div class="form-group radio">

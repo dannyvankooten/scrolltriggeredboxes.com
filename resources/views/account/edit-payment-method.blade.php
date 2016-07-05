@@ -38,10 +38,10 @@
             <div class="row clearfix">
                 <div class="col col-5">
                     <div class="form-group">
-                        <label>Credit Card Number <span class="big red">*</span></label>
+                        <label for="creditCardNumberInput">Credit Card Number <span class="big red">*</span></label>
 
                         <div class="form-element">
-                            <input type="text" data-stripe="number" placeholder="**** **** **** ****" required>
+                            <input type="text" data-stripe="number" placeholder="**** **** **** ****" id="creditCardNumberInput" required>
                             <i class="fa fa-credit-card form-element-icon"></i>
                         </div>
                     </div>
@@ -52,8 +52,8 @@
             <div class="row clearfix">
                 <div class="col col-3">
                     <div class="form-group">
-                        <label>Expiration <span class="big red">*</span></label>
-                        <select data-stripe="exp_month" style="width: 80px; display: inline;" required>
+                        <label for="expMonthInput">Expiration <span class="big red">*</span></label>
+                        <select data-stripe="exp_month" style="width: 80px; display: inline;" id="expMonthInput" required>
                             <option disabled value="" selected>Month</option>
                             @for ($i = 1; $i <= 12; $i++)
                                 <option>{{ $i }}</option>
@@ -70,10 +70,10 @@
                 </div>
                 <div class="col col-2">
                     <div class="form-group">
-                        <label>CVC <span class="big red">*</span></label>
+                        <label for="cvcInput">CVC <span class="big red">*</span></label>
 
                         <div class="form-element stretch">
-                            <input type="password" data-stripe="cvc" required maxlength="4">
+                            <input type="password" data-stripe="cvc" id="cvcInput" required maxlength="4">
                             <i class="fa fa-lock form-element-icon"></i>
                         </div>
 

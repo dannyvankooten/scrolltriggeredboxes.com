@@ -24,8 +24,8 @@
             <h2 class="slashes">1. License</h2>
 
             <div class="form-group">
-                <label class="control-label">How many site activations do you need?</label>
-                <input type="number" name="quantity" class="form-control" value="{{ old('quantity', request('quantity', 1)) }}" step="1" min="1" required />
+                <label for="quantityInput" class="control-label">How many site activations do you need?</label>
+                <input type="number" name="quantity" class="form-control" value="{{ old('quantity', request('quantity', 1)) }}" step="1" min="1" id="quantityInput" required />
             </div>
 
             <div class="form-group radio">
@@ -46,10 +46,10 @@
             <h2 class="slashes">2. Account Info</h2>
 
             <div class="form-group">
-                <label>Email address <span class="big red">*</span></label>
+                <label for="emailInput">Email address <span class="big red">*</span></label>
 
                 <div class="form-element">
-                    <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" placeholder="Your email address.." required>
+                    <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" placeholder="Your email address.." id="emailInput" required>
                     <i class="fa fa-at form-element-icon" aria-hidden="true"></i>
                 </div>
             </div>
@@ -57,20 +57,20 @@
             <div class="row clearfix">
                 <div class="col col-3">
                     <div class="form-group">
-                        <label>Password <span class="big red">*</span></label>
+                        <label for="passwordInput">Password <span class="big red">*</span></label>
 
                         <div class="form-element">
-                            <input type="password" name="password" value=""  placeholder="Your password.." required minlength="6">
+                            <input type="password" name="password" value=""  placeholder="Your password.." minlength="6" id="passwordInput" required>
                             <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
                 <div class="col col-3">
                     <div class="form-group">
-                        <label>Confirm password <span class="big red">*</span></label>
+                        <label for="passwordConfirmationInput">Confirm password <span class="big red">*</span></label>
 
                         <div class="form-element">
-                            <input type="password" name="password_confirmation" value="" placeholder="Repeat your password.." required minlength="6">
+                            <input type="password" name="password_confirmation" value="" placeholder="Repeat your password.." id="passwordConfirmationInput" minlength="6" required>
                             <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                         </div>
                     </div>
@@ -86,17 +86,17 @@
             <h2 class="slashes">3. Billing Info</h2>
 
             <div class="form-group">
-                <label>Name <span class="big red">*</span></label>
+                <label for="nameInput">Name <span class="big red">*</span></label>
 
                 <div class="form-element">
-                    <input type="text" name="user[name]" value="{{ old('user.name', '' ) }}" placeholder="Your name.." data-stripe="name" required>
+                    <input type="text" name="user[name]" value="{{ old('user.name', '' ) }}" placeholder="Your name.." data-stripe="name" id="nameInput" required>
                     <i class="fa fa-user form-element-icon" aria-hidden="true"></i>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Country <span class="big red">*</span></label>
-                <select name="user[country]" class="country-input" data-stripe="address_country" required>
+                <label for="countryInput">Country <span class="big red">*</span></label>
+                <select name="user[country]" class="country-input" data-stripe="address_country" id="countryInput" required>
                     <option value="" disabled {{ old('user.country','') === '' ? 'selected' : '' }}>Select your country..</option>
                     <option value="US" >United States</option>
                     <option value="GB" >United Kingdom</option>
@@ -108,27 +108,27 @@
             </div>
 
             <div class="form-group europe-only">
-                <label>Address</label>
+                <label for="addressInput">Address</label>
                 <div class="form-element">
-                    <input type="text" name="user[address]" value="{{ old('user.address' ) }}" placeholder="Address line 1">
+                    <input type="text" name="user[address]" value="{{ old('user.address' ) }}" placeholder="Address line 1" id="addressInput">
                 </div>
             </div>
 
             <div class="row clearfix europe-only">
                 <div class="col col-3">
                     <div class="form-group">
-                        <label>Postal code</label>
+                        <label for="postalCodeInput">Postal code</label>
                         <div class="form-element">
-                            <input type="text" name="user[zip]" value="{{ old('user.zip' ) }}" placeholder="ZIP or Postal Code">
+                            <input type="text" name="user[zip]" value="{{ old('user.zip' ) }}" placeholder="ZIP or Postal Code" id="postalCodeInput">
                         </div>
                     </div>
                 </div>
 
                 <div class="col col-3">
                     <div class="form-group">
-                        <label>City</label>
+                        <label for="cityInput">City</label>
                         <div class="form-element">
-                            <input type="text" name="user[city]" value="{{ old('user.city' ) }}" placeholder="City">
+                            <input type="text" name="user[city]" value="{{ old('user.city' ) }}" placeholder="City" id="cityInput">
                         </div>
                     </div>
                 </div>
@@ -140,17 +140,17 @@
 
                     <div class="col col-3">
                         <div class="form-group">
-                            <label>Company Name <span class="small muted pull-right">(optional)</span></label>
+                            <label for="companyNameInput">Company Name <span class="small muted pull-right">(optional)</span></label>
                             <div class="form-element">
-                                <input type="text" name="user[company]" value="{{ old('user.company') }}" placeholder="Company Name">
+                                <input type="text" name="user[company]" value="{{ old('user.company') }}" placeholder="Company Name" id="companyNameInput">
                                 <i class="fa fa-building form-element-icon"></i>
                             </div>
                         </div>
                     </div>
                     <div class="col col-3">
                         <div class="form-group">
-                            <label>VAT Number <span class="small pull-right muted">(optional)</span></label>
-                            <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" placeholder="VAT Number" class="vat-number-input" />
+                            <label for="vatNumberInput">VAT Number <span class="small pull-right muted">(optional)</span></label>
+                            <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" placeholder="VAT Number" class="vat-number-input" id="vatNumberInput" />
                         </div>
                     </div>
                 </div>
@@ -172,10 +172,10 @@
                 <div class="row clearfix">
                     <div class="col col-5">
                         <div class="form-group stretch">
-                            <label>Credit Card Number <span class="big red">*</span></label>
+                            <label for="creditCardNumberInput">Credit Card Number <span class="big red">*</span></label>
 
                             <div class="form-element">
-                                <input type="text" class="" data-stripe="number" placeholder="**** **** **** ****" required>
+                                <input type="text" class="" data-stripe="number" placeholder="**** **** **** ****" id="creditCardNumberInput" required>
                                 <i class="fa fa-credit-card form-element-icon" aria-hidden="true"></i>
                             </div>
                         </div>
@@ -186,15 +186,15 @@
 
                     <div class="col col-3">
                         <div class="form-group">
-                            <label>Expiration <span class="big red">*</span></label>
-                            <select data-stripe="exp_month" style="width: 100px; display: inline;" required>
+                            <label for="expMonthInput">Expiration <span class="big red">*</span></label>
+                            <select data-stripe="exp_month" style="width: 100px; display: inline;" id="expMonthInput" required>
                                 <option value="" disabled selected>Month</option>
                                 @for ($i = 1; $i <= 12; $i++)
                                 <option>{{ $i }}</option>
                                 @endfor
                             </select>
 
-                            <select data-stripe="exp_year" style="width: 100px; display: inline;" required>
+                            <select data-stripe="exp_year" style="width: 100px; display: inline;" id="expYearInput" required>
                                 <option value="" disabled selected>Year</option>
                                 @for ($i = 0; $i < 10; $i++)
                                 <option value="{{ date('Y') + $i }}">{{ date('y') + $i }}</option>
@@ -206,10 +206,10 @@
                     <div class="col col-2">
 
                         <div class="form-group">
-                            <label>CVC <span class="big red">*</span></label>
+                            <label for="cvcInput">CVC <span class="big red">*</span></label>
 
                             <div class="form-element stretch">
-                                <input type="password" data-stripe="cvc" maxlength="4" required>
+                                <input type="password" data-stripe="cvc" maxlength="4" id="cvcInput" required>
                                 <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                             </div>
 

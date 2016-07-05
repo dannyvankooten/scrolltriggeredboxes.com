@@ -27,34 +27,34 @@
             {!! csrf_field() !!}
 
             <div class="form-group">
-                <label>Name <span class="big red">*</span></label>
+                <label for="nameInput">Name <span class="big red">*</span></label>
                 <div class="form-element">
-                    <input type="text" name="user[name]" value="{{ old('user.name', $user->name ) }}">
+                    <input type="text" name="user[name]" value="{{ old('user.name', $user->name ) }}" id="nameInput" required>
                     <i class="fa fa-user form-element-icon"></i>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Address</label>
+                <label for="addressInput">Address</label>
                 <div class="form-element">
-                    <input type="text" name="user[address]" value="{{ old('user.address', $user->address  ) }}" placeholder="Address line 1">
+                    <input type="text" name="user[address]" value="{{ old('user.address', $user->address  ) }}" placeholder="Address line 1" id="addressInput">
                 </div>
             </div>
 
             <div class="row clearfix">
                 <div class="col col-3">
                     <div class="form-group">
-                        <label>City</label>
+                        <label for="cityInput">City</label>
                         <div class="form-element">
-                            <input type="text" name="user[city]" value="{{ old('user.city', $user->city  ) }}" placeholder="City">
+                            <input type="text" name="user[city]" value="{{ old('user.city', $user->city  ) }}" placeholder="City" id="cityInput">
                         </div>
                     </div>
                 </div>
                 <div class="col col-3">
                     <div class="form-group">
-                        <label>ZIP / Postal code</label>
+                        <label for="postalCodeInput">ZIP / Postal code</label>
                         <div class="form-element">
-                            <input type="text" name="user[zip]" value="{{ old('user.zip', $user->zip  ) }}" placeholder="ZIP or Postal Code">
+                            <input type="text" name="user[zip]" value="{{ old('user.zip', $user->zip  ) }}" placeholder="ZIP or Postal Code" id="postalCodeInput">
                         </div>
                     </div>
                 </div>
@@ -63,8 +63,8 @@
             <div class="row clearfix">
                 <div class="col col-3">
                     <div class="form-group">
-                        <label>Country <span class="big red">*</span></label>
-                        <select name="user[country]" class="country-input" required>
+                        <label for="countryInput"Country <span class="big red">*</span></label>
+                        <select name="user[country]" class="country-input" id="countryInput" required>
                             <option value="" disabled {{ old('user.country','') === '' ? 'selected' : '' }}>Select your country..</option>
                             @foreach(Countries::all() as $code => $country)
                                 <option value="{{ $code }}" {{ old('user.country', $user->country ) == $code ? 'selected' : '' }}>{{ $country }}</option>
@@ -74,9 +74,9 @@
                 </div>
                 <div class="col col-3">
                     <div class="form-group">
-                        <label>State / Province</label>
+                        <label for="stateInput">State / Province</label>
                         <div class="form-element">
-                            <input type="text" name="user[state]" placeholder="State" value="{{ old('user.state', $user->state  ) }}">
+                            <input type="text" name="user[state]" placeholder="State" value="{{ old('user.state', $user->state  ) }}" id="stateInput">
                         </div>
                     </div>
                 </div>
@@ -88,17 +88,17 @@
 
                     <div class="col col-3">
                         <div class="form-group">
-                            <label>Company Name <span class="small muted pull-right">(optional)</span></label>
+                            <label for="companyNameInput">Company Name <span class="small muted pull-right">(optional)</span></label>
                             <div class="form-element">
-                                <input type="text" name="user[company]" value="{{ old('user.company', $user->company ) }}" placeholder="Company Name">
+                                <input type="text" name="user[company]" value="{{ old('user.company', $user->company ) }}" placeholder="Company Name" id="companyNameInput">
                                 <i class="fa fa-building form-element-icon"></i>
                             </div>
                         </div>
                     </div>
                     <div class="col col-3">
                         <div class="form-group">
-                            <label>VAT Number <span class="small pull-right muted">(optional)</span></label>
-                            <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" placeholder="VAT Number" />
+                            <label for="vatNumberInput">VAT Number <span class="small pull-right muted">(optional)</span></label>
+                            <input type="text" name="user[vat_number]" value="{{ old('user.vat_number', '') }}" placeholder="VAT Number" id="vatNumberInput" />
                         </div>
                     </div>
                 </div>
