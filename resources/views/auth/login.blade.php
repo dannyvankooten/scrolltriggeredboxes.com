@@ -7,7 +7,7 @@
     <div class="container">
 
         <h1 class="page-title">Log in to your account</h1>
-        <p>Please log in to manage your downloads, licenses and account info.</p>
+        <p>Please log in to download the add-on plugins and manage your Boxzilla license(s).</p>
 
         @include('partials.form-messages')
 
