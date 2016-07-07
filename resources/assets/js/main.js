@@ -95,6 +95,9 @@ var askForConfirmation = function(event) {
         helpers.calculatePrice(this.quantity.value, selectedInterval);
     });
     form.addEventListener('keyup', function() {
+        if( this.quantity.value.length > 0 && this.quantity.value < 1 ) {
+            this.quantity.value = 1;
+        }
         var selectedInterval = [].filter.call( this.interval, function(node) { return node.checked; }).pop().value;
         helpers.calculatePrice(this.quantity.value, selectedInterval);
     });
