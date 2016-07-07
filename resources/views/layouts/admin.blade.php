@@ -43,14 +43,11 @@
 <div role="main" class="big-margin" itemprop="mainContentOfPage">
 
     <div class="container">
-    @if (session('message'))
-        <div class="notice notice-success">
-            {!! session('message') !!}
-        </div>
-    @endif
-    </div>
-
-    <div class="container">
+        @if (session('message'))
+            <div class="notice notice-success">
+                {!! session('message') !!}
+            </div>
+        @endif
         @if (session('error'))
             <div class="notice notice-warning">
                 {!! session('error') !!}
