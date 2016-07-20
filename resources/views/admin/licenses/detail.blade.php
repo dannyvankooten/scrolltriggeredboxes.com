@@ -67,7 +67,16 @@
         <table class="table row-scoped">
             <tr>
                 <th>Status</th>
-                <td><span class="label {{ $license->subscription->active ? "success" : "warning" }}">{{ $license->subscription->active ? "Active" : "Inactive" }}</span></td>
+                <td>
+                    <span class="{{ $license->subscription->active ? "success" : "warning" }}">{{ $license->subscription->active ? "Active" : "Inactive" }}</span>
+
+                    <form method="post" action="/subscriptions/{{ $license->subscription->id }}" class="pull-right" data-confirm="Are you sure you want to {{ $license->subscription->active ? "deactivate" : "reactivate" }} this subscription?">
+                        {!! csrf_field() !!}
+                        <input type="hidden" name="subscription[active]" value="{{ $license->subscription->active ? 0 : 1 }}" />
+                        <input type="submit" value="{{ $license->subscription->active ? "Deactivate" : "Reactivate" }}" class="button button-small button-warning" />
+                        <input type="hidden" name="_method" value="PUT" />
+                    </form>
+                </td>
             </tr>
             <tr>
                 <th>Interval</th>
@@ -75,14 +84,14 @@
             </tr>
             <tr>
                 <th>Amount</th>
-                <td>${{ $license->subscription->amount }}</td>
+                <td>{{ $license->subscription->getFormattedAmount() }}</td>
             </tr>
             <tr>
                 <th>Next Charge</th>
                 <td>
                     {{ $license->subscription->next_charge_at->format('Y-m-d') }}
 
-                    <form method="post" action="/payments" class="pull-right" data-confirm="Are you sure you watn to charge this subscription now?">
+                    <form method="post" action="/payments" class="pull-right" data-confirm="Are you sure you want to charge this subscription now?">
                         {!! csrf_field() !!}
                         <input type="hidden" name="payment[subscription_id]" value="{{ $license->subscription->id }}" />
                         <input type="submit" value="Charge Now" class="button button-small" />
@@ -110,7 +119,7 @@
                         <form method="POST" action="/payments/{{ $payment->id }}" data-confirm="Are you sure you want to refund this payment?">
                             {!! csrf_field() !!}
                             <input type="hidden" name="_method" value="DELETE" />
-                            <input class="button-small" type="submit" value="Refund" />
+                            <input class="button button-small button-warning" type="submit" value="Refund" />
                         </form>
                          &nbsp;
                         <a href="{{ $payment->getStripeUrl() }}"> Stripe</a>
