@@ -19,7 +19,6 @@ class UserController extends Controller {
         // apply filters
         foreach( $filters as $filter => $value ) {
             if( ! empty( $value ) ) {
-
                 $value = str_replace( '*', '%', $value );
                 $query->where( $filter, 'LIKE', $value );
             }

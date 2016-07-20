@@ -22,6 +22,8 @@
                 @if( request('filter') )
                     &nbsp; <a href="?">Clear filters</a>
                 @endif
+
+                <span class="help pull-right">Use <strong>*</strong> as a wildcard.</span>
             </div>
         </form>
 
