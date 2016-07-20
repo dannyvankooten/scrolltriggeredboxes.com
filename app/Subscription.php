@@ -108,7 +108,7 @@ class Subscription extends Model {
 	 * @return string
 	 */
 	public function getFormattedAmount() {
-		return '$' . $this->getAmount();
+		return '$' . ( $this->getAmount() + 0 );
 	}
 
 	/**
@@ -122,7 +122,7 @@ class Subscription extends Model {
 	 * @return string
 	 */
 	public function getFormattedAmountInclTax() {
-		return '$' . $this->getAmountInclTax();
+		return '$' . ( $this->getAmountInclTax() + 0 );
 	}
 
 	/**

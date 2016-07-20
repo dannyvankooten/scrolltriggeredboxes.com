@@ -53,7 +53,7 @@ class Payment extends Model
 	 * @return string
 	 */
 	public function getFormattedTotal() {
-		return $this->getCurrencySign() . $this->getTotal();
+		return $this->getCurrencySign() . ( $this->getTotal() + 0 );
 	}
 
 	/**
