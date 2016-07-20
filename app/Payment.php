@@ -101,4 +101,18 @@ class Payment extends Model
 	public function belongsToUser( User $user ) {
 		return $this->user_id == $user->id;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getStripeUrl() {
+		return sprintf( 'https://dashboard.stripe.com/payments/%s', $this->stripe_id );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getMoneybirdUrl() {
+		return sprintf( 'https://moneybird.com/%s/sales_invoices/%s', config('services.moneybird.administration'), $this->moneybird_invoice_id );
+	}
 }
