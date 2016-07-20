@@ -665,6 +665,10 @@ button[disabled] {
   .label.danger {
     background: #d9534f; }
 
+.inline-children > * {
+  display: inline-block;
+  margin-right: 8px; }
+
 #content ul li {
   padding: 3px 0; }
 

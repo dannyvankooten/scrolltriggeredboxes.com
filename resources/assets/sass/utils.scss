@@ -180,3 +180,10 @@
     background: #d9534f;
   }
 }
+
+.inline-children {
+  > * {
+    display: inline-block;
+    margin-right: 8px;
+  }
+}
