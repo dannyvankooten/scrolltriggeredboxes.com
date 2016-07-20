@@ -424,19 +424,18 @@ var askForConfirmation = function askForConfirmation(event) {
 
 [].forEach.call(pricingForms, function (form) {
     form.addEventListener('change', function () {
+        var amount = this.quantity.value.length > 0 ? Math.abs(parseInt(this.quantity.value)) : 1;
         var selectedInterval = [].filter.call(this.interval, function (node) {
             return node.checked;
         }).pop().value;
-        helpers.calculatePrice(this.quantity.value, selectedInterval);
+        helpers.calculatePrice(amount, selectedInterval);
     });
     form.addEventListener('keyup', function () {
-        if (this.quantity.value.length > 0 && this.quantity.value < 1) {
-            this.quantity.value = 1;
-        }
+        var amount = this.quantity.value.length > 0 ? Math.abs(parseInt(this.quantity.value)) : 1;
         var selectedInterval = [].filter.call(this.interval, function (node) {
             return node.checked;
         }).pop().value;
-        helpers.calculatePrice(this.quantity.value, selectedInterval);
+        helpers.calculatePrice(amount, selectedInterval);
     });
 
     var selectedInterval = [].filter.call(form.interval, function (node) {

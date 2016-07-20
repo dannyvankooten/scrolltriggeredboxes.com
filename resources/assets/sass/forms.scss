@@ -28,6 +28,23 @@ textarea {
   }
 }
 
+input:invalid:not(:focus):not(:placeholder-shown) {
+  border-color: indianred;
+
+  & ~ .form-element-requirement {
+    max-height: 100px;
+  }
+}
+
+.form-element-requirement {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 200ms ease;
+  font-size: 14px;
+  font-style:  italic;
+  color: #d9534f;
+}
+
 select:focus,
 textarea:focus,
 input:focus {

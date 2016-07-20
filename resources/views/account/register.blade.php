@@ -3,9 +3,6 @@
 @section('title','Register - Boxzilla')
 
 @section('content')
-
-
-
 <div class="container">
 
     <h1 class="page-title">Register</h1>
@@ -40,6 +37,8 @@
         </div>
         <!-- / Step -->
 
+
+
         <!-- Step 2: Account Info -->
         <div class="step medium-margin">
 
@@ -51,7 +50,10 @@
                 <div class="form-element">
                     <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" placeholder="Your email address.." id="emailInput" required>
                     <i class="fa fa-at form-element-icon" aria-hidden="true"></i>
+                    <div class="form-element-requirement">Must be a valid email address.</div>
                 </div>
+
+
             </div>
 
             <div class="row clearfix">
@@ -60,8 +62,9 @@
                         <label for="passwordInput">Password <span class="big red">*</span></label>
 
                         <div class="form-element">
-                            <input type="password" name="password" value=""  placeholder="Your password.." minlength="6" id="passwordInput" required>
+                            <input type="password" name="password" value=""  placeholder="Your password.." minlength="6" pattern=".{6,}" id="passwordInput" required>
                             <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
+                            <div class="form-element-requirement">Must be a at least 6 characters long.</div>
                         </div>
                     </div>
                 </div>
@@ -70,8 +73,9 @@
                         <label for="passwordConfirmationInput">Confirm password <span class="big red">*</span></label>
 
                         <div class="form-element">
-                            <input type="password" name="password_confirmation" value="" placeholder="Repeat your password.." id="passwordConfirmationInput" minlength="6" required>
+                            <input type="password" name="password_confirmation" value="" placeholder="Repeat your password.." id="passwordConfirmationInput" minlength="6" pattern=".{6,}" required>
                             <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
+                            <div class="form-element-requirement">Must be a at least 6 characters long.</div>
                         </div>
                     </div>
                 </div>
@@ -209,7 +213,7 @@
                             <label for="cvcInput">CVC <span class="big red">*</span></label>
 
                             <div class="form-element stretch">
-                                <input type="password" data-stripe="cvc" maxlength="4" id="cvcInput" required>
+                                <input type="password" data-stripe="cvc" maxlength="4" id="cvcInput" placeholder="***" required>
                                 <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                             </div>
 
