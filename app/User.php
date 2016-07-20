@@ -73,7 +73,7 @@ class User extends Model implements AuthenticatableContract,
 	 */
 	public function licenses()
 	{
-		return $this->hasMany('App\License', 'user_id', 'id');
+		return $this->hasMany('App\License', 'user_id', 'id')->orderBy('created_at', 'DESC');
 	}
 
 	/**
@@ -81,7 +81,7 @@ class User extends Model implements AuthenticatableContract,
 	 */
 	public function payments()
 	{
-		return $this->hasMany('App\Payment', 'user_id', 'id');
+		return $this->hasMany('App\Payment', 'user_id', 'id')->orderBy('created_at', 'DESC');
 	}
 
 	/**
@@ -89,7 +89,7 @@ class User extends Model implements AuthenticatableContract,
 	 */
 	public function subscriptions()
 	{
-		return $this->hasMany('App\Subscription', 'user_id', 'id');
+		return $this->hasMany('App\Subscription', 'user_id', 'id')->orderBy('created_at', 'DESC');
 	}
 
 	/**

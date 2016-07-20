@@ -41,15 +41,14 @@ class Subscription extends Model {
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function license() {
-		return $this->belongsTo( 'App\License', 'license_id', 'id' );
+		return $this->belongsTo('App\License', 'license_id', 'id');
 	}
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
-	public function payments()
-	{
-		return $this->hasMany('App\Payment', 'subscription_id', 'id');
+	public function payments() {
+		return $this->hasMany('App\Payment', 'subscription_id', 'id')->orderBy('created_at', 'DESC');
 	}
 
 	/**

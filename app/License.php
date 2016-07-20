@@ -45,7 +45,7 @@ class License extends Model {
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
 	public function activations() {
-		return $this->hasMany('App\Activation', 'license_id', 'id');
+		return $this->hasMany('App\Activation', 'license_id', 'id')->orderBy('created_at', 'DESC');
 	}
 
 	/**
