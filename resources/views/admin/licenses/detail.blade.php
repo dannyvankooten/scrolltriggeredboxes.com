@@ -110,23 +110,26 @@
                 <th>Date</th>
                 <th>Total</th>
                 <th></th>
+                <th></th>
             </tr>
             @forelse( $license->subscription->payments as $payment)
                 <tr>
                     <td>{{ $payment->created_at->format('Y-m-d') }}</td>
                     <td>{{ $payment->getFormattedTotal() }}</td>
-                    <td class="inline-children">
-                        <form method="POST" action="/payments/{{ $payment->id }}" data-confirm="Are you sure you want to refund this payment?">
-                            {!! csrf_field() !!}
-                            <input type="hidden" name="_method" value="DELETE" />
-                            <input class="button button-small button-warning" type="submit" value="Refund" />
-                        </form>
-                         &nbsp;
-                        <a href="{{ $payment->getStripeUrl() }}"> Stripe</a>
+                    <td>
+                        @if( $payment->isEligibleForRefund())
+                            <form method="POST" action="/payments/{{ $payment->id }}" data-confirm="Are you sure you want to refund this payment?">
+                                {!! csrf_field() !!}
+                                <input type="hidden" name="_method" value="DELETE" />
+                                <input class="button button-small button-warning" type="submit" value="Refund" />
+                            </form>
+                        @endif
+                    </td>
+                    <td>
+                        <a href="{{ $payment->getStripeUrl() }}"> Stripe</a> &nbsp;
                         <a href="{{ $payment->getMoneybirdUrl() }}">Moneybird</a>
                     </td>
                 </tr>
-
             @empty
                 <tr>
                     <td colspan="3">There are no payments for this subscription.</td>

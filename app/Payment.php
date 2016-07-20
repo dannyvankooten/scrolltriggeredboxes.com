@@ -115,4 +115,14 @@ class Payment extends Model
 	public function getMoneybirdUrl() {
 		return sprintf( 'https://moneybird.com/%s/sales_invoices/%s', config('services.moneybird.administration'), $this->moneybird_invoice_id );
 	}
+
+	/**
+	 * Determines whether the payment is still eligible for a refund (3 months).
+	 *
+	 * @return bool
+	 */
+	public function isEligibleForRefund() {
+		$border = new Carbon('-90 days');
+		return $this->created_at->gt($border);
+	}
 }
