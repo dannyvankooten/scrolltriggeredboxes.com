@@ -162,7 +162,6 @@
 
 .label {
   display: inline-block;
-  color: white;
   border-radius: $border-radius;
   padding: .2em .6em .3em;
   font-weight: 500;
@@ -170,14 +169,17 @@
 
   &.success {
     background: #5cb85c;
+    color: white;
   }
 
   &.warning {
     background: #f0ad4e;
+    color: white;
   }
 
   &.danger {
     background: #d9534f;
+    color: white;
   }
 }
 

@@ -689,17 +689,19 @@ button[disabled] {
 
 .label {
   display: inline-block;
-  color: white;
   border-radius: 3px;
   padding: .2em .6em .3em;
   font-weight: 500;
   font-size: 80%; }
   .label.success {
-    background: #5cb85c; }
+    background: #5cb85c;
+    color: white; }
   .label.warning {
-    background: #f0ad4e; }
+    background: #f0ad4e;
+    color: white; }
   .label.danger {
-    background: #d9534f; }
+    background: #d9534f;
+    color: white; }
 
 .success {
   color: #5cb85c; }
@@ -923,5 +925,11 @@ code {
         font-weight: normal; }
   .dropdown.open .dropdown-menu, .dropdown:hover .dropdown-menu, .dropdown:focus .dropdown-menu {
     display: block; }
+
+.boxzilla {
+  max-width: 380px;
+  border: 1px solid #dedede;
+  border-left: 10px solid #00A5E3;
+  box-shadow: none; }
 
 /*# sourceMappingURL=main.css.map */
