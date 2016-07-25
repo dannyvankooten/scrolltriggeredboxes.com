@@ -385,9 +385,9 @@ textarea {
   textarea.valid {
     border-color: limegreen; }
 
-input:invalid:not(:focus):not(:placeholder-shown) {
+input.has-requirement:invalid:not(:focus):not(:placeholder-shown) {
   border-color: indianred; }
-  input:invalid:not(:focus):not(:placeholder-shown) ~ .form-element-requirement {
+  input.has-requirement:invalid:not(:focus):not(:placeholder-shown) ~ .form-element-requirement {
     max-height: 100px; }
 
 .form-element-requirement {

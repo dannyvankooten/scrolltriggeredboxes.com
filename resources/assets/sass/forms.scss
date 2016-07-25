@@ -28,7 +28,7 @@ textarea {
   }
 }
 
-input:invalid:not(:focus):not(:placeholder-shown) {
+input.has-requirement:invalid:not(:focus):not(:placeholder-shown) {
   border-color: indianred;
 
   & ~ .form-element-requirement {

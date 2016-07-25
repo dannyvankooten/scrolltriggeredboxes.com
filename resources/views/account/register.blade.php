@@ -48,7 +48,7 @@
                 <label for="emailInput">Email address <span class="big red">*</span></label>
 
                 <div class="form-element">
-                    <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" placeholder="Your email address.." id="emailInput" required>
+                    <input type="email" name="user[email]" value="{{ old('user.email', '' ) }}" placeholder="Your email address.." id="emailInput" class="has-requirement" required>
                     <i class="fa fa-at form-element-icon" aria-hidden="true"></i>
                     <div class="form-element-requirement">Must be a valid email address.</div>
                 </div>
@@ -62,7 +62,7 @@
                         <label for="passwordInput">Password <span class="big red">*</span></label>
 
                         <div class="form-element">
-                            <input type="password" name="password" value=""  placeholder="Your password.." minlength="6" pattern=".{6,}" id="passwordInput" required>
+                            <input type="password" name="password" value=""  placeholder="Your password.." minlength="6" pattern=".{6,}" id="passwordInput" class="has-requirement" required>
                             <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                             <div class="form-element-requirement">Must be a at least 6 characters long.</div>
                         </div>
@@ -73,7 +73,7 @@
                         <label for="passwordConfirmationInput">Confirm password <span class="big red">*</span></label>
 
                         <div class="form-element">
-                            <input type="password" name="password_confirmation" value="" placeholder="Repeat your password.." id="passwordConfirmationInput" minlength="6" pattern=".{6,}" required>
+                            <input type="password" name="password_confirmation" value="" placeholder="Repeat your password.." id="passwordConfirmationInput" minlength="6" pattern=".{6,}" class="has-requirement" required>
                             <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
                             <div class="form-element-requirement">Must be a at least 6 characters long.</div>
                         </div>

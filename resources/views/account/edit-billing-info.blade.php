@@ -63,7 +63,7 @@
             <div class="row clearfix">
                 <div class="col col-3">
                     <div class="form-group">
-                        <label for="countryInput"Country <span class="big red">*</span></label>
+                        <label for="countryInput">Country <span class="big red">*</span></label>
                         <select name="user[country]" class="country-input" id="countryInput" required>
                             <option value="" disabled {{ old('user.country','') === '' ? 'selected' : '' }}>Select your country..</option>
                             @foreach(Countries::all() as $code => $country)

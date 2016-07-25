@@ -73,7 +73,7 @@
                         <label for="cvcInput">CVC <span class="big red">*</span></label>
 
                         <div class="form-element stretch">
-                            <input type="password" data-stripe="cvc" id="cvcInput" required maxlength="4">
+                            <input type="password" data-stripe="cvc" id="cvcInput" required maxlength="4" placeholder="***">
                             <i class="fa fa-lock form-element-icon"></i>
                         </div>
 
