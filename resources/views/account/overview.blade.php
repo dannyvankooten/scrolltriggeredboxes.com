@@ -18,9 +18,7 @@
             <li><a href="/licenses/new">Purchase a new license</a></li>
             <li><a href="mailto:support@boxzillaplugin.com">Contact support</a></li>
         </ul>
-
-        <p>Alternatively, <a href="/logout">click here to log out</a>.</p>
-
+        
 
     </div>
 @stop
