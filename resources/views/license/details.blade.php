@@ -32,7 +32,7 @@
             <tr>
                 <th>Subscription</th>
                 <td class="clearfix">
-                    <span class="label {{ $license->subscription->active ? "success" : "danger" }}">{{ $license->subscription->active ? "Active" : "Inactive" }}</span>
+                    <span class="{{ $license->subscription->active ? "success" : "danger" }}">{{ $license->subscription->active ? "Active" : "Inactive" }}</span>
                 </td>
                 <td class="row-action">
                     <form method="post" action="/licenses/{{ $license->id }}">
@@ -71,7 +71,7 @@
             <tr>
                 <th>Expire{{ $license->isExpired() ? 'd' : 's' }}</th>
                 <td>
-                    <span class="label {{ $license->isExpired() ? 'danger' : 'warning' }}">{{ $license->expires_at->format('M j, Y') }}</span>
+                    <span class="{{ $license->isExpired() ? 'danger' : 'warning' }}">{{ $license->expires_at->format('M j, Y') }}</span>
                 </td>
                 <td class="row-action"></td>
             </tr>
