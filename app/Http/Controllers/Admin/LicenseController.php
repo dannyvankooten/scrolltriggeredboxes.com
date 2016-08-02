@@ -77,6 +77,12 @@ class LicenseController extends Controller {
 
 		if( ! empty( $data['expires_at'] ) ) {
 			$license->expires_at = \DateTime::createFromFormat( 'Y-m-d' , $data['expires_at'] );
+
+            // update subscription next charge date
+            if( $license->subscription ) {
+                $license->subscription->next_charge_at = $license->expires_at->modify('-1 week');
+                $license->subscription->save();
+            }
 		}
 
 		$license->save();
