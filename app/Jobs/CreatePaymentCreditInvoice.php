@@ -10,7 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class CreatePaymentCreditInvoice extends Job implements ShouldQueue
 {
-    use InteractsWithQueue;
+    use InteractsWithQueue, SerializesModels;
 
     /**
      * @var Payment
