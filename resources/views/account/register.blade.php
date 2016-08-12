@@ -238,7 +238,7 @@
 
     </form>
 
-    <p class="muted" style="font-style: italic;">Would you rather pay with PayPal instead? Please <a href="mailto:support@boxzillaplugin.com?Subject={{ urlencode('Paying by PayPal') }}&Body={{ urlencode('Hello, I would like to pay for Boxzilla using PayPal. Please make this possible.') }}">let us know</a>, we'd like to know!.</p>
+    <p class="muted" style="font-style: italic;">Would you rather pay with PayPal instead? Please <a href="mailto:support@boxzillaplugin.com?Subject={{ urlencode('Paying by PayPal') }}&Body={{ urlencode('Hello, I would like to pay for Boxzilla using PayPal. Please make this possible.') }}">tell us</a>, we'd like to know!</p>
 
 </div>
 @stop
