@@ -53,8 +53,13 @@ class CreateInvoices extends Command
             ->with('user')
             ->get();
 
+        $this->info( sprintf( '%d payments without an invoice found.', count( $payments ) ) );
+
         foreach( $payments as $payment ) {
             $user = $payment->user;
+
+            // log some info
+            $this->info( sprintf( 'Invoicing %s for %s', $payment->getFormattedTotal(), $user->email ) );
 
             // create or update contact
             $user = $this->invoicer->contact( $user );
