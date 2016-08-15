@@ -13,7 +13,8 @@
 		"graham-campbell/github": "^4.2",
 		"stripe/stripe-php": "^3.14",
 		"dannyvankooten/laravel-vat": "dev-master",
-		"doctrine/dbal": "^2.5"
+		"doctrine/dbal": "^2.5",
+		"paypal/rest-api-sdk-php": "^1.7"
 	},
 	"require-dev": {
 		"fzaninotto/faker": "~1.4",

@@ -17,7 +17,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
 
-
 class AccountController extends Controller {
 
 	/**

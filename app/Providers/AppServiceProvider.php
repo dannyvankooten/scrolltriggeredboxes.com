@@ -7,9 +7,10 @@ use App\Services\TaxRateResolver;
 use HelpScoutApp\DynamicApp;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Support\ServiceProvider;
-use GuzzleHttp;
 
 use App\Services\Invoicer\Invoicer;
+use PayPal\Auth\OAuthTokenCredential;
+use PayPal\Rest\ApiContext;
 
 class AppServiceProvider extends ServiceProvider {
 
@@ -57,6 +58,29 @@ class AppServiceProvider extends ServiceProvider {
 		$this->app->singleton( Purchaser::class, function ($app) {
 			return new Purchaser( $app[Charger::class]);
 		});
+
+        $this->app->singleton( ApiContext::class, function($app) {
+            $config = config('services.paypal');
+
+            $apiContext = new ApiContext(
+                new OAuthTokenCredential(
+                    $config['client_id'],
+                    $config['secret']
+                )
+            );
+
+            $config = array(
+                'mode' => config('app.env') === 'local' ? 'sandbox' : 'live',
+                'log.LogEnabled' => true,
+                'log.FileName' => storage_path() . '/paypal.log',
+                'log.LogLevel' => config('app.debug') ? 'DEBUG' : 'INFO',
+                'cache.enabled' => true,
+                'cache.FileName' => storage_path() . '/paypal-access-token'
+            );
+            $apiContext->setConfig($config);
+
+            return $apiContext;
+        });
 
 	}
 
