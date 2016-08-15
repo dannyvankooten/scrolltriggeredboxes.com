@@ -13,11 +13,6 @@ return [
 	| to have a conventional place to find your various credentials.
 	|
 	*/
-	'sendowl' => [
-		'api_key' => env('SENDOWL_API_KEY', ''),
-		'api_secret' => env('SENDOWL_API_SECRET', '')
-	],
-
 	'mailgun' => [
 		'domain' => env('MAILGUN_DOMAIN', ''),
 		'secret' => env('MAILGUN_SECRET', ''),
@@ -32,6 +27,11 @@ return [
 		'secret' => '',
 	],
 
+    'paypal' => [
+        'client_id' => env('PAYPAL_CLIENT_ID', ''),
+        'secret' => env('PAYPAL_SECRET', ''),
+    ],
+
 	'ses' => [
 		'key' => '',
 		'secret' => '',
@@ -39,7 +39,6 @@ return [
 	],
 
 	'stripe' => [
-		'model'  => App\User::class,
 		'key' => env('STRIPE_KEY', ''),
 		'secret' => env('STRIPE_SECRET', ''),
 	],
