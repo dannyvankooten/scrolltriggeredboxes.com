@@ -14,6 +14,8 @@ use Carbon\Carbon;
  * @property double $subtotal
  * @property double $tax
  * @property string $moneybird_invoice_id
+ * @property int $subscription_id
+ * @property int $user_id
  * @property string $stripe_id
  * @property Carbon $created_at
  * @property Carbon $updated_at
