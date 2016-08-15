@@ -115,7 +115,13 @@
             @forelse( $license->subscription->payments as $payment)
                 <tr>
                     <td>{{ $payment->created_at->format('Y-m-d') }}</td>
-                    <td>{{ $payment->getFormattedTotal() }}</td>
+                    <td class="@if( $payment->subtotal < 0 ) red @endif">
+                        {{ $payment->getFormattedTotal() }}
+
+                        @if( $payment->subtotal < 0 )
+                            &nbsp; <small class="muted">(refund)</small>
+                        @endif
+                    </td>
                     <td>
                         @if( $payment->isEligibleForRefund())
                             <form method="POST" action="/payments/{{ $payment->id }}" data-confirm="Are you sure you want to refund this payment?">

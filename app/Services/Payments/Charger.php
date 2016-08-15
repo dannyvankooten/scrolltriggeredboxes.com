@@ -114,13 +114,21 @@ class Charger {
 
         // refund payment in stripe
         try {
-            $refund = Stripe\Refund::create($args);
+            $stripeRefund = Stripe\Refund::create($args);
         } catch( StripeException $e ) {
             throw new PaymentException( $e->getMessage(), $e->getCode() );
         }
 
-        // delete local payment
-        $payment->delete();
+        // store negative opposite of payment
+        $refund = new Payment();
+        $refund->subscription_id = $payment->subscription_id;
+        $refund->subtotal = 0 - $payment->subtotal;
+        $refund->tax = 0 - $payment->tax;
+        $refund->stripe_id = $stripeRefund->id;
+        $refund->related_payment_id = $payment->id;
+        $refund->user_id = $payment->user_id;
+        $refund->subscription_id = $payment->subscription_id;
+        $refund->save();
 
         // subtract one interval from license expiration date
         $subscription = $payment->subscription;
@@ -129,7 +137,7 @@ class Charger {
         $license->save();
 
         // dispatch job to create an invoice for this payment
-        $this->dispatch(new CreatePaymentCreditInvoice($payment));
+        $this->dispatch(new CreatePaymentCreditInvoice($payment, $refund));
 
         // log some info
         $user = $payment->user;

@@ -9,6 +9,7 @@ use Carbon\Carbon;
  *
  * @property User $user
  * @property Subscription $subscription
+ * @property Payment[] $activations
  * @property string $currency
  * @property double $subtotal
  * @property double $tax
@@ -18,13 +19,13 @@ use Carbon\Carbon;
  * @property Carbon $updated_at
  * @property int $user_id
  * @property int $subscription_id
+ * @property int $related_payment_id
  */
 class Payment extends Model
 {
 	protected $table = 'payments';
 	public $timestamps = true;
 	protected $fillable = [];
-
 	protected $dates =  [ 'created_at', 'updated_at' ];
 
 	/**
@@ -49,10 +50,22 @@ class Payment extends Model
 		return round( $this->subtotal, 2 );
 	}
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function refunds() {
+        return $this->hasMany('App\Payment', 'related_payment_id', 'id')->orderBy('created_at', 'DESC');
+    }
+
 	/**
 	 * @return string
 	 */
 	public function getFormattedTotal() {
+
+	    if( $this->getTotal() < 0 ) {
+            return '- ' . $this->getCurrencySign() . abs( $this->getTotal() );
+        }
+
 		return $this->getCurrencySign() . ( $this->getTotal() + 0 );
 	}
 
@@ -123,6 +136,6 @@ class Payment extends Model
 	 */
 	public function isEligibleForRefund() {
 		$border = new Carbon('-90 days');
-		return $this->created_at->gt($border);
+		return $this->subtotal > 0 && count( $this->refunds) === 0 && $this->created_at->gt($border);
 	}
 }

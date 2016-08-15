@@ -22,9 +22,11 @@
                 <td>{{ $payment->created_at->format('Y-m-d') }}</td>
                 <td><a href="/licenses/{{ $payment->subscription->license->id }}">{{ substr( $payment->subscription->license->license_key, 0, 10 ) . '..' }}</a></td>
                 <td>
-                    {{ $payment->getCurrencySign() . $payment->getTotal() }}
+                    {{ $payment->getFormattedTotal() }}
                     @if( $payment->tax > 0.00 )
-                        <small class="muted">(incl. {{ $payment->getCurrencySign() . $payment->tax }} tax)</small>
+                        &nbsp; <small class="muted">(incl. {{ $payment->getCurrencySign() . $payment->tax }} tax)</small>
+                    @elseif( $payment->subtotal < 0 )
+                        &nbsp; <small class="muted">(refund)</small>
                     @endif
                 </td>
                 <td>

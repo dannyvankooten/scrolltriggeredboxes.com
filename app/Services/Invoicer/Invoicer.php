@@ -150,13 +150,19 @@ class Invoicer {
 
     /**
      * @param Payment $payment
+     * @param Payment $refund
+     * @return Payment
      */
-    public function creditInvoice( Payment $payment ) {
+    public function creditInvoice( Payment $payment, Payment $refund ) {
         if( ! $payment->moneybird_invoice_id ) {
             return;
         }
 
         $data = $this->moneybird->createCreditInvoice( $payment->moneybird_invoice_id );
+
+        // set moneybird invoice ID
+        $refund->moneybird_invoice_id = $data->id;
+
         $sendingData = [
             'delivery_method' => 'Manual'
         ];
@@ -169,6 +175,7 @@ class Invoicer {
         ];
 
         $this->moneybird->createInvoicePayment( $data->id, $paymentData );
+        return $refund;
     }
 
     /**

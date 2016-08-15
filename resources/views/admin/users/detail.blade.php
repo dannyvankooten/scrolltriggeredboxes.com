@@ -45,6 +45,7 @@
             </tr>
         </table>
 
+        <div class="medium-margin"></div>
 
         <h3>Licenses</h3>
         <table class="table table-striped">
@@ -66,9 +67,54 @@
             </tbody>
         </table>
 
-        <p class="medium-margin"><a href="/licenses/create?license[user_id]={{ $user->id }}">Add new license for user</a></p>
+        <p><a href="/licenses/create?license[user_id]={{ $user->id }}">Add new license for user</a></p>
+        <!-- / end licenses -->
+
+        <div class="medium-margin"></div>
+
+        <h3>Payments</h3>
+        <table class="table">
+            <tr>
+                <th>Date</th>
+                <th>Total</th>
+                <th></th>
+                <th></th>
+            </tr>
+            @forelse( $user->payments as $payment)
+                <tr>
+                    <td>{{ $payment->created_at->format('Y-m-d') }}</td>
+                    <td class="@if( $payment->subtotal < 0 ) red @endif">
+                        {{ $payment->getFormattedTotal() }}
+
+                        @if( $payment->subtotal < 0 )
+                            &nbsp; <small class="muted">(refund)</small>
+                        @endif
+                    </td>
+                    <td>
+                        @if( $payment->isEligibleForRefund())
+                            <form method="POST" action="/payments/{{ $payment->id }}" data-confirm="Are you sure you want to refund this payment?">
+                                {!! csrf_field() !!}
+                                <input type="hidden" name="_method" value="DELETE" />
+                                <input class="button button-small button-warning" type="submit" value="Refund" />
+                            </form>
+                        @endif
+                    </td>
+                    <td>
+                        <a href="{{ $payment->getStripeUrl() }}"> Stripe</a> &nbsp;
+                        <a href="{{ $payment->getMoneybirdUrl() }}">Moneybird</a>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="3">There are no payments for this subscription.</td>
+                </tr>
+            @endforelse
+        </table>
+
+        <!-- / end payments -->
+
+        <div class="medium-margin"></div>
 
         <p><a href="javascript:history.go(-1);">&leftarrow; Go back.</a></p>
-
     </div>
 @stop

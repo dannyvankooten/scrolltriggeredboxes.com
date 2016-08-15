@@ -18,18 +18,20 @@ class CreatePaymentCreditInvoice extends Job implements ShouldQueue
     protected $payment;
 
     /**
-     * @var int
+     * @var Payment
      */
-    protected $invoiceId;
+    protected $refund;
 
     /**
      * Create a new job instance.
      *
      * @param Payment $payment
+     * @param Payment $refund
      */
-    public function __construct( Payment $payment )
+    public function __construct( Payment $payment, Payment $refund )
     {
         $this->payment = $payment;
+        $this->refund = $refund;
     }
 
     /**
@@ -41,6 +43,7 @@ class CreatePaymentCreditInvoice extends Job implements ShouldQueue
      */
     public function handle( Invoicer $invoicer )
     {
-        $invoicer->creditInvoice( $this->payment );
+        $refund = $invoicer->creditInvoice( $this->payment, $this->refund );
+        $refund->save();
     }
 }
