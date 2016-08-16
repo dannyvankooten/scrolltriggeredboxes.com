@@ -157,6 +157,10 @@ class AccountController extends Controller {
      * @return RedirectResponse
      */
 	protected function updatePayPal( Request $request, Redirector $redirector, Charger $charger  ) {
+        /** @var User $user */
+        $user = $this->auth->user();
+        $user->payment_method = 'paypal';
+        $user->save();
         return $redirector->back()->with('message', 'Changes saved!');
     }
 
@@ -181,6 +185,7 @@ class AccountController extends Controller {
             return $redirector->back()->with('error', $e->getMessage() );
         }
 
+        $user->payment_method = 'credit-card';
         $user->card_last_four = $request->input('user.card_last_four');
         $user->save();
 
