@@ -90,19 +90,15 @@ var askForConfirmation = function(event) {
 });
 
 [].forEach.call(pricingForms, function(form) {
-    form.addEventListener('change', function() {
-        var amount = this.quantity.value.length > 0 ? Math.abs(parseInt(this.quantity.value)) : 1;
-        var selectedInterval = [].filter.call( this.interval, function(node) { return node.checked; }).pop().value;
-        helpers.calculatePrice( amount, selectedInterval);
-    });
-    form.addEventListener('keyup', function() {
-        var amount = this.quantity.value.length > 0 ? Math.abs(parseInt(this.quantity.value)) : 1;
-        var selectedInterval = [].filter.call( this.interval, function(node) { return node.checked; }).pop().value;
-        helpers.calculatePrice( amount, selectedInterval);
-    });
+    function updatePrice() {
+        var plan = [].filter.call( this.plan, function(node) { return node.checked; }).pop().value || "personal";
+        var selectedInterval = [].filter.call( this.interval, function(node) { return node.checked; }).pop().value || "month";
+        helpers.calculatePrice( plan, selectedInterval);
+    }
 
-    var selectedInterval = [].filter.call( form.interval, function(node) { return node.checked; }).pop().value;
-    helpers.calculatePrice(form.quantity.value, selectedInterval);
+    form.addEventListener('change', updatePrice);
+    form.addEventListener('keyup', updatePrice);
+    updatePrice.call(form);
 });
 
 [].forEach.call(confirmationElements, function(element) {

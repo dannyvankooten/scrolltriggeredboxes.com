@@ -35,11 +35,15 @@ helpers.isCountryInEurope = function(country) {
     return country.length > 0 && europeanCountries.indexOf(country.toUpperCase()) > -1;
 };
 
-helpers.calculatePrice = function(amount, interval) {
+helpers.calculatePrice = function(plan, interval) {
+    var planPrices = {
+        "personal": 6,
+        "developer": 10,
+        "agency": 24
+    };
+    var price = planPrices[plan];
     var isYearly = interval === 'year';
-    var basePrice = isYearly ? 40 : 4;
-    var unitPrice = 0.5 * basePrice;
-    var total = basePrice + ( amount * unitPrice );
+    var total = isYearly ? price * 10 : price;
     total += 0;
 
     var elements = document.querySelectorAll('.price');

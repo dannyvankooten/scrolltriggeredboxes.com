@@ -21,8 +21,10 @@
             <h2 class="slashes">1. License</h2>
 
             <div class="form-group">
-                <label for="quantityInput" class="control-label">How many site activations do you need?</label>
-                <input type="number" name="quantity" class="form-control" value="{{ old('quantity', request('quantity', 1)) }}" step="1" min="1" id="quantityInput" required />
+                <label for="quantityInput" class="control-label">What license do you need?</label>
+                <label class="unstyled"><input type="radio" name="plan" value="personal" {{ old('plan', request('plan', 'personal')) === 'personal' ? 'checked' : '' }}> Personal <small class="muted">- 1 domain activation</small></label>
+                <label class="unstyled"><input type="radio" name="plan" value="developer" {{ old('plan', request('plan')) === 'developer' ? 'checked' : '' }}> Developer <small class="muted">- 3 domain activations</small></label>
+                <label class="unstyled"><input type="radio" name="plan" value="agency" {{ old('plan', request('plan')) === 'agency' ? 'checked' : '' }}> Agency <small class="muted">- 10 domain activations</small></label>
             </div>
 
             <div class="form-group radio">

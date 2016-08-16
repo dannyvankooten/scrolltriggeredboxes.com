@@ -43,30 +43,41 @@ class Purchaser {
     }
 
     /**
-     * @param float $quantity
+     * @param string $plan
      * @param float $interval
      *
      * @return int
      */
-    public function calculatePrice( $quantity, $interval ) {
-        $base_price = $interval == 'month' ? 4 : 40;
-        $unit_price = 0.5 * $base_price;
-        $amount = $base_price + ( $unit_price * $quantity );
-        $amount = round( $amount, 2 );
-        return $amount;
+    public function calculatePrice( $plan, $interval ) {
+        $planPrices = array(
+            "personal" => 6,
+            "developer" => 10,
+            "agency" => 24,
+        );
+
+        $price = $planPrices[ $plan ];
+        $isYearly = $interval === 'year';
+        $total = $isYearly ? $price * 10 : $price;
+        return $total;
     }
 
     /**
      * @param User $user
-     * @param $quantity
-     * @param $interval
+     * @param string $plan
+     * @param string $interval
      *
      * @return License
      */
-    public function license( User $user, $quantity, $interval )
+    public function license( User $user, $plan, $interval )
     {
+        $planLimits = array(
+            "personal" => 1,
+            "developer" => 3,
+            "agency" => 10,
+        );
+
         // subtotal
-        $amount = $this->calculatePrice( $quantity, $interval );
+        $amount = $this->calculatePrice( $plan, $interval );
 
         // charge user
         $payment = $this->charger->charge( $user, $amount );
@@ -75,7 +86,7 @@ class Purchaser {
         $license = new License();
         $license->license_key = License::generateKey();
         $license->user_id = $user->id;
-        $license->site_limit = $quantity;
+        $license->site_limit = $planLimits[$plan];
         $license->expires_at = new DateTime("+1 $interval");
         $license->save();
 
