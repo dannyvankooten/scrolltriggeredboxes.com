@@ -22,6 +22,7 @@ use DateTime;
  * @property string $interval
  * @property int $user_id
  * @property int $license_id
+ * @property string $paypal_id
  */
 class Subscription extends Model {
 
