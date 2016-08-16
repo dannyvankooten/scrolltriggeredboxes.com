@@ -399,6 +399,12 @@ var askForConfirmation = function askForConfirmation(event) {
 
     form.addEventListener('submit', function (event) {
         var form = event.form || event.target || this.form || this;
+
+        // only act if we're paying by credit card
+        if (form.elements.namedItem('payment_method') !== 'credit-card') {
+            return;
+        }
+
         event.preventDefault();
 
         // validate expiry date

@@ -9,6 +9,29 @@ var countryInputs = document.querySelectorAll('.country-input');
 var pricingForms = document.querySelectorAll('form[data-pricing]');
 var confirmationElements = document.querySelectorAll('[data-confirm]');
 var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+var optionalElements = document.querySelectorAll('[data-show-if]');
+
+function showIf(el, expectedValue ) {
+    return function() {
+        var value = this.form.elements.namedItem(this.name).value;
+        var conditionMet = value === expectedValue  || ( expectedValue === "" && value.length > 0 );
+        el.style.display = ( conditionMet ) ? '' : 'none';
+    }
+}
+
+// hide fields with [data-show-if] attribute
+[].forEach.call(optionalElements, function(el) {
+    var condition = el.getAttribute('data-show-if').split(':');
+    var fields = document.querySelectorAll('[name="' + condition[0] + '"]');
+    var expectedValue = condition[1] || "";
+    var callback = showIf(el, expectedValue);
+
+    for(var i=0; i<fields.length; i++) {
+        fields[i].addEventListener('change', callback);
+        fields[i].addEventListener('keyup', callback);
+        callback.call(fields[i]);
+    }
+});
 
 var askForConfirmation = function(event) {
     var sure = confirm(this.getAttribute('data-confirm'));
@@ -39,6 +62,12 @@ var askForConfirmation = function(event) {
 
     form.addEventListener('submit', function(event) {
         var form = event.form || event.target || this.form || this;
+
+        // only act if we're paying by credit card
+        if(form.elements.namedItem('payment_method') !== 'credit-card') {
+            return;
+        }
+
         event.preventDefault();
 
         // validate expiry date
