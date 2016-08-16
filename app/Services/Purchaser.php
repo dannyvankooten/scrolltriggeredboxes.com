@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Jobs\EmailLicenseDetails;
+use App\Services\Payments\Broker;
 use App\User;
 use App\License;
 use App\Subscription;
@@ -78,6 +79,7 @@ class Purchaser {
 
         // subtotal
         $amount = $this->calculatePrice( $plan, $interval );
+        $payment = null;
 
         // charge user
         $payment = $this->charger->charge( $user, $amount );

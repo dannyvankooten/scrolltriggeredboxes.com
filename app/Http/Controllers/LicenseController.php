@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Activation;;
+use App\Services\Payments\Broker;
 use App\Services\Payments\Charger;
 use App\Services\Payments\PaymentException;
 use App\Services\Purchaser;
@@ -62,7 +63,7 @@ class LicenseController extends Controller {
 	 *
 	 * @return RedirectResponse
 	 */
-	public function store( Request $request, Purchaser $purchaser, Redirector $redirector  ) {
+	public function store( Request $request, Broker $broker, Purchaser $purchaser, Redirector $redirector  ) {
 
 		$this->validate( $request, []);
 
@@ -70,6 +71,11 @@ class LicenseController extends Controller {
 		$user = $this->auth->user();
         $plan = $request->input('plan', 'personal');
 		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
+
+        if($user->payment_method === 'paypal') {
+            $approvalUrl = $broker->setupSubscription( $plan, $interval);
+            return $redirector->away($approvalUrl);
+        }
 
 		try {
 			$license = $purchaser->license($user, $plan, $interval);

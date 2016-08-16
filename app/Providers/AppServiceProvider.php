@@ -1,5 +1,6 @@
 <?php namespace App\Providers;
 
+use App\Services\Payments\Broker;
 use App\Services\Payments\Charger;
 use App\Services\Invoicer\Moneybird;
 use App\Services\Purchaser;
@@ -58,6 +59,10 @@ class AppServiceProvider extends ServiceProvider {
 		$this->app->singleton( Purchaser::class, function ($app) {
 			return new Purchaser( $app[Charger::class]);
 		});
+
+        $this->app->singleton( Broker::class, function ($app) {
+            return new Broker($app[ApiContext::class]);
+        });
 
         $this->app->singleton( ApiContext::class, function($app) {
             $config = config('services.paypal');
