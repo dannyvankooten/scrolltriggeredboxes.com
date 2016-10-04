@@ -27,6 +27,7 @@ class EmailLicenseDetails extends Job implements ShouldQueue
     public function __construct( License $license )
     {
         $this->license = $license;
+        $this->onQueue('emails');
     }
 
     /**
