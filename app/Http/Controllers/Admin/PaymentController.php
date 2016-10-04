@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\Payment;
+use App\Services\Invoicer\Invoicer;
 use App\Services\Payments\Charger;
 use App\Subscription;
 use Illuminate\Http\RedirectResponse;
@@ -12,6 +13,7 @@ class PaymentController extends Controller {
 
     // delete a payment (refund)
     public function destroy( $id, Redirector $redirector, Charger $charger  ) {
+        /** @var Payment $payment */
         $payment = Payment::findOrFail( $id );
         $charger->refund( $payment );
         return $redirector->back();
@@ -30,4 +32,17 @@ class PaymentController extends Controller {
         return $redirector->back()->with('message', 'Payment created.');
     }
 
+    /**
+     * Download PDF invoice
+     *
+     * @param int $id
+     * @param Invoicer $invoicer
+     *
+     * @return RedirectResponse
+     */
+    public function invoice( $id, Invoicer $invoicer ) {
+        /** @var Payment $payment */
+        $payment = Payment::findOrFail($id);
+        return new RedirectResponse($invoicer->getInvoiceUrl($payment));
+    }
 }

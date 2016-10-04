@@ -92,4 +92,5 @@ $router->group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['ad
 	$router->post('/payments', 'Admin\PaymentController@store');
 	$router->delete( '/payments/{id}', 'Admin\PaymentController@destroy' );
 	$router->delete( '/activations/{id}', 'Admin\ActivationController@destroy' );
+    $router->get( '/payments/{id}/invoice', 'Admin\PaymentController@invoice' );
 });

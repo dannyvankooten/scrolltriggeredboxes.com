@@ -100,7 +100,7 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ domain_url('/payments/'.$payment->id.'/invoice' ) }}">Invoice</a> &nbsp;
+                        <a href="/payments/{{ $payment->id }}/invoice">Invoice</a> &nbsp;
                         <a href="{{ $payment->getStripeUrl() }}">Stripe</a> &nbsp;
                         <a href="{{ $payment->getMoneybirdUrl() }}">Moneybird</a>
                     </td>
