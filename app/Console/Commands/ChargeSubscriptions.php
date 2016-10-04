@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Events\SubscriptionChargeFailed;
+use App\Jobs\EmailFailedChargeNotification;
 use App\Services\Payments\Charger;
 use App\Services\Payments\PaymentException;
 use App\Subscription;
@@ -11,9 +12,11 @@ use DateTime;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Logging\Log;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class ChargeSubscriptions extends Command
 {
+    use DispatchesJobs;
 
     /**
      * The name and signature of the console command.
@@ -98,7 +101,7 @@ class ChargeSubscriptions extends Command
                 $message = sprintf( 'Charge for subscription #%d failed because of error: %s', $subscription->id, $e->getMessage() );
                 $this->log->error( $message );
                 $this->error( $message );
-                event(new SubscriptionChargeFailed($subscription));
+                $this->dispatch((new EmailFailedChargeNotification($subscription)));
                 continue;
             }
 

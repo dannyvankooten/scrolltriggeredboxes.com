@@ -13,10 +13,7 @@ class EventServiceProvider extends ServiceProvider {
 	protected $listen = [
 		'Illuminate\Auth\Events\Login' => [
 			'App\Listeners\UserLoginHandler',
-		],
-		'App\Events\SubscriptionChargeFailed' => [
-			'App\Listeners\EmailFailedChargeNotification',
-		],
+		]
 	];
 
 	/**
