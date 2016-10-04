@@ -90,7 +90,7 @@ class Invoicer {
         $invoiceData = [
             'contact_id' => $payment->user->moneybird_contact_id,
             'currency' => $payment->currency,
-            'invoice_data' => $payment->created_at->format('Y-m-d'),
+            'invoice_date' => $payment->created_at->format('Y-m-d'),
             'prices_are_incl_tax' => false,
             'details_attributes' => [
                 [
