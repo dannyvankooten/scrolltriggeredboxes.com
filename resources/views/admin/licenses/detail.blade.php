@@ -28,7 +28,7 @@
             </tr>
             <tr>
                 <th>Expire{{ $license->isExpired() ? 'd' : 's' }}</th>
-                <td><span class="{{ $license->isExpired() ? 'warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</span></td>
+                <td><span class="{{ $license->isExpired() ? 'warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</span> <span class="muted">({{ $license->expires_at->diffInDays() }} days {{ $license->isExpired() ? 'ago' : 'from now' }})</span></td>
             </tr>
         </table>
 
