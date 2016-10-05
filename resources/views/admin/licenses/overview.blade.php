@@ -47,7 +47,6 @@
                     <td><a href="{{ url('/licenses/' . $license->id) }}">{{ $license->license_key }}</a></td>
                     <td>{{ $license->user->email }}</td>
                     <td>{{ count( $license->activations ) . '/' . $license->site_limit }}</td>
-                    <td>{{ $license->created_at->format('M j') }}</td>
                     <td><span class="{{ $license->isExpired() ? 'warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</span></td>
                 </tr>
             @endforeach
