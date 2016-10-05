@@ -10,10 +10,18 @@ class LicenseController extends Controller {
 	
 	// show license overview
 	public function overview( Request $request ) {
+	    $orderColumns = [
+	        'key' => 'created_at',
+            'owner' => 'user_id',
+            'activations' => 'site_limit',
+            'expires' => 'expires_at'
+        ];
+        $orderBy = $request->query->get('by', 'key');
+        $orderBy = isset( $orderColumns[ $orderBy ] ) ? $orderColumns[ $orderBy ] : $orderColumns['key'];
 
 		$query = License::query();
 		$query->with(['user', 'activations']);
-		$query->orderBy('created_at', 'desc');
+		$query->orderBy( $orderBy, $request->query->get('order', 'desc' ));
 
 		$filters = $request->query->get('filter', []);
 
@@ -24,6 +32,8 @@ class LicenseController extends Controller {
 				$query->where( $filter, 'LIKE', $value );
 			}
 		}
+
+
 
 		$licenses = $query->get();
 		return view( 'admin.licenses.overview', [ 'licenses' => $licenses ] );

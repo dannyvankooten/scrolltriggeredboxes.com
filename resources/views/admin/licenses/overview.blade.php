@@ -35,10 +35,10 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>License Key</th>
-                    <th>Owner</th>
-                    <th width="20%">Activations</th>
-                    <th>Expires</th>
+                    <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=key">License Key</a></th>
+                    <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=owner">Owner</a></th>
+                    <th width="20%"><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=activations">Activations</a></th>
+                    <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=expires">Expires</a></th>
                 </tr>
             </thead>
             <tbody style="font-size: 15px;">
