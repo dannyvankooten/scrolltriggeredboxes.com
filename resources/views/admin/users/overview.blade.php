@@ -42,9 +42,9 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Email</th>
-                    <th>Name</th>
-                    <th>Joined</th>
+                    <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=email">Email</a></th>
+                    <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=name">Name</a></th>
+                    <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=joined">Joined</a></th>
                 </tr>
             </thead>
             <tbody style="font-size: 15px;">
