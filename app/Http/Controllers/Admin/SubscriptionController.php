@@ -41,7 +41,7 @@ class SubscriptionController extends Controller {
             // if we just deactivated subscription, check if we need to refund last payment.
             if( ! $subscription->active && $request->request->get('process_refund', 0) ) {
                 $lastPayment = $subscription->payments[0];
-                if( ! $lastPayment->isRefund() ) {
+                if( ! $lastPayment->isRefund() && $lastPayment->isEligibleForRefund() ) {
                     $charger->refund( $lastPayment );
                 }
             }
