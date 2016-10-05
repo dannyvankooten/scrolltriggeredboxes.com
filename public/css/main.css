@@ -438,6 +438,13 @@ button,
   text-decoration: none;
   line-height: 100%;
   margin: 0; }
+  input[type="submit"]:hover, input[type="submit"]:focus,
+  button:hover,
+  button:focus,
+  .button:hover,
+  .button:focus {
+    background: #005699;
+    border-color: #005699; }
 
 .button-small,
 input[type="submit"].button-small {
@@ -449,51 +456,45 @@ input[type="submit"].button-big {
   padding: 10px 30px;
   font-size: 18px; }
 
-input[type="submit"]:hover,
-input[type="submit"]:focus,
-button:hover,
-button:focus,
-.button:hover,
-.button:focus {
-  background: #005699;
-  border-color: #005699; }
-
 input[type="submit"].button-secondary,
 .button-secondary {
   background: #cc4444;
   border: 2px solid #cc4444; }
+  input[type="submit"].button-secondary:hover, input[type="submit"].button-secondary:focus,
+  .button-secondary:hover,
+  .button-secondary:focus {
+    background: #be3434;
+    border-color: #be3434; }
+
+input[type="submit"].button-neutral,
+.button-default {
+  background-color: #e7e7e7;
+  border-color: #b9b9b9;
+  color: #333333; }
+  input[type="submit"].button-neutral:hover, input[type="submit"].button-neutral:focus,
+  .button-default:hover,
+  .button-default:focus {
+    background-color: #b9b9b9; }
 
 input[type="submit"].button-warning,
 .button-warning {
   color: #000000;
   background-color: #e89118;
-  border-color: #e89118; }
-
-input[type="submit"].button-warning:hover,
-.button-warning:hover,
-.button-warning:focus {
-  background-color: #eeac50;
   border-color: #eeac50; }
+  input[type="submit"].button-warning:hover, input[type="submit"].button-warning:focus,
+  .button-warning:hover,
+  .button-warning:focus {
+    background-color: #eeac50; }
 
 input[type="submit"].button-danger,
 .button-danger {
   color: #fff;
   background-color: #d43934;
-  border-color: #d43934; }
-
-input[type="submit"].button-danger:hover,
-.button-danger:hover,
-.button-danger:focus {
-  color: #fff;
-  background-color: #a72823;
   border-color: #a72823; }
-
-input[type="submit"].button-secondary:focus,
-input[type="submit"].button-secondary:hover,
-.button-secondary:focus,
-.button-secondary:hover {
-  background: #be3434;
-  border-color: #be3434; }
+  input[type="submit"].button-danger:hover, input[type="submit"].button-danger:focus,
+  .button-danger:hover,
+  .button-danger:focus {
+    background-color: #a72823; }
 
 input[disabled],
 button[disabled] {
