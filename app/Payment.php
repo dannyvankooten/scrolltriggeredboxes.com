@@ -136,7 +136,7 @@ class Payment extends Model
 	 */
 	public function isEligibleForRefund() {
 		$border = new Carbon('-90 days');
-		return $this->subtotal > 0 && count( $this->refunds) === 0 && $this->created_at->gt($border);
+		return ! $this->isRefund() && count( $this->refunds) === 0 && $this->created_at->gt($border);
 	}
 
     /**

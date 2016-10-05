@@ -95,7 +95,7 @@
                             <form method="POST" action="/payments/{{ $payment->id }}" data-confirm="Are you sure you want to refund this payment?">
                                 {!! csrf_field() !!}
                                 <input type="hidden" name="_method" value="DELETE" />
-                                <input class="button button-small button-warning" type="submit" value="Refund" />
+                                <input class="button button-small button-danger" type="submit" value="Refund" />
                             </form>
                         @endif
                     </td>
