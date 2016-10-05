@@ -3,14 +3,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Subscription;
 use App\Services\Payments\Charger;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Routing\Redirector;
 
-class SubscriptionController extends Controller {
+class SubscriptionController extends AdminController {
 
     // form for editing a subscription
     public function edit($id) {
@@ -38,12 +37,18 @@ class SubscriptionController extends Controller {
         if( isset( $data['active'] ) ) {
             $subscription->active = (int) $data['active'];
 
-            // if we just deactivated subscription, check if we need to refund last payment.
-            if( ! $subscription->active && $request->request->get('process_refund', 0) ) {
-                $lastPayment = $subscription->payments[0];
-                if( $lastPayment->isEligibleForRefund() ) {
-                    $charger->refund( $lastPayment );
+            if( $subscription->active ) {
+                $this->log->info( sprintf( 'Re-activated subscription %d for user %s.', $subscription->id, $subscription->user->email ) );
+            } else {
+                // if we just deactivated subscription, check if we need to refund last payment.
+                if( $request->request->get('process_refund', 0) ) {
+                    $lastPayment = $subscription->payments[0];
+                    if( $lastPayment->isEligibleForRefund() ) {
+                        $charger->refund( $lastPayment );
+                    }
                 }
+
+                $this->log->info( sprintf( 'Deactivated subscription %d for user %s.', $subscription->id, $subscription->user->email ) );
             }
         }
 

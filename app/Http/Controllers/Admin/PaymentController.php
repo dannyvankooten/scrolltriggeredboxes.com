@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Symfony\Component\HttpFoundation\Request;
 
-class PaymentController extends Controller {
+class PaymentController extends AdminController {
 
     // delete a payment (refund)
     public function destroy( $id, Redirector $redirector, Charger $charger  ) {
