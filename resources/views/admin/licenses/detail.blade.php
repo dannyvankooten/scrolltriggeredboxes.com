@@ -12,7 +12,7 @@
 
         <div class="medium-margin"></div>
 
-        <h3>License &nbsp;<a href="/licenses/{{ $license->id }}/edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></h3>
+        <h3>License &nbsp;<a href="/licenses/{{ $license->id }}/edit" title="Edit license details"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></h3>
         <table class="table table-striped">
             <tr>
                 <th>Key</th>
@@ -28,7 +28,7 @@
             </tr>
             <tr>
                 <th>Expire{{ $license->isExpired() ? 'd' : 's' }}</th>
-                <td><span class="{{ $license->isExpired() ? 'label warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</span></td>
+                <td><span class="{{ $license->isExpired() ? 'warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</span></td>
             </tr>
         </table>
 
@@ -63,7 +63,7 @@
 
 
         @if( $license->subscription )
-        <h3>Subscription &nbsp; <a href="/subscriptions/{{ $license->subscription->id }}/edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></h3>
+        <h3>Subscription &nbsp; <a href="/subscriptions/{{ $license->subscription->id }}/edit" title="Edit subscription details"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></h3>
         <table class="table row-scoped">
             <tr>
                 <th>Status</th>
@@ -73,7 +73,7 @@
                     <form method="post" action="/subscriptions/{{ $license->subscription->id }}" class="pull-right" data-confirm="Are you sure you want to {{ $license->subscription->active ? "deactivate" : "reactivate" }} this subscription?">
                         {!! csrf_field() !!}
                         <input type="hidden" name="subscription[active]" value="{{ $license->subscription->active ? 0 : 1 }}" />
-                        <input type="submit" value="{{ $license->subscription->active ? "Deactivate" : "Reactivate" }}" class="button button-small button-warning" />
+                        <input type="submit" value="{{ $license->subscription->active ? "Deactivate" : "Reactivate" }}" class="button button-small button-danger" />
                         <input type="hidden" name="_method" value="PUT" />
                     </form>
                 </td>
@@ -127,7 +127,7 @@
                             <form method="POST" action="/payments/{{ $payment->id }}" data-confirm="Are you sure you want to refund this payment?">
                                 {!! csrf_field() !!}
                                 <input type="hidden" name="_method" value="DELETE" />
-                                <input class="button button-small button-warning" type="submit" value="Refund" />
+                                <input class="button button-small button-danger" type="submit" value="Refund" />
                             </form>
                         @endif
                     </td>
@@ -146,15 +146,6 @@
         @endif
 
         <div class="medium-margin"></div>
-
-        <form method="post" action="/licenses/{{ $license->id }}">
-            {!! csrf_field() !!}
-            <input type="hidden" name="_method" value="DELETE">
-            <input type="submit" class="button button-small button-danger" value="Delete License" data-confirm="Are you sure you want to delete this license?" />
-        </form>
-
-        <div class="medium-margin"></div>
-
 
         <p><a href="javascript:history.go(-1);">&leftarrow; Go back.</a></p>
 
