@@ -73,7 +73,12 @@
                     <form method="post" action="/subscriptions/{{ $license->subscription->id }}" class="pull-right" data-confirm="Are you sure you want to {{ $license->subscription->active ? "deactivate" : "reactivate" }} this subscription?">
                         {!! csrf_field() !!}
                         <input type="hidden" name="subscription[active]" value="{{ $license->subscription->active ? 0 : 1 }}" />
-                        <input type="submit" value="{{ $license->subscription->active ? "Deactivate" : "Reactivate" }}" class="button button-small button-danger" />
+                        <input type="submit" value="{{ $license->subscription->active ? "Deactivate" : "Reactivate" }}" class="button button-small button-neutral" />
+
+                        @if($license->subscription->active)
+                            <button type="submit" name="process_refund" value="1" class="button button-small button-danger" data-confirm="Are you sure you want to deactivate this subscription and refund the last payment?">Refund & Deactivate</button>
+                        @endif
+
                         <input type="hidden" name="_method" value="PUT" />
                     </form>
                 </td>

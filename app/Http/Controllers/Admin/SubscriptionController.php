@@ -37,6 +37,12 @@ class SubscriptionController extends Controller {
 
         if( isset( $data['active'] ) ) {
             $subscription->active = (int) $data['active'];
+
+            // if we just deactivated subscription, check if we need to refund last payment.
+            if( ! $subscription->active && $request->request->get('process_refund', 0) ) {
+                $lastPayment = $subscription->payments[0];
+                $charger->refund( $lastPayment );
+            }
         }
 
         if( ! empty( $data['interval'] ) ) {
