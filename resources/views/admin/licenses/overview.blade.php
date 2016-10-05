@@ -38,7 +38,7 @@
                     <th>License Key</th>
                     <th>Owner</th>
                     <th width="20%">Activations</th>
-                    <th>Created</th>
+                    <th>Expires</th>
                 </tr>
             </thead>
             <tbody style="font-size: 15px;">
@@ -48,6 +48,7 @@
                     <td>{{ $license->user->email }}</td>
                     <td>{{ count( $license->activations ) . '/' . $license->site_limit }}</td>
                     <td>{{ $license->created_at->format('M j') }}</td>
+                    <td><span class="{{ $license->isExpired() ? 'warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</span></td>
                 </tr>
             @endforeach
             </tbody>

@@ -53,7 +53,7 @@
             <tr>
                 <th>License Key</th>
                 <th width="20%">Activations</th>
-                <th>Created</th>
+                <th>Expires</th>
             </tr>
             </thead>
             <tbody>
@@ -61,13 +61,13 @@
                 <tr>
                     <td><a href="{{ url('/licenses/' . $license->id) }}">{{ $license->license_key }}</a></td>
                     <td>{{ count( $license->activations ) .'/' . $license->site_limit }}</td>
-                    <td>{{ $license->created_at->format('Y-m-d') }}</td>
+                    <td><span class="{{ $license->isExpired() ? 'warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</span></td>
                 </tr>
             @endforeach
             </tbody>
         </table>
 
-        <p><a href="/licenses/create?license[user_id]={{ $user->id }}">Add new license for user</a></p>
+        <p><a href="/licenses/create?license[user_id]={{ $user->id }}">&#43; Add new license for user</a></p>
         <!-- / end licenses -->
 
         <div class="medium-margin"></div>
