@@ -107,6 +107,10 @@ class Charger {
      */
     public function refund( Payment $payment )
     {
+        if( $payment->isRefund() ) {
+            throw new PaymentException("Payment is already a refund.");
+        }
+
         $args = array(
             "charge" => $payment->stripe_id,
             'reason' => 'requested_by_customer'

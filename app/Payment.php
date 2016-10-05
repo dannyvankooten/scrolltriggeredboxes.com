@@ -138,4 +138,11 @@ class Payment extends Model
 		$border = new Carbon('-90 days');
 		return $this->subtotal > 0 && count( $this->refunds) === 0 && $this->created_at->gt($border);
 	}
+
+    /**
+     * @return bool
+     */
+	public function isRefund() {
+	    return $this->subtotal < 0;
+    }
 }
