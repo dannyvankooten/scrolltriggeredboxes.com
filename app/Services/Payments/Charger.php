@@ -101,7 +101,7 @@ class Charger {
      *
      * @param Payment $payment
      *
-     * @return boolean
+     * @return Payment The refund object.
      *
      * @throws PaymentException
      */
@@ -147,7 +147,7 @@ class Charger {
         $user = $payment->user;
         $this->logger->info( sprintf( 'Refunded a total amount of %s for user %s', $payment->getCurrencySign() . $payment->getTotal(), $user->email ) );
 
-        return false;
+        return $refund;
     }
 
     /**
