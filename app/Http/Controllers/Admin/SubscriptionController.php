@@ -38,26 +38,28 @@ class SubscriptionController extends AdminController {
             $subscription->active = (int) $data['active'];
 
             if( $subscription->active ) {
-                $this->log->info( sprintf( 'Re-activated subscription %d for user %s.', $subscription->id, $subscription->user->email ) );
+                $this->log->info( sprintf( '%s re-activated subscription #%d for user %s.', $this->admin->getFirstName(), $subscription->id, $subscription->user->email ) );
             } else {
                 // if we just deactivated subscription, check if we need to refund last payment.
                 if( $request->request->get('process_refund', 0) ) {
                     $lastPayment = $subscription->payments[0];
                     if( $lastPayment->isEligibleForRefund() ) {
-                        $charger->refund( $lastPayment );
+                        $refund = $charger->refund( $lastPayment );
                     }
                 }
 
-                $this->log->info( sprintf( 'Deactivated subscription %d for user %s.', $subscription->id, $subscription->user->email ) );
+                $this->log->info( sprintf( '%s reactivated subscription #%d for user %s.', $this->admin->getFirstName(), $subscription->id, $subscription->user->email ) );
             }
         }
 
-        if( ! empty( $data['interval'] ) ) {
+        if( ! empty( $data['interval'] ) && $data['interval'] !== $subscription->interval ) {
             $subscription->interval = $data['interval'];
+            $this->log->info( sprintf( '%s changed subscription #%d interval to %s for user %s.', $this->admin->getFirstName(), $subscription->id, $subscription->interval, $subscription->user->email ) );
         }
 
-        if( ! empty( $data['amount'] )  ) {
+        if( ! empty( $data['amount'] ) && $subscription->amount != $data['amount'] ) {
             $subscription->amount = floatval( $data['amount'] );
+            $this->log->info( sprintf( '%s changed subscription #%d amount to %s for user %s.', $this->admin->getFirstName(), $subscription->id, $subscription->amount, $subscription->user->email ) );
         }
 
         // update next charge date

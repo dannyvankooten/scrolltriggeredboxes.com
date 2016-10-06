@@ -64,7 +64,6 @@ class LicenseController extends AdminController {
 
 	// store new license
 	public function store( Request $request, Redirector $redirector ) {
-
         $data = $request->request->get('license');
 
         // find user
@@ -80,7 +79,7 @@ class LicenseController extends AdminController {
 		$license->user_id = (int) $data['user_id'];
 		$license->save();
 
-        $this->log->info( sprintf( 'New %d-site license created for user %s.', $license->id, $user->email ) );
+        $this->log->info( sprintf( '%s created new %d-site license for user %s.', $this->admin->getFirstName(), $license->id, $user->email ) );
 
 		return $redirector->to('/licenses/' . $license->id)->with('message', 'License created');
 	}
@@ -94,7 +93,7 @@ class LicenseController extends AdminController {
 
 		if( ! empty( $data['site_limit'] ) && $data['site_limit'] != $license->site_limit ) {
 			$license->site_limit = (int) $data['site_limit'];
-            $this->log->info( sprintf( 'License #%d activation limit changed to %d for user %s.', $license->id, $license->site_limit, $license->user->email ) );
+            $this->log->info( sprintf( '%s changed license #%d activation limit to %d for user %s.', $this->admin->getFirstName(), $license->id, $license->site_limit, $license->user->email ) );
 		}
 
 		if( ! empty( $data['expires_at'] ) ) {
@@ -106,12 +105,11 @@ class LicenseController extends AdminController {
 
                 // update subscription next charge date
                 if( $license->subscription ) {
-                    $license->subscription->next_charge_at = $license->expires_at->modify('-1 week');
+                    $license->subscription->next_charge_at = $license->expires_at->modify('-5 days');
                     $license->subscription->save();
                 }
 
-                $this->log->info( sprintf( 'License #%d expiration date changed to %s for user %s.', $license->id, $license->expires_at->format("Y-m-d"), $license->user->email ) );
-
+                $this->log->info( sprintf( '%s changed license #%d expiration date to %s for user %s.', $this->admin->getFirstName(), $license->id, $license->expires_at->format("Y-m-d"), $license->user->email ) );
             }
         }
 
@@ -133,7 +131,7 @@ class LicenseController extends AdminController {
 		$license->subscription->delete();
 		$license->delete();
 
-        $this->log->info( sprintf( 'License #%d deleted for user %s.', $license->id, $license->user->email ) );
+        $this->log->info( sprintf( '%s deleted license #%d for user %s.', $this->admin->getFirstName(), $license->id, $license->user->email ) );
 
         return $redirector->to('/users/'. $license->user->id)->with('message', 'License deleted.');
 	}

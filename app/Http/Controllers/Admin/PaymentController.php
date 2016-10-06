@@ -14,8 +14,11 @@ class PaymentController extends AdminController {
     // delete a payment (refund)
     public function destroy( $id, Redirector $redirector, Charger $charger  ) {
         /** @var Payment $payment */
-        $payment = Payment::findOrFail( $id );
-        $charger->refund( $payment );
+        $payment = Payment::with(['user'])->findOrFail( $id );
+        $refund = $charger->refund( $payment );
+
+        $this->log->info( sprintf( '%s refunded %s to user %s.', $this->admin->getFirstName(), $payment->getFormattedTotal(), $payment->user->email ) );
+
         return $redirector->back();
     }
 
@@ -29,6 +32,9 @@ class PaymentController extends AdminController {
         }
 
         $payment = $charger->subscription( $subscription );
+
+        $this->log->info( sprintf( '%s charged %s to user %s.', $this->admin->getFirstName(), $payment->getFormattedTotal(), $payment->user->email ) );
+
         return $redirector->back()->with('message', 'Payment created.');
     }
 
