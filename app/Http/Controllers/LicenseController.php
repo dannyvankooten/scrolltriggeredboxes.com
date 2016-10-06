@@ -142,7 +142,7 @@ class LicenseController extends Controller {
 			$subscription->active = $data['active'];
 
 			// update next charge date
-			$subscription->next_charge_at = $license->expires_at->modify('-1 week');
+			$subscription->next_charge_at = $license->expires_at->modify('-5 days');
 			$subscription->save();
 		}
 

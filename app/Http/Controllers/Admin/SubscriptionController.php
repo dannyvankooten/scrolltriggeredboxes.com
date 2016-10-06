@@ -61,7 +61,7 @@ class SubscriptionController extends AdminController {
         }
 
         // update next charge date
-        $subscription->next_charge_at = $subscription->license->expires_at->modify('-1 week');
+        $subscription->next_charge_at = $subscription->license->expires_at->modify('-5 days');
         $subscription->save();
         
         return $redirector->to('/licenses/'. $subscription->license->id )->with('message', 'Changes saved!');
