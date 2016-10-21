@@ -40,6 +40,7 @@ class SubscriptionController extends AdminController {
             if( $subscription->active ) {
                 $this->log->info( sprintf( '%s re-activated subscription #%d for user %s.', $this->admin->getFirstName(), $subscription->id, $subscription->user->email ) );
             } else {
+                
                 // if we just deactivated subscription, check if we need to refund last payment.
                 if( $request->request->get('process_refund', 0) ) {
                     $lastPayment = $subscription->payments[0];
@@ -48,7 +49,7 @@ class SubscriptionController extends AdminController {
                     }
                 }
 
-                $this->log->info( sprintf( '%s reactivated subscription #%d for user %s.', $this->admin->getFirstName(), $subscription->id, $subscription->user->email ) );
+                $this->log->info( sprintf( '%s deactivated subscription #%d for user %s.', $this->admin->getFirstName(), $subscription->id, $subscription->user->email ) );
             }
         }
 
