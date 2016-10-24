@@ -38,7 +38,7 @@ class PluginDownloader {
         }
 
         $this->client = new GuzzleHttp\Client([
-            'query' => [ 'access_token' => config('github.connections.main.token') ]
+            'query' => [ 'access_token' => config('services.github.access_token') ]
         ]);
     }
 
