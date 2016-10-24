@@ -42,6 +42,7 @@ class PluginController extends Controller {
 	public function overview( ) {
 		$user = $this->auth->user();
 		$plugins = Plugin::all();
+
 		return view( 'plugins.overview', [ 'user' => $user, 'plugins' => $plugins ] );
 	}
 
