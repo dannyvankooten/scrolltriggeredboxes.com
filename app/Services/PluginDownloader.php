@@ -47,7 +47,8 @@ class PluginDownloader {
      * @return mixed
      */
     protected function getCachedResource( $resource ) {
-        $content = Cache::get( 'github/' . $resource );
+        $prefix = sprintf( 'github/%s/%s:', $this->plugin->getGitHubRepositoryOwner(), $this->plugin->getGitHubRepositoryName() );
+        $content = Cache::get( $prefix . $resource );
         return $content;
     }
 
@@ -56,7 +57,8 @@ class PluginDownloader {
      * @param string $content
      */
     protected function cacheResource( $resource, $content ) {
-        Cache::put( 'github/' . $resource, $content, 60 );
+        $prefix = sprintf( 'github/%s/%s:', $this->plugin->getGitHubRepositoryOwner(), $this->plugin->getGitHubRepositoryName() );
+        Cache::put( $prefix . $resource, $content, 60 );
     }
     /**
      * @param string $path
