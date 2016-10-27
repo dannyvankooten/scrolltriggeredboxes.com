@@ -14,7 +14,6 @@ class Kernel extends ConsoleKernel {
 	 * @var array
 	 */
 	protected $commands = [
-		ChargeSubscriptions::class,
 		CreateInvoices::class,
 	];
 
@@ -26,8 +25,7 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		$schedule->command('subscriptions:charge')
-				 ->dailyAt('05:00');
+
 	}
 
 }
