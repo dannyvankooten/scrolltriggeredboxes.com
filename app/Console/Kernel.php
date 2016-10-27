@@ -3,6 +3,7 @@
 use App\Console\Commands\ChargeSubscriptions;
 use App\Console\Commands\CreateInvoices;
 use App\Console\Commands\SendOwlSubscriptions;
+use App\Console\Commands\SubscriptionsMigrateToStripe;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,6 +16,7 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected $commands = [
 		CreateInvoices::class,
+        SubscriptionsMigrateToStripe::class,
 	];
 
 	/**
