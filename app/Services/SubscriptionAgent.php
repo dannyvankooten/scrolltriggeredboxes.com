@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\User;
 use App\License;
+use Exception;
 use Stripe;
 use Illuminate\Contracts\Logging\Log;
 
@@ -30,18 +31,22 @@ class SubscriptionAgent {
      * @return string
      */
     protected function getPlanId( License $license ) {
-        return sprintf('boxzilla-%s-%sly', $license->plan, $license->interval);
+        return sprintf('boxzilla-%s-%sly', $license->getPlan(), $license->interval);
     }
 
     /**
      * @param License $license
+     * @throws Exception
      */
     public function create( License $license ) {
-        $planId = $this->getPlanId( $license );
+
+        if( empty( $license->user->stripe_customer_id ) ) {
+            throw new Exception( "User has no valid payment method registered." );
+        }
 
         $subscription = Stripe\Subscription::create([
             'customer' => $license->user->stripe_customer_id,
-            'plan' => $planId
+            'plan' => $this->getPlanId( $license )
         ]);
 
         $license->stripe_subscription_id = $subscription->id;
@@ -58,8 +63,13 @@ class SubscriptionAgent {
 
     /**
      * @param License $license
+     * @throws Exception
      */
     public function resume( License $license ) {
+
+        if( empty( $license->user->stripe_customer_id ) ) {
+            throw new Exception( "User has no valid payment method registered." );
+        }
 
         // if license is expired, create a new subscription
         if( $license->isExpired() ) {
