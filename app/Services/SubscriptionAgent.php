@@ -62,7 +62,7 @@ class SubscriptionAgent {
     public function resume( License $license ) {
 
         // if license is expired, create a new subscription
-        if( ! $license->isExpired() ) {
+        if( $license->isExpired() ) {
             return $this->create($license);
         }
 
