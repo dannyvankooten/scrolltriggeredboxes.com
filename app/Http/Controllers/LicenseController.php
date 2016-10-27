@@ -64,6 +64,10 @@ class LicenseController extends Controller {
 	 */
 	public function store( Request $request, Purchaser $purchaser, Redirector $redirector  ) {
 
+        // validate request
+        $this->validate( $request, [
+            'plan' 			    => 'required|in:personal,developer',
+        ]);
 
 		/** @var User $user */
 		$user = $this->auth->user();

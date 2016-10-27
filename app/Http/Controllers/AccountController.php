@@ -206,7 +206,7 @@ class AccountController extends Controller {
 			'user.vat_number' 	=> 'sometimes|vat_number',
 			'password' 			=> 'required|confirmed|min:6',
 			'payment_token' 	=> 'required',
-			'plan' 			    => 'required',
+			'plan' 			    => 'required|in:personal,developer',
 		], array(
 			'email' => 'Please enter a valid email address.',
 			'vat_number' => 'Please enter a valid VAT number.',
