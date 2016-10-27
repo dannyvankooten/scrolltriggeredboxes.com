@@ -142,4 +142,21 @@ class License extends Model {
 		return $key;
 	}
 
+    /**
+     * Get plan ID for this license.
+     *
+     * @return string
+     */
+	public function getPlan() {
+        if( ! empty( $this->plan ) ) {
+            return $this->plan;
+        }
+
+        if( $this->site_limit <= 2 ) {
+            return 'personal';
+        }
+
+        return 'developer';
+    }
+
 }
