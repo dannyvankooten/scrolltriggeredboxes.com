@@ -17,6 +17,7 @@ class AddSubscriptionDetailsToLicenseTable extends Migration
             $table->string('stripe_subscription_id')->nullable();
             $table->boolean('auto_renews')->nullable();
             $table->string('interval')->nullable();
+            $table->string('plan')->nullable();
         });
     }
 
@@ -31,6 +32,7 @@ class AddSubscriptionDetailsToLicenseTable extends Migration
             $table->dropColumn('stripe_subscription_id');
             $table->dropColumn('auto_renews');
             $table->dropColumn('interval');
+            $table->dropColumn('plan');
         });
     }
 }

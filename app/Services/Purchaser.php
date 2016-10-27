@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Jobs\EmailLicenseDetails;
 use App\User;
 use App\License;
-use App\Subscription;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use DateTime;
 use App\Services\Payments\Charger;
@@ -20,13 +19,20 @@ class Purchaser {
     protected $charger;
 
     /**
+     * @var SubscriptionAgent
+     */
+    protected $agent;
+
+    /**
      * Purchaser constructor.
      *
      * @param Charger $charger
+     * @param SubscriptionAgent $agent
      */
-    public function __construct( Charger $charger )
+    public function __construct( Charger $charger, SubscriptionAgent $agent )
     {
         $this->charger = $charger;
+        $this->agent = $agent;
     }
 
     /**
@@ -82,13 +88,6 @@ class Purchaser {
             throw new \InvalidArgumentException("Invalid plan ID: $plan");
         }
 
-        // subscribe user to plan in Stripe
-        $plan_id = sprintf( 'boxzilla-%s-%sly', $plan, $interval );
-        $subscription = \Stripe\Subscription::create([
-            'customer' => $user->stripe_customer_id,
-            'plan' => $plan_id
-        ]);
-
         $limits = array(
             'personal' => 2,
             'developer' => 10
@@ -100,14 +99,18 @@ class Purchaser {
         $license->license_key = License::generateKey();
         $license->user_id = $user->id;
         $license->site_limit = $site_limit;
-        $license->expires_at = new DateTime("+1 $interval");
         $license->auto_renews = true;
-        $license->stripe_subscription_id = $subscription->id;
         $license->interval = $interval;
+        $license->plan = $plan;
+
+        // setup subscription
+        $this->agent->create( $license );
+
+        // save license
         $license->save();
 
         // dispatch job to send license details over email
-        $this->dispatch( new EmailLicenseDetails( $license ) );
+        $this->dispatch(new EmailLicenseDetails($license));
 
         return $license;
     }

@@ -6,7 +6,7 @@ use App\Activation;;
 use App\Services\Payments\Charger;
 use App\Services\Payments\PaymentException;
 use App\Services\Purchaser;
-use App\Subscription;
+use App\Services\SubscriptionAgent;
 use App\User;
 use Exception;
 
@@ -98,7 +98,7 @@ class LicenseController extends Controller {
 	 */
 	public function details($id) {
 		/** @var License $license */
-		$license = License::with(['activations', 'subscription'])->findOrFail($id);
+		$license = License::with(['activations'])->findOrFail($id);
 		
 		/** @var User $user */
 		$user = $this->auth->user();
@@ -111,17 +111,17 @@ class LicenseController extends Controller {
 		return view( 'license.details', [ 'license' => $license ] );
 	}
 
-	/**
-	 * @param int $id
-	 * @param Request $request
-	 * @param Redirector $redirector
-	 * @param Charger $charger
-	 *
-	 * @return RedirectResponse
-	 */
-	public function update($id, Request $request, Redirector $redirector, Charger $charger ) {
+    /**
+     * @param int $id
+     * @param Request $request
+     * @param Redirector $redirector
+     *
+     * @param SubscriptionAgent $agent
+     * @return RedirectResponse
+     */
+	public function update($id, Request $request, Redirector $redirector, SubscriptionAgent $agent ) {
 		/** @var License $license */
-		$license = License::with('subscription')->findOrFail($id);
+		$license = License::findOrFail($id);
 
 		/** @var User $user */
 		$user = $this->auth->user();
@@ -131,30 +131,15 @@ class LicenseController extends Controller {
 			abort( 403 );
 		}
 
-		/** @var Subscription $subscription */
-		$subscription = $license->subscription;
+		$data = $request->input('license');
+        if( isset( $data['auto_renews'] ) ) {
+            $license->auto_renews = (int) $data['auto_renews'];
 
-		$data = $request->input('subscription');
-		if( isset( $data['active'] ) ) {
-			$subscription->active = $data['active'] ? 1 : 0;
+            // resume or cancel license
+            $license->auto_renews ? $agent->resume( $license ) : $agent->cancel( $license );
+        }
 
-			// update next charge date
-			$subscription->next_charge_at = $license->expires_at->modify('-5 days');
-			$subscription->save();
-		}
-
-		// if a payment is due, try to charge right away
-		if( $subscription->isActive() && $subscription->isPaymentDue() ) {
-			try {
-				$charger->subscription( $subscription );
-			} catch( PaymentException $e ) {
-				$errorMessage = $e->getMessage();
-				$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
-
-				$this->log->error( sprintf( 'Payment of USD%s for %s failed: %s', $subscription->getAmountInclTax(), $user->email, $e->getMessage() ) );
-				return $redirector->back()->with('error', $errorMessage );
-			}
-		}
+        $license->save();
 
 		return $redirector->back()->with('message', 'Changes saved!');
 	}

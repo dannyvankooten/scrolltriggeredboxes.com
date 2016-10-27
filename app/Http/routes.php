@@ -86,11 +86,9 @@ $router->group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['ad
 	$router->put( '/licenses/{id}', 'Admin\LicenseController@update' );
 	$router->delete( '/licenses/{id}', 'Admin\LicenseController@destroy' );
 
-	$router->get( '/subscriptions/{id}/edit', 'Admin\SubscriptionController@edit' );
-	$router->put( '/subscriptions/{id}', 'Admin\SubscriptionController@update' );
-
-	$router->post('/payments', 'Admin\PaymentController@store');
 	$router->delete( '/payments/{id}', 'Admin\PaymentController@destroy' );
-	$router->delete( '/activations/{id}', 'Admin\ActivationController@destroy' );
     $router->get( '/payments/{id}/invoice', 'Admin\PaymentController@invoice' );
+
+	$router->delete( '/activations/{id}', 'Admin\ActivationController@destroy' );
+
 });

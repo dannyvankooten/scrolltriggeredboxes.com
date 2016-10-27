@@ -1,0 +1,25 @@
+[10-Jun-2016 11:33:12 UTC] Stripe Notice: Undefined property of Stripe\Customer instance: source
+[10-Jun-2016 11:33:59 UTC] Stripe Notice: Undefined property of Stripe\Customer instance: source
+[10-Jun-2016 11:34:14 UTC] Stripe Notice: Undefined property of Stripe\Customer instance: source
+[10-Jun-2016 11:38:50 UTC] Stripe Notice: Undefined property of Stripe\Customer instance: source
+[15-Jun-2016 14:03:16 UTC] PHP Fatal error:  Uncaught InvalidArgumentException: The HTTP status code "0" is not valid. in /vagrant/app/vendor/symfony/http-foundation/Response.php:458
+Stack trace:
+#0 /vagrant/app/vendor/symfony/http-foundation/Response.php(202): Symfony\Component\HttpFoundation\Response->setStatusCode(0)
+#1 /vagrant/app/vendor/symfony/http-foundation/Response.php(222): Symfony\Component\HttpFoundation\Response->__construct('<!DOCTYPE html>...', 0, Array)
+#2 /vagrant/app/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(176): Symfony\Component\HttpFoundation\Response::create('<!DOCTYPE html>...', 0, Array)
+#3 /vagrant/app/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(158): Illuminate\Foundation\Exceptions\Handler->convertExceptionToResponse(Object(Symfony\Component\Debug\Exception\FlattenException))
+#4 /vagrant/app/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(113): Illuminate\Foundation\Exceptions\Handler->renderHttpException(Object(Symfony\Component\HttpKern in /vagrant/app/vendor/symfony/http-foundation/Response.php on line 458
+[15-Jun-2016 14:03:17 UTC] PHP Fatal error:  Uncaught InvalidArgumentException: The HTTP status code "0" is not valid. in /vagrant/app/vendor/symfony/http-foundation/Response.php:458
+Stack trace:
+#0 /vagrant/app/vendor/symfony/http-foundation/Response.php(202): Symfony\Component\HttpFoundation\Response->setStatusCode(0)
+#1 /vagrant/app/vendor/symfony/http-foundation/Response.php(222): Symfony\Component\HttpFoundation\Response->__construct('<!DOCTYPE html>...', 0, Array)
+#2 /vagrant/app/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(176): Symfony\Component\HttpFoundation\Response::create('<!DOCTYPE html>...', 0, Array)
+#3 /vagrant/app/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(158): Illuminate\Foundation\Exceptions\Handler->convertExceptionToResponse(Object(Symfony\Component\Debug\Exception\FlattenException))
+#4 /vagrant/app/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(113): Illuminate\Foundation\Exceptions\Handler->renderHttpException(Object(Symfony\Component\HttpKern in /vagrant/app/vendor/symfony/http-foundation/Response.php on line 458
+[15-Jun-2016 14:03:18 UTC] PHP Fatal error:  Uncaught InvalidArgumentException: The HTTP status code "0" is not valid. in /vagrant/app/vendor/symfony/http-foundation/Response.php:458
+Stack trace:
+#0 /vagrant/app/vendor/symfony/http-foundation/Response.php(202): Symfony\Component\HttpFoundation\Response->setStatusCode(0)
+#1 /vagrant/app/vendor/symfony/http-foundation/Response.php(222): Symfony\Component\HttpFoundation\Response->__construct('<!DOCTYPE html>...', 0, Array)
+#2 /vagrant/app/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(176): Symfony\Component\HttpFoundation\Response::create('<!DOCTYPE html>...', 0, Array)
+#3 /vagrant/app/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(158): Illuminate\Foundation\Exceptions\Handler->convertExceptionToResponse(Object(Symfony\Component\Debug\Exception\FlattenException))
+#4 /vagrant/app/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(113): Illuminate\Foundation\Exceptions\Handler->renderHttpException(Object(Symfony\Component\HttpKern in /vagrant/app/vendor/symfony/http-foundation/Response.php on line 458

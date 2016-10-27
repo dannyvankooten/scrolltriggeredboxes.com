@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\License;
+use App\Services\SubscriptionAgent;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Routing\Redirector;
@@ -85,7 +86,7 @@ class LicenseController extends AdminController {
 	}
 
 	// update license details
-	public function update( $id, Request $request, Redirector $redirector ) {
+	public function update( $id, Request $request, Redirector $redirector, SubscriptionAgent $agent ) {
 		/** @var License $license */
 		$license = License::with(['user'])->findOrFail($id);
 
@@ -96,6 +97,13 @@ class LicenseController extends AdminController {
             $this->log->info( sprintf( '%s changed license #%d activation limit to %d for user %s.', $this->admin->getFirstName(), $license->id, $license->site_limit, $license->user->email ) );
 		}
 
+		if( isset( $data['auto_renews'] ) ) {
+            $license->auto_renews = (int) $data['auto_renews'];
+
+            // resume or cancel license
+            $license->auto_renews ? $agent->resume( $license ) : $agent->cancel( $license );
+        }
+
 		if( ! empty( $data['expires_at'] ) ) {
 		    $newExpiryDate = Carbon::createFromFormat( 'Y-m-d' , $data['expires_at'] );
 
@@ -103,10 +111,10 @@ class LicenseController extends AdminController {
             if( $license->expires_at->diffInDays($newExpiryDate) > 0) {
                 $license->expires_at = $newExpiryDate;
 
+
                 // update subscription next charge date
-                if( $license->subscription ) {
-                    $license->subscription->next_charge_at = $license->expires_at->modify('-5 days');
-                    $license->subscription->save();
+                if( $license->auto_renews ) {
+                    $agent->updateNextChargeDate( $license );
                 }
 
                 $this->log->info( sprintf( '%s changed license #%d expiration date to %s for user %s.', $this->admin->getFirstName(), $license->id, $license->expires_at->format("Y-m-d"), $license->user->email ) );
@@ -127,8 +135,7 @@ class LicenseController extends AdminController {
 	 */
 	public function destroy( $id, Redirector $redirector ) {
         /** @var License $license */
-        $license = License::with(['user', 'subscription'])->findOrFail($id);
-		$license->subscription->delete();
+        $license = License::with(['user'])->findOrFail($id);
 		$license->delete();
 
         $this->log->info( sprintf( '%s deleted license #%d for user %s.', $this->admin->getFirstName(), $license->id, $license->user->email ) );

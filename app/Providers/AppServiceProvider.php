@@ -3,6 +3,7 @@
 use App\Services\Payments\Charger;
 use App\Services\Invoicer\Moneybird;
 use App\Services\Purchaser;
+use App\Services\SubscriptionAgent;
 use App\Services\TaxRateResolver;
 use HelpScoutApp\DynamicApp;
 use Illuminate\Contracts\Logging\Log;
@@ -48,6 +49,13 @@ class AppServiceProvider extends ServiceProvider {
 			return new Invoicer( $moneybird, $app[ TaxRateResolver::class ], $cacheDriver );
 		});
 
+        $this->app->singleton( SubscriptionAgent::class, function ($app) {
+            $stripeSecret = config('services.stripe.secret');
+            $log = $app[Log::class];
+            return new SubscriptionAgent( $stripeSecret, $log );
+        });
+
+
 		$this->app->singleton( Charger::class, function ($app) {
 			$stripeSecret = config('services.stripe.secret');
 			$log = $app[Log::class];
@@ -55,7 +63,7 @@ class AppServiceProvider extends ServiceProvider {
 		});
 
 		$this->app->singleton( Purchaser::class, function ($app) {
-			return new Purchaser( $app[Charger::class]);
+			return new Purchaser($app[Charger::class], $app[SubscriptionAgent::class]);
 		});
 
 	}

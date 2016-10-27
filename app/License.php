@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string stripe_subscription_id
  * @property string interval
  * @property boolean $auto_renews
+ * @property string plan
  */
 class License extends Model {
 
@@ -115,6 +116,13 @@ class License extends Model {
 		return $this->user_id == $user->id;
 	}
 
+    /**
+     * Extend license by 1 interval.
+     */
+    public function extend() {
+        $this->expires_at = new DateTime("+1 {$this->interval}");
+    }
+
 	/**
 	 * Generate a truly unique license key
 	 *
@@ -133,11 +141,4 @@ class License extends Model {
 		return $key;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function hasActiveSubscription() {
-		return $this->subscription && $this->subscription->active;
-	}
-	
 }
