@@ -8,8 +8,8 @@ use Carbon\Carbon;
  * @package App
  *
  * @property User $user
- * @property Subscription $subscription
- * @property Payment[] $activations
+ * @property Payment[] $refunds
+ * @property License $license
  * @property string $currency
  * @property double $subtotal
  * @property double $tax
@@ -18,8 +18,8 @@ use Carbon\Carbon;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property int $user_id
- * @property int $subscription_id
  * @property int $related_payment_id
+ * @property int $license_id
  */
 class Payment extends Model
 {
@@ -36,12 +36,13 @@ class Payment extends Model
 		return $this->belongsTo('App\User', 'user_id', 'id');
 	}
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function subscription() {
-		return $this->belongsTo('App\Subscription', 'subscription_id', 'id');
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function license()
+    {
+        return $this->belongsTo('App\License', 'license_id', 'id');
+    }
 
 	/**
 	 * @return double

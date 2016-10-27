@@ -82,7 +82,6 @@ class Invoicer {
      * @return Payment
      *
      * TODO: Include subscription period in description
-     * TODO: Resolve proper tax rate ID here (we need access to new MoneyBird.com interface for that first)
      */
     public function invoice( Payment $payment ) {
         $taxRate = $this->resolveTaxRate( $payment );

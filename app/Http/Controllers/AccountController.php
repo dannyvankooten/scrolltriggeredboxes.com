@@ -206,7 +206,7 @@ class AccountController extends Controller {
 			'user.vat_number' 	=> 'sometimes|vat_number',
 			'password' 			=> 'required|confirmed|min:6',
 			'payment_token' 	=> 'required',
-			'quantity' 			=> 'min:1',
+			'plan' 			    => 'required',
 		], array(
 			'email' => 'Please enter a valid email address.',
 			'vat_number' => 'Please enter a valid VAT number.',
@@ -231,21 +231,21 @@ class AccountController extends Controller {
 		}
 
 		// proceed with payment + creating license
-		$quantity = (int) $request->input('quantity', 1);
-		$interval = $request->input('interval', 'year') == 'month' ? 'month' : 'year';
+		$plan = $request->input('plan', 'personal');
+		$interval = $request->input('interval', 'year') === 'month' ? 'month' : 'year';
 
 		try {
-			$license = $purchaser->license($user, $quantity, $interval);
+			$license = $purchaser->license($user, $plan, $interval);
 		} catch( Exception $e ) {
 			$errorMessage = $e->getMessage();
 			$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
 
-			$price = $purchaser->calculatePrice($quantity, $interval);
+			$price = $purchaser->calculatePrice($plan, $interval);
 			$this->log->error( sprintf( 'Payment of USD%s for %s failed: %s', $price, $user->email, $e->getMessage() ) );
 			return $redirector->back()->with('error', $errorMessage );
 		}
 
-		$this->log->info( sprintf( 'New license key for %s (per %s, %d activations)', $user->email, $interval, $quantity ) );
+		$this->log->info( sprintf( 'New license key for %s (per %s, %s plan)', $user->email, $interval, $plan ) );
 		
 		return $redirector->to('/welcome')->with('message', "Success. You're in!");
 	}

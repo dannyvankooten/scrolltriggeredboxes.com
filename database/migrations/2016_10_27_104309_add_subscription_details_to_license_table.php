@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AddSubscriptionDetailsToLicenseTable extends Migration
@@ -19,6 +20,14 @@ class AddSubscriptionDetailsToLicenseTable extends Migration
             $table->string('interval')->nullable();
             $table->string('plan')->nullable();
         });
+
+        Schema::table('payments', function (Blueprint $table) {
+            $table->integer('license_id')->nullable();
+        });
+
+
+        $sql = 'UPDATE payments p INNER JOIN subscriptions s ON s.id = p.subscription_id SET p.license_id = s.license_id';
+        DB::connection()->getPdo()->exec($sql);
     }
 
     /**
@@ -33,6 +42,10 @@ class AddSubscriptionDetailsToLicenseTable extends Migration
             $table->dropColumn('auto_renews');
             $table->dropColumn('interval');
             $table->dropColumn('plan');
+        });
+
+        Schema::table('payments', function (Blueprint $table) {
+            $table->dropColumn('license_id');
         });
     }
 }

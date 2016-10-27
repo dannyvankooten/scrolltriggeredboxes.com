@@ -107,7 +107,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="3">There are no payments for this subscription.</td>
+                    <td colspan="3">There are no payments for this user.</td>
                 </tr>
             @endforelse
         </table>

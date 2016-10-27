@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $license_key
  * @property User $user
  * @property Activation[] $activations
- * @property Subscription $subscription
+ * @property Payment[] $payments
  * @property int $user_id
  * @property int $site_limit
  * @property Carbon $expires_at
@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string interval
  * @property boolean $auto_renews
  * @property string plan
+ *
  */
 class License extends Model {
 
@@ -52,13 +53,13 @@ class License extends Model {
 		return $this->hasMany('App\Activation', 'license_id', 'id')->orderBy('created_at', 'DESC');
 	}
 
-	/**
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
-	 */
-	public function subscription() {
-		return $this->hasOne('App\Subscription');
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function payments()
+    {
+        return $this->hasMany('App\Payment', 'license_id', 'id')->orderBy('created_at', 'DESC');
+    }
 
 	/**
 	 * @return bool

@@ -22,7 +22,6 @@ use DateTime;
  *
  * @property License[] $licenses
  * @property Payment[] $payments
- * @property Subscription[] $subscriptions
  * @property int $id
  * @property string $email
  * @property string $name
@@ -85,6 +84,7 @@ class User extends Model implements AuthenticatableContract,
 	}
 
 	/**
+     * @deprecated
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
 	public function subscriptions()

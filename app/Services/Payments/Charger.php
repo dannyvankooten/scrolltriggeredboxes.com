@@ -125,19 +125,17 @@ class Charger {
 
         // store negative opposite of payment
         $refund = new Payment();
-        $refund->subscription_id = $payment->subscription_id;
         $refund->subtotal = 0 - $payment->subtotal;
         $refund->tax = 0 - $payment->tax;
         $refund->stripe_id = $stripeRefund->id;
         $refund->related_payment_id = $payment->id;
         $refund->user_id = $payment->user_id;
-        $refund->subscription_id = $payment->subscription_id;
+        $refund->license_id = $payment->license_id;
         $refund->save();
 
         // subtract one interval from license expiration date
-        $subscription = $payment->subscription;
-        $license = $subscription->license;
-        $license->expires_at = $license->expires_at->modify("-1 {$subscription->interval}");
+        $license = $payment->license;
+        $license->expires_at = $license->expires_at->modify("-1 {$license->interval}");
         $license->save();
 
         // dispatch job to create an invoice for this payment
@@ -210,50 +208,6 @@ class Charger {
         $this->logger->info( sprintf( 'Charged %s for user %s', $payment->getCurrencySign() . $payment->getTotal(), $user->email ) );
 
         return $payment;
-    }
-
-    /**
-     * Charge a subscription
-     *
-     * @param Subscription $subscription
-     *
-     * @return Payment
-     * 
-     * @throws Exception
-     */
-    public function subscription( Subscription $subscription )
-    {
-        $user = $subscription->user;
-        $today = new DateTime("now");
-        $intervalString = "+1 {$subscription->interval}";
-
-        $payment = $this->charge( $user, $subscription->getAmount(), array(
-            "subscription_id" => $subscription->id
-        ));
-        $payment->subscription_id = $subscription->id;
-        $payment->save();
-
-        // success! extend license
-        $license = $subscription->license;
-
-        // start counting at expiration date or from today if already expired
-        $license->expires_at = $license->isExpired() ? $today->modify( $intervalString ) : $license->expires_at->modify( $intervalString );
-        $license->save();
-
-        // set new charge date
-        $subscription->next_charge_at = $license->expires_at->modify('-1 week');
-        $subscription->save();
-
-        return $payment;
-    }
-
-    /**
-     * @param Subscription $subscription
-     * 
-     * @return boolean
-     */
-    public function chargeable( Subscription $subscription ) {
-        return ! empty( $subscription->user->stripe_customer_id );
     }
 
     /**
