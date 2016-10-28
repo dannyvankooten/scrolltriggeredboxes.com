@@ -64,7 +64,7 @@ class Payment extends Model
 	public function getFormattedTotal() {
 
 	    if( $this->getTotal() < 0 ) {
-            return '- ' . $this->getCurrencySign() . abs( $this->getTotal() );
+            return '- ' . $this->getCurrencySign() . ( abs( $this->getTotal() ) + 0 );
         }
 
 		return $this->getCurrencySign() . ( $this->getTotal() + 0 );
@@ -88,23 +88,24 @@ class Payment extends Model
 	 * @return string
 	 */
 	public function getCurrency() {
-		return strtoupper( $this->currency );
+		return ! empty( $this->currency ) ? strtoupper( $this->currency ) : 'USD';
 	}
 
 	/**
 	 * @return string
 	 */
 	public function getCurrencySign() {
-		static $map = [
+		$map = [
 			'USD' => '$',
 			'EUR' => '€'
 		];
 
-		if( ! empty( $this->currency ) ) {
-			return $map[ $this->currency ];
-		}
+        $currency = $this->getCurrency();
+        if( ! isset( $map[ $currency ] ) ) {
+            throw new \InvalidArgumentException(sprintf('%s has no known currency sign', $currency ) );
+        }
 
-		return '$';
+        return $map[ $currency ];
 	}
 
 	/**
