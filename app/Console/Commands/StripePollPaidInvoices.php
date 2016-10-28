@@ -86,6 +86,7 @@ class StripePollPaidInvoices extends Command
 
         // extend license
         $license->extend();
+        $license->save();
 
         return true;
     }
