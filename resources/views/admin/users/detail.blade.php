@@ -76,6 +76,7 @@
         <table class="table">
             <tr>
                 <th>Date</th>
+                <th>License</th>
                 <th>Total</th>
                 <th></th>
                 <th></th>
@@ -83,6 +84,7 @@
             @forelse( $user->payments as $payment)
                 <tr>
                     <td>{{ $payment->created_at->format('Y-m-d') }}</td>
+                    <td>@if($payment->license)<a href="/licenses/{{ $payment->license->id }}">{{ substr( $payment->license->license_key, 0, 10 ) . '..' }}</a>@endif</td>
                     <td class="@if( $payment->subtotal < 0 ) red @endif">
                         {{ $payment->getFormattedTotal() }}
 
