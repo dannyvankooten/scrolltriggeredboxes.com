@@ -33,6 +33,7 @@ class StripePollEvents extends Command
             'charge.refunded',
             'invoice.payment_failed',
             'invoice.payment_succeeded',
+            'customer.subscription.updated',
         ];
 
         $events = Stripe\Event::all([

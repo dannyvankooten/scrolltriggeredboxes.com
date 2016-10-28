@@ -54,6 +54,30 @@ class StripeEventHandler
             case 'charge.refunded':
                 $this->handleChargeRefunded($event->data->object);
                 break;
+
+            case 'customer.subscription.updated':
+                $this->handleCustomerSubscriptionUpdated($event->data->object);
+                break;
+        }
+    }
+
+    /**
+     * @param Stripe\Subscription $subscription
+     * @return bool
+     */
+    protected function handleCustomerSubscriptionUpdated( Stripe\Subscription $subscription )
+    {
+        /** @var License $license */
+        $license = License::where('stripe_subscription_id', $subscription->id)->first();
+        if( ! $license ) {
+            return false;
+        }
+
+        // check if local license should be active or inactive
+        $active = in_array($subscription->status, ['trialing', 'active', 'past_due']);
+        if( $license->isActive() !== $active ) {
+            $license->status = $subscription->status;
+            $license->save();
         }
     }
 
@@ -105,7 +129,6 @@ class StripeEventHandler
 
         /** @var License $license */
         $license = License::where('stripe_subscription_id', $subscription_id )->first();
-
         if( ! $license ) {
             return false;
         }
