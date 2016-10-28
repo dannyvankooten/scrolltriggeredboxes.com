@@ -1,6 +1,7 @@
 <?php namespace App\Console;
 
 use App\Console\Commands\CreateInvoices;
+use App\Console\Commands\StripePollInvoicePaymentFailures;
 use App\Console\Commands\StripePollPaidInvoices;
 use App\Console\Commands\StripePollRefundedCharges;
 use App\Console\Commands\SubscriptionsMigrateToStripe;
@@ -18,7 +19,8 @@ class Kernel extends ConsoleKernel {
 		CreateInvoices::class,
         SubscriptionsMigrateToStripe::class,
         StripePollPaidInvoices::class,
-        StripePollRefundedCharges::class
+        StripePollRefundedCharges::class,
+        StripePollInvoicePaymentFailures::class,
 	];
 
 	/**

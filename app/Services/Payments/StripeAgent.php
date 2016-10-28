@@ -115,7 +115,7 @@ class StripeAgent {
         try {
             $stripeSubscription = Stripe\Subscription::create([
                 'customer' => $license->user->stripe_customer_id,
-                'plan' => $this->getPlanId($license)
+                'plan' => $this->getPlanId($license),
             ]);
         } catch( StripeException $e ) {
             throw PaymentException::fromStripe($e);
