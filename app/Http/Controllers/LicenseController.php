@@ -135,11 +135,11 @@ class LicenseController extends Controller {
 		}
 
 		$data = $request->input('license');
-        if( isset( $data['auto_renews'] ) ) {
-            $license->auto_renews = (int) $data['auto_renews'];
+        if( isset( $data['status'] ) ) {
+            $license->status = $data['status'];
 
-            // resume or cancel license
-            $license->auto_renews ? $agent->resumeSubscription( $license ) : $agent->cancelSubscription( $license );
+            // resume or cancel license subscription
+            $license->isActive() ? $agent->resumeSubscription( $license ) : $agent->cancelSubscription( $license );
         }
 
         $license->save();

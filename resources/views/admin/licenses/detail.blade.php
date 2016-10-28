@@ -61,14 +61,14 @@
 
         <div class="medium-margin"></div>
 
-        @if( $license->auto_renews )
+        @if( $license->isActive() )
             <h3>Cancel auto-renew for this license</h3>
             <p>Use the button below to stop this license from auto-renewing.</p>
             <form method="post" action="/licenses/{{ $license->id }}">
                 <input type="hidden" name="_method" value="PUT" />
                 {!! csrf_field() !!}
 
-                <input type="hidden" name="license[auto_renews]" value="0" />
+                <input type="hidden" name="license[status]" value="canceled" />
                 <button class="button-small button-danger" data-confirm="Are you sure you want to deactivate auto-renewal for this license?">Cancel license</button>
             </form>
         @else
@@ -78,7 +78,7 @@
                 <input type="hidden" name="_method" value="PUT" />
                 {!! csrf_field() !!}
 
-                <input type="hidden" name="license[auto_renews]" value="1" />
+                <input type="hidden" name="license[status]" value="active" />
                 <button class="button-small">Re-enable license</button>
             </form>
         @endif

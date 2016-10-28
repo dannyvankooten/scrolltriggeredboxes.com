@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $deleted_at
  * @property string stripe_subscription_id
  * @property string interval
- * @property boolean $auto_renews
  * @property string $plan
  * @property string $status
  *
@@ -76,6 +75,13 @@ class License extends Model {
         return $this->status;
     }
 
+    /**
+     * @return bool
+     */
+    public function isActive() {
+        return $this->getStatus() === 'active';
+    }
+
 	/**
 	 * @return bool
 	 */
@@ -87,7 +93,7 @@ class License extends Model {
 	 * @return bool
 	 */
 	public function isValid() {
-		return $this->getStatus() === 'active' || ! $this->isExpired();
+		return $this->isActive() || ! $this->isExpired();
 	}
 
 	/**

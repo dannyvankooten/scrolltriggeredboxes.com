@@ -93,7 +93,6 @@ class Purchaser {
         $license->license_key = License::generateKey();
         $license->user_id = $user->id;
         $license->site_limit = $site_limit;
-        $license->auto_renews = true;
         $license->interval = $interval;
         $license->plan = $plan;
 

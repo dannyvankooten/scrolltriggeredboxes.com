@@ -147,6 +147,12 @@ class StripeAgent {
      * @throws PaymentException
      */
     public function cancelSubscription( License $license ) {
+
+        // do nothing if license has no stripe subscription
+        if( empty( $license->stripe_subscription_id ) ) {
+            return;
+        }
+
         try {
             $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
             $stripeSubscription->cancel();

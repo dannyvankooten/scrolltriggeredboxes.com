@@ -98,11 +98,11 @@ class LicenseController extends AdminController {
             $this->log->info( sprintf( '%s changed license #%d activation limit to %d for user %s.', $this->admin->getFirstName(), $license->id, $license->site_limit, $license->user->email ) );
 		}
 
-		if( isset( $data['auto_renews'] ) ) {
-            $license->auto_renews = (int) $data['auto_renews'];
+		if( ! empty( $data['status'] ) && $data['status'] !== $license->status ) {
+            $license->status = $data['status'];
 
-            // resume or cancel license
-            $license->auto_renews ? $agent->resumeSubscription( $license ) : $agent->cancelSubscription( $license );
+            // resume or cancel license subscription
+            $license->isActive() ? $agent->resumeSubscription( $license ) : $agent->cancelSubscription( $license );
         }
 
 		if( ! empty( $data['expires_at'] ) ) {
@@ -112,9 +112,8 @@ class LicenseController extends AdminController {
             if( $license->expires_at->diffInDays($newExpiryDate) > 0) {
                 $license->expires_at = $newExpiryDate;
 
-
                 // update subscription next charge date
-                if( $license->auto_renews ) {
+                if( $license->isActive() ) {
                     $agent->updateNextChargeDate( $license );
                 }
 
