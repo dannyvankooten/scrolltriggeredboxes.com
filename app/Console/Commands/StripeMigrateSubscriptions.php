@@ -74,6 +74,15 @@ class StripeMigrateSubscriptions extends Command
             return;
         }
 
+        // up license limit so it fits in new plans
+        if( $license->getPlan() === 'personal' && $license->site_limit < 2 ) {
+            $license->site_limit = 2;
+        }
+
+        if( $license->getPlan() === 'developer' && $license->site_limit < 10 ) {
+            $license->site_limit = 10;
+        }
+
         // save changes
         $license->save();
 
