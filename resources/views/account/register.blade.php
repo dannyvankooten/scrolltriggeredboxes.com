@@ -24,11 +24,11 @@
                 <label class="control-label">Select your plan</label>
 
                 <label class="unstyled">
-                    <input type="radio" name="plan" value="personal" @if( old('plan', 'personal') == 'personal' ) checked @endif required>
+                    <input type="radio" name="plan" value="personal" @if( old('plan', request('plan', 'personal')) == 'personal' ) checked @endif required>
                     Personal <small>- up to 2 sites</small>
                 </label>
                 <label class="unstyled">
-                    <input type="radio" name="plan" value="developer" @if( old('plan') == 'developer' ) checked @endif>
+                    <input type="radio" name="plan" value="developer" @if( old('plan', request('plan')) == 'developer' ) checked @endif>
                     Developer <small>- up to 10 sites</small>
                 </label>
             </div>
