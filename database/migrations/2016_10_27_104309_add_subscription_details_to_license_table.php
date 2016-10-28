@@ -16,9 +16,10 @@ class AddSubscriptionDetailsToLicenseTable extends Migration
     {
         Schema::table('licenses', function (Blueprint $table) {
             $table->string('stripe_subscription_id')->nullable();
-            $table->boolean('auto_renews')->nullable();
-            $table->string('interval')->nullable();
+            $table->boolean('auto_renew')->nullable();
+            $table->string('auto_renew_interval')->nullable();
             $table->string('plan')->nullable();
+            $table->string('status')->nullable();
         });
 
         Schema::table('payments', function (Blueprint $table) {
@@ -38,10 +39,11 @@ class AddSubscriptionDetailsToLicenseTable extends Migration
     public function down()
     {
         Schema::table('licenses', function (Blueprint $table) {
-            $table->dropColumn('stripe_subscription_id');
-            $table->dropColumn('auto_renews');
-            $table->dropColumn('interval');
+            $table->dropColumn('auto_renew');
+            $table->dropColumn('auto_renew_interval');
             $table->dropColumn('plan');
+            $table->dropColumn('status');
+            $table->dropColumn('stripe_subscription_id');
         });
 
         Schema::table('payments', function (Blueprint $table) {

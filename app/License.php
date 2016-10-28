@@ -25,12 +25,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string stripe_subscription_id
  * @property string interval
  * @property boolean $auto_renews
- * @property string plan
+ * @property string $plan
+ * @property string $status
  *
  */
 class License extends Model {
-
-	use SoftDeletes;
 
 	protected $table = 'licenses';
 	protected $fillable = [];
@@ -61,6 +60,22 @@ class License extends Model {
         return $this->hasMany('App\Payment', 'license_id', 'id')->orderBy('created_at', 'DESC');
     }
 
+    /**
+     * Get the license status
+     *
+     * - active
+     * - canceled
+     */
+    public function getStatus() {
+
+        // default to "active"
+        if( empty( $this->status ) ) {
+            return 'active';
+        }
+
+        return $this->status;
+    }
+
 	/**
 	 * @return bool
 	 */
@@ -72,7 +87,7 @@ class License extends Model {
 	 * @return bool
 	 */
 	public function isValid() {
-		return ! $this->isExpired() && ! $this->trashed();
+		return $this->getStatus() === 'active' || ! $this->isExpired();
 	}
 
 	/**

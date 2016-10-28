@@ -137,6 +137,7 @@ class StripeAgent {
         }
 
         $license->stripe_subscription_id = $stripeSubscription->id;
+        $license->status = 'active';
         $license->extend();
     }
 
@@ -152,6 +153,8 @@ class StripeAgent {
         } catch(StripeException $e) {
             throw PaymentException::fromStripe($e);
         }
+
+        $license->status = 'canceled';
     }
 
     /**
@@ -184,6 +187,7 @@ class StripeAgent {
         }
 
         $license->stripe_subscription_id = $stripeSubscription->id;
+        $license->status = 'active';
     }
 
     /**

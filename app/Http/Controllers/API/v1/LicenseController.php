@@ -46,19 +46,10 @@ class LicenseController extends Controller {
     public function getLicense( StripeAgent $agent ) {
         /** @var License $license */
         $license = $this->auth->license();
-        $valid = $license->isValid();
-
-        if( $license->isExpired() ) {
-
-            // if license expired, trust subscription status to take care of outstanding payment.
-            if( $agent->isSubscriptionActive( $license ) ) {
-                $valid = true;
-            }
-        }
 
         return new JsonResponse([
             'data' => [
-                'valid' => $valid,
+                'valid' => $license->isValid(),
                 'activations' => count( $license->activations ),
                 'activation_limit' => $license->site_limit,
                 'expires_at' => $license->expires_at->toIso8601String()
@@ -88,7 +79,7 @@ class LicenseController extends Controller {
                 return new JsonResponse([
                     'error' => [
                         'code' => 'license_expired',
-                        'message' => sprintf( "Your license expired on %s. Would you like to <a href=\"%s\">renew it now</a>?", $license->expires_at->format('F j, Y'), domain_url( '/licenses/' . $license->id, 'account' ) )
+                        'message' => sprintf( "Your license expired on %s. Please <a href=\"%s\">check your payment method</a>.", $license->expires_at->format('F j, Y'), domain_url( '/edit/payment', 'account' ) )
 
                     ]
                 ], 401 );
