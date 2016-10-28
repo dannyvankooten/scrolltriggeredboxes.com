@@ -81,6 +81,9 @@ class SubscriptionAgent {
             'customer' => $license->user->stripe_customer_id,
             'plan' => $this->getPlanId($license),
             'trial_end' => $license->expires_at->getTimestamp(),
+            'metadata' => [
+                'license_id' => $license->id
+            ],
         ]);
 
         $license->stripe_subscription_id = $subscription->id;
