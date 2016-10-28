@@ -90,7 +90,7 @@ class PluginController extends Controller {
 	 * @param int|string $id
 	 * @param Request $request
 	 *
-	 * @return BinaryFileResponse
+	 * @return BinaryFileResponse|Response
 	 */
 	public function download($id, Request $request) {
 

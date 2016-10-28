@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use App\Services\LicenseGuard;
+use App\Services\Payments\StripeAgent;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,15 +40,25 @@ class LicenseController extends Controller {
     /**
      * Get license details
      *
+     * @param StripeAgent $agent
      * @return JsonResponse
      */
-    public function getLicense() {
+    public function getLicense( StripeAgent $agent ) {
         /** @var License $license */
         $license = $this->auth->license();
+        $valid = $license->isValid();
+
+        if( $license->isExpired() ) {
+
+            // if license expired, trust subscription status to take care of outstanding payment.
+            if( $agent->isSubscriptionActive( $license ) ) {
+                $valid = true;
+            }
+        }
 
         return new JsonResponse([
             'data' => [
-                'valid' => $license->isValid(),
+                'valid' => $valid,
                 'activations' => count( $license->activations ),
                 'activation_limit' => $license->site_limit,
                 'expires_at' => $license->expires_at->toIso8601String()

@@ -104,6 +104,20 @@ class StripeAgent {
 
     /**
      * @param License $license
+     * @return boolean
+     */
+    public function isSubscriptionActive( License $license ) {
+        try {
+            $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
+        } catch(StripeException $e) {
+            return false;
+        }
+
+        return in_array($stripeSubscription->status, [ 'trialing', 'active', 'past_due' ]);
+    }
+
+    /**
+     * @param License $license
      * @throws PaymentException
      */
     public function createSubscription( License $license ) {
