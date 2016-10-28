@@ -2,10 +2,8 @@
 
 use App\Console\Commands\CreateInvoices;
 use App\Console\Commands\StripeCreatePlans;
-use App\Console\Commands\StripePollInvoicePaymentFailures;
-use App\Console\Commands\StripePollPaidInvoices;
-use App\Console\Commands\StripePollRefundedCharges;
-use App\Console\Commands\SubscriptionsMigrateToStripe;
+use App\Console\Commands\StripePollEvents;
+use App\Console\Commands\StripeMigrateSubscriptions;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -18,10 +16,8 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected $commands = [
 		CreateInvoices::class,
-        SubscriptionsMigrateToStripe::class,
-        StripePollPaidInvoices::class,
-        StripePollRefundedCharges::class,
-        StripePollInvoicePaymentFailures::class,
+        StripeMigrateSubscriptions::class,
+        StripePollEvents::class,
         StripeCreatePlans::class,
 	];
 

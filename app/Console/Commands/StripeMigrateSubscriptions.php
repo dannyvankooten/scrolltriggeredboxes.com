@@ -6,14 +6,14 @@ use App\Services\Payments\StripeAgent;
 use App\Subscription;
 use Illuminate\Console\Command;
 
-class SubscriptionsMigrateToStripe extends Command
+class StripeMigrateSubscriptions extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'subscriptions:migrate-to-stripe';
+    protected $signature = 'stripe:migrate-subscriptions';
 
     /**
      * The console command description.
