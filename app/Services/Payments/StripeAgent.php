@@ -77,20 +77,19 @@ class StripeAgent {
         }
 
         if( $user->stripe_customer_id ) {
-            $customer = $this->updateCustomer( $user->stripe_customer_id, $customerData );
+            $stripeCustomer = $this->updateOrCreateInStripe( Stripe\Customer::class, $user->stripe_customer_id, $customerData );
             $this->logger->info( sprintf( 'Updated Stripe customer %s from user %s', $user->stripe_customer_id, $user->email ) );
         } else {
-
             // token is required for new customers
-            if( empty(  $customerData['source'] ) ) {
+            if( empty( $customerData['source'] ) ) {
                 throw new InvalidArgumentException( 'Invalid card details.' );
             }
 
-            $customer = $this->createCustomer( $customerData );
-            $this->logger->info( sprintf( 'Created Stripe customer %s from user %s', $customer->id, $user->email ) );
+            $stripeCustomer = $this->createInStripe( Stripe\Customer::class, $customerData );
+            $this->logger->info( sprintf( 'Created Stripe customer %s from user %s', $stripeCustomer->id, $user->email ) );
         }
 
-        $user->stripe_customer_id = $customer->id;
+        $user->stripe_customer_id = $stripeCustomer->id;
         return $user;
     }
 
@@ -161,6 +160,7 @@ class StripeAgent {
         }
 
         $license->status = 'canceled';
+        $license->stripe_subscription_id = null;
     }
 
     /**
@@ -178,16 +178,18 @@ class StripeAgent {
             return $this->createSubscription($license);
         }
 
+        // change status back to "active" but set trial_end to date that license expires (to prevent immediate charge)
+        $data = [
+            'customer' => $license->user->stripe_customer_id,
+            'plan' => $this->getPlanId($license),
+            'trial_end' => $license->expires_at->getTimestamp(),
+            'metadata' => [
+                'license_id' => $license->id
+            ],
+        ];
+
         try {
-            // create subscription but do not charge until license expiration date
-            $stripeSubscription = Stripe\Subscription::create([
-                'customer' => $license->user->stripe_customer_id,
-                'plan' => $this->getPlanId($license),
-                'trial_end' => $license->expires_at->getTimestamp(),
-                'metadata' => [
-                    'license_id' => $license->id
-                ],
-            ]);
+            $stripeSubscription = $this->createInStripe( Stripe\Subscription::class, $data );
         } catch( StripeException $e ) {
             throw PaymentException::fromStripe($e);
         }
@@ -258,44 +260,36 @@ class StripeAgent {
     }
 
     /**
+     * @param string $class
      * @param array $data
-     *
-     * @return \Stripe\Customer
+     * @return object
      *
      * @throws PaymentException
-     * @throws InvalidArgumentException
      */
-    private function createCustomer( array $data )
-    {
-        if( empty( $data['source'] ) ) {
-            throw new InvalidArgumentException('A payment token must be given to create a new customer in Stripe.');
-        }
-
+    private function createInStripe( $class, $data ) {
         try {
-            $customer = Stripe\Customer::create($data);
+            $stripeObject = $class::create($data);
         } catch( StripeException $e ) {
-            throw new PaymentException( $e->getMessage(), $e->getCode() );
+            throw PaymentException::fromStripe($e);
         }
 
-        return $customer;
+        return $stripeObject;
     }
 
     /**
+     * @param string $class
      * @param string $id
      * @param array $data
-     *
-     * @return \Stripe\Customer
-     *
+     * @return object
      * @throws PaymentException
      */
-    private function updateCustomer( $id, array $data )
-    {
+    private function updateOrCreateInStripe( $class, $id, array $data ) {
         try {
-            $customer = Stripe\Customer::retrieve($id);
+            $stripeObject = $class::retrieve($id);
         } catch( InvalidRequest $e ) {
             //  customer does not exist in stripe, so create it.
             if( $e->getHttpStatus() == 404 ) {
-                return $this->createCustomer( $data );
+                return $this->createInStripe( $class, $data );
             }
 
             throw PaymentException::fromStripe($e);
@@ -303,15 +297,26 @@ class StripeAgent {
             throw PaymentException::fromStripe($e);
         }
 
+        $stripeObject = $this->modifyObject($stripeObject, $data);
+        $stripeObject->save();
+
+        return $stripeObject;
+    }
+
+    /**
+     * @param object $object
+     * @param array $data
+     *
+     * @return object
+     */
+    private function modifyObject( $object, $data ) {
         foreach( $data as $property => $value ) {
-            if( ! empty( $value ) && $customer->$property != $value ) {
-                $customer->$property = $value;
+            if( $object->$property != $value ) {
+                $object->$property = $value;
             }
         }
 
-        $customer->save();
-        return $customer;
+        return $object;
     }
-
 
 }
