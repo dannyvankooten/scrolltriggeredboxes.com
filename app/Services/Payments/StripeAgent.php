@@ -130,6 +130,7 @@ class StripeAgent {
             $stripeSubscription = Stripe\Subscription::create([
                 'customer' => $license->user->stripe_customer_id,
                 'plan' => $this->getPlanId($license),
+                'tax_percent' => $license->user->getTaxRate()
             ]);
         } catch( StripeException $e ) {
             throw PaymentException::fromStripe($e);
