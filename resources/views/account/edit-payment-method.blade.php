@@ -22,7 +22,7 @@
     <h1 class="page-title">Update Payment Method</h1>
 
     @if(Auth::user()->card_last_four)
-        <p>You have registered your card ending in {{ Auth()->user()->card_last_four }}.</p>
+        <p>You have registered your card ending in <strong>{{ Auth()->user()->card_last_four }}</strong>.</p>
         <p>Use the following form if you want to use a different credit card.</p>
     @endif
 

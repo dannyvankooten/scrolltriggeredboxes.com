@@ -104,17 +104,22 @@ class StripeAgent {
 
     /**
      * @param License $license
-     * @throws Exception
+     * @throws PaymentException
      */
     public function createSubscription( License $license ) {
+
         if( empty( $license->user->stripe_customer_id ) ) {
-            throw new Exception( "User has no valid payment method registered." );
+            throw new PaymentException( "User has no valid payment method registered." );
         }
 
-        $stripeSubscription = Stripe\Subscription::create([
-            'customer' => $license->user->stripe_customer_id,
-            'plan' => $this->getPlanId( $license )
-        ]);
+        try {
+            $stripeSubscription = Stripe\Subscription::create([
+                'customer' => $license->user->stripe_customer_id,
+                'plan' => $this->getPlanId($license)
+            ]);
+        } catch( StripeException $e ) {
+            throw PaymentException::fromStripe($e);
+        }
 
         $license->stripe_subscription_id = $stripeSubscription->id;
         $license->extend();
@@ -122,20 +127,26 @@ class StripeAgent {
 
     /**
      * @param License $license
+     *
+     * @throws PaymentException
      */
     public function cancelSubscription( License $license ) {
-        $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
-        $stripeSubscription->cancel();
+        try {
+            $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
+            $stripeSubscription->cancel();
+        } catch(StripeException $e) {
+            throw PaymentException::fromStripe($e);
+        }
     }
 
     /**
      * @param License $license
-     * @throws Exception
+     * @throws PaymentException
      */
     public function resumeSubscription( License $license ) {
 
         if( empty( $license->user->stripe_customer_id ) ) {
-            throw new Exception( "User has no valid payment method registered." );
+            throw new PaymentException( "User has no valid payment method registered." );
         }
 
         // if license is expired, create a new subscription
@@ -143,15 +154,19 @@ class StripeAgent {
             return $this->createSubscription($license);
         }
 
-        // create subscription but do not charge until license expiration date
-        $stripeSubscription = Stripe\Subscription::create([
-            'customer' => $license->user->stripe_customer_id,
-            'plan' => $this->getPlanId($license),
-            'trial_end' => $license->expires_at->getTimestamp(),
-            'metadata' => [
-                'license_id' => $license->id
-            ],
-        ]);
+        try {
+            // create subscription but do not charge until license expiration date
+            $stripeSubscription = Stripe\Subscription::create([
+                'customer' => $license->user->stripe_customer_id,
+                'plan' => $this->getPlanId($license),
+                'trial_end' => $license->expires_at->getTimestamp(),
+                'metadata' => [
+                    'license_id' => $license->id
+                ],
+            ]);
+        } catch( StripeException $e ) {
+            throw PaymentException::fromStripe($e);
+        }
 
         $license->stripe_subscription_id = $stripeSubscription->id;
     }
@@ -189,7 +204,7 @@ class StripeAgent {
         try {
             $stripeRefund = Stripe\Refund::create($args);
         } catch( StripeException $e ) {
-            throw new PaymentException( $e->getMessage(), $e->getCode() );
+            throw PaymentException::fromStripe($e);
         }
 
         // store negative opposite of payment
@@ -258,9 +273,9 @@ class StripeAgent {
                 return $this->createCustomer( $data );
             }
 
-            throw new PaymentException( $e->getMessage(), $e->getCode() );
+            throw PaymentException::fromStripe($e);
         } catch( StripeException $e ) {
-            throw new PaymentException( $e->getMessage(), $e->getCode() );
+            throw PaymentException::fromStripe($e);
         }
 
         foreach( $data as $property => $value ) {
