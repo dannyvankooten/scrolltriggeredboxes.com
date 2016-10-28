@@ -33,7 +33,7 @@
                     Personal <small>- up to 2  sites</small>
                 </label>
                 <label class="unstyled">
-                    <input type="radio" name="plan" value="developer" @if( old('plan', 'developer') == 'developer' ) checked @endif>
+                    <input type="radio" name="plan" value="developer" @if( old('plan') == 'developer' ) checked @endif>
                     Developer <small>- up to 5  sites</small>
                 </label>
             </div>
