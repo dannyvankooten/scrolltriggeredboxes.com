@@ -30,11 +30,11 @@
 
                 <label class="unstyled">
                     <input type="radio" name="plan" value="personal" @if( old('plan', 'personal') == 'personal' ) checked @endif required>
-                    Personal <small>- up to 2  sites</small>
+                    Personal <small>- up to 2 sites</small>
                 </label>
                 <label class="unstyled">
                     <input type="radio" name="plan" value="developer" @if( old('plan') == 'developer' ) checked @endif>
-                    Developer <small>- up to 5  sites</small>
+                    Developer <small>- up to 10 sites</small>
                 </label>
             </div>
 
