@@ -26,8 +26,16 @@ class AddSubscriptionDetailsToLicenseTable extends Migration
         });
 
 
+        /** @var PDO $db */
+        $db = DB::connection()->getPdo();
+
+        // move license_id from subscription to payment table.
         $sql = 'UPDATE payments p INNER JOIN subscriptions s ON s.id = p.subscription_id SET p.license_id = s.license_id';
-        DB::connection()->getPdo()->exec($sql);
+        $db->exec($sql);
+
+        // move interval from subscription to license table
+        $sql = 'UPDATE licenses l INNER JOIN subscriptions s ON l.id = s.license_id SET l.interval = s.interval';
+        $db->exec($sql);
     }
 
     /**
