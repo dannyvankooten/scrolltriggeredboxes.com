@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\License;
+use App\Services\Payments\StripeAgent;
 use App\Services\SubscriptionAgent;
 use App\User;
 use Carbon\Carbon;
@@ -86,7 +87,7 @@ class LicenseController extends AdminController {
 	}
 
 	// update license details
-	public function update( $id, Request $request, Redirector $redirector, SubscriptionAgent $agent ) {
+	public function update( $id, Request $request, Redirector $redirector, StripeAgent $agent ) {
 		/** @var License $license */
 		$license = License::with(['user'])->findOrFail($id);
 
@@ -101,7 +102,7 @@ class LicenseController extends AdminController {
             $license->auto_renews = (int) $data['auto_renews'];
 
             // resume or cancel license
-            $license->auto_renews ? $agent->resume( $license ) : $agent->cancel( $license );
+            $license->auto_renews ? $agent->resumeSubscription( $license ) : $agent->cancelSubscription( $license );
         }
 
 		if( ! empty( $data['expires_at'] ) ) {

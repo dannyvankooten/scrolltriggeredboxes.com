@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\SubscriptionAgent;
+use App\Services\Payments\StripeAgent;
 use App\Subscription;
 use Illuminate\Console\Command;
 
@@ -23,16 +23,16 @@ class SubscriptionsMigrateToStripe extends Command
     protected $description = 'Migrate all local Subscriptions to Stripe';
 
     /**
-     * @var SubscriptionAgent
+     * @var StripeAgent
      */
     protected $agent;
 
     /**
      * Create a new command instance.
      *
-     * @param SubscriptionAgent $agent
+     * @param StripeAgent $agent
      */
-    public function __construct( SubscriptionAgent $agent )
+    public function __construct( StripeAgent $agent )
     {
         parent::__construct();
 
@@ -64,7 +64,7 @@ class SubscriptionsMigrateToStripe extends Command
         $this->info( sprintf( 'Migrating subscription %d, license %d for user %s', $subscription->id, $license->id, $user->email ) );
 
         try {
-            $this->agent->resume($license);
+            $this->agent->resumeSubscription($license);
         } catch( \Exception $e ) {
             $this->warn( sprintf( "Error: %s", $e->getMessage() ) );
             return;

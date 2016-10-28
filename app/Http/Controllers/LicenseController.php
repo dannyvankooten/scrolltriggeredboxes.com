@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Activation;;
-use App\Services\Payments\Charger;
+use App\Services\Payments\StripeAgent;
 use App\Services\Payments\PaymentException;
 use App\Services\Purchaser;
-use App\Services\SubscriptionAgent;
 use App\User;
 use Exception;
 
@@ -120,10 +119,10 @@ class LicenseController extends Controller {
      * @param Request $request
      * @param Redirector $redirector
      *
-     * @param SubscriptionAgent $agent
+     * @param StripeAgent $agent
      * @return RedirectResponse
      */
-	public function update($id, Request $request, Redirector $redirector, SubscriptionAgent $agent ) {
+	public function update($id, Request $request, Redirector $redirector, StripeAgent $agent ) {
 		/** @var License $license */
 		$license = License::findOrFail($id);
 
@@ -140,7 +139,7 @@ class LicenseController extends Controller {
             $license->auto_renews = (int) $data['auto_renews'];
 
             // resume or cancel license
-            $license->auto_renews ? $agent->resume( $license ) : $agent->cancel( $license );
+            $license->auto_renews ? $agent->resumeSubscription( $license ) : $agent->cancelSubscription( $license );
         }
 
         $license->save();

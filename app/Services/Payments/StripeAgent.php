@@ -2,24 +2,22 @@
 
 namespace App\Services\Payments;
 
+use App\License;
 use Illuminate\Contracts\Logging\Log;
 use InvalidArgumentException;
 use App\Jobs\CreatePaymentCreditInvoice;
 use App\Jobs\CreatePaymentInvoice;
 use App\User;
-use App\Subscription;
 use App\Payment;
-
 use Illuminate\Foundation\Bus\DispatchesJobs;
-
 use Stripe;
 use Stripe\Error\InvalidRequest;
-use DateTime;
+use Carbon\Carbon;
 use Exception;
 
 use Stripe\Error\Base as StripeException;
 
-class Charger {
+class StripeAgent {
 
     use DispatchesJobs;
 
@@ -45,7 +43,7 @@ class Charger {
      * 
      * @return User
      */
-    public function customer( User $user, $token = '' ) {
+    public function updatePaymentMethod( User $user, $token = '' ) {
 
         $customerData = [
             'email' => $user->email,
@@ -97,6 +95,77 @@ class Charger {
     }
 
     /**
+     * @param License $license
+     * @return string
+     */
+    protected function getPlanId( License $license ) {
+        return sprintf('boxzilla-%s-%sly', $license->getPlan(), $license->interval);
+    }
+
+    /**
+     * @param License $license
+     * @throws Exception
+     */
+    public function createSubscription( License $license ) {
+        if( empty( $license->user->stripe_customer_id ) ) {
+            throw new Exception( "User has no valid payment method registered." );
+        }
+
+        $stripeSubscription = Stripe\Subscription::create([
+            'customer' => $license->user->stripe_customer_id,
+            'plan' => $this->getPlanId( $license )
+        ]);
+
+        $license->stripe_subscription_id = $stripeSubscription->id;
+        $license->extend();
+    }
+
+    /**
+     * @param License $license
+     */
+    public function cancelSubscription( License $license ) {
+        $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
+        $stripeSubscription->cancel();
+    }
+
+    /**
+     * @param License $license
+     * @throws Exception
+     */
+    public function resumeSubscription( License $license ) {
+
+        if( empty( $license->user->stripe_customer_id ) ) {
+            throw new Exception( "User has no valid payment method registered." );
+        }
+
+        // if license is expired, create a new subscription
+        if( $license->isExpired() ) {
+            return $this->createSubscription($license);
+        }
+
+        // create subscription but do not charge until license expiration date
+        $stripeSubscription = Stripe\Subscription::create([
+            'customer' => $license->user->stripe_customer_id,
+            'plan' => $this->getPlanId($license),
+            'trial_end' => $license->expires_at->getTimestamp(),
+            'metadata' => [
+                'license_id' => $license->id
+            ],
+        ]);
+
+        $license->stripe_subscription_id = $stripeSubscription->id;
+    }
+
+    /**
+     * @param License $license
+     */
+    public function updateNextChargeDate( License $license ) {
+        $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
+        $stripeSubscription->trial_end = $license->expires_at;
+        $stripeSubscription->save();
+    }
+
+    /**
      * Refund a payment
      *
      * @param Payment $payment
@@ -105,7 +174,7 @@ class Charger {
      *
      * @throws PaymentException
      */
-    public function refund( Payment $payment )
+    public function refundPayment( Payment $payment )
     {
         if( $payment->isRefund() ) {
             throw new PaymentException("Payment is already a refund.");
@@ -125,12 +194,12 @@ class Charger {
 
         // store negative opposite of payment
         $refund = new Payment();
-        $refund->subtotal = 0 - $payment->subtotal;
-        $refund->tax = 0 - $payment->tax;
         $refund->stripe_id = $stripeRefund->id;
         $refund->related_payment_id = $payment->id;
         $refund->user_id = $payment->user_id;
         $refund->license_id = $payment->license_id;
+        $refund->subtotal = 0 - $payment->subtotal;
+        $refund->tax = 0 - $payment->tax;
         $refund->save();
 
         // subtract one interval from license expiration date
@@ -146,68 +215,6 @@ class Charger {
         $this->logger->info( sprintf( 'Refunded a total amount of %s for user %s', $payment->getCurrencySign() . $payment->getTotal(), $user->email ) );
 
         return $refund;
-    }
-
-    /**
-     * @param User $user
-     * @param double $amount
-     * @param array $metadata
-     *
-     * @return object
-     *
-     * @throws Exception
-     */
-    public function charge( User $user, $amount, $metadata = array() ) {
-
-        if( empty( $user->stripe_customer_id ) ) {
-            throw new PaymentException( "Invalid payment method.", 000 );
-        }
-
-        // add tax
-        $amountInclTax = $amount;
-        $taxRate = $user->getTaxRate();
-        $tax = 0.00;
-        if( $taxRate > 0 ) {
-            $tax = $amount * ( $taxRate / 100 );
-            $amountInclTax = $amount + $tax;
-        }
-
-        // calculate amount in cents
-        $amountInclTaxInCents = round( $amountInclTax * 100 );
-
-        $data = [
-            "amount" => $amountInclTaxInCents,
-            "currency" => "USD",
-            "customer" => $user->stripe_customer_id,
-        ];
-
-        if( ! empty( $metadata ) ) {
-            $data['metadata'] = $metadata;
-        }
-
-        // charge credit card in Stripe
-        try {
-            $charge = Stripe\Charge::create($data);
-        } catch( StripeException $e ) {
-            throw new PaymentException( $e->getMessage(), $e->getCode() );
-        }
-
-        // create local payment
-        $payment = new Payment();
-        $payment->currency = 'USD';
-        $payment->user_id = $user->id;
-        $payment->subtotal = $amount;
-        $payment->tax = $tax;
-        $payment->stripe_id = $charge->id;
-        $payment->save();
-
-        // dispatch job to create an invoice for this payment
-        $this->dispatch(new CreatePaymentInvoice($payment));
-
-        // log
-        $this->logger->info( sprintf( 'Charged %s for user %s', $payment->getCurrencySign() . $payment->getTotal(), $user->email ) );
-
-        return $payment;
     }
 
     /**

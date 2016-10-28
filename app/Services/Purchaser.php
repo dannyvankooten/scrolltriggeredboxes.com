@@ -7,31 +7,24 @@ use App\User;
 use App\License;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use DateTime;
-use App\Services\Payments\Charger;
+use App\Services\Payments\StripeAgent;
 
 class Purchaser {
 
     use DispatchesJobs;
 
     /**
-     * @var Charger
-     */
-    protected $charger;
-
-    /**
-     * @var SubscriptionAgent
+     * @var StripeAgent
      */
     protected $agent;
 
     /**
      * Purchaser constructor.
      *
-     * @param Charger $charger
-     * @param SubscriptionAgent $agent
+     * @param StripeAgent $agent
      */
-    public function __construct( Charger $charger, SubscriptionAgent $agent )
+    public function __construct( StripeAgent $agent )
     {
-        $this->charger = $charger;
         $this->agent = $agent;
     }
 
@@ -43,7 +36,7 @@ class Purchaser {
      */
     public function user( User $user, $paymentToken )
     {
-        $user = $this->charger->customer($user, $paymentToken );
+        $user = $this->agent->updatePaymentMethod($user, $paymentToken );
         $user->save();
         return $user;
     }
@@ -54,7 +47,8 @@ class Purchaser {
      *
      * @return float
      */
-    public function calculatePrice( $plan, $interval ) {
+    public function calculatePrice( $plan, $interval )
+    {
         $prices = array(
             'personal' => 6.00,
             'developer' => 20.00,
@@ -104,7 +98,7 @@ class Purchaser {
         $license->plan = $plan;
 
         // setup subscription
-        $this->agent->create( $license );
+        $this->agent->createSubscription( $license );
 
         // save license
         $license->save();

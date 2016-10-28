@@ -3,8 +3,7 @@
 use App\Http\Controllers\Controller;
 use App\Payment;
 use App\Services\Invoicer\Invoicer;
-use App\Services\Payments\Charger;
-use App\Subscription;
+use App\Services\Payments\StripeAgent;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,10 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 class PaymentController extends AdminController {
 
     // delete a payment (refund)
-    public function destroy( $id, Redirector $redirector, Charger $charger  ) {
+    public function destroy( $id, Redirector $redirector, StripeAgent $agent  ) {
         /** @var Payment $payment */
         $payment = Payment::with(['user'])->findOrFail( $id );
-        $refund = $charger->refund( $payment );
+        $refund = $agent->refundPayment( $payment );
 
         $this->log->info( sprintf( '%s refunded %s to user %s.', $this->admin->getFirstName(), $payment->getFormattedTotal(), $payment->user->email ) );
 

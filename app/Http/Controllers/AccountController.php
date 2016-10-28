@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\UpdateInvoiceContact;
 use App\Jobs\UpdateStripeCustomer;
-use App\Services\Payments\Charger;
+use App\Services\Payments\StripeAgent;
 use App\Services\Purchaser;
 use App\User;
 use Exception;
@@ -138,11 +138,11 @@ class AccountController extends Controller {
 	/**
 	 * @param Request $request
 	 * @param Redirector $redirector
-	 * @param Charger $charger
+	 * @param StripeAgent $agent
 	 *
 	 * @return RedirectResponse
 	 */
-	public function updatePaymentMethod( Request $request, Redirector $redirector, Charger $charger  ) {
+	public function updatePaymentMethod( Request $request, Redirector $redirector, StripeAgent $agent  ) {
 		/** @var User $user */
 		$user = $this->auth->user();
 
@@ -151,7 +151,7 @@ class AccountController extends Controller {
 		]);
 
 		try {
-			$user = $charger->customer($user, $request->input('payment_token'));
+			$user = $agent->updatePaymentMethod($user, $request->input('payment_token'));
 		} catch( Exception $e ) {
 			$this->log->error( 'Payment customer creation failed: ' . $e->getMessage() );
 			return $redirector->back()->with('error', $e->getMessage() );
