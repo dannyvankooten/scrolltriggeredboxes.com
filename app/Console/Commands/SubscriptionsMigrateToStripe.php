@@ -61,6 +61,10 @@ class SubscriptionsMigrateToStripe extends Command
         $license = $subscription->license;
         $user = $subscription->user;
 
+        // set plan interval
+        $license->interval = $subscription->interval;
+
+        // let's go
         $this->info( sprintf( 'Migrating subscription %d, license %d for user %s', $subscription->id, $license->id, $user->email ) );
 
         try {

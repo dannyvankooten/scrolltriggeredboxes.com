@@ -164,20 +164,25 @@ class License extends Model {
 	}
 
     /**
-     * Get plan ID for this license.
-     *
      * @return string
      */
 	public function getPlan() {
-        if( ! empty( $this->plan ) ) {
-            return $this->plan;
+
+        // license has no plan yet, calculate from site limit.
+        if( empty( $this->plan ) ) {
+            if( $this->site_limit <= 2 ) {
+                $this->plan = 'personal';
+            }
+
+            if( $this->site_limit >= 8 ) {
+                $this->plan = 'developer';
+            }
+
+            // legacy plans
+            $this->plan = sprintf( '2016-%d-sites', $this->site_limit );
         }
 
-        if( $this->site_limit <= 2 ) {
-            return 'personal';
-        }
-
-        return 'developer';
+        return $this->plan;
     }
 
 }
