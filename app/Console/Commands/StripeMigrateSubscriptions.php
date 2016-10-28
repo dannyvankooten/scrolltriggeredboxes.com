@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Payments\PaymentException;
 use App\Services\Payments\StripeAgent;
 use App\Subscription;
 use Illuminate\Console\Command;
@@ -56,10 +57,18 @@ class StripeMigrateSubscriptions extends Command
         }
     }
 
+    /**
+     * @param Subscription $subscription
+     */
     protected function migrate( Subscription $subscription )
     {
         $license = $subscription->license;
         $user = $subscription->user;
+
+        // make sure license has no stripe subscription yet.
+        if( ! empty( $license->stripe_subscription_id ) ) {
+            return;
+        }
 
         // set plan interval
         $license->interval = $subscription->interval;
@@ -69,7 +78,7 @@ class StripeMigrateSubscriptions extends Command
 
         try {
             $this->agent->resumeSubscription($license);
-        } catch( \Exception $e ) {
+        } catch( PaymentException $e ) {
             $this->warn( sprintf( "Error: %s", $e->getMessage() ) );
             return;
         }
