@@ -90,6 +90,11 @@ class StripeEventHandler
     {
         $subscription_id = $invoice->subscription;
 
+        // sanity check
+        if(empty($invoice->charge)) {
+            return false;
+        }
+
         /** @var License $license */
         $license = License::with('user')->where('stripe_subscription_id', $subscription_id )->first();
         if( ! $license ) {
@@ -125,7 +130,13 @@ class StripeEventHandler
      * @return bool
      */
     protected function handleInvoicePaymentSucceeded( Stripe\Invoice $invoice ) {
+
         $subscription_id = $invoice->subscription;
+
+        // skip "0" invoices without a charge.
+        if( empty( $invoice->charge ) ) {
+            return false;
+        }
 
         /** @var License $license */
         $license = License::where('stripe_subscription_id', $subscription_id )->first();
