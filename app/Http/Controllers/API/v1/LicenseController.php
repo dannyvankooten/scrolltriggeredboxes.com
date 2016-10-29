@@ -74,8 +74,8 @@ class LicenseController extends Controller {
 
         if( ! $activation ) {
 
-            // check if license expired
-            if( $license->isExpired() ) {
+            // check if license is inactive and expired
+            if( ! $license->isActive() && $license->isExpired() ) {
                 return new JsonResponse([
                     'error' => [
                         'code' => 'license_expired',

@@ -76,6 +76,8 @@ class License extends Model {
     }
 
     /**
+     * Does this license have an active subscription?
+     *
      * @return bool
      */
     public function isActive() {
@@ -83,13 +85,17 @@ class License extends Model {
     }
 
 	/**
+     * Did this license expire?
+     *
 	 * @return bool
 	 */
 	public function isExpired() {
-		return $this->expires_at <= Carbon::now();
+		return empty( $this->expires_at ) || $this->expires_at <= Carbon::now();
 	}
 
 	/**
+     * For a license to be valid, it needs to be active or not yet expired.
+     *
 	 * @return bool
 	 */
 	public function isValid() {

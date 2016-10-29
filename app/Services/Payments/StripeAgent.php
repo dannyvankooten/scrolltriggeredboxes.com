@@ -154,12 +154,6 @@ class StripeAgent {
         $license->stripe_subscription_id = $stripeSubscription->id;
         $license->status = 'active';
 
-        // if this succeeded, extend license if it expired.
-        if( $license->isExpired() ) {
-            $license->extend();
-        }
-
-
         $this->log->info( sprintf( 'Created Stripe subscription %s for user %s', $license->stripe_subscription_id, $license->user->email ) );
     }
 
