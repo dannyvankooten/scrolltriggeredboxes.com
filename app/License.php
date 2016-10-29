@@ -172,14 +172,12 @@ class License extends Model {
         if( empty( $this->plan ) ) {
             if( $this->site_limit <= 2 ) {
                 $this->plan = 'personal';
-            }
-
-            if( $this->site_limit >= 8 ) {
+            } else if( $this->site_limit >= 8 ) {
                 $this->plan = 'developer';
+            } else {
+                // legacy plans
+                $this->plan = sprintf( '2016-%d-sites', $this->site_limit );
             }
-
-            // legacy plans
-            $this->plan = sprintf( '2016-%d-sites', $this->site_limit );
         }
 
         return $this->plan;
