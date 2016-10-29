@@ -75,6 +75,7 @@ class LicenseController extends AdminController {
 
 		// create license
 		$license = new License();
+        $license->status = 'inactive';
 		$license->license_key = License::generateKey();
 		$license->expires_at = ! empty( $data['expires_at'] ) ? $data['expires_at'] : strtotime('+1 year');
 		$license->site_limit = ! empty( $data['site_limit'] ) ? (int) $data['site_limit'] : 1;
