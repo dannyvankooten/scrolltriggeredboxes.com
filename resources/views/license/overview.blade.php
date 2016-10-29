@@ -24,7 +24,7 @@
         @forelse($user->licenses as $license)
         <tr>
             <td><a href="/licenses/{{ $license->id }}">{{ $license->license_key }}</a></td>
-            <td>{{ count( $license->activations ) }}</td>
+            <td>{{ count( $license->activations ) . '/' . $license->site_limit }}</td>
             <td>{{ $license->created_at->format('F d, Y') }}</td>
         </tr>
         @empty
