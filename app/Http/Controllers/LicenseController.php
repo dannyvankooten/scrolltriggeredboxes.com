@@ -136,10 +136,7 @@ class LicenseController extends Controller {
 
 		$data = $request->input('license');
         if( isset( $data['status'] ) ) {
-            $license->status = $data['status'];
-
-            // resume or cancel license subscription
-            $license->isActive() ? $agent->resumeSubscription( $license ) : $agent->cancelSubscription( $license );
+            $license->isActive() ? $agent->cancelSubscription( $license ) : $agent->createSubscription( $license );
         }
 
         $license->save();

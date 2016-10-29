@@ -44,6 +44,7 @@ class LicenseController extends AdminController {
 	// show license details
 	public function detail($id) {
 		$license = License::with(['activations', 'user'])->findOrFail($id);
+
 		return view( 'admin.licenses.detail', [ 'license' => $license ] );
 	}
 
@@ -99,11 +100,9 @@ class LicenseController extends AdminController {
             $this->log->info( sprintf( '%s changed license #%d activation limit to %d for user %s.', $this->admin->getFirstName(), $license->id, $license->site_limit, $license->user->email ) );
 		}
 
-		if( ! empty( $data['status'] ) && $data['status'] !== $license->status ) {
-            $license->status = $data['status'];
-
-            // resume or cancel license subscription
-            $license->isActive() ? $agent->resumeSubscription( $license ) : $agent->cancelSubscription( $license );
+		if( ! empty( $data['status'] ) && $data['status'] !== $license->getStatus() ) {
+            // toggle status
+            $license->isActive() ? $agent->cancelSubscription($license) : $agent->createSubscription($license);
         }
 
 		if( ! empty( $data['expires_at'] ) ) {
@@ -123,6 +122,7 @@ class LicenseController extends AdminController {
         }
 
 		$license->save();
+
 		return $redirector->back()->with('message', 'Changes saved.');
 	}
 

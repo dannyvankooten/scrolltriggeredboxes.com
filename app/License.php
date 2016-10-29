@@ -79,7 +79,7 @@ class License extends Model {
      * @return bool
      */
     public function isActive() {
-        return $this->getStatus() === 'active';
+        return $this->getStatus() === 'active' && ! empty( $this->stripe_subscription_id );
     }
 
 	/**
