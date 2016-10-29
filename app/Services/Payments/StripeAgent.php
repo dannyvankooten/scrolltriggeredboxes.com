@@ -24,17 +24,17 @@ class StripeAgent {
     /**
      * @var Log
      */
-    protected $logger;
+    protected $log;
 
     /**
      * Charger constructor.
      *
      * @param string $stripeSecret
-     * @param Log $logger
+     * @param Log $log
      */
-    public function __construct( $stripeSecret, Log $logger ) {
+    public function __construct( $stripeSecret, Log $log ) {
         Stripe\Stripe::setApiKey( $stripeSecret );
-        $this->logger = $logger;
+        $this->log = $log;
     }
 
     /**
@@ -78,7 +78,7 @@ class StripeAgent {
 
         if( $user->stripe_customer_id ) {
             $stripeCustomer = $this->updateOrCreateInStripe( Stripe\Customer::class, $user->stripe_customer_id, $customerData );
-            $this->logger->info( sprintf( 'Updated Stripe customer %s from user %s', $user->stripe_customer_id, $user->email ) );
+            $this->log->info( sprintf( 'Updated Stripe customer %s from user %s', $user->stripe_customer_id, $user->email ) );
         } else {
             // token is required for new customers
             if( empty( $customerData['source'] ) ) {
@@ -86,7 +86,7 @@ class StripeAgent {
             }
 
             $stripeCustomer = $this->createInStripe( Stripe\Customer::class, $customerData );
-            $this->logger->info( sprintf( 'Created Stripe customer %s from user %s', $stripeCustomer->id, $user->email ) );
+            $this->log->info( sprintf( 'Created Stripe customer %s from user %s', $stripeCustomer->id, $user->email ) );
         }
 
         $user->stripe_customer_id = $stripeCustomer->id;
@@ -122,22 +122,45 @@ class StripeAgent {
     public function createSubscription( License $license ) {
 
         if( empty( $license->user->stripe_customer_id ) ) {
-            throw new PaymentException( "User has no valid payment method registered." );
+            throw new PaymentException( "User has no valid payment method." );
+        }
+
+        // cancel current subscription first.
+        if(!empty($license->stripe_subscription_id)){
+            $this->cancelSubscription($license);
+        }
+
+        // create new subscription
+        $data = [
+            'customer' => $license->user->stripe_customer_id,
+            'plan' => $this->getPlanId($license),
+            'tax_percent' => $license->user->getTaxRate(),
+            'metadata' => [
+                'license_id' => $license->id
+            ],
+        ];
+
+        // if license is still valid, make sure new period does not kick in until license expiration
+        if( ! $license->isExpired() ) {
+            $data['trial_end'] = $license->expires_at->getTimestamp();
         }
 
         try {
-            $stripeSubscription = Stripe\Subscription::create([
-                'customer' => $license->user->stripe_customer_id,
-                'plan' => $this->getPlanId($license),
-                'tax_percent' => $license->user->getTaxRate()
-            ]);
+            $stripeSubscription = Stripe\Subscription::create($data);
         } catch( StripeException $e ) {
             throw PaymentException::fromStripe($e);
         }
 
         $license->stripe_subscription_id = $stripeSubscription->id;
         $license->status = 'active';
-        $license->extend();
+
+        // if this succeeded, extend license if it expired.
+        if( $license->isExpired() ) {
+            $license->extend();
+        }
+
+
+        $this->log->info( sprintf( 'Created Stripe subscription %s for user %s', $license->stripe_subscription_id, $license->user->email ) );
     }
 
     /**
@@ -155,47 +178,18 @@ class StripeAgent {
         try {
             $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
             $stripeSubscription->cancel();
+        } catch( InvalidRequest $e ) {
+            // ignore 404 errors
+            if( $e->getHttpStatus() != 404 ) {
+                throw PaymentException::fromStripe($e);
+            }
         } catch(StripeException $e) {
             throw PaymentException::fromStripe($e);
         }
 
         $license->status = 'canceled';
         $license->stripe_subscription_id = null;
-    }
-
-    /**
-     * @param License $license
-     * @throws PaymentException
-     */
-    public function resumeSubscription( License $license ) {
-
-        if( empty( $license->user->stripe_customer_id ) ) {
-            throw new PaymentException( "User has no valid payment method registered." );
-        }
-
-        // if license is expired, create a new subscription
-        if( $license->isExpired() ) {
-            return $this->createSubscription($license);
-        }
-
-        // change status back to "active" but set trial_end to date that license expires (to prevent immediate charge)
-        $data = [
-            'customer' => $license->user->stripe_customer_id,
-            'plan' => $this->getPlanId($license),
-            'trial_end' => $license->expires_at->getTimestamp(),
-            'metadata' => [
-                'license_id' => $license->id
-            ],
-        ];
-
-        try {
-            $stripeSubscription = $this->createInStripe( Stripe\Subscription::class, $data );
-        } catch( StripeException $e ) {
-            throw PaymentException::fromStripe($e);
-        }
-
-        $license->stripe_subscription_id = $stripeSubscription->id;
-        $license->status = 'active';
+        $this->log->info( sprintf( 'Canceled Stripe subscription %s for user %s', $license->stripe_subscription_id, $license->user->email ) );
     }
 
     /**
@@ -203,8 +197,10 @@ class StripeAgent {
      */
     public function updateNextChargeDate( License $license ) {
         $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
-        $stripeSubscription->trial_end = $license->expires_at;
+        $stripeSubscription->trial_end = $license->expires_at->getTimestamp();
         $stripeSubscription->save();
+
+        $this->log->info( sprintf( 'Updated Stripe subscription %s next charge date for user %s', $license->stripe_subscription_id, $license->user->email ) );
     }
 
     /**
@@ -244,17 +240,17 @@ class StripeAgent {
         $refund->tax = 0 - $payment->tax;
         $refund->save();
 
-        // subtract one interval from license expiration date
-        $license = $payment->license;
-        $license->expires_at = $license->expires_at->modify("-1 {$license->interval}");
-        $license->save();
+//        // subtract one interval from license expiration date
+//        $license = $payment->license;
+//        $license->expires_at = $license->expires_at->modify("-1 {$license->interval}");
+//        $license->save();
 
         // dispatch job to create an invoice for this payment
         $this->dispatch(new CreatePaymentCreditInvoice($payment, $refund));
 
         // log some info
         $user = $payment->user;
-        $this->logger->info( sprintf( 'Refunded a total amount of %s for user %s', $payment->getCurrencySign() . $payment->getTotal(), $user->email ) );
+        $this->log->info( sprintf( 'Refunded a total amount of %s for user %s', $payment->getCurrencySign() . $payment->getTotal(), $user->email ) );
 
         return $refund;
     }
