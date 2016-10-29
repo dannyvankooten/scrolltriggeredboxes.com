@@ -86,7 +86,7 @@ class License extends Model {
 	 * @return bool
 	 */
 	public function isExpired() {
-		return $this->expires_at < Carbon::now();
+		return $this->expires_at <= Carbon::now();
 	}
 
 	/**
@@ -142,14 +142,14 @@ class License extends Model {
      * Extend license by 1 interval.
      */
     public function extend() {
-        // does license have an expiration date already?
-        if(empty($this->expires_at)){
-            $this->expires_at = Carbon::now();
+        $fromDate = $this->expires_at;
+
+        if(empty($fromDate) || $this->isExpired()) {
+            $fromDate = Carbon::now();
         }
 
         // add 1 interval to current expiration date.
-        $interval = DateInterval::createFromDateString("+1 {$this->interval}");
-        $this->expires_at = $this->expires_at->add($interval);
+        $this->expires_at = $fromDate->modify("+1 {$this->interval}");
     }
 
 	/**

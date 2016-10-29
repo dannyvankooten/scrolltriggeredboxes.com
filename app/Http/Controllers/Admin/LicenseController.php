@@ -77,7 +77,7 @@ class LicenseController extends AdminController {
 		$license = new License();
         $license->status = 'inactive';
 		$license->license_key = License::generateKey();
-		$license->expires_at = ! empty( $data['expires_at'] ) ? $data['expires_at'] : strtotime('+1 year');
+		$license->expires_at = ! empty( $data['expires_at'] ) ? Carbon::createFromFormat('Y-m-d', $data['expires_at']) : new Carbon('+1 year');
 		$license->site_limit = ! empty( $data['site_limit'] ) ? (int) $data['site_limit'] : 1;
 		$license->user_id = (int) $data['user_id'];
 		$license->save();
@@ -107,10 +107,10 @@ class LicenseController extends AdminController {
         }
 
 		if( ! empty( $data['expires_at'] ) ) {
-		    $newExpiryDate = Carbon::createFromFormat( 'Y-m-d' , $data['expires_at'] );
+		    $newExpiryDate = Carbon::createFromFormat( 'Y-m-d', $data['expires_at'] );
 
             // only update when it changed
-            if( $license->expires_at->diffInDays($newExpiryDate) > 0) {
+            if( $license->expires_at !== $newExpiryDate ) {
                 $license->expires_at = $newExpiryDate;
 
                 // update subscription next charge date
