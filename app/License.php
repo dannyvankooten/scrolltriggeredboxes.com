@@ -2,6 +2,7 @@
 
 
 use Carbon\Carbon;
+use DateInterval;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -32,7 +33,6 @@ class License extends Model {
 
 	protected $table = 'licenses';
 	protected $fillable = [];
-
 
 	public $timestamps = true;
 	protected $dates = [ 'created_at', 'updated_at', 'deleted_at', 'expires_at' ];
@@ -142,7 +142,14 @@ class License extends Model {
      * Extend license by 1 interval.
      */
     public function extend() {
-        $this->expires_at = new DateTime("+1 {$this->interval}");
+        // does license have an expiration date already?
+        if(empty($this->expires_at)){
+            $this->expires_at = Carbon::now();
+        }
+
+        // add 1 interval to current expiration date.
+        $interval = DateInterval::createFromDateString("+1 {$this->interval}");
+        $this->expires_at = $this->expires_at->add($interval);
     }
 
 	/**
