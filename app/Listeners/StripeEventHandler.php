@@ -151,6 +151,9 @@ class StripeEventHandler
         $license->extend();
         $license->save();
 
+        // log some info
+        $this->log->info(sprintf('Received payment for license %d, extended with 1 %s', $license->id, $license->interval));
+
         // record payment locally
         $this->cashier->recordPayment($license, $invoice);
     }
