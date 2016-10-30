@@ -97,12 +97,33 @@ class User extends Model implements AuthenticatableContract,
 	 */
 	public function hasValidLicense()
 	{
-		$validLicenses = $this->licenses->filter(function(License $l) {
-			return $l->isValid();
-		});
-
-		return count( $validLicenses ) > 0;
+        $validLicenses = $this->getValidLicenses();
+		return count($validLicenses) > 0;
 	}
+
+    /**
+     * Get all active or not-yet-expired licenses.
+     *
+     * @return License[]
+     */
+	public function getValidLicenses()
+    {
+        return $this->licenses->filter(function(License $l) {
+            return $l->isValid();
+        });
+    }
+
+    /**
+     * Get all active licenses
+     *
+     * @return License[]
+     */
+	public function getActiveLicenses()
+    {
+        return $this->licenses->filter(function(License $l) {
+            return $l->isActive();
+        });
+    }
 
 	/**
 	 * @return string
