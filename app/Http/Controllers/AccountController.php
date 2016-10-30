@@ -230,10 +230,11 @@ class AccountController extends Controller {
 		// log user in automatically
 		$this->auth->loginUsingId($user->id);
 
+        $this->log->info( sprintf( 'New user registration: #%d  %s <%s>', $user->id, $user->name, $user->email ) );
+
 		// create customer for payments
 		try {
 			$purchaser->user($user, $request->input('payment_token'));
-			$this->log->info( sprintf( 'New user registration: #%d  %s <%s>', $user->id, $user->name, $user->email ) );
 		} catch( Exception $e ) {
 			$this->log->error( 'Payment customer creation failed: ' . $e->getMessage() );
 			return $redirector->to('/edit/payment')->with('error', $e->getMessage());
