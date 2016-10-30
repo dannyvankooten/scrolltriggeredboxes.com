@@ -19,14 +19,15 @@
 
         <div class="row clearfix">
             <div class="col col-2 text-center">
-                <h4 class="no-margin">New users</h4>
+                <h4 class="no-margin">Total revenue</h4>
                 <span class="count">
-                    {{ $totals->new_users_this_month }}
-                    <?php $percentage = $totals->calculatePercentageDifference( $totals->new_users_this_month, $totals->new_users_last_month ); ?>
+                    ${{ round( $totals->total_revenue_this_month ) }}
+                    <?php $percentage = $totals->calculatePercentageDifference( $totals->total_revenue_this_month, $totals->total_revenue_last_month ); ?>
                     <span class="percentage {{ ( $percentage > 0  ) ? 'pos' : ( ( $percentage < 0 ) ? 'neg' : 'neutral' ) }}">{{ $percentage }}%</span>
                 </span>
                 <small class="muted">(last {{ request('days', 30 ) }} days)</small>
             </div>
+
             <div class="col col-2 text-center">
                 <h4 class="no-margin">New licenses</h4>
                 <span class="count">
@@ -36,11 +37,12 @@
                 </span>
                 <small class="muted">(last {{ request('days', 30 ) }} days)</small>
             </div>
+
             <div class="col col-2 text-center">
-                <h4 class="no-margin">Total revenue</h4>
+                <h4 class="no-margin">Churned licenses</h4>
                 <span class="count">
-                    ${{ round( $totals->total_revenue_this_month ) }}
-                    <?php $percentage = $totals->calculatePercentageDifference( $totals->total_revenue_this_month, $totals->total_revenue_last_month ); ?>
+                    {{ $totals->churn_this_month }}
+                    <?php $percentage = $totals->calculatePercentageDifference( $totals->churn_this_month, $totals->churn_last_month ); ?>
                     <span class="percentage {{ ( $percentage > 0  ) ? 'pos' : ( ( $percentage < 0 ) ? 'neg' : 'neutral' ) }}">{{ $percentage }}%</span>
                 </span>
                 <small class="muted">(last {{ request('days', 30 ) }} days)</small>
@@ -60,55 +62,36 @@
 
         <div class="medium-margin"></div>
 
-        <div class="row clearfix">
-
-            <!-- Recent users -->
-            <div class="col col-3">
-                <h3>Last 5 users</h3>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($recentUsers as $user)
-                        <tr>
-                            <td><a href="/users/{{ $user->id }}">{{ str_limit($user->name, 18) }}</a></td>
-                            <td><a href="mailto:{{$user->email}}">{{ $user->email }}</a></td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Recent licenses -->
-            <div class="col col-3">
-                <h3>Last 5 activations</h3>
-                <table class="table table-striped">
-                    <thead>
+        <div>
+            <h3>Last 5 licenses</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Plan</th>
+                    <th>Status</th>
+                    <th>Activations</th>
+                    <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($recentLicenses as $license)
                     <tr>
-                        <th>Site</th>
-                        <th>Activations</th>
+                        <td><a href="/users/{{$license->user->id}}">{{ $license->user->email }}</a></td>
+                        <td>{{ ucfirst($license->plan) }} <small>per {{ $license->interval }}</small></td>
+                        <td class="{{ $license->isActive() ? 'success' : 'warning' }}">{{ $license->status }}</td>
+                        <td>{{ $license->getActivationsCount() .'/'. $license->site_limit }}</td>
+                        <td>{{ $license->created_at->format('M d') }}</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($recentActivations as $activation)
-                        <tr>
-                            <td><a href="http://{{ $activation->domain }}">{{ str_limit( $activation->domain, 18 ) }}</a></td>
-                            <td>{{ count($activation->license->activations) . '/' . $activation->license->site_limit }}</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
+                @endforeach
+                </tbody>
+            </table>
         </div>
 
-        <div class="medium-margin"></div>
-
+        <div class="small-margin"></div>
 
         <div class="row clearfix">
+
             <!-- Recent payments -->
             <div class="col col-3">
                 <h3>Last 5 payments</h3>
@@ -131,6 +114,30 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Recent licenses -->
+            <div class="col col-3">
+                <h3>Last 5 activations</h3>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Site</th>
+                        <th>Activations</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @forelse($recentActivations as $activation)
+                        <tr>
+                            <td><a href="http://{{ $activation->domain }}">{{ str_limit( $activation->domain, 18 ) }}</a></td>
+                            <td>{{ count($activation->license->activations) . '/' . $activation->license->site_limit }}</td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="2">No site activations.</td></tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
+
 
 
         </div>

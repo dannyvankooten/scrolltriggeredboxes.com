@@ -128,19 +128,25 @@ class License extends Model {
 		return count( $this->activations ) >= $this->site_limit;
 	}
 
+    /**
+     * @return int
+     */
+	public function getActivationsCount() {
+        return count($this->activations);
+    }
+
 	/**
 	 * @return int
 	 */
-	public function getActivationsLeft() {
-		$this->load('activations');
-		return $this->site_limit - count( $this->activations );
+	public function getActivationsLeftCount() {
+		return $this->site_limit - $this->getActivationsCount();
 	}
 
 	/**
 	 * @return float
 	 */
 	public function usagePercentage() {
-		return count( $this->activations ) / $this->site_limit * 100;
+		return $this->getActivationsCount() / $this->site_limit * 100;
 	}
 
 	/**

@@ -111,7 +111,7 @@ class LicenseController extends Controller {
         return new JsonResponse([
             'data' => [
                 'key' => $activation->key,
-                'message' => sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeft() )
+                'message' => sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeftCount() )
             ]
         ], 201 );
     }
