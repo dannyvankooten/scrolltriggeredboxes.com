@@ -112,7 +112,7 @@ class StripeAgent {
             return false;
         }
 
-        return in_array($stripeSubscription->status, [ 'trialing', 'active', 'past_due' ]);
+        return in_array($stripeSubscription->status, ['trialing', 'active', 'past_due']);
     }
 
     /**
@@ -142,6 +142,7 @@ class StripeAgent {
 
         // if license is still valid, make sure new period does not kick in until license expiration
         if( ! $license->isExpired() ) {
+            $data['prorate'] = false;
             $data['trial_end'] = $license->expires_at->getTimestamp();
         }
 
@@ -173,9 +174,10 @@ class StripeAgent {
             $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
             $stripeSubscription->cancel();
         } catch( InvalidRequest $e ) {
-            // ignore 404 errors
             if( $e->getHttpStatus() != 404 ) {
                 throw PaymentException::fromStripe($e);
+            } else {
+                // ignore 404 errors
             }
         } catch(StripeException $e) {
             throw PaymentException::fromStripe($e);
@@ -241,10 +243,10 @@ class StripeAgent {
         $refund->tax = 0 - $payment->tax;
         $refund->save();
 
-//        // subtract one interval from license expiration date
-//        $license = $payment->license;
-//        $license->expires_at = $license->expires_at->modify("-1 {$license->interval}");
-//        $license->save();
+        // subtract one interval from license expiration date
+        $license = $payment->license;
+        $license->expires_at = $license->expires_at->modify("-1 {$license->interval}");
+        $license->save();
 
         // dispatch job to create an invoice for this payment
         $this->dispatch(new CreatePaymentCreditInvoice($payment, $refund));
