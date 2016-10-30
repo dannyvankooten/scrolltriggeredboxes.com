@@ -19,6 +19,7 @@ class AddSubscriptionDetailsToLicenseTable extends Migration
             $table->string('interval')->nullable();
             $table->string('plan')->nullable();
             $table->string('status')->nullable();
+            $table->dropSoftDeletes();
         });
 
         Schema::table('payments', function (Blueprint $table) {
@@ -50,6 +51,7 @@ class AddSubscriptionDetailsToLicenseTable extends Migration
             $table->dropColumn('plan');
             $table->dropColumn('status');
             $table->dropColumn('stripe_subscription_id');
+            $table->softDeletes();
         });
 
         Schema::table('payments', function (Blueprint $table) {
