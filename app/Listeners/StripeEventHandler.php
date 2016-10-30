@@ -71,14 +71,13 @@ class StripeEventHandler
 
     /**
      * @param Stripe\Subscription $subscription
-     * @return bool
      */
     protected function handleCustomerSubscriptionUpdated( Stripe\Subscription $subscription )
     {
         /** @var License $license */
         $license = License::where('stripe_subscription_id', $subscription->id)->first();
         if( ! $license ) {
-            return false;
+            return;
         }
 
         // check if local license should be active or inactive
@@ -91,8 +90,6 @@ class StripeEventHandler
 
     /**
      * @param Stripe\Invoice $invoice
-     *
-     * @return bool
      */
     protected function handleInvoicePaymentFailed( Stripe\Invoice $invoice )
     {
@@ -100,13 +97,13 @@ class StripeEventHandler
 
         // sanity check
         if(empty($invoice->charge)) {
-            return false;
+            return;
         }
 
         /** @var License $license */
         $license = License::with('user')->where('stripe_subscription_id', $subscription_id )->first();
         if( ! $license ) {
-            return false;
+            return;
         }
 
         // create temp payment object
@@ -129,13 +126,11 @@ class StripeEventHandler
                 ->subject( 'Boxzilla Plugin - Payment Failure' );
         });
 
-        return true;
+        $this->log->info(sprintf('Emailed %s about failed %s charge for license %d', $payment->user->email, $payment->getFormattedTotal(), $license->id));
     }
 
     /**
      * @param Stripe\Invoice $invoice
-     *
-     * @return bool
      */
     protected function handleInvoicePaymentSucceeded( Stripe\Invoice $invoice ) {
 
@@ -143,13 +138,13 @@ class StripeEventHandler
 
         // skip "0" invoices without a charge.
         if( empty($invoice->charge) ) {
-            return false;
+            return;
         }
 
         /** @var License $license */
         $license = License::where('stripe_subscription_id', $subscription_id)->first();
         if( ! $license ) {
-            return false;
+            return;
         }
 
         // extend license
@@ -158,13 +153,10 @@ class StripeEventHandler
 
         // record payment locally
         $this->cashier->recordPayment($license, $invoice);
-
-        return true;
     }
 
     /**
      * @param Stripe\Charge $charge
-     * @return bool
      */
     protected function handleChargeRefunded( Stripe\Charge $charge ) {
 
@@ -172,7 +164,7 @@ class StripeEventHandler
         // don't bother if we don't even have a local object for the charge in question
         $payment = Payment::with('user')->where('stripe_id', $charge->id)->first();
         if( ! $payment ) {
-            return false;
+            return;
         }
 
         $stripeRefunds = $charge->refunds->data;
