@@ -194,7 +194,7 @@ class AccountController extends Controller {
 	public function welcome() {
 		/** @var User $user */
 		$user = $this->auth->user();
-		$license = $user->licenses->last();
+		$license = $user->licenses->first();
 		return view('account.welcome', [ 'user' => $user, 'license' => $license ]);
 	}
 
