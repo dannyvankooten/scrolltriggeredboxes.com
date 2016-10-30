@@ -8,9 +8,11 @@
         .count { font-size: 36px; display: block; }
         .count a{ text-decoration: none; color: inherit; }
         .percentage { font-size: 24px; }
-        .percentage.pos { color: limegreen; }
+        .percentage.pos, .percentage.lower-is-better.neg { color: limegreen; }
         .percentage.pos:before { content:"+" }
-        .percentage.neg { color: orangered; }
+
+        .percentage.neg, .percentage.lower-is-better.pos { color: orangered; }
+
         .percentage.neutral { color: #999; display: none; }
         .timeframe { display: block; }
     </style>
@@ -43,7 +45,7 @@
                 <span class="count">
                     {{ $totals->churn_this_month }}
                     <?php $percentage = $totals->calculatePercentageDifference( $totals->churn_this_month, $totals->churn_last_month ); ?>
-                    <span class="percentage {{ ( $percentage > 0  ) ? 'neg' : ( ( $percentage < 0 ) ? 'pos' : 'neutral' ) }}">{{ $percentage }}%</span>
+                    <span class="percentage lower-is-better {{ ( $percentage > 0  ) ? 'pos' : ( ( $percentage < 0 ) ? 'neg' : 'neutral' ) }}">{{ $percentage }}%</span>
                 </span>
                 <small class="muted">(last {{ request('days', 30 ) }} days)</small>
             </div>
