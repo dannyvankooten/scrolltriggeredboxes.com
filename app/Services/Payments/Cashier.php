@@ -79,7 +79,7 @@ class Cashier {
         $refund->related_payment_id = $payment->id;
         $refund->user_id = $payment->user_id;
         $refund->license_id = $payment->license_id;
-        $refund->tax = -($taxRate * $stripeRefund->amount / 100);
+        $refund->tax = -( ($taxRate / 100 ) * $stripeRefund->amount ) / 100;
         $refund->currency = $payment->currency;
         $refund->subtotal = -($stripeRefund->amount / 100) - $refund->tax;
         $refund->save();
