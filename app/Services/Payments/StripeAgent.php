@@ -188,11 +188,18 @@ class StripeAgent {
 
     /**
      * @param License $license
+     *
+     * @throws PaymentException
      */
     public function updateNextChargeDate( License $license ) {
-        $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
-        $stripeSubscription->trial_end = $license->expires_at->getTimestamp();
-        $stripeSubscription->save();
+        try {
+            $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
+            $stripeSubscription->prorate = false;
+            $stripeSubscription->trial_end = $license->expires_at->getTimestamp();
+            $stripeSubscription->save();
+        } catch( StripeException $e ) {
+            throw PaymentException::fromStripe($e);
+        }
 
         $this->log->info( sprintf( 'Updated Stripe subscription %s next charge date for user %s', $license->stripe_subscription_id, $license->user->email ) );
     }
