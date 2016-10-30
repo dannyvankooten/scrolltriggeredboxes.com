@@ -74,11 +74,14 @@ class Cashier {
 
         // calculate subtotal & tax amount
         $amount = $stripeRefund->amount / 100; // stripe amount is in cents
-        $tax = 0;
+        $subtotal = $amount;
+        $tax = 0.00;
+
         if( $taxRate > 0 ) {
-            $tax = $amount / ( 1 + $taxRate / 100 );
+            $subtotal = $amount / ( 1 + $taxRate / 100 );
+            $tax = $amount - $subtotal;
         }
-        $subtotal = $amount - $tax;
+
 
         // store negative opposite of payment
         $refund = new Payment();
