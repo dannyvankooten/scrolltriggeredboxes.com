@@ -2,7 +2,10 @@
 
 namespace App\Listeners;
 
+use App\Jobs\CreatePaymentCreditInvoice;
+use App\Jobs\CreatePaymentInvoice;
 use Illuminate\Contracts\Logging\Log;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Stripe;
 use App\License;
 use App\Payment;
@@ -11,13 +14,15 @@ use Carbon\Carbon;
 
 class StripeEventHandler
 {
+    use DispatchesJobs;
+
     /**
      * @var Mailer
      */
     protected $mailer;
 
     /**
-     * @var Logger
+     * @var Log
      */
     protected $log;
 
@@ -168,6 +173,9 @@ class StripeEventHandler
         $license->extend();
         $license->save();
 
+        // dispatch job to create invoice
+        $this->dispatch(new CreatePaymentInvoice($payment));
+
         return true;
     }
 
@@ -177,6 +185,7 @@ class StripeEventHandler
      */
     protected function handleChargeRefunded( Stripe\Charge $charge ) {
 
+        /** @var Payment $payment */
         $payment = Payment::with('user')->where('stripe_id', $charge->id)->first();
         if( ! $payment ) {
             return false;
@@ -213,6 +222,9 @@ class StripeEventHandler
             $refund->subtotal = -($stripeRefund->amount / 100) - $refund->tax;
 
             $refund->save();
+
+            // dispatch job to create credit invoice
+            $this->dispatch(new CreatePaymentCreditInvoice($payment, $refund));
         }
 
         // set new license expiration date if charge is fully refunded.
