@@ -3,23 +3,20 @@
 namespace App\Services\Payments;
 
 use App\License;
-use Illuminate\Contracts\Logging\Log;
-use InvalidArgumentException;
-use App\Jobs\CreatePaymentCreditInvoice;
-use App\Jobs\CreatePaymentInvoice;
 use App\User;
 use App\Payment;
-use Illuminate\Foundation\Bus\DispatchesJobs;
+
+use Carbon\Carbon;
+use Illuminate\Contracts\Logging\Log;
+
+use Exception;
+use InvalidArgumentException;
+
 use Stripe;
 use Stripe\Error\InvalidRequest;
-use Carbon\Carbon;
-use Exception;
-
 use Stripe\Error\Base as StripeException;
 
 class StripeAgent {
-
-    use DispatchesJobs;
 
     /**
      * @var Log
@@ -211,8 +208,6 @@ class StripeAgent {
      *
      * @param Payment $payment
      *
-     * @return Payment The refund object.
-     *
      * @throws PaymentException
      */
     public function refundPayment( Payment $payment )
@@ -233,29 +228,14 @@ class StripeAgent {
             throw PaymentException::fromStripe($e);
         }
 
-        // store negative opposite of payment
-        $refund = new Payment();
-        $refund->stripe_id = $stripeRefund->id;
-        $refund->related_payment_id = $payment->id;
-        $refund->user_id = $payment->user_id;
-        $refund->license_id = $payment->license_id;
-        $refund->subtotal = 0 - $payment->subtotal;
-        $refund->tax = 0 - $payment->tax;
-        $refund->save();
-
         // subtract one interval from license expiration date
         $license = $payment->license;
         $license->expires_at = $license->expires_at->modify("-1 {$license->interval}");
         $license->save();
 
-        // dispatch job to create an invoice for this payment
-        $this->dispatch(new CreatePaymentCreditInvoice($payment, $refund));
-
         // log some info
         $user = $payment->user;
         $this->log->info( sprintf( 'Refunded a total amount of %s for user %s', $payment->getCurrencySign() . $payment->getTotal(), $user->email ) );
-
-        return $refund;
     }
 
     /**

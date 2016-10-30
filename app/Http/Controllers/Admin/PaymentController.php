@@ -14,10 +14,8 @@ class PaymentController extends AdminController {
     public function destroy( $id, Redirector $redirector, StripeAgent $agent  ) {
         /** @var Payment $payment */
         $payment = Payment::with(['user'])->findOrFail( $id );
-        $refund = $agent->refundPayment( $payment );
-
+        $agent->refundPayment( $payment );
         $this->log->info( sprintf( '%s refunded %s to user %s.', $this->admin->getFirstName(), $payment->getFormattedTotal(), $payment->user->email ) );
-
         return $redirector->back();
     }
 

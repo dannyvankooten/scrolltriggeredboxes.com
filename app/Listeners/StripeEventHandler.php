@@ -2,7 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Jobs\CreatePaymentCreditInvoice;
 use App\Jobs\CreatePaymentInvoice;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -186,17 +185,19 @@ class StripeEventHandler
     protected function handleChargeRefunded( Stripe\Charge $charge ) {
 
         /** @var Payment $payment */
+        // don't bother if we don't even have a local object for the charge in question
         $payment = Payment::with('user')->where('stripe_id', $charge->id)->first();
         if( ! $payment ) {
             return false;
         }
 
-        // do nothing if there are no refunds, just in case.
+        // sanity check: do nothing if there are no refunds for this charge
         $stripeRefunds = $charge->refunds->data;
         if( empty($stripeRefunds) ) {
             return false;
         }
 
+        // get user tax rate
         $taxRate = $payment->user->getTaxRate();
 
         // create local refund objects
