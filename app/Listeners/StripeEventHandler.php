@@ -220,11 +220,10 @@ class StripeEventHandler
             $refund->tax = -($taxRate * $stripeRefund->amount / 100);
             $refund->currency = $payment->currency;
             $refund->subtotal = -($stripeRefund->amount / 100) - $refund->tax;
-
             $refund->save();
 
             // dispatch job to create credit invoice
-            $this->dispatch(new CreatePaymentCreditInvoice($payment, $refund));
+            $this->dispatch(new CreatePaymentInvoice($refund));
         }
 
         // set new license expiration date if charge is fully refunded.

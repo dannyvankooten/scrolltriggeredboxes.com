@@ -104,7 +104,7 @@ class Invoicer {
 
         $invoiceData = [
             'contact_id' => $payment->user->moneybird_contact_id,
-            'currency' => $payment->currency,
+            'currency' => $payment->getCurrency(),
             'invoice_date' => $payment->created_at->format('Y-m-d'),
             'prices_are_incl_tax' => false,
             'details_attributes' => [
@@ -141,38 +141,6 @@ class Invoicer {
             // store moneybird id
             $payment->moneybird_invoice_id = $data->id;
         }
-    }
-
-    /**
-     * @param Payment $payment
-     * @param Payment $refund
-     */
-    public function updateCreditInvoice( Payment $payment, Payment $refund ) {
-
-        // do nothing if original payment has no invoice.
-        if( ! $this->hasInvoice($payment) ) {
-            return;
-        }
-
-        // create invoice
-        $data = $this->moneybird->createCreditInvoice( $payment->moneybird_invoice_id );
-
-        // mark invoice as "sent"
-        $sendingData = [
-            'delivery_method' => 'Manual'
-        ];
-        $this->moneybird->createInvoiceSending( $data->id, $sendingData );
-
-        // pay invoice
-        $paymentData = [
-            'payment_date' => $payment->created_at->format('Y-m-d H:i:s'),
-            'price' => $data->total_price_incl_tax,
-            'price_base' => $data->total_price_incl_tax_base
-        ];
-        $this->moneybird->createInvoicePayment( $data->id, $paymentData );
-
-        // set moneybird invoice ID
-        $refund->moneybird_invoice_id = $data->id;
     }
 
     /**
