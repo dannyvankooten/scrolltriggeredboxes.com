@@ -44,6 +44,14 @@ class License extends Model {
 		return $this->belongsTo('App\User', 'user_id', 'id');
 	}
 
+    /**
+     * @deprecated 1.1
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function subscription() {
+        return $this->hasOne('App\Subscription');
+    }
+
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */

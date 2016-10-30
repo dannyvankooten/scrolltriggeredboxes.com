@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use App\Services\Payments\PaymentException;
 use App\Services\Payments\StripeAgent;
 use App\Subscription;
+use App\License;
+
 use Illuminate\Console\Command;
 
 class StripeMigrateSubscriptions extends Command
@@ -47,53 +49,76 @@ class StripeMigrateSubscriptions extends Command
      */
     public function handle()
     {
-        $subscriptions = Subscription::where('active', 1)
-            ->with(['license', 'user'])
-            ->orderBy('next_charge_at', 'desc') // start with new ones as they are most likely to succeed
-            ->get();
+        $licenses = License::with(['subscription', 'user'])->all();
 
-        foreach( $subscriptions as $subscription ) {
-            $this->migrate( $subscription );
+        $this->info(sprintf('%d licenses found.', count($licenses)));
+
+        foreach( $licenses as $license ) {
+            $this->migrateLicense($license);
         }
+    }
+
+    /**
+     * @param License $license
+     */
+    protected function migrateLicense(License $license)
+    {
+        $this->info(sprintf('Migrating license %d for user %s', $license->id, $license->user->email));
+
+        // first, migrate license to new plan.
+        if( $license->getPlan() === 'personal' && $license->site_limit < 2 ) {
+            $this->info(sprintf("Upping site limit for license %d to 2", $license->id));
+            $license->site_limit = 2;
+        }
+
+        if( $license->getPlan() === 'developer' && $license->site_limit < 10 ) {
+            $this->info(sprintf("Upping site limit for license %d to 10", $license->id));
+            $license->site_limit = 10;
+        }
+
+        // if license has subscription, migrate that.
+        if($license->subscription) {
+            $this->migrateSubscription($license->subscription);
+        }
+
+        // save changes
+        $license->save();
     }
 
     /**
      * @param Subscription $subscription
      */
-    protected function migrate( Subscription $subscription )
+    protected function migrateSubscription(Subscription $subscription)
     {
         $license = $subscription->license;
         $user = $subscription->user;
 
+        $this->info(sprintf("Migrating subscription for license %d", $license->id));
+
+
         // make sure license has no stripe subscription yet.
         if( ! empty( $license->stripe_subscription_id ) ) {
+            $this->info(sprintf('Skipping subscription %d as license already has attached Stripe subscription.', $subscription->id));
             return;
         }
-
-        // set plan interval
-        $license->interval = $subscription->interval;
 
         // let's go
-        $this->info( sprintf( 'Migrating subscription %d, license %d for user %s', $subscription->id, $license->id, $user->email ) );
+        $this->info( sprintf( 'Migrating subscription %d for user %s', $subscription->id, $user->email ) );
 
-        try {
-            $this->agent->createSubscription($license);
-        } catch( PaymentException $e ) {
-            $this->warn( sprintf( "Error: %s", $e->getMessage() ) );
-            return;
+        // set plan interval
+        $license->status = 'inactive'; // start with inactive status
+        $license->interval = $subscription->interval;
+
+        if( $subscription->active ) {
+            try {
+                $this->agent->createSubscription($license);
+            } catch( PaymentException $e ) {
+                $this->warn( sprintf( "Error creating Stripe subscription: %s", $e->getMessage() ) );
+                return;
+            }
         }
 
-        // up license limit so it fits in new plans
-        if( $license->getPlan() === 'personal' && $license->site_limit < 2 ) {
-            $license->site_limit = 2;
-        }
-
-        if( $license->getPlan() === 'developer' && $license->site_limit < 10 ) {
-            $license->site_limit = 10;
-        }
-
-        // save changes
-        $license->save();
+        $this->info(sprintf('Success! Deleting local subscription %d.', $subscription->id));
 
         // delete subscription
         $subscription->delete();
