@@ -25,9 +25,17 @@
 
             <h3>License details</h3>
 
-            <div class="form-group">
-                <label for="quantityInput" class="control-label">How many site activations do you need?</label>
-                <input type="number" name="quantity" class="form-control" value="{{ old('quantity', '1') }}" step="1" min="1" id="quantityInput" required />
+            <div class="form-group radio">
+                <label class="control-label">Select your plan?</label>
+
+                <label class="unstyled">
+                    <input type="radio" name="plan" value="personal" @if( old('plan', 'personal') == 'personal' ) checked @endif required>
+                    Personal <small>- up to 2 sites</small>
+                </label>
+                <label class="unstyled">
+                    <input type="radio" name="plan" value="developer" @if( old('plan') == 'developer' ) checked @endif>
+                    Developer <small>- up to 10 sites</small>
+                </label>
             </div>
 
             <div class="form-group radio">

@@ -27,6 +27,10 @@
                 <td>{{ $license->created_at->format('Y-m-d') }}</td>
             </tr>
             <tr>
+                <th>Status</th>
+                <td class="{{ $license->isActive() ? 'success' : 'warning' }}">{{ $license->isActive() ? 'Active' : 'Inactive' }}</td>
+            </tr>
+            <tr>
                 <th>Expire{{ $license->isExpired() ? 'd' : 's' }}</th>
                 <td><span class="{{ $license->isExpired() ? 'warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</span> <span class="muted">({{ $license->expires_at->diffInDays() }} days {{ $license->isExpired() ? 'ago' : 'from now' }})</span></td>
             </tr>
@@ -61,51 +65,27 @@
 
         <div class="medium-margin"></div>
 
+        @if( $license->isActive() )
+            <h3>Cancel auto-renew for this license</h3>
+            <p>Use the button below to stop this license from auto-renewing.</p>
+            <form method="post" action="/licenses/{{ $license->id }}">
+                <input type="hidden" name="_method" value="PUT" />
+                {!! csrf_field() !!}
 
-        @if( $license->subscription )
-        <h3>Subscription &nbsp; <a href="/subscriptions/{{ $license->subscription->id }}/edit" title="Edit subscription details"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></h3>
-        <table class="table row-scoped">
-            <tr>
-                <th>Status</th>
-                <td>
-                    <span class="{{ $license->subscription->active ? "success" : "warning" }}">{{ $license->subscription->active ? "Active" : "Inactive" }}</span>
+                <input type="hidden" name="license[status]" value="canceled" />
+                <button class="button-small button-danger" data-confirm="Are you sure you want to deactivate auto-renewal for this license?">Cancel license</button>
+            </form>
+        @else
+            <h3>Enable auto-renew for this license</h3>
+            <p>This license is not auto-renewing right now.</p>
+            <form method="post" action="/licenses/{{ $license->id }}">
+                <input type="hidden" name="_method" value="PUT" />
+                {!! csrf_field() !!}
 
-                    <form method="post" action="/subscriptions/{{ $license->subscription->id }}" class="pull-right" data-confirm="Are you sure you want to {{ $license->subscription->active ? "deactivate" : "reactivate" }} this subscription?">
-                        {!! csrf_field() !!}
-                        <input type="hidden" name="subscription[active]" value="{{ $license->subscription->active ? 0 : 1 }}" />
-                        <input type="submit" value="{{ $license->subscription->active ? "Deactivate" : "Reactivate" }}" class="button button-small button-neutral" />
-
-                        @if($license->subscription->active)
-                            <button type="submit" name="process_refund" value="1" class="button button-small button-danger" data-confirm="Are you sure you want to deactivate this subscription and refund the last payment?">Refund & Deactivate</button>
-                        @endif
-
-                        <input type="hidden" name="_method" value="PUT" />
-                    </form>
-                </td>
-            </tr>
-            <tr>
-                <th>Interval</th>
-                <td>{{ ucfirst( $license->subscription->interval ) . "ly" }}</td>
-            </tr>
-            <tr>
-                <th>Amount</th>
-                <td>{{ $license->subscription->getFormattedAmount() }}</td>
-            </tr>
-            <tr>
-                <th>Next Charge</th>
-                <td>
-                    {{ $license->subscription->next_charge_at->format('Y-m-d') }}
-
-                    <form method="post" action="/payments" class="pull-right" data-confirm="Are you sure you want to charge this subscription now?">
-                        {!! csrf_field() !!}
-                        <input type="hidden" name="payment[subscription_id]" value="{{ $license->subscription->id }}" />
-                        <input type="submit" value="Charge Now" class="button button-small" />
-                    </form>
-
-                </td>
-            </tr>
-
-        </table>
+                <input type="hidden" name="license[status]" value="active" />
+                <button class="button-small">Re-enable license</button>
+            </form>
+        @endif
 
         <div class="medium-margin"></div>
 
@@ -117,7 +97,7 @@
                 <th></th>
                 <th></th>
             </tr>
-            @forelse( $license->subscription->payments as $payment)
+            @forelse( $license->payments as $payment)
                 <tr>
                     <td>{{ $payment->created_at->format('Y-m-d') }}</td>
                     <td class="@if( $payment->subtotal < 0 ) red @endif">
@@ -144,11 +124,10 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="3">There are no payments for this subscription.</td>
+                    <td colspan="3">There are no payments for this license.</td>
                 </tr>
             @endforelse
         </table>
-        @endif
 
         <div class="medium-margin"></div>
 

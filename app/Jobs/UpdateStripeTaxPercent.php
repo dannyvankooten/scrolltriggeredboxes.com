@@ -8,7 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UpdateStripeCustomer extends Job implements ShouldQueue
+class UpdateStripeTaxPercent extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
@@ -36,8 +36,20 @@ class UpdateStripeCustomer extends Job implements ShouldQueue
      */
     public function handle( StripeAgent $agent )
     {
-        if( ! empty($this->user->stripe_customer_id) ) {
-            $agent->updatePaymentMethod($this->user);
+        // do nothing for users not using Stripe.
+        if( empty($this->user->stripe_customer_id) ) {
+            return;
         }
+
+        $licenses = $this->user->getActiveLicenses();
+
+        foreach( $licenses as $license ) {
+            // re-create each active subscription in stripe with new tax rate.
+            $agent->createSubscription($license);
+
+            // save changes
+            $license->save();
+        }
+
     }
 }

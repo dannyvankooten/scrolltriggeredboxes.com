@@ -36,7 +36,7 @@ class PaymentController extends Controller {
         /** @var User $user */
         $user = $this->auth->user();
         $payments = Payment::where('user_id', $user->id)
-            ->with('subscription.license')
+            ->with('license')
             ->orderBy('created_at', 'DESC')
             ->get();
         return view('payments.overview', [ 'payments' => $payments ]);

@@ -18,7 +18,7 @@ class CreateLicensesTable extends Migration {
 			$table->increments('id')->unsigned();
 			$table->string('license_key')->unique();
 			$table->integer('site_limit')->unsigned()->default(1);
-			$table->timestamp('expires_at');
+			$table->timestamp('expires_at')->nullable();
 			$table->integer('sendowl_order_id')->nullable();
 			$table->integer('user_id')->unsigned();
 			$table->integer('plan_id')->unsigned()->nullable();

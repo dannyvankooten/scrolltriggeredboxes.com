@@ -109,14 +109,6 @@ class Moneybird {
     }
 
     /**
-     * @param int $invoiceId
-     * @return object
-     */
-    public function createCreditInvoice( $invoiceId ) {
-        return $this->request( 'PATCH', 'sales_invoices/'. $invoiceId .'/duplicate_creditinvoice' );
-    }
-
-    /**
      * @param string $method
      * @param string $resource
      * @param array|object $data

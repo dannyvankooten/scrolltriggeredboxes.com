@@ -34,6 +34,6 @@ class UpdateInvoiceContact extends Job implements ShouldQueue
      */
     public function handle( Invoicer $invoicer )
     {
-        $invoicer->contact( $this->user, true );
+        $invoicer->updateContact( $this->user );
     }
 }

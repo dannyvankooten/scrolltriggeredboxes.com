@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Controller;
 use App\License;
+use App\Services\Payments\PaymentException;
+use App\Services\Payments\StripeAgent;
+use App\Services\SubscriptionAgent;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Routing\Redirector;
@@ -42,6 +45,7 @@ class LicenseController extends AdminController {
 	// show license details
 	public function detail($id) {
 		$license = License::with(['activations', 'user'])->findOrFail($id);
+
 		return view( 'admin.licenses.detail', [ 'license' => $license ] );
 	}
 
@@ -73,8 +77,9 @@ class LicenseController extends AdminController {
 
 		// create license
 		$license = new License();
+        $license->status = 'inactive';
 		$license->license_key = License::generateKey();
-		$license->expires_at = ! empty( $data['expires_at'] ) ? $data['expires_at'] : strtotime('+1 year');
+		$license->expires_at = ! empty( $data['expires_at'] ) ? Carbon::createFromFormat('Y-m-d', $data['expires_at']) : new Carbon('+1 year');
 		$license->site_limit = ! empty( $data['site_limit'] ) ? (int) $data['site_limit'] : 1;
 		$license->user_id = (int) $data['user_id'];
 		$license->save();
@@ -85,7 +90,7 @@ class LicenseController extends AdminController {
 	}
 
 	// update license details
-	public function update( $id, Request $request, Redirector $redirector ) {
+	public function update( $id, Request $request, Redirector $redirector, StripeAgent $agent ) {
 		/** @var License $license */
 		$license = License::with(['user'])->findOrFail($id);
 
@@ -96,17 +101,25 @@ class LicenseController extends AdminController {
             $this->log->info( sprintf( '%s changed license #%d activation limit to %d for user %s.', $this->admin->getFirstName(), $license->id, $license->site_limit, $license->user->email ) );
 		}
 
+		if( ! empty( $data['status'] ) && $data['status'] !== $license->getStatus() ) {
+            try {
+                // toggle status
+                $license->isActive() ? $agent->cancelSubscription($license) : $agent->createSubscription($license);
+            } catch( PaymentException $e ) {
+                return $redirector->back()->with('error', $e->getMessage());
+            }
+        }
+
 		if( ! empty( $data['expires_at'] ) ) {
-		    $newExpiryDate = Carbon::createFromFormat( 'Y-m-d' , $data['expires_at'] );
+		    $newExpiryDate = Carbon::createFromFormat( 'Y-m-d', $data['expires_at'] );
 
             // only update when it changed
-            if( $license->expires_at->diffInDays($newExpiryDate) > 0) {
+            if( $license->expires_at !== $newExpiryDate ) {
                 $license->expires_at = $newExpiryDate;
 
                 // update subscription next charge date
-                if( $license->subscription ) {
-                    $license->subscription->next_charge_at = $license->expires_at->modify('-5 days');
-                    $license->subscription->save();
+                if( $license->isActive() ) {
+                    $agent->updateNextChargeDate( $license );
                 }
 
                 $this->log->info( sprintf( '%s changed license #%d expiration date to %s for user %s.', $this->admin->getFirstName(), $license->id, $license->expires_at->format("Y-m-d"), $license->user->email ) );
@@ -114,6 +127,7 @@ class LicenseController extends AdminController {
         }
 
 		$license->save();
+
 		return $redirector->back()->with('message', 'Changes saved.');
 	}
 
@@ -127,8 +141,7 @@ class LicenseController extends AdminController {
 	 */
 	public function destroy( $id, Redirector $redirector ) {
         /** @var License $license */
-        $license = License::with(['user', 'subscription'])->findOrFail($id);
-		$license->subscription->delete();
+        $license = License::with(['user'])->findOrFail($id);
 		$license->delete();
 
         $this->log->info( sprintf( '%s deleted license #%d for user %s.', $this->admin->getFirstName(), $license->id, $license->user->email ) );

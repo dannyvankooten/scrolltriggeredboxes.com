@@ -53,6 +53,7 @@
             <tr>
                 <th>License Key</th>
                 <th width="20%">Activations</th>
+                <th>Status</th>
                 <th>Expires</th>
             </tr>
             </thead>
@@ -61,6 +62,7 @@
                 <tr>
                     <td><a href="{{ url('/licenses/' . $license->id) }}">{{ $license->license_key }}</a></td>
                     <td>{{ count( $license->activations ) .'/' . $license->site_limit }}</td>
+                    <td class="{{ $license->isActive() ? 'success' : 'warning' }}">{{ $license->isActive() ? "Active" : "Inactive" }}</td>
                     <td><span class="{{ $license->isExpired() ? 'warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</span></td>
                 </tr>
             @endforeach
@@ -76,6 +78,7 @@
         <table class="table">
             <tr>
                 <th>Date</th>
+                <th>License</th>
                 <th>Total</th>
                 <th></th>
                 <th></th>
@@ -83,6 +86,7 @@
             @forelse( $user->payments as $payment)
                 <tr>
                     <td>{{ $payment->created_at->format('Y-m-d') }}</td>
+                    <td>@if($payment->license)<a href="/licenses/{{ $payment->license->id }}">{{ substr( $payment->license->license_key, 0, 10 ) . '..' }}</a>@endif</td>
                     <td class="@if( $payment->subtotal < 0 ) red @endif">
                         {{ $payment->getFormattedTotal() }}
 
@@ -107,7 +111,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="3">There are no payments for this subscription.</td>
+                    <td colspan="3">There are no payments for this user.</td>
                 </tr>
             @endforelse
         </table>
