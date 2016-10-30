@@ -77,7 +77,7 @@ class StripeMigrateSubscriptions extends Command
         $this->info( sprintf( 'Migrating subscription %d, license %d for user %s', $subscription->id, $license->id, $user->email ) );
 
         try {
-            $this->agent->resumeSubscription($license);
+            $this->agent->createSubscription($license);
         } catch( PaymentException $e ) {
             $this->warn( sprintf( "Error: %s", $e->getMessage() ) );
             return;
