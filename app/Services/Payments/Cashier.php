@@ -72,6 +72,14 @@ class Cashier {
         // get user tax rate
         $taxRate = $payment->user->getTaxRate();
 
+        // calculate subtotal & tax amount
+        $amount = $stripeRefund->amount / 100; // stripe amount is in cents
+        $tax = 0;
+        if( $taxRate > 0 ) {
+            $tax = $amount / ( 1 + $taxRate / 100 );
+        }
+        $subtotal = $amount - $tax;
+
         // store negative opposite of payment
         $refund = new Payment();
         $refund->created_at = Carbon::createFromTimestamp($stripeRefund->created);
@@ -79,9 +87,9 @@ class Cashier {
         $refund->related_payment_id = $payment->id;
         $refund->user_id = $payment->user_id;
         $refund->license_id = $payment->license_id;
-        $refund->tax = -( ($taxRate / 100 ) * $stripeRefund->amount ) / 100;
+        $refund->tax = 0 - $tax;
         $refund->currency = $payment->currency;
-        $refund->subtotal = -($stripeRefund->amount / 100) - $refund->tax;
+        $refund->subtotal = 0 - $subtotal;
         $refund->save();
 
         // log
