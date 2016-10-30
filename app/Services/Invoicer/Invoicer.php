@@ -40,16 +40,8 @@ class Invoicer {
 
     /**
      * @param User $user
-     * @param bool $updateContact
-     *
-     * @return User
      */
-    public function contact( User $user, $updateContact = false ) {
-
-        // bail early if user has contact already & update flag is disabled
-        if( ! empty( $user->moneybird_contact_id ) && ! $updateContact ) {
-            return $user;
-        }
+    public function updateContact( User $user ) {
 
         // create contact
         $contact = [
@@ -65,67 +57,22 @@ class Invoicer {
             'email' => $user->email,
         ];
 
-        if( ! empty( $user->moneybird_contact_id ) ) {
+        if( $this->hasContact($user) ) {
             $data = $this->moneybird->updateContact( $user->moneybird_contact_id, $contact );
         } else {
             $data = $this->moneybird->createContact( $contact );
         }
 
         $user->moneybird_contact_id = $data->id;
-        $user->save();
-
-        return $user;
     }
 
     /**
-     * @param Payment $payment
-     * @return Payment
+     * @param User $user
      *
-     * TODO: Include subscription period in description
+     * @return bool
      */
-    public function invoice( Payment $payment ) {
-        $taxRate = $this->resolveTaxRate( $payment );
-
-        $invoiceData = [
-            'contact_id' => $payment->user->moneybird_contact_id,
-            'currency' => $payment->currency,
-            'invoice_date' => $payment->created_at->format('Y-m-d'),
-            'prices_are_incl_tax' => false,
-            'details_attributes' => [
-                [
-                    'description' => 'Your Boxzilla subscription',
-                    'price' => $payment->subtotal,
-                    'tax_rate_id' => $taxRate->id,
-                ]
-            ]
-        ];
-        
-        if( $payment->moneybird_invoice_id ) {
-            // invoice exists, update it
-            $this->moneybird->updateInvoice( $payment->moneybird_invoice_id, $invoiceData );
-        } else {
-            // create new invoice
-            $data = $this->moneybird->createInvoice( $invoiceData );
-            $payment->moneybird_invoice_id = $data->id;
-
-            // mark invoice as sent
-            $sendingData = [
-                'delivery_method' => 'Manual'
-            ];
-            $this->moneybird->createInvoiceSending( $data->id, $sendingData );
-
-            // register invoice payment
-            // IMPORTANT: Take notice, as we're getting the total price & base price from MoneyBird here. This means we're using MoneyBirds currency exchange rate....
-            $paymentData = [
-                'payment_date' => $payment->created_at->format('Y-m-d H:i:s'),
-                'price' => $data->total_price_incl_tax,
-                'price_base' => $data->total_price_incl_tax_base
-            ];
-
-            $this->moneybird->createInvoicePayment( $data->id, $paymentData );
-        }
-
-        return $payment;
+    private function hasContact( User $user ) {
+        return ! empty($user->moneybird_contact_id);
     }
 
     /**
@@ -149,32 +96,83 @@ class Invoicer {
 
     /**
      * @param Payment $payment
-     * @param Payment $refund
-     * @return Payment
+     *
+     * TODO: Include subscription period in description
      */
-    public function creditInvoice( Payment $payment, Payment $refund ) {
-        if( ! $payment->moneybird_invoice_id ) {
+    public function updateInvoice( Payment $payment ) {
+        $taxRate = $this->resolveTaxRate( $payment );
+
+        $invoiceData = [
+            'contact_id' => $payment->user->moneybird_contact_id,
+            'currency' => $payment->currency,
+            'invoice_date' => $payment->created_at->format('Y-m-d'),
+            'prices_are_incl_tax' => false,
+            'details_attributes' => [
+                [
+                    'description' => 'Your Boxzilla subscription',
+                    'price' => $payment->subtotal,
+                    'tax_rate_id' => $taxRate->id,
+                ]
+            ]
+        ];
+        
+        if( $this->hasInvoice($payment) ) {
+            // invoice exists, update it
+            $this->moneybird->updateInvoice( $payment->moneybird_invoice_id, $invoiceData );
+        } else {
+            // create new invoice
+            $data = $this->moneybird->createInvoice( $invoiceData );
+
+            // mark invoice as sent
+            $sendingData = [
+                'delivery_method' => 'Manual'
+            ];
+            $this->moneybird->createInvoiceSending( $data->id, $sendingData );
+
+            // register invoice payment
+            // IMPORTANT: Take notice, as we're getting the total price & base price from MoneyBird here. This means we're using MoneyBirds currency exchange rate....
+            $paymentData = [
+                'payment_date' => $payment->created_at->format('Y-m-d H:i:s'),
+                'price' => $data->total_price_incl_tax,
+                'price_base' => $data->total_price_incl_tax_base
+            ];
+            $this->moneybird->createInvoicePayment( $data->id, $paymentData );
+
+            // store moneybird id
+            $payment->moneybird_invoice_id = $data->id;
+        }
+    }
+
+    /**
+     * @param Payment $payment
+     * @param Payment $refund
+     */
+    public function updateCreditInvoice( Payment $payment, Payment $refund ) {
+
+        // do nothing if original payment has no invoice.
+        if( ! $this->hasInvoice($payment) ) {
             return;
         }
 
+        // create invoice
         $data = $this->moneybird->createCreditInvoice( $payment->moneybird_invoice_id );
 
-        // set moneybird invoice ID
-        $refund->moneybird_invoice_id = $data->id;
-
+        // mark invoice as "sent"
         $sendingData = [
             'delivery_method' => 'Manual'
         ];
         $this->moneybird->createInvoiceSending( $data->id, $sendingData );
 
+        // pay invoice
         $paymentData = [
             'payment_date' => $payment->created_at->format('Y-m-d H:i:s'),
             'price' => $data->total_price_incl_tax,
             'price_base' => $data->total_price_incl_tax_base
         ];
-
         $this->moneybird->createInvoicePayment( $data->id, $paymentData );
-        return $refund;
+
+        // set moneybird invoice ID
+        $refund->moneybird_invoice_id = $data->id;
     }
 
     /**

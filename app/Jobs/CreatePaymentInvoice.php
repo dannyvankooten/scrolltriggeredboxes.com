@@ -40,10 +40,10 @@ class CreatePaymentInvoice extends Job implements ShouldQueue
         $user = $this->payment->user;
 
         // create or update contact
-        $user = $invoicer->contact( $user );
+        $invoicer->updateContact( $user );
 
         // create or update invoice
-        $payment = $invoicer->invoice( $payment );
+        $invoicer->updateInvoice( $payment );
 
         $user->save();
         $payment->save();

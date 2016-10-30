@@ -43,7 +43,7 @@ class CreatePaymentCreditInvoice extends Job implements ShouldQueue
      */
     public function handle( Invoicer $invoicer )
     {
-        $refund = $invoicer->creditInvoice( $this->payment, $this->refund );
-        $refund->save();
+        $invoicer->updateCreditInvoice( $this->payment, $this->refund );
+        $this->refund->save();
     }
 }
