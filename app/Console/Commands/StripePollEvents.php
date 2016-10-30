@@ -40,7 +40,8 @@ class StripePollEvents extends Command
             'types' => $eventTypes,
             'created' => [
                 'gte' => strtotime('-1 hour') // TODO: Make this configurable from CLI args
-            ]
+            ],
+            'limit' => 100
         ]);
 
         foreach( $events->data as $event ) {
