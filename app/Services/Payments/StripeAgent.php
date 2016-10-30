@@ -177,7 +177,7 @@ class StripeAgent {
             if( $e->getHttpStatus() != 404 ) {
                 throw PaymentException::fromStripe($e);
             } else {
-                // ignore 404 errors
+                // ignore 404 errors as that means subscription does not even exist.
             }
         } catch(StripeException $e) {
             throw PaymentException::fromStripe($e);

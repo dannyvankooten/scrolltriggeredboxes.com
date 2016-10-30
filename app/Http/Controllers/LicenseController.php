@@ -136,7 +136,12 @@ class LicenseController extends Controller {
 
 		$data = $request->input('license');
         if( isset( $data['status'] ) ) {
-            $license->isActive() ? $agent->cancelSubscription( $license ) : $agent->createSubscription( $license );
+            try {
+                $license->isActive() ? $agent->cancelSubscription($license) : $agent->createSubscription($license);
+            } catch( PaymentException $e ) {
+                $errorMessage = 'We had some trouble with your payment. <br />Please <a href="/edit/payment">review your payment method</a>.';
+                return $redirector->back()->with('error', $errorMessage);
+            }
         }
 
         $license->save();
