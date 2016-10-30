@@ -7,6 +7,7 @@ use Carbon\Carbon;
  * Class Payment
  * @package App
  *
+ * @property int $id
  * @property User $user
  * @property Payment[] $refunds
  * @property License $license
