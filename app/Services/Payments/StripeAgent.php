@@ -24,14 +24,21 @@ class StripeAgent {
     protected $log;
 
     /**
+     * @var Cashier
+     */
+    protected $cashier;
+
+    /**
      * Charger constructor.
      *
      * @param string $stripeSecret
+     * @param Cashier $cashier
      * @param Log $log
      */
-    public function __construct( $stripeSecret, Log $log ) {
+    public function __construct( $stripeSecret, Cashier $cashier, Log $log ) {
         Stripe\Stripe::setApiKey( $stripeSecret );
         $this->log = $log;
+        $this->cashier = $cashier;
     }
 
     /**
@@ -73,7 +80,7 @@ class StripeAgent {
             $customerData['source'] = $token;
         }
 
-        if( ! empty($user->stripe_customer_id) ) {
+        if( $this->hasCustomer($user) ) {
             $stripeCustomer = $this->updateOrCreateInStripe( Stripe\Customer::class, $user->stripe_customer_id, $customerData );
             $this->log->info( sprintf( 'Updated Stripe customer %s from user %s', $user->stripe_customer_id, $user->email ) );
         } else {
@@ -118,12 +125,12 @@ class StripeAgent {
      */
     public function createSubscription( License $license ) {
 
-        if( empty($license->user->stripe_customer_id) ) {
+        if( ! $this->hasCustomer($license->user) ) {
             throw new PaymentException( "User has no valid payment method." );
         }
 
         // cancel current subscription first.
-        if(!empty($license->stripe_subscription_id)){
+        if( $this->hasSubscription($license) ){
             $this->cancelSubscription($license);
         }
 
@@ -163,7 +170,7 @@ class StripeAgent {
     public function cancelSubscription( License $license ) {
 
         // do nothing if license has no stripe subscription
-        if( empty( $license->stripe_subscription_id ) ) {
+        if( ! $this->hasSubscription($license) ) {
             return;
         }
 
@@ -191,6 +198,12 @@ class StripeAgent {
      * @throws PaymentException
      */
     public function updateNextChargeDate( License $license ) {
+
+        // do nothing if license has no subscription
+        if( ! $this->hasSubscription($license) ) {
+            return;
+        }
+
         try {
             $stripeSubscription = Stripe\Subscription::retrieve($license->stripe_subscription_id);
             $stripeSubscription->prorate = false;
@@ -232,6 +245,9 @@ class StripeAgent {
         $license = $payment->license;
         $license->expires_at = $license->expires_at->modify("-1 {$license->interval}");
         $license->save();
+
+        // record refund right away
+        $this->cashier->recordRefund($payment, $stripeRefund);
 
         // log some info
         $user = $payment->user;
@@ -296,6 +312,22 @@ class StripeAgent {
         }
 
         return $object;
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    private function hasCustomer(User $user) {
+        return ! empty($user->stripe_customer_id);
+    }
+
+    /**
+     * @param License $license
+     * @return bool
+     */
+    private function hasSubscription(License $license) {
+        return ! empty($license->stripe_subscription_id);
     }
 
 }

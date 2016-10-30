@@ -65,7 +65,7 @@ class Payment extends Model
 	public function getFormattedTotal() {
 
 	    if( $this->getTotal() < 0 ) {
-            return '- ' . $this->getCurrencySign() . ( abs( $this->getTotal() ) + 0 );
+            return '-' . $this->getCurrencySign() . ( abs( $this->getTotal() ) + 0 );
         }
 
 		return $this->getCurrencySign() . ( $this->getTotal() + 0 );

@@ -2,9 +2,8 @@
 
 namespace App\Listeners;
 
-use App\Jobs\CreatePaymentInvoice;
+use App\Services\Payments\Cashier;
 use Illuminate\Contracts\Logging\Log;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Stripe;
 use App\License;
 use App\Payment;
@@ -13,8 +12,6 @@ use Carbon\Carbon;
 
 class StripeEventHandler
 {
-    use DispatchesJobs;
-
     /**
      * @var Mailer
      */
@@ -26,14 +23,21 @@ class StripeEventHandler
     protected $log;
 
     /**
+     * @var Cashier
+     */
+    protected $cashier;
+
+    /**
      * StripePollInvoicePaymentFailures constructor.
      *
      * @param Mailer $mailer
      * @param Log $log
+     * @param Cashier $cashier
      */
-    public function __construct( Mailer $mailer, Log $log ) {
+    public function __construct( Mailer $mailer, Log $log, Cashier $cashier ) {
         $this->mailer = $mailer;
         $this->log = $log;
+        $this->cashier = $cashier;
     }
 
     /**
@@ -138,42 +142,22 @@ class StripeEventHandler
         $subscription_id = $invoice->subscription;
 
         // skip "0" invoices without a charge.
-        if( empty( $invoice->charge ) ) {
+        if( empty($invoice->charge) ) {
             return false;
         }
 
         /** @var License $license */
-        $license = License::where('stripe_subscription_id', $subscription_id )->first();
+        $license = License::where('stripe_subscription_id', $subscription_id)->first();
         if( ! $license ) {
             return false;
         }
-
-        $existingPayment = Payment::where('stripe_id', $invoice->charge )->first();
-        if( $existingPayment ) {
-            return false;
-        }
-
-        $this->log->info(sprintf('Creating %s payment for Stripe charge %s', $invoice->total, $invoice->charge));
-
-        // store local payment
-        $payment = new Payment();
-        $payment->created_at = Carbon::createFromTimestamp($invoice->date);
-        $payment->license_id = $license->id;
-        $payment->stripe_id = $invoice->charge;
-        $payment->user_id = $license->user_id;
-        $payment->currency = 'USD';
-        $payment->subtotal = ( $invoice->subtotal / 100 );
-        if( $invoice->tax ) {
-            $payment->tax = ( $invoice->tax / 100 );
-        }
-        $payment->save();
 
         // extend license
         $license->extend();
         $license->save();
 
-        // dispatch job to create invoice
-        $this->dispatch(new CreatePaymentInvoice($payment));
+        // record payment locally
+        $this->cashier->recordPayment($license, $invoice);
 
         return true;
     }
@@ -191,42 +175,12 @@ class StripeEventHandler
             return false;
         }
 
-        // sanity check: do nothing if there are no refunds for this charge
         $stripeRefunds = $charge->refunds->data;
-        if( empty($stripeRefunds) ) {
-            return false;
-        }
-
-        // get user tax rate
-        $taxRate = $payment->user->getTaxRate();
-
-        // create local refund objects
         foreach( $stripeRefunds as $stripeRefund ) {
 
-            // check if local refund object exists already
-            $existing = Payment::where('stripe_id', $stripeRefund->id)->first();
-            if($existing) {
-                continue;
-            }
-
-            $this->log->info(sprintf('Creating %s refund for Stripe refund %s', $stripeRefund->total, $stripeRefund->id));
-
-            // store negative opposite of payment
-            $refund = new Payment();
-            $refund->created_at = Carbon::createFromTimestamp($stripeRefund->created);
-            $refund->stripe_id = $stripeRefund->id;
-            $refund->related_payment_id = $payment->id;
-            $refund->user_id = $payment->user_id;
-            $refund->license_id = $payment->license_id;
-            $refund->tax = -($taxRate * $stripeRefund->amount / 100);
-            $refund->currency = $payment->currency;
-            $refund->subtotal = -($stripeRefund->amount / 100) - $refund->tax;
-            $refund->save();
-
-            // dispatch job to create credit invoice
-            $this->dispatch(new CreatePaymentInvoice($refund));
+            // record refunds locally
+            $this->cashier->recordRefund($payment, $stripeRefund);
         }
 
-        // set new license expiration date if charge is fully refunded.
     }
 }

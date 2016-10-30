@@ -1,5 +1,6 @@
 <?php namespace App\Providers;
 
+use App\Services\Payments\Cashier;
 use App\Services\Payments\StripeAgent;
 use App\Services\Invoicer\Moneybird;
 use App\Services\Purchaser;
@@ -47,14 +48,21 @@ class AppServiceProvider extends ServiceProvider {
 			return new Invoicer( $moneybird, $app[ TaxRateResolver::class ], $cacheDriver );
 		});
 
+        $this->app->singleton( Cashier::class, function ($app) {
+            $log = $app[Log::class];
+            return new Cashier( $log );
+        });
+
 		$this->app->singleton( StripeAgent::class, function ($app) {
 			$stripeSecret = config('services.stripe.secret');
-			$log = $app[Log::class];
-			return new StripeAgent( $stripeSecret, $log );
+            $cashier = $app[Cashier::class];
+            $log = $app[Log::class];
+			return new StripeAgent( $stripeSecret, $cashier, $log );
 		});
 
 		$this->app->singleton( Purchaser::class, function ($app) {
-			return new Purchaser($app[StripeAgent::class]);
+            $stripeAgent = $app[StripeAgent::class];
+			return new Purchaser($stripeAgent);
 		});
 
 	}
