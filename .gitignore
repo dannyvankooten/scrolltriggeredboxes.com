@@ -19,3 +19,4 @@ storage/framework
 storage/logs
 resources/assets/bootstrap/node_modules
 storage
+php_errors.log
