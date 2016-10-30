@@ -34,18 +34,15 @@ class AppServiceProvider extends ServiceProvider {
 			return new DynamicApp( config('services.helpscout')['secret'] );
 		});
 
-		$this->app->singleton( TaxRateResolver::class, function($app) {
-			return new TaxRateResolver();
-		});
-
 		$this->app->singleton( Invoicer::class, function ($app) {
 			$config = config('services.moneybird');
 			$moneybird = new Moneybird( $config['administration'], $config['token'] );
-
+            $taxRateResolver = new TaxRateResolver();
 			$defaultCacheDriver = $app['cache']->getDefaultDriver();
 			$cacheDriver = $app['cache']->driver( $defaultCacheDriver );
+            $log = $app[Log::class];
 
-			return new Invoicer( $moneybird, $app[ TaxRateResolver::class ], $cacheDriver );
+			return new Invoicer( $moneybird, $taxRateResolver, $cacheDriver, $log );
 		});
 
         $this->app->singleton( Cashier::class, function ($app) {

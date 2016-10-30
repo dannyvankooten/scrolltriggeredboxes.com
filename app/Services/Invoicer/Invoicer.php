@@ -7,6 +7,7 @@ use App\User;
 use App\Payment;
 use DateTime;
 use Illuminate\Contracts\Cache\Repository as Cache;
+use Illuminate\Contracts\Logging\Log;
 
 class Invoicer {
 
@@ -26,16 +27,23 @@ class Invoicer {
     protected $cache;
 
     /**
+     * @var Log
+     */
+    protected $log;
+
+    /**
      * Invoicer constructor.
      *
      * @param Moneybird $moneybird
      * @param TaxRateResolver $taxRateResolver
      * @param Cache $cache
+     * @param Log $log
      */
-    public function __construct( Moneybird $moneybird, TaxRateResolver $taxRateResolver, Cache $cache = null ) {
+    public function __construct( Moneybird $moneybird, TaxRateResolver $taxRateResolver, Cache $cache = null, Log $log = null ) {
         $this->moneybird = $moneybird;
         $this->taxRateResolver = $taxRateResolver;
         $this->cache = $cache;
+        $this->log = $log;
     }
 
     /**
@@ -64,6 +72,8 @@ class Invoicer {
         }
 
         $user->moneybird_contact_id = $data->id;
+
+        $this->log && $this->log->info(sprintf('Updated MoneyBird contact for user %s.', $user->email));
     }
 
     /**
@@ -141,6 +151,8 @@ class Invoicer {
             // store moneybird id
             $payment->moneybird_invoice_id = $data->id;
         }
+
+        $this->log && $this->log->info(sprintf('Updated MoneyBird invoice for payment %s.', $payment->id));
     }
 
     /**
