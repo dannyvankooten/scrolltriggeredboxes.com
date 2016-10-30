@@ -49,8 +49,7 @@ class StripeMigrateSubscriptions extends Command
      */
     public function handle()
     {
-        $licenses = License::with(['subscription', 'user'])->all();
-
+        $licenses = License::with(['subscription', 'user'])->get();
         $this->info(sprintf('%d licenses found.', count($licenses)));
 
         foreach( $licenses as $license ) {
@@ -63,22 +62,20 @@ class StripeMigrateSubscriptions extends Command
      */
     protected function migrateLicense(License $license)
     {
-        $this->info(sprintf('Migrating license %d for user %s', $license->id, $license->user->email));
-
         // first, migrate license to new plan.
         if( $license->getPlan() === 'personal' && $license->site_limit < 2 ) {
-            $this->info(sprintf("Upping site limit for license %d to 2", $license->id));
+            $this->line(sprintf("License %d: Upping site limit to 2", $license->id));
             $license->site_limit = 2;
         }
 
         if( $license->getPlan() === 'developer' && $license->site_limit < 10 ) {
-            $this->info(sprintf("Upping site limit for license %d to 10", $license->id));
+            $this->line(sprintf("License %d: Upping site limit to 10", $license->id));
             $license->site_limit = 10;
         }
 
         // if license has subscription, migrate that.
-        if($license->subscription) {
-            $this->migrateSubscription($license->subscription);
+        if( $license->subscription ) {
+            $this->migrateSubscription($license, $license->subscription);
         }
 
         // save changes
@@ -86,39 +83,33 @@ class StripeMigrateSubscriptions extends Command
     }
 
     /**
+     * @param License $license
      * @param Subscription $subscription
      */
-    protected function migrateSubscription(Subscription $subscription)
+    protected function migrateSubscription(License $license, Subscription $subscription)
     {
-        $license = $subscription->license;
-        $user = $subscription->user;
-
-        $this->info(sprintf("Migrating subscription for license %d", $license->id));
-
-
         // make sure license has no stripe subscription yet.
         if( ! empty( $license->stripe_subscription_id ) ) {
-            $this->info(sprintf('Skipping subscription %d as license already has attached Stripe subscription.', $subscription->id));
+            $this->line(sprintf('License %d: Subscription already exists', $license->id));
             return;
         }
-
-        // let's go
-        $this->info( sprintf( 'Migrating subscription %d for user %s', $subscription->id, $user->email ) );
 
         // set plan interval
         $license->status = 'inactive'; // start with inactive status
         $license->interval = $subscription->interval;
 
         if( $subscription->active ) {
+            $this->line(sprintf('License %d: Creating Stripe subscription', $license->id));
+
             try {
                 $this->agent->createSubscription($license);
             } catch( PaymentException $e ) {
-                $this->warn( sprintf( "Error creating Stripe subscription: %s", $e->getMessage() ) );
+                $this->warn( sprintf( "License %d: Error creating Stripe subscription - %s", $license->id, $e->getMessage() ) );
                 return;
             }
-        }
 
-        $this->info(sprintf('Success! Deleting local subscription %d.', $subscription->id));
+            $this->info(sprintf('License %d: Successfully migrated subscription!', $license->id));
+        }
 
         // delete subscription
         $subscription->delete();
