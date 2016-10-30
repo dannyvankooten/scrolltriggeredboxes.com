@@ -18,7 +18,7 @@ class DefaultController extends Controller {
         $recentActivations = Activation::query()->with(['license', 'license.activations'])->take(5)->orderBy('created_at', 'desc')->get();
         $recentPayments = Payment::query()->with(['user'])->take(5)->orderBy('created_at', 'desc')->get();
         $totals = Totals::query( $request->query->getInt( 'days', 30 ) );
-        
+
         return view( 'admin.overview', [
             'recentLicenses' => $recentLicenses,
             'recentActivations' => $recentActivations,

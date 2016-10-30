@@ -131,7 +131,7 @@
                     @forelse($recentActivations as $activation)
                         <tr>
                             <td><a href="http://{{ $activation->domain }}">{{ str_limit( $activation->domain, 18 ) }}</a></td>
-                            <td>{{ count($activation->license->activations) . '/' . $activation->license->site_limit }}</td>
+                            <td><a href="/licenses/{{ $activation->license->id }}">{{ count($activation->license->activations) . '/' . $activation->license->site_limit }}</a></td>
                         </tr>
                     @empty
                         <tr><td colspan="2">No site activations.</td></tr>
