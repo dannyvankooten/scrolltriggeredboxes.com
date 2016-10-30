@@ -112,6 +112,6 @@ class StripeMigrateSubscriptions extends Command
         }
 
         // delete subscription
-        $subscription->delete();
+        //$subscription->delete();
     }
 }
