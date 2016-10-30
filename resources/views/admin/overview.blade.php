@@ -43,7 +43,7 @@
                 <span class="count">
                     {{ $totals->churn_this_month }}
                     <?php $percentage = $totals->calculatePercentageDifference( $totals->churn_this_month, $totals->churn_last_month ); ?>
-                    <span class="percentage {{ ( $percentage > 0  ) ? 'pos' : ( ( $percentage < 0 ) ? 'neg' : 'neutral' ) }}">{{ $percentage }}%</span>
+                    <span class="percentage {{ ( $percentage > 0  ) ? 'neg' : ( ( $percentage < 0 ) ? 'pos' : 'neutral' ) }}">{{ $percentage }}%</span>
                 </span>
                 <small class="muted">(last {{ request('days', 30 ) }} days)</small>
             </div>
