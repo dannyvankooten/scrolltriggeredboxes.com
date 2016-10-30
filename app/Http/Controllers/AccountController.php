@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\UpdateInvoiceContact;
 use App\Jobs\UpdateStripeCustomer;
+use App\Jobs\UpdateStripeTaxPercent;
 use App\Services\Payments\StripeAgent;
 use App\Services\Purchaser;
 use App\User;
@@ -119,9 +120,13 @@ class AccountController extends Controller {
 			'vat_number' => 'Please supply a valid VAT number.'
 		));
 
+        $vatNumber = $request->input('user.vat_number');
+        $country = $request->input('user.country');
+        $vatInfoChanged = $user->vat_number != $vatNumber || $user->country != $country;
+
 		$user->name = $request->input('user.name');
-		$user->country = $request->input('user.country' );
-		$user->vat_number = $request->input( 'user.vat_number' );
+		$user->country = $country;
+		$user->vat_number = $vatNumber;
 		$user->address = $request->input( 'user.address' );
 		$user->city = $request->input('user.city');
 		$user->zip = $request->input('user.zip');
@@ -131,6 +136,10 @@ class AccountController extends Controller {
 
 		$this->dispatch(new UpdateInvoiceContact($user));
 		$this->dispatch(new UpdateStripeCustomer($user));
+
+        if($vatInfoChanged) {
+            $this->dispatch(new UpdateStripeTaxPercent($user));
+        }
 
 		return $redirector->back()->with('message', 'Changes saved!');
 	}

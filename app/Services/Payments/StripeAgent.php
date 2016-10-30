@@ -76,7 +76,7 @@ class StripeAgent {
             $customerData['source'] = $token;
         }
 
-        if( $user->stripe_customer_id ) {
+        if( ! empty($user->stripe_customer_id) ) {
             $stripeCustomer = $this->updateOrCreateInStripe( Stripe\Customer::class, $user->stripe_customer_id, $customerData );
             $this->log->info( sprintf( 'Updated Stripe customer %s from user %s', $user->stripe_customer_id, $user->email ) );
         } else {
@@ -121,7 +121,7 @@ class StripeAgent {
      */
     public function createSubscription( License $license ) {
 
-        if( empty( $license->user->stripe_customer_id ) ) {
+        if( empty($license->user->stripe_customer_id) ) {
             throw new PaymentException( "User has no valid payment method." );
         }
 
