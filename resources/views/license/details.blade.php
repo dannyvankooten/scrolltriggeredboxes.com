@@ -14,6 +14,13 @@
 
         <table class="table row-scoped">
             <tr>
+                <th>Status</th>
+                <td class="{{ $license->isActive() ? 'success' : 'warning' }}">
+                    {{ $license->isActive() ? 'Active' : 'Inactive' }}
+                </td>
+                <td class="row-action"></td>
+            </tr>
+            <tr>
                 <th>Key</th>
                 <td width="80%">
                     <input type="text" value="{{ $license->license_key }}" class="unstyled" onfocus="this.select()" readonly />

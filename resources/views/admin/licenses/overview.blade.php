@@ -38,7 +38,7 @@
                     <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=key">License Key</a></th>
                     <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=owner">Owner</a></th>
                     <th width="20%"><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=activations">Activations</a></th>
-                    <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=expires">Expires</a></th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody style="font-size: 15px;">
@@ -47,7 +47,7 @@
                     <td><a href="{{ url('/licenses/' . $license->id) }}">{{ $license->license_key }}</a></td>
                     <td>{{ $license->user->email }}</td>
                     <td>{{ count( $license->activations ) . '/' . $license->site_limit }}</td>
-                    <td><span class="{{ $license->isExpired() ? 'warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</span></td>
+                    <td class="{{ $license->isActive() ? 'success' : 'warning' }}">{{ $license->isActive() ? "Active" : "Inactive" }}</td>
                 </tr>
             @endforeach
             </tbody>

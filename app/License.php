@@ -98,7 +98,7 @@ class License extends Model {
 	 * @return bool
 	 */
 	public function isExpired() {
-		return empty( $this->expires_at ) || $this->expires_at <= Carbon::now();
+		return empty( $this->expires_at ) || $this->expires_at < Carbon::now();
 	}
 
 	/**

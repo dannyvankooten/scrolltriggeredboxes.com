@@ -17,7 +17,7 @@
         <tr>
             <th>License Key</th>
             <th width="20%">Used #</th>
-            <th>Created at</th>
+            <th>Status</th>
         </tr>
         </thead>
         <tbody>
@@ -25,7 +25,7 @@
         <tr>
             <td><a href="/licenses/{{ $license->id }}">{{ $license->license_key }}</a></td>
             <td>{{ count( $license->activations ) . '/' . $license->site_limit }}</td>
-            <td>{{ $license->created_at->format('F d, Y') }}</td>
+            <td class="{{ $license->isActive() ? 'success' : 'warning' }}">{{ $license->isActive() ? "Active" : "Inactive" }}</td>
         </tr>
         @empty
             <tr>

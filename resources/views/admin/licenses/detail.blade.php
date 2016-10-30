@@ -27,6 +27,10 @@
                 <td>{{ $license->created_at->format('Y-m-d') }}</td>
             </tr>
             <tr>
+                <th>Status</th>
+                <td class="{{ $license->isActive() ? 'success' : 'warning' }}">{{ $license->isActive() ? 'Active' : 'Inactive' }}</td>
+            </tr>
+            <tr>
                 <th>Expire{{ $license->isExpired() ? 'd' : 's' }}</th>
                 <td><span class="{{ $license->isExpired() ? 'warning' : '' }}">{{ $license->expires_at->format('Y-m-d') }}</span> <span class="muted">({{ $license->expires_at->diffInDays() }} days {{ $license->isExpired() ? 'ago' : 'from now' }})</span></td>
             </tr>
