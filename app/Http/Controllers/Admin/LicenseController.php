@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\License;
+use App\Services\Payments\PaymentException;
 use App\Services\Payments\StripeAgent;
 use App\Services\SubscriptionAgent;
 use App\User;
@@ -101,8 +102,12 @@ class LicenseController extends AdminController {
 		}
 
 		if( ! empty( $data['status'] ) && $data['status'] !== $license->getStatus() ) {
-            // toggle status
-            $license->isActive() ? $agent->cancelSubscription($license) : $agent->createSubscription($license);
+            try {
+                // toggle status
+                $license->isActive() ? $agent->cancelSubscription($license) : $agent->createSubscription($license);
+            } catch( PaymentException $e ) {
+                return $redirector->back()->with('error', $e->getMessage());
+            }
         }
 
 		if( ! empty( $data['expires_at'] ) ) {
