@@ -80,7 +80,7 @@
                 @foreach($recentLicenses as $license)
                     <tr>
                         <td><a href="/users/{{$license->user->id}}">{{ $license->user->email }}</a></td>
-                        <td>{{ ucfirst($license->plan) }} <small>per {{ $license->interval }}</small></td>
+                        <td><a href="/licenses/{{$license->id}}>">{{ ucfirst($license->plan) }} <small class="muted">per {{ $license->interval }}</small></a></td>
                         <td class="{{ $license->isActive() ? 'success' : 'warning' }}">{{ $license->status }}</td>
                         <td>{{ $license->getActivationsCount() .'/'. $license->site_limit }}</td>
                         <td>{{ $license->created_at->format('M d') }}</td>
@@ -108,7 +108,7 @@
                     <tbody>
                     @foreach($recentPayments as $payment)
                         <tr>
-                            <td><a href="/users/{{ $payment->user->id }}">{{ str_limit( $payment->user->name, 18 ) }}</a></td>
+                            <td><a href="/users/{{ $payment->user->id }}">{{ $payment->user->email }}</a></td>
                             <td class="{{ $payment->isRefund()  ? 'danger' : 'success' }}">{{ $payment->getFormattedTotal() }}</td>
                             <td>{{ $payment->created_at->format('M j') }}</td>
                         </tr>
@@ -116,8 +116,9 @@
                     </tbody>
                 </table>
             </div>
+            <!-- / Recent payments -->
 
-            <!-- Recent licenses -->
+            <!-- Recent activations -->
             <div class="col col-3">
                 <h3>Last 5 activations</h3>
                 <table class="table table-striped">
@@ -139,12 +140,38 @@
                     </tbody>
                 </table>
             </div>
-
-
+            <!-- / Recent acivations -->
 
         </div>
 
         <div class="medium-margin"></div>
+
+        <!-- Expiring licenses -->
+        <div>
+            <h3>Expiring licenses</h3>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Plan</th>
+                    <th>Status</th>
+                    <th>Activations</th>
+                    <th>Expires</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($expiringLicenses as $license)
+                    <tr>
+                        <td><a href="/users/{{$license->user->id}}">{{ $license->user->email }}</a></td>
+                        <td><a href="/licenses/{{ $license->id }}">{{ ucfirst($license->plan) }} <small class="muted">(per {{ $license->interval }})</small></a></td>
+                        <td class="{{ $license->isActive() ? 'success' : 'warning' }}">{{ $license->status }}</td>
+                        <td>{{ $license->getActivationsCount() .'/'. $license->site_limit }}</td>
+                        <td>{{ $license->expires_at->diffInDays() <= 0 ? 'Today' : $license->expires_at->diffInDays() . ' days from now' }} </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
 
 
 
