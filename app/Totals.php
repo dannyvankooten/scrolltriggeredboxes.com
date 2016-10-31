@@ -21,6 +21,8 @@ class Totals {
      */
     public static function query( $days = 30 ) {
 
+        // TODO: updated_at column for license churn is not entirely true. could be separate column.
+
         $sql =
 <<<SQL
             SELECT 
@@ -32,8 +34,8 @@ class Totals {
             ( SELECT COUNT(*) FROM licenses l WHERE l.created_at < date_1 AND l.created_at > date_2 ) AS new_licenses_last_month,
             ( SELECT SUM(subtotal) FROM payments p WHERE p.created_at > date_1 ) AS total_revenue_this_month,
             ( SELECT SUM(subtotal) FROM payments p WHERE p.created_at < date_1 AND p.created_at > date_2 ) AS total_revenue_last_month,
-            ( SELECT COUNT(*) FROM licenses l WHERE l.status != 'active' AND l.created_at > date_1 ) AS churn_this_month,
-            ( SELECT COUNT(*) FROM licenses l WHERE l.status != 'active' AND l.created_at < date_1 AND l.created_at > date_2 ) AS churn_last_month
+            ( SELECT COUNT(*) FROM licenses l WHERE l.status != 'active' AND l.updated_at > date_1 ) AS churn_this_month,
+            ( SELECT COUNT(*) FROM licenses l WHERE l.status != 'active' AND l.updated_at < date_1 AND l.updated_at > date_2 ) AS churn_last_month
 SQL;
 
         $query = sprintf( $sql, $days, $days );
