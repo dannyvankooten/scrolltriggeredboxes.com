@@ -19,7 +19,8 @@ class LicenseController extends AdminController {
 	        'key' => 'created_at',
             'owner' => 'user_id',
             'activations' => 'site_limit',
-            'expires' => 'expires_at'
+            'expires' => 'expires_at',
+            'status' => 'status',
         ];
         $orderBy = $request->query->get('by', 'key');
         $orderBy = isset( $orderColumns[ $orderBy ] ) ? $orderColumns[ $orderBy ] : $orderColumns['key'];
