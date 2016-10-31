@@ -20,7 +20,7 @@ class DefaultController extends Controller {
         $recentPayments = Payment::query()->with(['user'])->take(5)->orderBy('created_at', 'desc')->get();
         $expiringLicenses = License::query()->with('user')->where('expires_at', '>=', Carbon::now())->take(5)->orderBy('expires_at', 'asc')->get();
         $totals = Totals::query( $request->query->getInt( 'days', 30 ) );
-        
+
         return view( 'admin.overview', [
             'expiringLicenses' => $expiringLicenses,
             'recentLicenses' => $recentLicenses,
