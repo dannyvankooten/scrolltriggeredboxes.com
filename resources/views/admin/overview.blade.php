@@ -109,7 +109,7 @@
                     @foreach($recentPayments as $payment)
                         <tr>
                             <td><a href="/users/{{ $payment->user->id }}">{{ str_limit( $payment->user->name, 18 ) }}</a></td>
-                            <td>{{ $payment->getFormattedTotal() }}</td>
+                            <td class="{{ $payment->isRefund()  ? 'danger' : 'success' }}">{{ $payment->getFormattedTotal() }}</td>
                             <td>{{ $payment->created_at->format('M j') }}</td>
                         </tr>
                     @endforeach
