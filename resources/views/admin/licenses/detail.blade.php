@@ -100,7 +100,7 @@
             @forelse( $license->payments as $payment)
                 <tr>
                     <td>{{ $payment->created_at->format('Y-m-d') }}</td>
-                    <td class="@if( $payment->subtotal < 0 ) red @endif">
+                    <td class="{{ $payment->isRefund() ? 'danger' : 'success' }}">
                         {{ $payment->getFormattedTotal() }}
 
                         @if( $payment->subtotal < 0 )
