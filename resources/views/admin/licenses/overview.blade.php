@@ -45,7 +45,7 @@
             @foreach($licenses as $license)
                 <tr>
                     <td><a href="{{ url('/licenses/' . $license->id) }}">{{ $license->license_key }}</a></td>
-                    <td>{{ $license->user->email }}</td>
+                    <td><a href="/users/{{$license->user->id}}">{{ $license->user->email }}</a></td>
                     <td>{{ count( $license->activations ) . '/' . $license->site_limit }}</td>
                     <td class="{{ $license->isActive() ? 'success' : 'warning' }}">{{ $license->isActive() ? "Active" : "Inactive" }}</td>
                 </tr>
