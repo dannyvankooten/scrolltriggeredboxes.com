@@ -158,6 +158,7 @@ class StripeAgent {
 
         $license->stripe_subscription_id = $stripeSubscription->id;
         $license->status = 'active';
+        $license->deactivated_at = null;
 
         $this->log->info( sprintf( 'Created Stripe subscription %s for user %s', $license->stripe_subscription_id, $license->user->email ) );
     }
@@ -187,6 +188,7 @@ class StripeAgent {
             throw PaymentException::fromStripe($e);
         }
 
+        $license->deactivated_at = Carbon::now();
         $license->status = 'canceled';
         $license->stripe_subscription_id = null;
         $this->log->info( sprintf( 'Canceled Stripe subscription %s for user %s', $license->stripe_subscription_id, $license->user->email ) );

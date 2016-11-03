@@ -83,6 +83,10 @@ class StripeEventHandler
         // check if local license should be active or inactive
         $active = in_array($subscription->status, ['trialing', 'active', 'past_due']);
         if( $license->isActive() !== $active ) {
+            if( ! $active ) {
+                $license->deactivated_at = Carbon::now();
+            }
+
             $license->status = $subscription->status;
             $license->save();
         }

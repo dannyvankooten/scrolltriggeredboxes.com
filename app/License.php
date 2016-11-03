@@ -22,12 +22,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $expires_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property Carbon $deleted_at
- * @property string stripe_subscription_id
- * @property string interval
+ * @property Carbon $deactivated_at
+ * @property string $stripe_subscription_id
+ * @property string $interval
  * @property string $plan
  * @property string $status
- *
  */
 class License extends Model {
 
