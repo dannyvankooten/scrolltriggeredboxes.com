@@ -73,12 +73,6 @@ class License extends Model {
      * - canceled
      */
     public function getStatus() {
-
-        // default to "active"
-        if( empty( $this->status ) ) {
-            return 'active';
-        }
-
         return $this->status;
     }
 
