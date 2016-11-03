@@ -40,7 +40,7 @@
 
         <div class="medium-margin">
             <h3>No account yet?</h3>
-             <p><a href="/register">Purchase a license</a> to get instant access to <a href="{{ domain_url('/add-ons') }}">all premium plugins</a>.</p>
+             <p><a href="{{ domain_url( '/register', 'account' ) }}">Purchase a license</a> to get instant access to <a href="{{ domain_url('/add-ons') }}">all premium plugins</a>.</p>
         </div>
         </div>
 @stop

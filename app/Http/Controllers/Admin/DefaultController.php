@@ -11,7 +11,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class DefaultController extends Controller {
+class DefaultController extends AdminController {
 
     // show users overview
     public function overview( Request $request ) {

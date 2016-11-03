@@ -23,8 +23,8 @@ class Kernel extends HttpKernel {
 	protected $middlewareGroups = [
 		'web' => [
 			Middleware\EncryptCookies::class,
-			Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
 			Illuminate\Session\Middleware\StartSession::class,
+			Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
 			Illuminate\View\Middleware\ShareErrorsFromSession::class,
 			Middleware\VerifyCsrfToken::class,
 		],
@@ -32,10 +32,7 @@ class Kernel extends HttpKernel {
 			Middleware\SetApiAccessControlHeaders::class,
 		],
 		'admin' => [
-			Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-			Illuminate\Session\Middleware\StartSession::class,
-			Middleware\VerifyUserIsAdmin::class,
-			Middleware\VerifyCsrfToken::class,
+			//
 		]
 	];
 
@@ -45,10 +42,9 @@ class Kernel extends HttpKernel {
 	 * @var array
 	 */
 	protected $routeMiddleware = [
-		'auth.basic' => Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
 		'auth.user' => Middleware\AuthenticateUser::class,
 		'auth.license' => Middleware\AuthenticateLicense::class,
-		'admin' => Middleware\VerifyUserIsAdmin::class,
+		'auth.admin' => Middleware\VerifyUserIsAdmin::class,
 		'guest' => Middleware\RedirectIfAuthenticated::class,
 		'helpscout.signature' => Middleware\VerifyHelpScoutSignature::class,
 		'can' => Illuminate\Foundation\Http\Middleware\Authorize::class,

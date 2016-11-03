@@ -6,7 +6,7 @@ use Illuminate\Routing\Redirector;
 
 use Illuminate\Http\Request;
 
-class UserController extends Controller {
+class UserController extends AdminController {
 
     // show users overview
     public function overview( Request $request ) {

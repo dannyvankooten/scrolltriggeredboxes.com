@@ -24,6 +24,9 @@ class AdminController extends Controller {
      * @param Log $log
      */
     public function __construct( Guard $guard, Log $log ) {
+	    $this->middleware('auth.user');
+	    $this->middleware('auth.admin');
+
         $this->admin = $guard->user();
         $this->log = $log;
     }

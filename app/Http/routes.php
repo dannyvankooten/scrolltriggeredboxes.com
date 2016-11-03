@@ -6,7 +6,7 @@ $domain = config('app.domain');
 $router->group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['web']], function () use( $router ) {
 
 	// auth
-	$router->get('/login', 'Auth\AuthController@showLoginForm');
+	$router->get('/login', 'Auth\AuthController@showLoginForm')->name('login');
 	$router->post('/login', 'Auth\AuthController@login');
 	$router->get('/logout', 'Auth\AuthController@logout');
 
@@ -15,7 +15,7 @@ $router->group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['
 	$router->post( '/register', 'AccountController@create' );
 
 	// account
-	$router->get( '/', 'AccountController@overview' );
+	$router->get( '/', 'AccountController@overview' )->name('home');
 	$router->get( '/welcome', 'AccountController@welcome' );
 	$router->get( '/edit', 'AccountController@editCredentials' );
 	$router->post( '/edit', 'AccountController@updateCredentials' );
@@ -69,26 +69,30 @@ $router->group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', '
 } );
 
 // Admin url's
-$router->group(['domain' => sprintf( 'admin.%s', $domain ), 'middleware' => ['admin'] ], function () use( $router ) {
+$router->group([
+	'domain' => sprintf( 'admin.%s', $domain ),
+	'namespace' => 'Admin',
+	'middleware' => ['web', 'admin']
+], function () use( $router ) {
 
-	$router->get('/', 'Admin\DefaultController@overview' );
+	$router->get('/', 'DefaultController@overview' )->name('admin.home');
 
-	$router->get('/users', 'Admin\UserController@overview' );
-	$router->post('/users', 'Admin\UserController@store' );
-	$router->get('/users/create', 'Admin\UserController@create' );
-	$router->get('/users/{id}', 'Admin\UserController@detail' );
+	$router->get('/users', 'UserController@overview' );
+	$router->post('/users', 'UserController@store' );
+	$router->get('/users/create', 'UserController@create' );
+	$router->get('/users/{id}', 'UserController@detail' );
 
-	$router->get( '/licenses', 'Admin\LicenseController@overview' );
-	$router->get( '/licenses/create', 'Admin\LicenseController@create' );
-	$router->post( '/licenses', 'Admin\LicenseController@store' );
-	$router->get( '/licenses/{id}', 'Admin\LicenseController@detail' );
-	$router->get( '/licenses/{id}/edit', 'Admin\LicenseController@edit' );
-	$router->put( '/licenses/{id}', 'Admin\LicenseController@update' );
-	$router->delete( '/licenses/{id}', 'Admin\LicenseController@destroy' );
+	$router->get( '/licenses', 'LicenseController@overview' );
+	$router->get( '/licenses/create', 'LicenseController@create' );
+	$router->post( '/licenses', 'LicenseController@store' );
+	$router->get( '/licenses/{id}', 'LicenseController@detail' );
+	$router->get( '/licenses/{id}/edit', 'LicenseController@edit' );
+	$router->put( '/licenses/{id}', 'LicenseController@update' );
+	$router->delete( '/licenses/{id}', 'LicenseController@destroy' );
 
-	$router->delete( '/payments/{id}', 'Admin\PaymentController@destroy' );
-    $router->get( '/payments/{id}/invoice', 'Admin\PaymentController@invoice' );
+	$router->delete( '/payments/{id}', 'PaymentController@destroy' );
+    $router->get( '/payments/{id}/invoice', 'PaymentController@invoice' );
 
-	$router->delete( '/activations/{id}', 'Admin\ActivationController@destroy' );
+	$router->delete( '/activations/{id}', 'ActivationController@destroy' );
 
 });

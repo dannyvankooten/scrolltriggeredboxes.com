@@ -5,7 +5,7 @@ use App\Activation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 
-class ActivationController extends Controller {
+class ActivationController extends AdminController {
 
     /**
      * @param int $id
