@@ -63,7 +63,7 @@
         </table>
 
         <div class="medium-margin">
-            <a href="/users/create">Add new user</a>
+            <a href="/users/create">&#43; Add new user</a>
         </div>
 
 

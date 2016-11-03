@@ -42,19 +42,21 @@
                 </tr>
             </thead>
             <tbody style="font-size: 15px;">
-            @foreach($licenses as $license)
+            @forelse($licenses as $license)
                 <tr>
                     <td><a href="{{ url('/licenses/' . $license->id) }}">{{ $license->license_key }}</a></td>
                     <td><a href="/users/{{$license->user->id}}">{{ $license->user->email }}</a></td>
                     <td>{{ count( $license->activations ) . '/' . $license->site_limit }}</td>
                     <td class="{{ $license->isActive() ? 'success' : 'warning' }}">{{ $license->status }}</td>
                 </tr>
-            @endforeach
+            @empty
+                <tr><td colspan="4">No licenses found.</tr>
+            @endforelse
             </tbody>
         </table>
 
         <div class="medium-margin">
-            <a href="/licenses/create">Add new license</a>
+            <a href="/licenses/create">&#43; Add new license</a>
         </div>
 
     </div>

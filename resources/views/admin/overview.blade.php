@@ -77,7 +77,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($recentLicenses as $license)
+                @forelse($recentLicenses as $license)
                     <tr>
                         <td><a href="/users/{{$license->user->id}}">{{ $license->user->email }}</a></td>
                         <td><a href="/licenses/{{$license->id}}>">{{ ucfirst($license->plan) }} <small class="muted">per {{ $license->interval }}</small></a></td>
@@ -85,7 +85,11 @@
                         <td>{{ $license->getActivationsCount() .'/'. $license->site_limit }}</td>
                         <td>{{ $license->created_at->format('M d') }}</td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="5">No users found.</td>
+                    </tr>
+                @endforelse
                 </tbody>
             </table>
         </div>
