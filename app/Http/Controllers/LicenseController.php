@@ -135,7 +135,7 @@ class LicenseController extends Controller {
 		}
 
 		$data = $request->input('license');
-        if( isset( $data['status'] ) ) {
+        if( ! empty( $data['status'] ) ) {
             try {
                 $license->isActive() ? $agent->cancelSubscription($license) : $agent->createSubscription($license);
             } catch( PaymentException $e ) {
