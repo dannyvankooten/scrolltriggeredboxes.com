@@ -21,8 +21,6 @@ class Totals {
      */
     public static function query( $days = 30 ) {
 
-        // TODO: updated_at column for license churn is not entirely true. could be separate column.
-
         $sql =
 <<<SQL
             SELECT 
