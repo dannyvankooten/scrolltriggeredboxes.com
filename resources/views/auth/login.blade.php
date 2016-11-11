@@ -14,6 +14,7 @@
         <div class="well small-margin">
         <form method="post" action="/login">
             {!! csrf_field() !!}
+            <input type="hidden" name="redirect_to" value="{{ request('r') }}" />
 
             <div class="form-group">
                 <label for="loginInputEmail">Email address</label>
