@@ -128,6 +128,7 @@
     linkElement.href = "{{ asset('css/font-awesome.min.css') }}";
     document.head.appendChild(linkElement);
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
 <script src="{{ asset('js/main.js') }}" type="text/javascript"></script>
 
 @yield('foot')
