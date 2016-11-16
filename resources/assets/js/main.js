@@ -89,20 +89,16 @@ var askForConfirmation = function(event) {
     helpers.toggleElements(europeElements, helpers.isCountryInEurope(input.value));
 });
 
-[].forEach.call(pricingForms, function(form) {
-    form.addEventListener('change', function() {
-        var plan = this.plan.value;
-        var selectedInterval = [].filter.call( this.interval, function(node) { return node.checked; }).pop().value;
-        helpers.calculatePrice( plan, selectedInterval);
-    });
-    form.addEventListener('keyup', function() {
-        var plan = this.plan.value;
-        var selectedInterval = [].filter.call( this.interval, function(node) { return node.checked; }).pop().value;
-        helpers.calculatePrice( plan, selectedInterval);
-    });
+function calculateNewPrice() {
+    var plan = this.elements.namedItem('plan').value;
+    var interval = this.elements.namedItem('interval').value;
+    helpers.calculatePrice( plan, interval);
+}
 
-    var selectedInterval = [].filter.call( form.interval, function(node) { return node.checked; }).pop().value;
-    helpers.calculatePrice(form.plan.value, selectedInterval);
+[].forEach.call(pricingForms, function(form) {
+    form.addEventListener('change', calculateNewPrice.bind(form));
+    form.addEventListener('keyup', calculateNewPrice.bind(form));
+    calculateNewPrice.call(form);
 });
 
 [].forEach.call(confirmationElements, function(element) {
