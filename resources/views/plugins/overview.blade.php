@@ -5,10 +5,6 @@
 @section('content')
 <div class="container">
 
-    <div class="breadcrumbs bordered small-padding">
-        <a href="/">Account</a> &rightarrow; Plugins
-    </div>
-
     <h1 class="page-title">Plugins</h1>
     <p>You can <a href="https://boxzillaplugin.com/download/">download the core Boxzilla plugin here</a>.</p>
 

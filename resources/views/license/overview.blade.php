@@ -4,11 +4,6 @@
 
 @section('content')
 <div class="container">
-
-    <div class="breadcrumbs bordered small-padding">
-        <a href="/">Account</a> &rightarrow; Licenses
-    </div>
-
     <h1 class="page-title">Licenses</h1>
     <p>You have the following license keys. You can use these keys to configure the plugin for automatic update checks.</p>
 

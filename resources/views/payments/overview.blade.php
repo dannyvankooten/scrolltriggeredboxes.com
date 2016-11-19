@@ -5,10 +5,6 @@
 @section('content')
 <div class="container">
 
-    <div class="breadcrumbs bordered small-padding">
-        <a href="/">Account</a> &rightarrow; Payments
-    </div>
-
     <h1 class="page-title">Payments</h1>
     <table class="table">
         <tr>

@@ -6,20 +6,14 @@
 
 <div class="container">
 
-    <div class="breadcrumbs bordered small-padding">
-        <a href="/">Account</a> &rightarrow; Edit
-    </div>
+    <nav class="nav medium-margin">
+        <strong style="margin-right: 10px;">Edit: </strong>
+        <a href="/edit" class="">Account Info</a> <span class="sep"></span>
+        <a href="/edit/billing" class="">Billing Info</a> <span class="sep"></span>
+        <a href="/edit/payment" class="strong">Payment Method</a>
+    </nav>
 
-    <div class="small-padding bordered small-margin">
-        <ul class="nav nav-inline no-margin">
-            <li><strong>Edit: </strong></li>
-            <li><a href="/edit" class="">Account Info</a></li>
-            <li><a href="/edit/billing" class="">Billing Info</a></li>
-            <li><a href="/edit/payment" class="strong">Payment Method</a></li>
-        </ul>
-    </div>
-
-    <h1 class="page-title">Update Payment Method</h1>
+    <h1 class="page-title">Update payment method</h1>
 
     @if(Auth::user()->card_last_four)
         <p>You have registered your card ending in <strong>{{ Auth()->user()->card_last_four }}</strong>.</p>

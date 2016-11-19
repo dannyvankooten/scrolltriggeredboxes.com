@@ -444,7 +444,8 @@ button,
   .button:hover,
   .button:focus {
     background: #005699;
-    border-color: #005699; }
+    border-color: #005699;
+    text-decoration: none; }
 
 .button-small,
 input[type="submit"].button-small {
@@ -582,6 +583,14 @@ button[disabled] {
   border: 1px solid #eee;
   padding: 6px; }
 
+.sep:before {
+  display: inline-block;
+  margin: 0 5px;
+  content: "\00b7"; }
+
+.block {
+  display: block; }
+
 .muted {
   color: #888;
   font-weight: normal; }
@@ -651,7 +660,8 @@ button[disabled] {
   text-align: center; }
 
 .center {
-  margin: 0 auto; }
+  margin-left: auto;
+  margin-right: auto; }
 
 .divider {
   clear: both;
@@ -847,14 +857,28 @@ code {
 .nav-inline {
   padding: 0;
   list-style: none; }
-
-.nav-inline li {
-  display: inline-block;
-  margin: 0 10px 0 0; }
+  .nav-inline li {
+    display: inline-block;
+    margin: 0 10px 0 0;
+    padding: 0; }
+  .nav-inline:after {
+    content: "";
+    display: table;
+    clear: both; }
 
 .nav a {
   padding: 3px;
   display: inline-block; }
+  .nav a.active {
+    font-weight: bold; }
+
+.nav-bar {
+  border-bottom: 1px solid #ccc; }
+  .nav-bar ul, .nav-bar li {
+    margin: 0;
+    padding: 0; }
+  .nav-bar a {
+    padding: 12px 8px; }
 
 .main-container p,
 .main-container table,

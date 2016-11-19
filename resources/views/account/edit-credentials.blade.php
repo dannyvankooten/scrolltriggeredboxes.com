@@ -6,18 +6,12 @@
 
 <div class="container">
 
-    <div class="breadcrumbs bordered small-padding">
-        <a href="/">Account</a> &rightarrow; Edit
-    </div>
-
-  <div class="small-padding bordered small-margin">
-      <ul class="nav nav-inline no-margin">
-          <li><strong>Edit: </strong></li>
-          <li><a href="/edit" class="strong">Account Info</a></li>
-          <li><a href="/edit/billing">Billing Info</a></li>
-          <li><a href="/edit/payment">Payment Method</a></li>
-    </ul>
-  </div>
+    <nav class="nav medium-margin">
+        <strong style="margin-right: 10px;">Edit: </strong>
+        <a href="/edit" class="strong">Account Info</a> <span class="sep"></span>
+        <a href="/edit/billing" class="">Billing Info</a> <span class="sep"></span>
+        <a href="/edit/payment">Payment Method</a>
+    </nav>
 
     <h1 class="page-title">Update account info</h1>
 

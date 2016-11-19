@@ -17,6 +17,19 @@
   padding: 6px;
 }
 
+.sep {
+  &:before {
+    display: inline-block;
+    margin: 0 5px;
+    content:"\00b7";
+  }
+
+}
+
+.block {
+  display: block;
+}
+
 .muted {
   color: #888;
   font-weight: normal;
@@ -114,7 +127,10 @@
 }
 
 .center {
-  margin: 0 auto;
+  margin: {
+    left: auto;
+    right: auto;
+  }
 }
 
 .divider {

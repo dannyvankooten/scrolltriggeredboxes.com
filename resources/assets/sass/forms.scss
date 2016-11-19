@@ -91,9 +91,11 @@ button,
   line-height: 100%;
   margin: 0;
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     background: darken( $primary_color, 10% );
     border-color: darken( $primary_color, 10% );
+    text-decoration: none;
   }
 }
 
