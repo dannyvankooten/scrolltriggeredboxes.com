@@ -51,7 +51,7 @@
             </div>
 
             <!-- Start credit card fields -->
-            <div data-show-if="payment_method:credit-card">
+            <div data-show-if="payment_method:stripe">
                 <div class="row clearfix">
                     <div class="col col-5">
                         <div class="form-group">

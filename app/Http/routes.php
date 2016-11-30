@@ -66,7 +66,9 @@ $router->group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', '
 	$router->get('/vat/validate/{number}', 'VatController@validate' );
 
 	$router->any( '/helpscout', 'HelpScoutController@get' );
-    $router->post( '/stripe', 'StripeController@get' );
+
+    $router->post( '/webhooks/paypal', 'WebhookController@paypal' );
+    $router->post( '/webhooks/stripe', 'WebhookController@stripe' );
 } );
 
 // Admin url's

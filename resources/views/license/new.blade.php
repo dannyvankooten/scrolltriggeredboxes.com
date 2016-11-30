@@ -45,7 +45,7 @@
                 <label class="unstyled"><input type="radio" name="interval" value="year" @if( old('interval', 'month') == 'year' ) checked @endif> Yearly</label>
             </div>
 
-            @if( $user->payment_method === 'credit-card' )
+            @if( $user->payment_method === 'stripe' )
             <p>
                 Your card ending in <strong>{{ $user->card_last_four }}</strong> (<a href="/edit/payment">edit</a>) will be charged <span class="price strong">$6 per month</span>
                 @if( $user->getTaxRate() > 0) <span>(excl. {{ Auth::user()->getTaxRate() }}% tax)</span> @endif

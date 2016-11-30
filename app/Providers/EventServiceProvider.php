@@ -1,12 +1,13 @@
 <?php namespace App\Providers;
 
 
+use App\Services\Payments\PayPalEvent;
+use App;
+use Stripe;
+
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate;
-
-use App;
-use Stripe;
 
 class EventServiceProvider extends ServiceProvider {
 
@@ -20,7 +21,10 @@ class EventServiceProvider extends ServiceProvider {
 			App\Listeners\UserLoginHandler::class,
 		],
         Stripe\Event::class => [
-            App\Listeners\StripeEventHandler::class
+            App\Listeners\StripeEventHandler::class,
+        ],
+        PayPalEvent::class => [
+            App\Listeners\PayPalEventHandler::class,
         ]
 	];
 

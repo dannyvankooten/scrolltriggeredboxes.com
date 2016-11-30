@@ -2,15 +2,16 @@
 
 use App\Http\Controllers\Controller;
 
+use App\Services\Payments\PayPalEvent;
 use Stripe;
 use Illuminate\Http\Response;
 
-class StripeController extends Controller {
+class WebhookController extends Controller {
 
     /**
      * @return Response
      */
-	public function get()
+	public function stripe()
 	{
         // retrieve the request's body and parse it as JSON
         $input = @file_get_contents("php://input");
@@ -25,5 +26,23 @@ class StripeController extends Controller {
         // tell Stripe we got this
         return new Response('', Response::HTTP_OK );
 	}
+
+    /**
+     * @return Response
+     */
+    public function paypal()
+    {
+        // retrieve the request's body and parse it as JSON
+        $input = @file_get_contents("php://input");
+        $eventData = json_decode($input);
+
+        $event = new PayPalEvent($eventData);
+
+        // fire off local event
+        event($event);
+
+        // tell Stripe we got this
+        return new Response('', Response::HTTP_OK );
+    }
 
 }

@@ -62,7 +62,7 @@ var askForConfirmation = function(event) {
 
     form.addEventListener('submit', function(event) {
         var form = event.form || event.target || this.form || this;
-
+        
         // only act if we're paying by credit card
         if(form.elements.namedItem('payment_method').value !== 'stripe') {
             return;
