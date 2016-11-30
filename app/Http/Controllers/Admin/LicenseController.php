@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\License;
+use App\Services\Payments\Agent;
 use App\Services\Payments\PaymentException;
 use App\Services\Payments\StripeAgent;
 use App\Services\SubscriptionAgent;
@@ -91,7 +92,7 @@ class LicenseController extends AdminController {
 	}
 
 	// update license details
-	public function update( $id, Request $request, Redirector $redirector, StripeAgent $agent ) {
+	public function update( $id, Request $request, Redirector $redirector, Agent $agent ) {
 		/** @var License $license */
 		$license = License::with(['user'])->findOrFail($id);
 

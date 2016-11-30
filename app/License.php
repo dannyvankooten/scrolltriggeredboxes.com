@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $updated_at
  * @property Carbon $deactivated_at
  * @property string $stripe_subscription_id
+ * @property string $paypal_subscription_id
+ * @property string $payment_method
  * @property string $interval
  * @property string $plan
  * @property string $status
@@ -82,7 +84,7 @@ class License extends Model {
      * @return bool
      */
     public function isActive() {
-        return $this->getStatus() === 'active' && ! empty( $this->stripe_subscription_id );
+        return $this->getStatus() === 'active' && ( ! empty( $this->stripe_subscription_id ) || ! empty( $this->paypal_subscription_id ) );
     }
 
 	/**

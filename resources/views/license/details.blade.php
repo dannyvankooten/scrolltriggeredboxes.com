@@ -40,7 +40,7 @@
             <tr>
                 <th>Expire{{ $license->isExpired() ? 'd' : 's' }}</th>
                 <td>
-                    <span class="{{ $license->isExpired() ? 'danger' : 'warning' }}">{{ $license->expires_at->format('M j, Y') }}</span>
+                    <span class="{{ $license->isExpired() ? 'danger' : 'warning' }}">{{ $license->expires_at ? $license->expires_at->format('M j, Y') : '' }}</span>
                 </td>
                 <td class="row-action"></td>
             </tr>

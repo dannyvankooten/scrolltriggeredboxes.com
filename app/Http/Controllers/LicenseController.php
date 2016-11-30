@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Activation;;
-use App\Services\Payments\StripeAgent;
+use App\Jobs\EmailLicenseDetails;
+use App\Services\Payments\Agent;
 use App\Services\Payments\PaymentException;
 use App\Services\Purchaser;
 use App\User;
@@ -17,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\License;
 use Illuminate\Routing\Redirector;
+use PayPal\Exception\PayPalConnectionException;
 
 class LicenseController extends Controller {
 
@@ -51,7 +53,9 @@ class LicenseController extends Controller {
 	 * @return \Illuminate\View\View
 	 */
 	public function create( ) {
-		return view('license.new');
+        /** @var User $user */
+        $user = $this->auth->user();
+		return view('license.new', [ 'user' => $user ]);
 	}
 
 	/**
@@ -61,11 +65,11 @@ class LicenseController extends Controller {
 	 *
 	 * @return RedirectResponse
 	 */
-	public function store( Request $request, Broker $broker, Purchaser $purchaser, Redirector $redirector  ) {
+	public function store( Request $request, Purchaser $purchaser, Redirector $redirector, Agent $agent ) {
 
         // validate request
         $this->validate( $request, [
-            'plan' 			    => 'required|in:personal,developer',
+            'plan' => 'required|in:personal,developer',
         ]);
 
 		/** @var User $user */
@@ -73,13 +77,17 @@ class LicenseController extends Controller {
 		$plan = $request->input('plan', 'personal');
 		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
 
-        if($user->payment_method === 'paypal') {
-            $approvalUrl = $broker->setupSubscription( $plan, $interval);
-            return $redirector->away($approvalUrl);
-        }
+        $license = $purchaser->license($user, $plan, $interval, $user->payment_method );
 
 		try {
-			$license = $purchaser->license($user, $plan, $interval);
+            $approvalUrl = $agent->createSubscription( $license );
+
+            if( ! empty($approvalUrl) ) {
+                // store license in session
+                session([ 'license' => $license ]);
+
+                return $redirector->away($approvalUrl);
+            }
 		} catch( PaymentException $e ) {
 			$errorMessage = $e->getMessage();
 			$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
@@ -91,6 +99,9 @@ class LicenseController extends Controller {
 			return $redirector->back()->with('error', $errorMessage );
 		}
 
+		$license->save();
+        $this->dispatch(new EmailLicenseDetails($license));
+
 		$this->log->info( sprintf( 'New license key for %s (per %s, %s plan)', $user->email, $interval, $plan ) );
 
 		return $redirector
@@ -98,6 +109,35 @@ class LicenseController extends Controller {
 			->with('message', 'You now have a new license!');
 	}
 
+    /**
+     * @param Request $request
+     * @param Agent $agent
+     * @param Redirector $redirector
+     * @return RedirectResponse
+     */
+	public function storeFromPayPal( Request $request, Agent $agent, Redirector $redirector ) {
+        /** @var User $user */
+        $user = $this->auth->user();
+        $token = $request->query->get('token');
+        $session = $request->session();
+        $license = $session->get('license');
+
+        try {
+            $agent->startSubscription($license, $token);
+        } catch( PaymentException $e ) {
+            $errorMessage = $e->getMessage();
+            $errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
+            return $redirector->to('/licenses/new')->with('error', $errorMessage );
+        }
+
+        $license->save();
+        $this->dispatch(new EmailLicenseDetails($license));
+        $this->log->info( sprintf( 'New license key for %s (per %s, %s plan)', $user->email, $license->interval, $license->plan ) );
+
+        return $redirector
+            ->to('/licenses/' . $license->id )
+            ->with('message', 'You now have a new license!');
+    }
 
 	/**
 	 * @param $id
@@ -124,10 +164,10 @@ class LicenseController extends Controller {
      * @param Request $request
      * @param Redirector $redirector
      *
-     * @param StripeAgent $agent
+     * @param Agent $agent
      * @return RedirectResponse
      */
-	public function update($id, Request $request, Redirector $redirector, StripeAgent $agent ) {
+	public function update($id, Request $request, Redirector $redirector, Agent $agent ) {
 		/** @var License $license */
 		$license = License::findOrFail($id);
 

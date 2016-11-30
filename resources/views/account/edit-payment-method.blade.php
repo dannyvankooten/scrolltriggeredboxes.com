@@ -15,8 +15,8 @@
 
     <h1 class="page-title">Update payment method</h1>
 
-    @if(Auth::user()->card_last_four)
-        <p>You have registered your card ending in <strong>{{ Auth()->user()->card_last_four }}</strong>.</p>
+    @if( $user->payment_method === 'stripe' && $user->card_last_four)
+        <p>You have registered your card ending in {{ $user->card_last_four }}.</p>
         <p>Use the following form if you want to use a different credit card.</p>
     @endif
 
@@ -26,8 +26,6 @@
     @endif
 
     @include('partials.form-messages')
-
-
 
     <div class="well small-margin">
         <noscript>Please enable JavaScript to update your credit card.</noscript>
@@ -41,7 +39,7 @@
                 <div class="row clearfix ">
                     <div class="col col3-">
                         <label class="unstyled">
-                            <input type="radio" name="payment_method" value="credit-card" {{ $user->payment_method === 'credit-card' ? 'checked' : '' }}> <i class="fa fa-credit-card" aria-hidden="true"></i> Credit card
+                            <input type="radio" name="payment_method" value="stripe" {{ $user->payment_method === 'stripe' ? 'checked' : '' }}> <i class="fa fa-credit-card" aria-hidden="true"></i> Credit card
                         </label>
                     </div>
                     <div class="col col3-">

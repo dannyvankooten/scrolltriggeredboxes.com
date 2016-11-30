@@ -26,6 +26,7 @@ $router->group(['domain' => sprintf( 'account.%s', $domain ), 'middleware' => ['
 
 	// licenses
 	$router->get('/licenses', 'LicenseController@overview');
+    $router->get('/licenses/new/paypal', 'LicenseController@storeFromPayPal' );
 	$router->get('/licenses/new', 'LicenseController@create' );
 	$router->post('/licenses/new', 'LicenseController@store' );
 	$router->get('/licenses/{id}', 'LicenseController@details' );

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use App\Services\LicenseGuard;
-use App\Services\Payments\StripeAgent;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,11 +38,9 @@ class LicenseController extends Controller {
 
     /**
      * Get license details
-     *
-     * @param StripeAgent $agent
      * @return JsonResponse
      */
-    public function getLicense( StripeAgent $agent ) {
+    public function getLicense() {
         /** @var License $license */
         $license = $this->auth->license();
 

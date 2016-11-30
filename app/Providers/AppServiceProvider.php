@@ -1,6 +1,8 @@
 <?php namespace App\Providers;
 
+use App\Services\Payments\Agent;
 use App\Services\Payments\Cashier;
+use App\Services\Payments\PayPalAgent;
 use App\Services\Payments\StripeAgent;
 use App\Services\Invoicer\Moneybird;
 use App\Services\Purchaser;
@@ -59,14 +61,22 @@ class AppServiceProvider extends ServiceProvider {
 			return new StripeAgent( $stripeSecret, $cashier, $log );
 		});
 
+        $this->app->singleton( PayPalAgent::class, function ($app) {
+            $apiContext = $app[ApiContext::class];
+            $cashier = $app[Cashier::class];
+            $log = $app[Log::class];
+            return new PayPalAgent( $apiContext, $cashier, $log );
+        });
+
+        $this->app->singleton( Agent::class, function ($app) {
+            return new Agent($app[StripeAgent::class], $app[PayPalAgent::class]);
+        });
+
 		$this->app->singleton( Purchaser::class, function ($app) {
             $stripeAgent = $app[StripeAgent::class];
 			return new Purchaser($stripeAgent);
 		});
 
-        $this->app->singleton( Broker::class, function ($app) {
-            return new Broker($app[ApiContext::class]);
-        });
 
         $this->app->singleton( ApiContext::class, function($app) {
             $config = config('services.paypal');

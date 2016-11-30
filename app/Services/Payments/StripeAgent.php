@@ -161,6 +161,19 @@ class StripeAgent {
         $license->deactivated_at = null;
 
         $this->log->info( sprintf( 'Created Stripe subscription %s for user %s', $license->stripe_subscription_id, $license->user->email ) );
+
+        // return empty string for no redirect
+        return '';
+    }
+
+    /**
+     * @param License $license
+     * @param string $token
+     * @throws PaymentException
+     */
+    public function startSubscription( License $license, $token = '' )
+    {
+        // Nothing to see here. Stripe subscriptions are started right away.
     }
 
     /**

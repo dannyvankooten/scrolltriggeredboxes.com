@@ -1,5 +1,6 @@
 <?php namespace App\Console;
 
+use App\Console\Commands\PayPal;
 use App\Console\Commands\CreateInvoices;
 use App\Console\Commands\StripeCancelSubscriptions;
 use App\Console\Commands\StripeCreatePlans;
@@ -21,6 +22,7 @@ class Kernel extends ConsoleKernel {
         StripePollEvents::class,
         StripeCreatePlans::class,
         StripeCancelSubscriptions::class,
+        PayPal\CreatePlans::class
 	];
 
 	/**

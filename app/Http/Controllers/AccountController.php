@@ -151,34 +151,21 @@ class AccountController extends Controller {
 	 * @return RedirectResponse
 	 */
 	public function updatePaymentMethod( Request $request, Redirector $redirector, StripeAgent $agent  ) {
-		/** @var User $user */
-		$user = $this->auth->user();
-
-		$this->validate( $request, [
-			'payment_token' => 'required'
-		]);
-
-		try {
-			$user = $agent->updatePaymentMethod($user, $request->input('payment_token'));
-		} catch( Exception $e ) {
-			$this->log->error( 'Payment customer creation failed: ' . $e->getMessage() );
-			return $redirector->back()->with('error', $e->getMessage() );
-		}
-
-       if($request->input('payment_method', 'credit-card') === 'paypal') {
-            return $this->updatePayPal( $request, $redirector, $charger );
+        $method = $request->input('payment_method', 'credit-card');
+        if( $method === 'paypal') {
+            return $this->updatePayPal( $request, $redirector );
         }
 
-        return $this->updateCreditCard( $request, $redirector, $charger );
+        return $this->updateCreditCard( $request, $redirector, $agent );
 	}
 
     /**
      * @param Request $request
      * @param Redirector $redirector
-     * @param Charger $charger
+     *
      * @return RedirectResponse
      */
-	protected function updatePayPal( Request $request, Redirector $redirector, Charger $charger  ) {
+	protected function updatePayPal( Request $request, Redirector $redirector  ) {
         /** @var User $user */
         $user = $this->auth->user();
         $user->payment_method = 'paypal';
@@ -189,28 +176,24 @@ class AccountController extends Controller {
     /**
      * @param Request $request
      * @param Redirector $redirector
-     * @param Charger $charger
      * @return RedirectResponse
      */
-    protected function updateCreditCard( Request $request, Redirector $redirector, Charger $charger  ) {
+    protected function updateCreditCard( Request $request, Redirector $redirector, StripeAgent $agent  )
+    {
         /** @var User $user */
         $user = $this->auth->user();
-
-        $this->validate( $request, [
+        $this->validate($request, [
             'payment_token' => 'required'
         ]);
-
         try {
-            $user = $charger->customer($user, $request->input('payment_token'));
-        } catch( Exception $e ) {
-            $this->log->error( 'Payment customer creation failed: ' . $e->getMessage() );
-            return $redirector->back()->with('error', $e->getMessage() );
+            $user = $agent->updatePaymentMethod($user, $request->input('payment_token'));
+        } catch (Exception $e) {
+            $this->log->error('Payment customer creation failed: ' . $e->getMessage());
+            return $redirector->back()->with('error', $e->getMessage());
         }
 
-        $user->payment_method = 'credit-card';
         $user->card_last_four = $request->input('user.card_last_four');
         $user->save();
-
         return $redirector->back()->with('message', 'Changes saved!');
     }
 
@@ -271,11 +254,11 @@ class AccountController extends Controller {
 
 		// log user in automatically
 		$this->auth->loginUsingId($user->id);
-
         $this->log->info( sprintf( 'New user registration: #%d  %s <%s>', $user->id, $user->name, $user->email ) );
 
 		// create customer for payments
 		try {
+            // TODO: fix this
 			$purchaser->user($user, $request->input('payment_token'));
 		} catch( Exception $e ) {
 			$this->log->error( 'Payment customer creation failed: ' . $e->getMessage() );
