@@ -6,28 +6,27 @@ use App\Jobs\EmailLicenseDetails;
 use App\Services\Payments\Broker;
 use App\User;
 use App\License;
-use App\Subscription;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use DateTime;
-use App\Services\Payments\Charger;
+use App\Services\Payments\StripeAgent;
 
 class Purchaser {
 
     use DispatchesJobs;
 
     /**
-     * @var Charger
+     * @var StripeAgent
      */
-    protected $charger;
+    protected $agent;
 
     /**
      * Purchaser constructor.
      *
-     * @param Charger $charger
+     * @param StripeAgent $agent
      */
-    public function __construct( Charger $charger )
+    public function __construct( StripeAgent $agent )
     {
-        $this->charger = $charger;
+        $this->agent = $agent;
     }
 
     /**
@@ -38,28 +37,37 @@ class Purchaser {
      */
     public function user( User $user, $paymentToken )
     {
-        $user = $this->charger->customer($user, $paymentToken );
+        $user = $this->agent->updatePaymentMethod($user, $paymentToken );
         $user->save();
         return $user;
     }
 
     /**
      * @param string $plan
-     * @param float $interval
+     * @param string $interval
      *
-     * @return int
+     * @return float
      */
-    public function calculatePrice( $plan, $interval ) {
-        $planPrices = array(
-            "personal" => 6,
-            "developer" => 10,
-            "agency" => 24,
+    public function calculatePrice( $plan, $interval )
+    {
+        $prices = array(
+            'personal' => 6.00,
+            'developer' => 20.00,
         );
 
-        $price = $planPrices[ $plan ];
-        $isYearly = $interval === 'year';
-        $total = $isYearly ? $price * 10 : $price;
-        return $total;
+        if( ! isset( $prices[ $plan ] ) ) {
+            throw new \InvalidArgumentException( "Invalid plan ID: $plan" );
+        }
+
+        $price = $prices[ $plan ];
+        $yearly = $interval === 'year';
+
+        // a year costs 10 months (2 free months)
+        if( $yearly ) {
+            $price = $price * 10;
+        }
+
+        return $price;
     }
 
     /**
@@ -71,44 +79,32 @@ class Purchaser {
      */
     public function license( User $user, $plan, $interval )
     {
-        $planLimits = array(
-            "personal" => 1,
-            "developer" => 3,
-            "agency" => 10,
+        if( ! in_array( $plan, array( 'personal', 'developer' ) ) ) {
+            throw new \InvalidArgumentException("Invalid plan ID: $plan");
+        }
+
+        $limits = array(
+            'personal' => 2,
+            'developer' => 10
         );
-
-        // subtotal
-        $amount = $this->calculatePrice( $plan, $interval );
-        $payment = null;
-
-        // charge user
-        $payment = $this->charger->charge( $user, $amount );
+        $site_limit = $limits[ $plan ];
 
         // Create license.
         $license = new License();
         $license->license_key = License::generateKey();
         $license->user_id = $user->id;
-        $license->site_limit = $planLimits[$plan];
-        $license->expires_at = new DateTime("+1 $interval");
+        $license->site_limit = $site_limit;
+        $license->interval = $interval;
+        $license->plan = $plan;
+
+        // setup subscription
+        $this->agent->createSubscription( $license );
+
+        // save license
         $license->save();
 
-        // Create subscription
-        $subscription = new Subscription([
-            'interval' => $interval,
-            'active' => 1,
-            'next_charge_at' => $license->expires_at->modify('-5 days')
-        ]);
-        $subscription->amount = $amount;
-        $subscription->license_id = $license->id;
-        $subscription->user_id = $user->id;
-        $subscription->save();
-
-        // Attach payment to subscription
-        $payment->subscription_id = $subscription->id;
-        $payment->save();
-
         // dispatch job to send license details over email
-        $this->dispatch( new EmailLicenseDetails( $license ) );
+        $this->dispatch(new EmailLicenseDetails($license));
 
         return $license;
     }

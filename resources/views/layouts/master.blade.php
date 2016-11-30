@@ -48,23 +48,7 @@
                 </a>
             </h2>
 
-            @if(Auth::check())
-                <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
-                    <ul class="nav nav-inline">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle">Menu</a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/plugins">Download plugins</a></li>
-                                <li><a href="/licenses">View your licenses</a></li>
-                                <li><a href="/payments">View your payments</a></li>
-                                <li><a href="/edit">Edit account info</a></li>
-                                <li><a href="/licenses/new">Purchase a new license</a></li>
-                                <li class="last" style="border-top: 2px solid #eee;"><a href="/logout">Log out</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </nav>
-            @elseif(!Request::is('register'))
+            @if(!Auth::check() && !Request::is('register'))
                 <nav class="header-nav pull-right" role="navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
                     <ul class="nav nav-inline">
                         <li><a href="{{ domain_url( '/' ) }}">Back to main site</a></li>
@@ -73,6 +57,8 @@
             @endif
         </div>
     </div>
+
+    @include('partials.nav')
 
     <div id="content" class="main-container medium-margin" role="main" itemprop="mainContentOfPage">
 
@@ -128,6 +114,7 @@
     linkElement.href = "{{ asset('css/font-awesome.min.css') }}";
     document.head.appendChild(linkElement);
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
 <script src="{{ asset('js/main.js') }}" type="text/javascript"></script>
 
 @yield('foot')

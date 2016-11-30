@@ -7,9 +7,10 @@ use Carbon\Carbon;
  * Class Payment
  * @package App
  *
+ * @property int $id
  * @property User $user
- * @property Subscription $subscription
- * @property Payment[] $activations
+ * @property Payment[] $refunds
+ * @property License $license
  * @property string $currency
  * @property double $subtotal
  * @property double $tax
@@ -20,7 +21,9 @@ use Carbon\Carbon;
  * @property string $paypal_id
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ * @property int $user_id
  * @property int $related_payment_id
+ * @property int $license_id
  */
 class Payment extends Model
 {
@@ -37,12 +40,13 @@ class Payment extends Model
 		return $this->belongsTo('App\User', 'user_id', 'id');
 	}
 
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-	public function subscription() {
-		return $this->belongsTo('App\Subscription', 'subscription_id', 'id');
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function license()
+    {
+        return $this->belongsTo('App\License', 'license_id', 'id');
+    }
 
 	/**
 	 * @return double
@@ -64,7 +68,7 @@ class Payment extends Model
 	public function getFormattedTotal() {
 
 	    if( $this->getTotal() < 0 ) {
-            return '- ' . $this->getCurrencySign() . abs( $this->getTotal() );
+            return '-' . $this->getCurrencySign() . ( abs( $this->getTotal() ) + 0 );
         }
 
 		return $this->getCurrencySign() . ( $this->getTotal() + 0 );
@@ -88,23 +92,24 @@ class Payment extends Model
 	 * @return string
 	 */
 	public function getCurrency() {
-		return strtoupper( $this->currency );
+		return ! empty( $this->currency ) ? strtoupper( $this->currency ) : 'USD';
 	}
 
 	/**
 	 * @return string
 	 */
 	public function getCurrencySign() {
-		static $map = [
+		$map = [
 			'USD' => '$',
 			'EUR' => '€'
 		];
 
-		if( ! empty( $this->currency ) ) {
-			return $map[ $this->currency ];
-		}
+        $currency = $this->getCurrency();
+        if( ! isset( $map[ $currency ] ) ) {
+            throw new \InvalidArgumentException(sprintf('%s has no known currency sign', $currency ) );
+        }
 
-		return '$';
+        return $map[ $currency ];
 	}
 
 	/**
@@ -137,6 +142,13 @@ class Payment extends Model
 	 */
 	public function isEligibleForRefund() {
 		$border = new Carbon('-90 days');
-		return $this->subtotal > 0 && count( $this->refunds) === 0 && $this->created_at->gt($border);
+		return ! $this->isRefund() && count( $this->refunds) === 0 && $this->created_at->gt($border);
 	}
+
+    /**
+     * @return bool
+     */
+	public function isRefund() {
+	    return $this->subtotal < 0;
+    }
 }

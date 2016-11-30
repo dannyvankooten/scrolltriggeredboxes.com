@@ -90,7 +90,7 @@ class PluginController extends Controller {
 	 * @param int|string $id
 	 * @param Request $request
 	 *
-	 * @return BinaryFileResponse
+	 * @return BinaryFileResponse|Response
 	 */
 	public function download($id, Request $request) {
 
@@ -112,6 +112,13 @@ class PluginController extends Controller {
 			return new Response( 'Download is unavailable without a valid key.', 403 );
 		}
 
+		$license = $activation->license;
+
+        // restrict access to download when license is invalid
+        if( ! $license->isValid() ) {
+            return new Response( 'Plugin license is no longer valid.', 403 );
+        }
+
 		/** @var Plugin $plugin */
 		$plugin = Plugin::where('id', $id)
 			->orWhere('sid', $id)
@@ -124,7 +131,7 @@ class PluginController extends Controller {
 		$file = $downloader->download( $version );
 		$filename = $plugin->slug . '.zip';
 
-		$this->log->info( sprintf( 'Plugin download: %s v%s for license #%d', $plugin->sid, $version, $activation->license->id ) );
+		$this->log->info( sprintf( 'Plugin download: %s v%s for license #%d', $plugin->sid, $version, $license->id ) );
 
 		$response = new BinaryFileResponse( $file, 200 );
 		$response->setContentDisposition( 'attachment', $filename );

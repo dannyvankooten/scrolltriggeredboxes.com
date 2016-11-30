@@ -14,6 +14,13 @@
 
         <table class="table row-scoped">
             <tr>
+                <th>Status</th>
+                <td class="{{ $license->isActive() ? 'success' : 'warning' }}">
+                    {{ $license->isActive() ? 'Active' : 'Inactive' }}
+                </td>
+                <td class="row-action"></td>
+            </tr>
+            <tr>
                 <th>Key</th>
                 <td width="80%">
                     <input type="text" value="{{ $license->license_key }}" class="unstyled" onfocus="this.select()" readonly />
@@ -28,46 +35,8 @@
                 </td>
                 <td class="row-action"></td>
             </tr>
-            @if( $license->subscription )
-            <tr>
-                <th>Subscription</th>
-                <td class="clearfix">
-                    <span class="{{ $license->subscription->active ? "success" : "danger" }}">{{ $license->subscription->active ? "Active" : "Inactive" }}</span>
-                </td>
-                <td class="row-action">
-                    <form method="post" action="/licenses/{{ $license->id }}">
-                        {!! csrf_field() !!}
 
-                        @if( $license->subscription->active )
-                            <input type="hidden" name="subscription[active]" value="0" />
-                            <button class="button-small" data-confirm="Are you sure you want to deactivate auto-renewal for this license?">Deactivate</button>
-                        @else
-                            <input type="hidden" name="subscription[active]" value="1" />
-                            <button class="button-small">Reactivate</button>
-                        @endif
-
-                    </form>
-                </td>
-            </tr>
-                @if( $license->subscription->active )
-                <tr>
-                    <th>Payment</th>
-                    <td>
-                        You will be charged <strong>${{ $license->subscription->getAmountInclTax() + 0 }}</strong> on <strong>{{ $license->subscription->getNextChargeDate()->format('m/d/Y') }}</strong>.
-                    </td>
-                    <td class="row-action">
-                        @if( $license->subscription->isPaymentDue() )
-                            <form method="post" action="/licenses/{{ $license->id }}">
-                                {!! csrf_field() !!}
-                                <button class="button-small">Pay Now</button>
-                            </form>
-                        @endif
-                    </td>
-                </tr>
-                @endif
-            @endif
-
-            @if( ! $license->hasActiveSubscription() || $license->isExpired() )
+            @if( ! $license->isActive() )
             <tr>
                 <th>Expire{{ $license->isExpired() ? 'd' : 's' }}</th>
                 <td>
@@ -102,6 +71,28 @@
                 </tr>
             @endif
         </table>
+
+        <div class="medium-margin"></div>
+
+        @if( $license->isActive() )
+            <h3>Cancel auto-renew for this license</h3>
+            <p>Use the button below to stop this license from auto-renewing.</p>
+            <form method="post" action="/licenses/{{ $license->id }}">
+                {!! csrf_field() !!}
+
+                <input type="hidden" name="license[status]" value="canceled" />
+                <button class="button-small button-danger" data-confirm="Are you sure you want to deactivate auto-renewal for this license?">Cancel license</button>
+            </form>
+        @else
+            <h3>Enable auto-renew for this license</h3>
+            <p>This license is not auto-renewing right now.</p>
+            <form method="post" action="/licenses/{{ $license->id }}">
+                {!! csrf_field() !!}
+
+                <input type="hidden" name="license[status]" value="active" />
+                <button class="button-small">Re-enable license</button>
+            </form>
+        @endif
 
 
         <div class="medium-margin">

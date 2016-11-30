@@ -14,6 +14,7 @@
         <div class="well small-margin">
         <form method="post" action="/login">
             {!! csrf_field() !!}
+            <input type="hidden" name="redirect_to" value="{{ request('r') }}" />
 
             <div class="form-group">
                 <label for="loginInputEmail">Email address</label>
@@ -40,7 +41,7 @@
 
         <div class="medium-margin">
             <h3>No account yet?</h3>
-             <p><a href="/register">Purchase a license</a> to get instant access to <a href="{{ domain_url('/add-ons') }}">all premium plugins</a>.</p>
+             <p><a href="{{ domain_url( '/register', 'account' ) }}">Purchase a license</a> to get instant access to <a href="{{ domain_url('/add-ons') }}">all premium plugins</a>.</p>
         </div>
         </div>
 @stop

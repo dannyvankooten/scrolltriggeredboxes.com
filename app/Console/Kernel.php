@@ -1,8 +1,10 @@
 <?php namespace App\Console;
 
-use App\Console\Commands\ChargeSubscriptions;
 use App\Console\Commands\CreateInvoices;
-use App\Console\Commands\PayPal\CreatePlan;
+use App\Console\Commands\StripeCancelSubscriptions;
+use App\Console\Commands\StripeCreatePlans;
+use App\Console\Commands\StripePollEvents;
+use App\Console\Commands\StripeMigrateSubscriptions;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,9 +16,11 @@ class Kernel extends ConsoleKernel {
 	 * @var array
 	 */
 	protected $commands = [
-		ChargeSubscriptions::class,
 		CreateInvoices::class,
-        CreatePlan::class,
+        StripeMigrateSubscriptions::class,
+        StripePollEvents::class,
+        StripeCreatePlans::class,
+        StripeCancelSubscriptions::class,
 	];
 
 	/**
@@ -27,8 +31,7 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		$schedule->command('subscriptions:charge')
-				 ->dailyAt('05:00');
+
 	}
 
 }

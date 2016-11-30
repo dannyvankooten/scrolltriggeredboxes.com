@@ -2,6 +2,7 @@
 
 
 use Carbon\Carbon;
+use DateInterval;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,21 +16,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $license_key
  * @property User $user
  * @property Activation[] $activations
- * @property Subscription $subscription
+ * @property Payment[] $payments
  * @property int $user_id
  * @property int $site_limit
  * @property Carbon $expires_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property Carbon $deleted_at
+ * @property Carbon $deactivated_at
+ * @property string $stripe_subscription_id
+ * @property string $interval
+ * @property string $plan
+ * @property string $status
  */
 class License extends Model {
 
-	use SoftDeletes;
-
 	protected $table = 'licenses';
 	protected $fillable = [];
-
 
 	public $timestamps = true;
 	protected $dates = [ 'created_at', 'updated_at', 'deleted_at', 'expires_at' ];
@@ -41,6 +43,14 @@ class License extends Model {
 		return $this->belongsTo('App\User', 'user_id', 'id');
 	}
 
+    /**
+     * @deprecated 1.1
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function subscription() {
+        return $this->hasOne('App\Subscription');
+    }
+
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
@@ -48,26 +58,49 @@ class License extends Model {
 		return $this->hasMany('App\Activation', 'license_id', 'id')->orderBy('created_at', 'DESC');
 	}
 
-	/**
-	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
-	 */
-	public function subscription() {
-		return $this->hasOne('App\Subscription');
-	}
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function payments()
+    {
+        return $this->hasMany('App\Payment', 'license_id', 'id')->orderBy('created_at', 'DESC');
+    }
+
+    /**
+     * Get the license status
+     *
+     * - active
+     * - canceled
+     */
+    public function getStatus() {
+        return $this->status;
+    }
+
+    /**
+     * Does this license have an active subscription?
+     *
+     * @return bool
+     */
+    public function isActive() {
+        return $this->getStatus() === 'active' && ! empty( $this->stripe_subscription_id );
+    }
 
 	/**
+     * Did this license expire?
+     *
 	 * @return bool
 	 */
 	public function isExpired() {
-		return $this->expires_at < Carbon::now();
+		return empty( $this->expires_at ) || $this->expires_at < Carbon::now();
 	}
 
 	/**
+     * For a license to be valid, it needs to be active or not yet expired.
+     *
 	 * @return bool
 	 */
 	public function isValid() {
-		return ! $this->isExpired() && ! $this->trashed();
+		return $this->isActive() || ! $this->isExpired();
 	}
 
 	/**
@@ -88,19 +121,25 @@ class License extends Model {
 		return count( $this->activations ) >= $this->site_limit;
 	}
 
+    /**
+     * @return int
+     */
+	public function getActivationsCount() {
+        return count($this->activations);
+    }
+
 	/**
 	 * @return int
 	 */
-	public function getActivationsLeft() {
-		$this->load('activations');
-		return $this->site_limit - count( $this->activations );
+	public function getActivationsLeftCount() {
+		return $this->site_limit - $this->getActivationsCount();
 	}
 
 	/**
 	 * @return float
 	 */
 	public function usagePercentage() {
-		return count( $this->activations ) / $this->site_limit * 100;
+		return $this->getActivationsCount() / $this->site_limit * 100;
 	}
 
 	/**
@@ -111,6 +150,20 @@ class License extends Model {
 	public function belongsToUser( User $user ) {
 		return $this->user_id == $user->id;
 	}
+
+    /**
+     * Extend license by 1 interval.
+     */
+    public function extend() {
+        $fromDate = $this->expires_at;
+
+        if(empty($fromDate) || $this->isExpired()) {
+            $fromDate = Carbon::now();
+        }
+
+        // add 1 interval to current expiration date.
+        $this->expires_at = $fromDate->modify("+1 {$this->interval}");
+    }
 
 	/**
 	 * Generate a truly unique license key
@@ -130,11 +183,24 @@ class License extends Model {
 		return $key;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function hasActiveSubscription() {
-		return $this->subscription && $this->subscription->active;
-	}
-	
+    /**
+     * @return string
+     */
+	public function getPlan() {
+
+        // license has no plan yet, calculate from site limit.
+        if( empty( $this->plan ) ) {
+            if( $this->site_limit <= 2 ) {
+                $this->plan = 'personal';
+            } else if( $this->site_limit >= 8 ) {
+                $this->plan = 'developer';
+            } else {
+                // legacy plans
+                $this->plan = sprintf( '2016-%d-sites', $this->site_limit );
+            }
+        }
+
+        return $this->plan;
+    }
+
 }

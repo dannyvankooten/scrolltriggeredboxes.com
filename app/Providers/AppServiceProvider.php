@@ -1,7 +1,7 @@
 <?php namespace App\Providers;
 
-use App\Services\Payments\Broker;
-use App\Services\Payments\Charger;
+use App\Services\Payments\Cashier;
+use App\Services\Payments\StripeAgent;
 use App\Services\Invoicer\Moneybird;
 use App\Services\Purchaser;
 use App\Services\TaxRateResolver;
@@ -36,28 +36,32 @@ class AppServiceProvider extends ServiceProvider {
 			return new DynamicApp( config('services.helpscout')['secret'] );
 		});
 
-		$this->app->singleton( TaxRateResolver::class, function($app) {
-			return new TaxRateResolver();
-		});
-
 		$this->app->singleton( Invoicer::class, function ($app) {
 			$config = config('services.moneybird');
 			$moneybird = new Moneybird( $config['administration'], $config['token'] );
-
+            $taxRateResolver = new TaxRateResolver();
 			$defaultCacheDriver = $app['cache']->getDefaultDriver();
 			$cacheDriver = $app['cache']->driver( $defaultCacheDriver );
+            $log = $app[Log::class];
 
-			return new Invoicer( $moneybird, $app[ TaxRateResolver::class ], $cacheDriver );
+			return new Invoicer( $moneybird, $taxRateResolver, $cacheDriver, $log );
 		});
 
-		$this->app->singleton( Charger::class, function ($app) {
+        $this->app->singleton( Cashier::class, function ($app) {
+            $log = $app[Log::class];
+            return new Cashier( $log );
+        });
+
+		$this->app->singleton( StripeAgent::class, function ($app) {
 			$stripeSecret = config('services.stripe.secret');
-			$log = $app[Log::class];
-			return new Charger( $stripeSecret, $log );
+            $cashier = $app[Cashier::class];
+            $log = $app[Log::class];
+			return new StripeAgent( $stripeSecret, $cashier, $log );
 		});
 
 		$this->app->singleton( Purchaser::class, function ($app) {
-			return new Purchaser( $app[Charger::class]);
+            $stripeAgent = $app[StripeAgent::class];
+			return new Purchaser($stripeAgent);
 		});
 
         $this->app->singleton( Broker::class, function ($app) {

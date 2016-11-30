@@ -36,15 +36,18 @@ helpers.isCountryInEurope = function(country) {
 };
 
 helpers.calculatePrice = function(plan, interval) {
-    var planPrices = {
-        "personal": 6,
-        "developer": 10,
-        "agency": 24
-    };
-    var price = planPrices[plan];
     var isYearly = interval === 'year';
-    var total = isYearly ? price * 10 : price;
-    total += 0;
+    var planPrices = {
+        personal: 6,
+        developer: 20
+    };
+
+    var price = planPrices[plan];
+    if( isYearly ) {
+        price = price * 10;
+    }
+
+    var total = price + 0;
 
     var elements = document.querySelectorAll('.price');
     [].forEach.call(elements,function(el) {

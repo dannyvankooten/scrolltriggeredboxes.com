@@ -6,13 +6,22 @@ use Illuminate\Routing\Redirector;
 
 use Illuminate\Http\Request;
 
-class UserController extends Controller {
+class UserController extends AdminController {
 
     // show users overview
     public function overview( Request $request ) {
 
+        $orderColumns = [
+            'joined' => 'created_at',
+            'email' => 'email',
+            'name' => 'name',
+        ];
+        $defaultOrder = $orderColumns['joined'];
+        $orderBy = $request->query->get('by');
+        $orderBy = isset( $orderColumns[ $orderBy ] ) ? $orderColumns[ $orderBy ] : $defaultOrder;
+
         $query = User::query();
-        $query->orderBy('created_at', 'desc');
+        $query->orderBy( $orderBy, $request->query->get('order', 'desc' ));
 
         $filters = $request->query->get('filter', []);
 

@@ -35,26 +35,28 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>License Key</th>
-                    <th>Owner</th>
-                    <th width="20%">Activations</th>
-                    <th>Created</th>
+                    <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=key">License Key</a></th>
+                    <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=owner">Owner</a></th>
+                    <th width="20%"><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=activations">Activations</a></th>
+                    <th><a href="?order={{ request('order', 'desc') === 'desc' ? 'asc' : 'desc' }}&by=status">Status</a></th>
                 </tr>
             </thead>
             <tbody style="font-size: 15px;">
-            @foreach($licenses as $license)
+            @forelse($licenses as $license)
                 <tr>
                     <td><a href="{{ url('/licenses/' . $license->id) }}">{{ $license->license_key }}</a></td>
-                    <td>{{ $license->user->email }}</td>
+                    <td><a href="/users/{{$license->user->id}}">{{ $license->user->email }}</a></td>
                     <td>{{ count( $license->activations ) . '/' . $license->site_limit }}</td>
-                    <td>{{ $license->created_at->format('M j') }}</td>
+                    <td class="{{ $license->isActive() ? 'success' : 'warning' }}">{{ $license->status }}</td>
                 </tr>
-            @endforeach
+            @empty
+                <tr><td colspan="4">No licenses found.</tr>
+            @endforelse
             </tbody>
         </table>
 
         <div class="medium-margin">
-            <a href="/licenses/create">Add new license</a>
+            <a href="/licenses/create">&#43; Add new license</a>
         </div>
 
     </div>

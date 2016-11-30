@@ -2,22 +2,21 @@
 
 @section('title','Edit billing information - Boxzilla')
 
+@section('subnav')
+
+
+@endsection
+
 @section('content')
 
     <div class="container">
 
-        <div class="breadcrumbs bordered small-padding">
-            <a href="/">Account</a> &rightarrow; Edit
-        </div>
-
-        <div class="small-padding bordered small-margin">
-            <ul class="nav nav-inline no-margin">
-                <li><strong>Edit: </strong></li>
-                <li><a href="/edit" class="">Account Info</a></li>
-                <li><a href="/edit/billing" class="strong">Billing Info</a></li>
-                <li><a href="/edit/payment">Payment Method</a></li>
-            </ul>
-        </div>
+        <nav class="nav medium-margin">
+            <strong style="margin-right: 10px;">Edit: </strong>
+            <a href="/edit" class="">Account Info</a> <span class="sep"></span>
+            <a href="/edit/billing" class="strong">Billing Info</a> <span class="sep"></span>
+            <a href="/edit/payment">Payment Method</a>
+        </nav>
 
         <h1 class="page-title">Update billing information</h1>
 
@@ -83,7 +82,7 @@
             </div>
 
             <div class="europe-only"  style="display: none;">
-                <p class="help">If you're buying as a Europe based company, please enter your company details here.</p>
+                <p class="help">If you're buying as a Europe based company, please enter your company details below.</p>
                 <div class="row europe-only clearfix">
 
                     <div class="col col-3">

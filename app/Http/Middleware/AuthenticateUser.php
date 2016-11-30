@@ -46,7 +46,7 @@ class AuthenticateUser
 			if ($request->ajax() || $request->wantsJson()) {
 				return new Response('Unauthorized.', 401);
 			} else {
-				return $this->redirector->to('/login');
+				return $this->redirector->route('login', [ 'r' => $request->getUri() ]);
 			}
 		}
 

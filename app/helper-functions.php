@@ -5,7 +5,6 @@
  *********************/
 
 
-
 /**
  * @param string $path
  * @param string $subdomain

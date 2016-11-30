@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use App\Services\LicenseGuard;
+use App\Services\Payments\StripeAgent;
 use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,9 +40,10 @@ class LicenseController extends Controller {
     /**
      * Get license details
      *
+     * @param StripeAgent $agent
      * @return JsonResponse
      */
-    public function getLicense() {
+    public function getLicense( StripeAgent $agent ) {
         /** @var License $license */
         $license = $this->auth->license();
 
@@ -72,12 +74,12 @@ class LicenseController extends Controller {
 
         if( ! $activation ) {
 
-            // check if license expired
-            if( $license->isExpired() ) {
+            // check if license is inactive and expired
+            if( ! $license->isActive() && $license->isExpired() ) {
                 return new JsonResponse([
                     'error' => [
                         'code' => 'license_expired',
-                        'message' => sprintf( "Your license expired on %s. Would you like to <a href=\"%s\">renew it now</a>?", $license->expires_at->format('F j, Y'), domain_url( '/licenses/' . $license->id, 'account' ) )
+                        'message' => sprintf( "Your license expired on %s. Please <a href=\"%s\">check your payment method</a>.", $license->expires_at->format('F j, Y'), domain_url( '/edit/payment', 'account' ) )
 
                     ]
                 ], 401 );
@@ -109,7 +111,7 @@ class LicenseController extends Controller {
         return new JsonResponse([
             'data' => [
                 'key' => $activation->key,
-                'message' => sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeft() )
+                'message' => sprintf( "Your license was activated, you have %d site activations left.", $license->getActivationsLeftCount() )
             ]
         ], 201 );
     }

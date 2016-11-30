@@ -1,9 +1,7 @@
 <?php namespace App;
 
-use GrahamCampbell\GitHub\Facades\GitHub;
-use GrahamCampbell\Markdown\Facades\Markdown;
+use App\Services\PluginDownloader;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 use DateTime;
 
 /**
@@ -53,42 +51,15 @@ class Plugin extends Model {
 
 
 	/**
-	 * @return array
+	 * @return object
 	 */
 	public function getUpdateInfo() {
-
 		if( empty( $this->github_repo ) ) {
-			return array();
+			return new \stdClass;
 		}
 
-		$cacheKey = "plugins.{$this->sid}.update-info";
-		$fileContent = Cache::get( $cacheKey );
-
-		if( ! $fileContent ) {
-			$fileContent = GitHub::connection()->repo()->contents()->download( $this->getGitHubRepositoryOwner(), $this->getGitHubRepositoryName(), 'info.json');
-
-			// Remove GitHub-added formatting to make this machine readable again
-			$fileContent = str_ireplace( PHP_EOL, '', $fileContent );
-			$fileContent = str_ireplace( ',}', '}', $fileContent );
-
-			Cache::put( $cacheKey, $fileContent, 60 );
-		}
-
-		$data = json_decode( $fileContent, true );
-
-		return $data;
-	}
-
-	/**
-	 * Get the raw GitHub API download URL. Please note that this URL contains the access token so it shouldn't be used publicly.
-	 *
-	 * @param string $version
-	 *
-	 * @return string
-	 */
-	public function getDownloadUrl( $version = '' ) {
-		$url = sprintf( 'https://api.github.com/repos/%s/%s/zipball/%s?access_token=%s', $this->getGitHubRepositoryOwner(), $this->getGitHubRepositoryName(), $version, config('github.connections.main.token') );
-		return $url;
+		$downloader = new PluginDownloader( $this );
+        return $downloader->getInfo();
 	}
 
 	/**
@@ -99,26 +70,16 @@ class Plugin extends Model {
 			return '';
 		}
 
-		$cacheKey = "plugins.{$this->sid}.changelog";
-		$html = Cache::get( $cacheKey );
-
-		if( ! $html ) {
-			$fileContent = GitHub::connection()->repo()->contents()->download( $this->getGitHubRepositoryOwner(), $this->getGitHubRepositoryName(), 'CHANGELOG.md');
-			$html = Markdown::convertToHtml( $fileContent );
-
-			Cache::put( $cacheKey, $html, 60 );
-		}
-
-		return $html;
+        $downloader = new PluginDownloader( $this );
+        return $downloader->getChangelog();
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getVersion()
-	{
+	public function getVersion() {
 		$info = $this->getUpdateInfo();
-		return isset($info['version']) ? $info['version'] : '';
+		return isset( $info->version ) ? $info->version : '';
 	}
 
 	/**
@@ -171,7 +132,7 @@ class Plugin extends Model {
 			]
 		];
 
-		$updateInfo = $this->getUpdateInfo();
+		$updateInfo = (array) $this->getUpdateInfo();
 		$data = array_merge( $data, $updateInfo );
 
 		return $data;

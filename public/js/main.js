@@ -305,15 +305,18 @@ helpers.isCountryInEurope = function (country) {
 };
 
 helpers.calculatePrice = function (plan, interval) {
-    var planPrices = {
-        "personal": 6,
-        "developer": 10,
-        "agency": 24
-    };
-    var price = planPrices[plan];
     var isYearly = interval === 'year';
-    var total = isYearly ? price * 10 : price;
-    total += 0;
+    var planPrices = {
+        personal: 6,
+        developer: 20
+    };
+
+    var price = planPrices[plan];
+    if (isYearly) {
+        price = price * 10;
+    }
+
+    var total = price + 0;
 
     var elements = document.querySelectorAll('.price');
     [].forEach.call(elements, function (el) {
@@ -455,20 +458,16 @@ var askForConfirmation = function askForConfirmation(event) {
     helpers.toggleElements(europeElements, helpers.isCountryInEurope(input.value));
 });
 
-[].forEach.call(pricingForms, function (form) {
-    function updatePrice() {
-        var plan = [].filter.call(this.plan, function (node) {
-            return node.checked;
-        }).pop().value || "personal";
-        var selectedInterval = [].filter.call(this.interval, function (node) {
-            return node.checked;
-        }).pop().value || "month";
-        helpers.calculatePrice(plan, selectedInterval);
-    }
+function calculateNewPrice() {
+    var plan = this.elements.namedItem('plan').value;
+    var interval = this.elements.namedItem('interval').value;
+    helpers.calculatePrice(plan, interval);
+}
 
-    form.addEventListener('change', updatePrice);
-    form.addEventListener('keyup', updatePrice);
-    updatePrice.call(form);
+[].forEach.call(pricingForms, function (form) {
+    form.addEventListener('change', calculateNewPrice.bind(form));
+    form.addEventListener('keyup', calculateNewPrice.bind(form));
+    calculateNewPrice.call(form);
 });
 
 [].forEach.call(confirmationElements, function (element) {

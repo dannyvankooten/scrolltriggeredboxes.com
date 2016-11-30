@@ -23,8 +23,14 @@ body {
 }
 
 a {
+  text-decoration: none;
   color: $link_color;
   cursor: pointer;
+
+  &:hover,
+  &:active {
+    text-decoration: underline;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -122,16 +128,41 @@ code {
 .nav-inline {
   padding: 0;
   list-style: none;
-}
 
-.nav-inline li{
-  display: inline-block;
-  margin: 0 10px 0 0;
+  li{
+    display: inline-block;
+    margin: 0 10px 0 0;
+    padding: 0;
+  }
+
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 }
 
 .nav a {
   padding: 3px;
   display: inline-block;
+
+  &.active {
+    font-weight: bold;
+  }
+}
+
+.nav-bar {
+  border-bottom: 1px solid #ccc;
+
+  ul, li {
+    margin: 0;
+    padding: 0;
+  }
+
+
+  a {
+    padding: 12px 8px;
+  }
 }
 
 .main-container p,

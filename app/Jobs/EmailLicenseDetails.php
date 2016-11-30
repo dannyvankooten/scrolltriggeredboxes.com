@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\License;
 
+use Illuminate\Contracts\Logging\Log;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Mail\Message;
 use Illuminate\Queue\SerializesModels;
@@ -27,14 +28,16 @@ class EmailLicenseDetails extends Job implements ShouldQueue
     public function __construct( License $license )
     {
         $this->license = $license;
+        $this->onQueue('emails');
     }
 
     /**
      * Execute the job.
      *
      * @param Mailer $mailer
+     * @param Log $log
      */
-    public function handle( Mailer $mailer)
+    public function handle(Mailer $mailer, Log $log )
     {
         $license = $this->license;
         $user = $this->license->user;
@@ -46,5 +49,7 @@ class EmailLicenseDetails extends Job implements ShouldQueue
                 ->subject('Your Boxzilla license')
                 ->replyTo( $from );
         });
+
+        $log->info(sprintf('Emailed details for license %d to %s', $license->id, $user->email));
     }
 }

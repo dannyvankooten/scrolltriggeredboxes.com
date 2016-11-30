@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Jobs\UpdateInvoiceContact;
 use App\Jobs\UpdateStripeCustomer;
-use App\Services\Payments\Charger;
+use App\Jobs\UpdateStripeTaxPercent;
+use App\Services\Payments\StripeAgent;
 use App\Services\Purchaser;
 use App\User;
 use Exception;
@@ -118,9 +119,13 @@ class AccountController extends Controller {
 			'vat_number' => 'Please supply a valid VAT number.'
 		));
 
+        $vatNumber = $request->input('user.vat_number');
+        $country = $request->input('user.country');
+        $vatInfoChanged = $user->vat_number != $vatNumber || $user->country != $country;
+
 		$user->name = $request->input('user.name');
-		$user->country = $request->input('user.country' );
-		$user->vat_number = $request->input( 'user.vat_number' );
+		$user->country = $country;
+		$user->vat_number = $vatNumber;
 		$user->address = $request->input( 'user.address' );
 		$user->city = $request->input('user.city');
 		$user->zip = $request->input('user.zip');
@@ -131,17 +136,34 @@ class AccountController extends Controller {
 		$this->dispatch(new UpdateInvoiceContact($user));
 		$this->dispatch(new UpdateStripeCustomer($user));
 
+        if($vatInfoChanged) {
+            $this->dispatch(new UpdateStripeTaxPercent($user));
+        }
+
 		return $redirector->back()->with('message', 'Changes saved!');
 	}
 
 	/**
 	 * @param Request $request
 	 * @param Redirector $redirector
-	 * @param Charger $charger
+	 * @param StripeAgent $agent
 	 *
 	 * @return RedirectResponse
 	 */
-	public function updatePaymentMethod( Request $request, Redirector $redirector, Charger $charger  ) {
+	public function updatePaymentMethod( Request $request, Redirector $redirector, StripeAgent $agent  ) {
+		/** @var User $user */
+		$user = $this->auth->user();
+
+		$this->validate( $request, [
+			'payment_token' => 'required'
+		]);
+
+		try {
+			$user = $agent->updatePaymentMethod($user, $request->input('payment_token'));
+		} catch( Exception $e ) {
+			$this->log->error( 'Payment customer creation failed: ' . $e->getMessage() );
+			return $redirector->back()->with('error', $e->getMessage() );
+		}
 
        if($request->input('payment_method', 'credit-card') === 'paypal') {
             return $this->updatePayPal( $request, $redirector, $charger );
@@ -214,7 +236,7 @@ class AccountController extends Controller {
 	public function welcome() {
 		/** @var User $user */
 		$user = $this->auth->user();
-		$license = $user->licenses->last();
+		$license = $user->licenses->first();
 		return view('account.welcome', [ 'user' => $user, 'license' => $license ]);
 	}
 
@@ -235,6 +257,7 @@ class AccountController extends Controller {
 			'user.vat_number' 	=> 'sometimes|vat_number',
 			'password' 			=> 'required|confirmed|min:6',
 			'payment_token' 	=> 'required',
+			'plan' 			    => 'required|in:personal,developer',
 		], array(
 			'email' => 'Please enter a valid email address.',
 			'vat_number' => 'Please enter a valid VAT number.',
@@ -249,18 +272,19 @@ class AccountController extends Controller {
 		// log user in automatically
 		$this->auth->loginUsingId($user->id);
 
+        $this->log->info( sprintf( 'New user registration: #%d  %s <%s>', $user->id, $user->name, $user->email ) );
+
 		// create customer for payments
 		try {
 			$purchaser->user($user, $request->input('payment_token'));
-			$this->log->info( sprintf( 'New user registration: #%d  %s <%s>', $user->id, $user->name, $user->email ) );
 		} catch( Exception $e ) {
 			$this->log->error( 'Payment customer creation failed: ' . $e->getMessage() );
 			return $redirector->to('/edit/payment')->with('error', $e->getMessage());
 		}
 
 		// proceed with payment + creating license
-        $plan = $request->input('plan', 'personal');
-		$interval = $request->input('interval', 'year') == 'month' ? 'month' : 'year';
+		$plan = $request->input('plan', 'personal');
+		$interval = $request->input('interval', 'year') === 'month' ? 'month' : 'year';
 
 		try {
 			$license = $purchaser->license($user, $plan, $interval);

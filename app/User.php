@@ -22,7 +22,6 @@ use DateTime;
  *
  * @property License[] $licenses
  * @property Payment[] $payments
- * @property Subscription[] $subscriptions
  * @property int $id
  * @property string $email
  * @property string $name
@@ -86,6 +85,7 @@ class User extends Model implements AuthenticatableContract,
 	}
 
 	/**
+     * @deprecated
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
 	public function subscriptions()
@@ -98,12 +98,33 @@ class User extends Model implements AuthenticatableContract,
 	 */
 	public function hasValidLicense()
 	{
-		$validLicenses = $this->licenses->filter(function(License $l) {
-			return $l->isValid();
-		});
-
-		return count( $validLicenses ) > 0;
+        $validLicenses = $this->getValidLicenses();
+		return count($validLicenses) > 0;
 	}
+
+    /**
+     * Get all active or not-yet-expired licenses.
+     *
+     * @return License[]
+     */
+	public function getValidLicenses()
+    {
+        return $this->licenses->filter(function(License $l) {
+            return $l->isValid();
+        });
+    }
+
+    /**
+     * Get all active licenses
+     *
+     * @return License[]
+     */
+	public function getActiveLicenses()
+    {
+        return $this->licenses->filter(function(License $l) {
+            return $l->isActive();
+        });
+    }
 
 	/**
 	 * @return string

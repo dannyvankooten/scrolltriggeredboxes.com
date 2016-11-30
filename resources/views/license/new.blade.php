@@ -25,11 +25,17 @@
 
             <h3>License details</h3>
 
-            <div class="form-group">
-                <label for="quantityInput" class="control-label">What license do you need?</label>
-                <label class="unstyled"><input type="radio" name="plan" value="personal" {{ old('plan', request('plan', 'personal')) === 'personal' ? 'checked' : '' }}> Personal <small class="muted">- 1 domain activation</small></label>
-                <label class="unstyled"><input type="radio" name="plan" value="developer" {{ old('plan', request('plan')) === 'developer' ? 'checked' : '' }}> Developer <small class="muted">- 3 domain activations</small></label>
-                <label class="unstyled"><input type="radio" name="plan" value="agency" {{ old('plan', request('plan')) === 'agency' ? 'checked' : '' }}> Agency <small class="muted">- 10 domain activations</small></label>
+            <div class="form-group radio">
+                <label class="control-label">Select your plan?</label>
+
+                <label class="unstyled">
+                    <input type="radio" name="plan" value="personal" @if( old('plan', 'personal') == 'personal' ) checked @endif required>
+                    Personal <small>- up to 2 sites</small>
+                </label>
+                <label class="unstyled">
+                    <input type="radio" name="plan" value="developer" @if( old('plan') == 'developer' ) checked @endif>
+                    Developer <small>- up to 10 sites</small>
+                </label>
             </div>
 
             <div class="form-group radio">

@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Activation;;
-use App\Services\Payments\Broker;
-use App\Services\Payments\Charger;
+use App\Services\Payments\StripeAgent;
 use App\Services\Payments\PaymentException;
 use App\Services\Purchaser;
-use App\Subscription;
 use App\User;
 use Exception;
 
@@ -65,11 +63,14 @@ class LicenseController extends Controller {
 	 */
 	public function store( Request $request, Broker $broker, Purchaser $purchaser, Redirector $redirector  ) {
 
-		$this->validate( $request, []);
+        // validate request
+        $this->validate( $request, [
+            'plan' 			    => 'required|in:personal,developer',
+        ]);
 
 		/** @var User $user */
 		$user = $this->auth->user();
-        $plan = $request->input('plan', 'personal');
+		$plan = $request->input('plan', 'personal');
 		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
 
         if($user->payment_method === 'paypal') {
@@ -105,7 +106,7 @@ class LicenseController extends Controller {
 	 */
 	public function details($id) {
 		/** @var License $license */
-		$license = License::with(['activations', 'subscription'])->findOrFail($id);
+		$license = License::with(['activations'])->findOrFail($id);
 		
 		/** @var User $user */
 		$user = $this->auth->user();
@@ -118,17 +119,17 @@ class LicenseController extends Controller {
 		return view( 'license.details', [ 'license' => $license ] );
 	}
 
-	/**
-	 * @param int $id
-	 * @param Request $request
-	 * @param Redirector $redirector
-	 * @param Charger $charger
-	 *
-	 * @return RedirectResponse
-	 */
-	public function update($id, Request $request, Redirector $redirector, Charger $charger ) {
+    /**
+     * @param int $id
+     * @param Request $request
+     * @param Redirector $redirector
+     *
+     * @param StripeAgent $agent
+     * @return RedirectResponse
+     */
+	public function update($id, Request $request, Redirector $redirector, StripeAgent $agent ) {
 		/** @var License $license */
-		$license = License::with('subscription')->findOrFail($id);
+		$license = License::findOrFail($id);
 
 		/** @var User $user */
 		$user = $this->auth->user();
@@ -138,30 +139,17 @@ class LicenseController extends Controller {
 			abort( 403 );
 		}
 
-		/** @var Subscription $subscription */
-		$subscription = $license->subscription;
+		$data = $request->input('license');
+        if( ! empty( $data['status'] ) ) {
+            try {
+                $license->isActive() ? $agent->cancelSubscription($license) : $agent->createSubscription($license);
+            } catch( PaymentException $e ) {
+                $errorMessage = 'We had some trouble with your payment. <br />Please <a href="/edit/payment">review your payment method</a>.';
+                return $redirector->back()->with('error', $errorMessage);
+            }
+        }
 
-		$data = $request->input('subscription');
-		if( isset( $data['active'] ) ) {
-			$subscription->active = $data['active'];
-
-			// update next charge date
-			$subscription->next_charge_at = $license->expires_at->modify('-1 week');
-			$subscription->save();
-		}
-
-		// if a payment is due, try to charge right away
-		if( $subscription->isActive() && $subscription->isPaymentDue() ) {
-			try {
-				$charger->subscription( $subscription );
-			} catch( PaymentException $e ) {
-				$errorMessage = $e->getMessage();
-				$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
-
-				$this->log->error( sprintf( 'Payment of USD%s for %s failed: %s', $subscription->getAmountInclTax(), $user->email, $e->getMessage() ) );
-				return $redirector->back()->with('error', $errorMessage );
-			}
-		}
+        $license->save();
 
 		return $redirector->back()->with('message', 'Changes saved!');
 	}

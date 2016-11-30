@@ -1,7 +1,12 @@
 <?php namespace App\Providers;
 
+
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate;
+
+use App;
+use Stripe;
 
 class EventServiceProvider extends ServiceProvider {
 
@@ -11,12 +16,12 @@ class EventServiceProvider extends ServiceProvider {
 	 * @var array
 	 */
 	protected $listen = [
-		'Illuminate\Auth\Events\Login' => [
-			'App\Listeners\UserLoginHandler',
+		Illuminate\Auth\Events\Login::class => [
+			App\Listeners\UserLoginHandler::class,
 		],
-		'App\Events\SubscriptionChargeFailed' => [
-			'App\Listeners\EmailFailedChargeNotification',
-		],
+        Stripe\Event::class => [
+            App\Listeners\StripeEventHandler::class
+        ]
 	];
 
 	/**

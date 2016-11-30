@@ -62,10 +62,10 @@ class CreateInvoices extends Command
             $this->info( sprintf( 'Invoicing %s for %s', $payment->getFormattedTotal(), $user->email ) );
 
             // create or update contact
-            $user = $this->invoicer->contact( $user );
+            $this->invoicer->updateContact( $user );
 
             // create or update invoice
-            $payment = $this->invoicer->invoice( $payment );
+            $this->invoicer->updateInvoice( $payment );
 
             $user->save();
             $payment->save();
