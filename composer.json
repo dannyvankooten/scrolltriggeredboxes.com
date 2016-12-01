@@ -12,7 +12,7 @@
 		"stripe/stripe-php": "^3.14",
 		"dannyvankooten/laravel-vat": "dev-master",
 		"doctrine/dbal": "^2.5",
-		"paypal/rest-api-sdk-php": "^1.10"
+		"braintree/braintree_php": "^3.18"
 	},
 	"require-dev": {
 		"fzaninotto/faker": "~1.4",

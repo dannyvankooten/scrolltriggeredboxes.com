@@ -3,8 +3,8 @@
 namespace App\Listeners;
 
 use App\Services\Payments\Cashier;
+use Braintree\WebhookNotification;
 use Illuminate\Contracts\Logging\Log;
-use App\Services\Payments\PayPalEvent;
 
 use App\License;
 use App\Payment;
@@ -12,7 +12,7 @@ use App\Payment;
 use Illuminate\Contracts\Mail\Mailer;
 use Carbon\Carbon;
 
-class PayPalEventHandler
+class BraintreeEventHandler
 {
     /**
      * @var Mailer
@@ -45,14 +45,14 @@ class PayPalEventHandler
     /**
      * Handle the event.
      *
-     * @param  PayPalEvent  $event
+     * @param  WebhookNotification  $notification
      * @return void
      */
-    public function handle(PayPalEvent $event)
+    public function handle(WebhookNotification $notification)
     {
-        $this->log->info(sprintf("PayPal event received: %s", $event->event_type));
+        $this->log->info(sprintf("Braintree event received: %s", $notification->kind ));
 
-        switch( $event->type ) {
+        switch( $notification->type ) {
             case 'invoice.payment_failed':
 
                 break;

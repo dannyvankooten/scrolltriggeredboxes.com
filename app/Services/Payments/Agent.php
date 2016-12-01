@@ -7,15 +7,18 @@ use App\Payment;
 
 class Agent {
 
+    private $stripe;
+    private $braintree;
+
     /**
      * Agent constructor.
      *
      * @param StripeAgent $stripe
-     * @param PayPalAgent $paypal
+     * @param BraintreeAgent $braintree
      */
-    public function __construct( StripeAgent $stripe, PayPalAgent $paypal ) {
+    public function __construct( StripeAgent $stripe, BraintreeAgent $braintree ) {
         $this->stripe = $stripe;
-        $this->paypal = $paypal;
+        $this->braintree = $braintree;
     }
 
     /**
@@ -24,14 +27,6 @@ class Agent {
      */
     public function createSubscription( License $license ) {
         return $this->{$license->payment_method}->createSubscription($license);
-    }
-
-    /**
-     * @param License $license
-     * @param string $token
-     */
-    public function startSubscription( License $license, $token = '' ) {
-        return $this->{$license->payment_method}->startSubscription($license, $token);
     }
 
     /**

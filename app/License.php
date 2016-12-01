@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $updated_at
  * @property Carbon $deactivated_at
  * @property string $stripe_subscription_id
- * @property string $paypal_subscription_id
+ * @property string $braintree_subscription_id
  * @property string $payment_method
  * @property string $interval
  * @property string $plan

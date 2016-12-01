@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Controller;
 
-use App\Services\Payments\PayPalEvent;
+use App\Services\Payments\BraintreeAgent;
+use Illuminate\Http\Request;
 use Stripe;
+use Braintree;
 use Illuminate\Http\Response;
 
 class WebhookController extends Controller {
@@ -28,18 +30,15 @@ class WebhookController extends Controller {
 	}
 
     /**
+     * @param Request $request
      * @return Response
      */
-    public function paypal()
+    public function braintree( Request $request, BraintreeAgent $agent )
     {
-        // retrieve the request's body and parse it as JSON
-        $input = @file_get_contents("php://input");
-        $eventData = json_decode($input);
-
-        $event = new PayPalEvent($eventData);
+        $notification = Braintree\WebhookNotification::parse($request->bt_signature, $request->bt_payload);
 
         // fire off local event
-        event($event);
+        event($notification);
 
         // tell Stripe we got this
         return new Response('', Response::HTTP_OK );

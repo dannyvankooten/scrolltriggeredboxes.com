@@ -4,6 +4,7 @@ namespace App\Services\Payments;
 
 use Exception;
 use Stripe\Error\Base as StripeException;
+use Braintree\Exception as BraintreeException;
 
 class PaymentException extends Exception {
 
@@ -16,10 +17,10 @@ class PaymentException extends Exception {
     }
 
     /**
-     * @param Exception $e
+     * @param BraintreeException $e
      * @return PaymentException
      */
-    public static function fromException( Exception $e ) {
+    public static function fromBraintree( BraintreeException $e ) {
         return new self($e->getMessage(), $e->getCode());
     }
 

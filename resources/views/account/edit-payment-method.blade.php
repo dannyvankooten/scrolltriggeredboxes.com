@@ -20,7 +20,7 @@
         <p>Use the following form if you want to use a different credit card.</p>
     @endif
 
-    @if( $user->payment_method === 'paypal' )
+    @if( $user->payment_method === 'braintree' )
         <p>You are currently paying by PayPal.</p>
         <p>When purchasing a new license, you will be asked to log-in to your PayPal account.</p>
     @endif
@@ -29,7 +29,7 @@
 
     <div class="well small-margin">
         <noscript>Please enable JavaScript to update your credit card.</noscript>
-        <form method="post" id="cc-form" data-credit-card="true" class="hide-if-no-js">
+        <form method="post" id="payment-method-form" data-credit-card="true" class="hide-if-no-js">
             {!! csrf_field() !!}
 
             <div class="errors"></div>
@@ -44,7 +44,7 @@
                     </div>
                     <div class="col col3-">
                         <label class="unstyled">
-                            <input type="radio" name="payment_method" value="paypal" {{ $user->payment_method === 'paypal' ? 'checked' : '' }}> <i class="fa fa-paypal" aria-hidden="true"></i> PayPal
+                            <input type="radio" name="payment_method" value="braintree" {{ $user->payment_method === 'braintree' ? 'checked' : '' }}> <i class="fa fa-paypal" aria-hidden="true"></i> PayPal
                         </label>
                     </div>
                 </div>
@@ -126,6 +126,81 @@
     <script>
         Stripe.setPublishableKey('{{ config('services.stripe.key') }}');
     </script>
-@stop
+
+    <!-- Load the client component. -->
+    <script src="https://js.braintreegateway.com/web/3.6.0/js/client.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/3.6.0/js/paypal.min.js"></script>
+
+    <script>
+        var form = document.getElementById('payment-method-form');
+        var submitButton = form.querySelector('[type="submit"]');
+
+        // Create a client.
+        braintree.client.create({
+            authorization: '{{ $braintreeAgent->generateClientToken() }}'
+        }, function (clientErr, clientInstance) {
+
+            // Stop if there was a problem creating the client.
+            // This could happen if there is a network error or if the authorization
+            // is invalid.
+            if (clientErr) {
+                console.error('Error creating client:', clientErr);
+                return;
+            }
+
+            // Create a PayPal component.
+            braintree.paypal.create({
+                client: clientInstance
+            }, function (paypalErr, paypalInstance) {
+
+                // Stop if there was a problem creating PayPal.
+                // This could happen if there was a network error or if it's incorrectly
+                // configured.
+                if (paypalErr) {
+                    console.error('Error creating PayPal:', paypalErr);
+                    return;
+                }
+
+                // When the button is clicked, attempt to tokenize.
+                form.addEventListener('submit', function (event) {
+
+                    if(form.elements.namedItem('payment_method').value !== 'braintree') {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    submitButton.disabled = true;
+
+                    // Because tokenization opens a popup, this has to be called as a result of
+                    // customer action, like clicking a button—you cannot call this at any time.
+                    paypalInstance.tokenize({
+                        flow: 'vault'
+                    }, function (tokenizeErr, payload) {
+                        // Stop if there was an error.
+                        if (tokenizeErr) {
+                            if (tokenizeErr.type !== 'CUSTOMER') {
+                                console.error('Error tokenizing:', tokenizeErr);
+                            }
+
+                            // TODO: Handle gracefully.
+                            submitButton.disabled = false;
+                            return;
+                        }
+
+                        var input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'payment_token';
+                        input.value = payload.nonce;
+                        form.appendChild(input);
+                        form.submit();
+                    });
+
+                }, false);
+
+            });
+
+        });
+    </script>
+@endsection
 
 

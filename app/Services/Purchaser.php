@@ -2,14 +2,10 @@
 
 namespace App\Services;
 
-use App\Jobs\EmailLicenseDetails;
-use App\Services\Payments\Broker;
-use App\Services\Payments\PayPalAgent;
 use App\User;
 use App\License;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use DateTime;
-use App\Services\Payments\StripeAgent;
+
 
 class Purchaser {
 

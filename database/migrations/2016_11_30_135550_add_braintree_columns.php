@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddPaypalColumns extends Migration
+class AddBraintreeColumns extends Migration
 {
     /**
      * Run the migrations.
@@ -17,16 +17,18 @@ class AddPaypalColumns extends Migration
     {
         Schema::table('licenses', function (Blueprint $table) {
             $table->string('payment_method')->default('stripe');
-            $table->string('paypal_subscription_id')->nullable();
+            $table->string('braintree_subscription_id')->nullable();
 
         });
 
         Schema::table('payments', function (Blueprint $table) {
-            $table->string('paypal_id')->nullable();
+            $table->string('braintree_id')->nullable();
             $table->string('stripe_id')->nullable()->change();
         });
 
         Schema::table('users', function (Blueprint $table) {
+            $table->string('braintree_customer_id')->nullable();
+            $table->string('braintree_payment_token')->nullable();
             $table->string('payment_method')->default('stripe');
         });
 
@@ -47,17 +49,19 @@ class AddPaypalColumns extends Migration
     {
         Schema::table('licenses', function (Blueprint $table) {
             $table->dropColumn('payment_method');
-            $table->dropColumn('paypal_subscription_id');
+            $table->dropColumn('braintree_subscription_id');
         });
 
         Schema::table('payments', function (Blueprint $table) {
-            $table->dropColumn('paypal_id');
+            $table->dropColumn('braintree_id');
             $table->string('stripe_id')->change();
 
         });
 
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('payment_method');
+            $table->dropColumn('braintree_customer_id');
+            $table->dropColumn('braintree_payment_token');
         });
     }
 }

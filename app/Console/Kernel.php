@@ -22,7 +22,6 @@ class Kernel extends ConsoleKernel {
         StripePollEvents::class,
         StripeCreatePlans::class,
         StripeCancelSubscriptions::class,
-        PayPal\CreatePlans::class
 	];
 
 	/**

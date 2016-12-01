@@ -163,7 +163,7 @@ return [
 	'aliases' => [
 		'Auth' => Illuminate\Support\Facades\Auth::class,
 		'Request' => Illuminate\Support\Facades\Request::class,
-		'Countries' => DvK\Laravel\Vat\Facades\Countries::class,
-	],
+		'Countries' => DvK\Laravel\Vat\Facades\Countries::class
+    ],
 
 ];

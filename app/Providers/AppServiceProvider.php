@@ -1,8 +1,8 @@
 <?php namespace App\Providers;
 
 use App\Services\Payments\Agent;
+use App\Services\Payments\BraintreeAgent;
 use App\Services\Payments\Cashier;
-use App\Services\Payments\PayPalAgent;
 use App\Services\Payments\StripeAgent;
 use App\Services\Invoicer\Moneybird;
 use App\Services\Purchaser;
@@ -12,8 +12,6 @@ use Illuminate\Contracts\Logging\Log;
 use Illuminate\Support\ServiceProvider;
 
 use App\Services\Invoicer\Invoicer;
-use PayPal\Auth\OAuthTokenCredential;
-use PayPal\Rest\ApiContext;
 
 class AppServiceProvider extends ServiceProvider {
 
@@ -61,15 +59,19 @@ class AppServiceProvider extends ServiceProvider {
 			return new StripeAgent( $stripeSecret, $cashier, $log );
 		});
 
-        $this->app->singleton( PayPalAgent::class, function ($app) {
-            $apiContext = $app[ApiContext::class];
+        $this->app->singleton( BraintreeAgent::class, function ($app) {
+            \Braintree\Configuration::environment(config('services.braintree.environment'));
+            \Braintree\Configuration::merchantId(config('services.braintree.merchant_id'));
+            \Braintree\Configuration::publicKey(config('services.braintree.public_key'));
+            \Braintree\Configuration::privateKey(config('services.braintree.private_key'));
+
             $cashier = $app[Cashier::class];
             $log = $app[Log::class];
-            return new PayPalAgent( $apiContext, $cashier, $log );
+            return new BraintreeAgent( $cashier, $log );
         });
 
         $this->app->singleton( Agent::class, function ($app) {
-            return new Agent($app[StripeAgent::class], $app[PayPalAgent::class]);
+            return new Agent($app[StripeAgent::class], $app[BraintreeAgent::class]);
         });
 
 		$this->app->singleton( Purchaser::class, function ($app) {
@@ -78,28 +80,7 @@ class AppServiceProvider extends ServiceProvider {
 		});
 
 
-        $this->app->singleton( ApiContext::class, function($app) {
-            $config = config('services.paypal');
 
-            $apiContext = new ApiContext(
-                new OAuthTokenCredential(
-                    $config['client_id'],
-                    $config['secret']
-                )
-            );
-
-            $config = array(
-                'mode' => config('app.env') === 'local' ? 'sandbox' : 'live',
-                'log.LogEnabled' => true,
-                'log.FileName' => storage_path() . '/paypal.log',
-                'log.LogLevel' => config('app.debug') ? 'DEBUG' : 'INFO',
-                'cache.enabled' => true,
-                'cache.FileName' => storage_path() . '/paypal-access-token'
-            );
-            $apiContext->setConfig($config);
-
-            return $apiContext;
-        });
 
 	}
 

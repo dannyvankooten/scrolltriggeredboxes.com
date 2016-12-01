@@ -67,7 +67,7 @@ $router->group( [ 'domain' => sprintf( 'api.%s', $domain ), 'prefix' => '/v1', '
 
 	$router->any( '/helpscout', 'HelpScoutController@get' );
 
-    $router->post( '/webhooks/paypal', 'WebhookController@paypal' );
+    $router->post( '/webhooks/braintree', 'WebhookController@braintree' );
     $router->post( '/webhooks/stripe', 'WebhookController@stripe' );
 } );
 

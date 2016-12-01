@@ -18,10 +18,9 @@ use Carbon\Carbon;
  * @property int $subscription_id
  * @property int $user_id
  * @property string $stripe_id
- * @property string $paypal_id
+ * @property string $braintree_id
  * @property Carbon $created_at
  * @property Carbon $updated_at
- * @property int $user_id
  * @property int $related_payment_id
  * @property int $license_id
  */

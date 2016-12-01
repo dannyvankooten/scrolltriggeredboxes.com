@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Activation;;
 use App\Jobs\EmailLicenseDetails;
 use App\Services\Payments\Agent;
+use App\Services\Payments\BraintreeAgent;
 use App\Services\Payments\PaymentException;
 use App\Services\Purchaser;
 use App\User;
@@ -18,7 +19,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\License;
 use Illuminate\Routing\Redirector;
-use PayPal\Exception\PayPalConnectionException;
 
 class LicenseController extends Controller {
 
@@ -52,7 +52,7 @@ class LicenseController extends Controller {
 	/**
 	 * @return \Illuminate\View\View
 	 */
-	public function create( ) {
+	public function create() {
         /** @var User $user */
         $user = $this->auth->user();
 		return view('license.new', [ 'user' => $user ]);

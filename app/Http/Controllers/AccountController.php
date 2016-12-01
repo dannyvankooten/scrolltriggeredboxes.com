@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\UpdateInvoiceContact;
 use App\Jobs\UpdateStripeCustomer;
 use App\Jobs\UpdateStripeTaxPercent;
+use App\Services\Payments\BraintreeAgent;
 use App\Services\Payments\StripeAgent;
 use App\Services\Purchaser;
 use App\User;
@@ -54,8 +55,8 @@ class AccountController extends Controller {
 	/**
 	 *
 	 */
-	public function editPaymentMethod() {
-		return view( 'account.edit-payment-method', [ 'user' => $this->auth->user() ] );
+	public function editPaymentMethod( BraintreeAgent $braintreeAgent ) {
+		return view( 'account.edit-payment-method', [ 'user' => $this->auth->user(), 'braintreeAgent' => $braintreeAgent ] );
 	}
 
 	public function editCredentials() {
@@ -146,45 +147,60 @@ class AccountController extends Controller {
 	/**
 	 * @param Request $request
 	 * @param Redirector $redirector
-	 * @param StripeAgent $agent
+	 * @param StripeAgent $stripeAgent
+     * @param BraintreeAgent $braintreeAgent
 	 *
 	 * @return RedirectResponse
 	 */
-	public function updatePaymentMethod( Request $request, Redirector $redirector, StripeAgent $agent  ) {
-        $method = $request->input('payment_method', 'credit-card');
-        if( $method === 'paypal') {
-            return $this->updatePayPal( $request, $redirector );
+	public function updatePaymentMethod( Request $request, Redirector $redirector, StripeAgent $stripeAgent, BraintreeAgent $braintreeAgent  ) {
+        $method = $request->input('payment_method', 'stripe');
+
+        /** @var User $user */
+        $user = $this->auth->user();
+        $this->validate($request, [
+            'payment_token' => 'required',
+            'payment_method' => 'required',
+        ]);
+
+        if( $method === 'braintree') {
+            return $this->updateBraintree( $user, $request, $redirector, $braintreeAgent );
         }
 
-        return $this->updateCreditCard( $request, $redirector, $agent );
+        return $this->updateCreditCard( $user, $request, $redirector, $stripeAgent );
 	}
 
     /**
+     * @param User $user
      * @param Request $request
      * @param Redirector $redirector
      *
+     * @param BraintreeAgent $agent
      * @return RedirectResponse
      */
-	protected function updatePayPal( Request $request, Redirector $redirector  ) {
+	protected function updateBraintree( User $user, Request $request, Redirector $redirector, BraintreeAgent $agent  )
+    {
+        try {
+            $user = $agent->updatePaymentMethod($user, $request->input('payment_token'));
+        } catch( Exception $e ) {
+            $this->log->error('Payment customer creation failed: ' . $e->getMessage());
+            return $redirector->back()->with('error', $e->getMessage());
+        }
+
         /** @var User $user */
-        $user = $this->auth->user();
-        $user->payment_method = 'paypal';
+        $user->payment_method = 'braintree';
         $user->save();
         return $redirector->back()->with('message', 'Changes saved!');
     }
 
     /**
+     * @param User $user
      * @param Request $request
      * @param Redirector $redirector
+     * @param StripeAgent $agent
      * @return RedirectResponse
      */
-    protected function updateCreditCard( Request $request, Redirector $redirector, StripeAgent $agent  )
+    protected function updateCreditCard( User $user,Request $request, Redirector $redirector, StripeAgent $agent  )
     {
-        /** @var User $user */
-        $user = $this->auth->user();
-        $this->validate($request, [
-            'payment_token' => 'required'
-        ]);
         try {
             $user = $agent->updatePaymentMethod($user, $request->input('payment_token'));
         } catch (Exception $e) {
@@ -192,6 +208,7 @@ class AccountController extends Controller {
             return $redirector->back()->with('error', $e->getMessage());
         }
 
+        $user->payment_method = 'stripe';
         $user->card_last_four = $request->input('user.card_last_four');
         $user->save();
         return $redirector->back()->with('message', 'Changes saved!');

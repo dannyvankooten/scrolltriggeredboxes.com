@@ -3,6 +3,7 @@
 
 use App\Services\Payments\PayPalEvent;
 use App;
+use Braintree;
 use Stripe;
 
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
@@ -23,8 +24,8 @@ class EventServiceProvider extends ServiceProvider {
         Stripe\Event::class => [
             App\Listeners\StripeEventHandler::class,
         ],
-        PayPalEvent::class => [
-            App\Listeners\PayPalEventHandler::class,
+        Braintree\WebhookNotification::class => [
+            App\Listeners\BraintreeEventHandler::class,
         ]
 	];
 

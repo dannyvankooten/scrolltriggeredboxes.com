@@ -18,7 +18,6 @@
     @include('partials.form-messages')
 
     <form method="post" id="form-new-license" data-pricing="true">
-
         {!! csrf_field() !!}
 
         <div class="">
