@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Facades\Session;
 use PayPal\Api\Agreement;
+use PayPal\Api\AgreementDetails;
 use PayPal\Api\AgreementStateDescriptor;
 use PayPal\Api\BillingAgreementToken;
 use PayPal\Api\Payer;
@@ -75,10 +76,12 @@ class PayPalAgent {
     public function createSubscription( License $license ) {
         $planId = $this->getPlanId( $license );
 
+        $now = gmdate('Y-m-d\TH:i:s\Z', strtotime('+1 minutes'));
+
         $agreement = new Agreement();
         $agreement->setName('Boxzilla Premium Agreement')
             ->setDescription(sprintf('Billing agreement for Boxzilla Premium %s', ucfirst($license->plan)))
-            ->setStartDate((new Datetime('+1 minute'))->format(DateTime::ISO8601));
+            ->setStartDate($now);
 
         $plan = new Plan();
         $plan->setId($planId);
@@ -91,10 +94,9 @@ class PayPalAgent {
         try {
             $agreement = $agreement->create($this->paypalContext);
         } catch( \Exception $e ) {
-            throw PaymentException::fromException($e);
+          throw PaymentException::fromException($e);
         }
 
-        $license->paypal_subscription_id = $agreement->getId();
         $approvalUrl = $agreement->getApprovalLink();
 
         $this->log->info( sprintf( 'Created PayPal agreement %s for user %s', $license->paypal_subscription_id, $license->user->email ) );
@@ -109,12 +111,14 @@ class PayPalAgent {
      */
     public function startSubscription( License $license, $token ) {
         $agreement = new Agreement();
+
         try {
-            $agreement->execute( $token, $this->paypalContext );
+            $agreement = $agreement->execute( $token, $this->paypalContext );
         } catch( \Exception $e ) {
             throw PaymentException::fromException($e);
         }
 
+        $license->paypal_subscription_id = $agreement->getId();
         $license->status = 'active';
         $license->deactivated_at = null;
 

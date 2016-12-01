@@ -83,6 +83,8 @@ class LicenseController extends Controller {
             $approvalUrl = $agent->createSubscription( $license );
 
             if( ! empty($approvalUrl) ) {
+                dd( $license->paypal_subscription_id );
+
                 // store license in session
                 session([ 'license' => $license ]);
 

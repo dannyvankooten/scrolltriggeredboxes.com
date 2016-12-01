@@ -88,7 +88,7 @@ class CreatePlans extends Command
             $paypalPlan->setId($planConfig['id']);
             $paypalPlan->setName($planConfig['name'])
                 ->setDescription($planConfig['name'])
-                ->setType('infinite');
+                ->setType('INFINITE');
 
             $paymentDefinition = new PaymentDefinition();
             $paymentDefinition->setName('Regular Payments')
@@ -100,7 +100,7 @@ class CreatePlans extends Command
 
             $merchantPreferences = new MerchantPreferences();
             $merchantPreferences->setReturnUrl(domain_url('/licenses/new/paypal', 'account'))
-                ->setCancelUrl(url('/license/new'))
+                ->setCancelUrl(domain_url('/license/new', 'account'))
                 ->setAutoBillAmount("yes")
                 ->setInitialFailAmountAction("CONTINUE")
                 ->setMaxFailAttempts("3");
