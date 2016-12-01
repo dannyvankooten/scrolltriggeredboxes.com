@@ -61,10 +61,4 @@ helpers.toggleElements = function( elements, show ) {
     });
 };
 
-helpers.showFormError = function(form, msg) {
-    var errorElement = form.querySelector('.errors');
-    errorElement.className = "errors notice notice-warning";
-    errorElement.innerText = msg;
-};
-
 module.exports = helpers;

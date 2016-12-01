@@ -1,15 +1,19 @@
 'use strict';
 
 var app = {};
-var helpers = app.helpers = require('./helpers.js');
-var emailInputs = document.querySelectorAll('input[type="email"]');
-var creditCardForms  = document.querySelectorAll('form[data-credit-card]');
-var europeElements = document.querySelectorAll('.europe-only');
-var countryInputs = document.querySelectorAll('.country-input');
-var pricingForms = document.querySelectorAll('form[data-pricing]');
-var confirmationElements = document.querySelectorAll('[data-confirm]');
-var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-var optionalElements = document.querySelectorAll('[data-show-if]');
+const helpers = app.helpers = require('./helpers.js');
+const emailInputs = document.querySelectorAll('input[type="email"]');
+const europeElements = document.querySelectorAll('.europe-only');
+const countryInputs = document.querySelectorAll('.country-input');
+const pricingForms = document.querySelectorAll('form[data-pricing]');
+const confirmationElements = document.querySelectorAll('[data-confirm]');
+const optionalElements = document.querySelectorAll('[data-show-if]');
+
+function calculateNewPrice() {
+    var plan = this.elements.namedItem('plan').value;
+    var interval = this.elements.namedItem('interval').value;
+    helpers.calculatePrice( plan, interval);
+}
 
 function showIf(el, expectedValue ) {
     return function() {
@@ -18,6 +22,16 @@ function showIf(el, expectedValue ) {
         el.style.display = ( conditionMet ) ? '' : 'none';
     }
 }
+
+function askForConfirmation(event) {
+    var sure = confirm(event.target.getAttribute('data-confirm'));
+
+    if( ! sure ) {
+        event.preventDefault();
+        return false;
+    }
+}
+
 
 // hide fields with [data-show-if] attribute
 [].forEach.call(optionalElements, function(el) {
@@ -33,82 +47,8 @@ function showIf(el, expectedValue ) {
     }
 });
 
-var askForConfirmation = function(event) {
-    var sure = confirm(this.getAttribute('data-confirm'));
-
-    if( ! sure ) {
-        event.preventDefault();
-        return false;
-    }
-};
-
 [].forEach.call( emailInputs, function(input) {
     input.addEventListener('blur', helpers.checkEmail);
-});
-
-[].forEach.call( creditCardForms, function(form) {
-
-    var creditCardInput = form.querySelector('[data-stripe="number"]');
-    creditCardInput.addEventListener('change', function() {
-        var valid = Stripe.card.validateCardNumber(this.value);
-
-        if( ! valid ) {
-            this.className = this.className + ' invalid';
-        } else {
-            this.className = this.className.replace('invalid', '');
-        }
-    });
-
-
-    form.addEventListener('submit', function(event) {
-        var form = event.form || event.target || this.form || this;
-
-        // only act if we're paying by credit card
-        if(form.elements.namedItem('payment_method').value !== 'stripe') {
-            return;
-        }
-
-        event.preventDefault();
-
-        // validate expiry date
-        var creditCardInput = form.querySelector('[data-stripe="number"]');
-        var monthInput = form.querySelector('[data-stripe="exp_month"]');
-        var yearInput = form.querySelector('[data-stripe="exp_year"]');
-
-        if( ! Stripe.card.validateCardNumber(creditCardInput.value) ) {
-            helpers.showFormError(form, 'That card number does not look right, sorry.');
-            return;
-        }
-
-        if( ! Stripe.card.validateExpiry(monthInput.value, yearInput.value) ) {
-            helpers.showFormError(form, 'That expiry date does not look right, sorry.');
-            return;
-        }
-
-        // disable button
-        var submitButton = form.querySelector('[type="submit"]');
-        var buttonText = submitButton.value;
-
-        submitButton.disabled = true;
-        submitButton.value = "Please wait";
-
-        Stripe.card.createToken(this, function(status, response) {
-
-            if (response.error) {
-                // re-enable button
-                submitButton.value = buttonText;
-                submitButton.removeAttribute('disabled');
-
-                helpers.showFormError(form, response.error.message);
-            } else {
-                form.elements.namedItem('user[card_last_four]').value = response.card.last4;
-                form.elements.namedItem('payment_token').value = response.id;
-                form.submit();
-            }
-        });
-
-        return false;
-    });
 });
 
 [].forEach.call(countryInputs, function(input) {
@@ -117,12 +57,6 @@ var askForConfirmation = function(event) {
     });
     helpers.toggleElements(europeElements, helpers.isCountryInEurope(input.value));
 });
-
-function calculateNewPrice() {
-    var plan = this.elements.namedItem('plan').value;
-    var interval = this.elements.namedItem('interval').value;
-    helpers.calculatePrice( plan, interval);
-}
 
 [].forEach.call(pricingForms, function(form) {
     form.addEventListener('change', calculateNewPrice.bind(form));
@@ -135,12 +69,6 @@ function calculateNewPrice() {
     element.addEventListener(event, askForConfirmation);
 });
 
-[].forEach.call(dropdownToggles, function(element) {
-    element.addEventListener('click', function() {
-        this.parentNode.classList.toggle('open');
-    });
-
-});
 
 window.app = app;
 

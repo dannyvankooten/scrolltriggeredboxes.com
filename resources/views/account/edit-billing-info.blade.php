@@ -109,7 +109,7 @@
 
         </form>
 
-        @if($user->inEurope())
+        @if($user->isEligibleForTax())
             <p>Given the current information, your VAT rate is <strong>{{ $user->getTaxRate() }}%</strong>.</p>
         @endif
 

@@ -4,6 +4,7 @@ namespace App\Services\Payments;
 
 use App\License;
 use App\Payment;
+use App\User;
 
 class Agent {
 
@@ -26,6 +27,15 @@ class Agent {
     public function __construct( StripeAgent $stripe, BraintreeAgent $braintree ) {
         $this->stripe = $stripe;
         $this->braintree = $braintree;
+    }
+
+    /**
+     * @param User $user
+     * @param string $paymentToken
+     * @return User
+     */
+    public function updatePaymentMethod(User $user, $paymentToken  = '') {
+        return $this->{$user->payment_method}->updatePaymentMethod($user, $paymentToken );
     }
 
     /**

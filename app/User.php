@@ -159,6 +159,13 @@ class User extends Model implements AuthenticatableContract,
 		return Countries::inEurope( $this->country );
 	}
 
+    /**
+     * @return bool
+     */
+	public function isEligibleForTax() {
+        return $this->inEurope();
+    }
+
 	/**
 	 * @return int
 	 */

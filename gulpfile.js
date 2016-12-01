@@ -20,4 +20,5 @@ elixir(function(mix) {
 
 elixir(function(mix) {
     mix.browserify('main.js');
+    mix.browserify('payments.js');
 });

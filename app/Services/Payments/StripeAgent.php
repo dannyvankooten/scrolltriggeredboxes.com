@@ -134,15 +134,20 @@ class StripeAgent {
             $this->cancelSubscription($license);
         }
 
+        $user = $license->user;
+
         // create new subscription
         $data = [
             'customer' => $license->user->stripe_customer_id,
             'plan' => $this->getPlanId($license),
-            'tax_percent' => $license->user->getTaxRate(),
             'metadata' => [
                 'license_id' => $license->id
             ],
         ];
+
+        if( $user->isEligibleForTax()) {
+            $data['tax_percent'] = $user->getTaxRate();
+        }
 
         // if license is still valid, make sure new period does not kick in until license expiration
         if( ! $license->isExpired() ) {

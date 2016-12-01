@@ -76,7 +76,7 @@ class LicenseController extends Controller {
 		$user = $this->auth->user();
 		$plan = $request->input('plan', 'personal');
 		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
-        $license = $purchaser->license($user, $plan, $interval, $user->payment_method);
+        $license = $purchaser->license($user, $plan, $interval);
 
 		try {
             $agent->createSubscription($license);

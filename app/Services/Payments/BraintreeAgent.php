@@ -41,13 +41,28 @@ class BraintreeAgent {
     }
 
     /**
+     * @param string $planId
+     * @return float
+     */
+    protected function getPlanPrice( $planId ) {
+        $prices = [
+            'boxzilla-personal-monthly' => 6.00,
+            'boxzilla-personal-yearly' => 60.00,
+            'boxzilla-developer-monthly' => 20.00,
+            'boxzilla-developer-yearly' => 200.00,
+        ];
+
+        return $prices[$planId];
+    }
+
+    /**
      * @param User $user
-     * @param string $token
+     * @param string $paymentToken
      * @return User
      *
      * @throws PaymentException
      */
-    public function updatePaymentMethod( User $user, $token = '' ) {
+    public function updatePaymentMethod( User $user, $paymentToken = '' ) {
         $data = [
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
@@ -58,9 +73,13 @@ class BraintreeAgent {
             ]
          ];
 
-        if( ! empty( $token ) ) {
-            $data['paymentMethodNonce'] = $token;
+        if( ! empty( $paymentToken ) ) {
+            $data['paymentMethodNonce'] = $paymentToken;
         }
+
+        // filter out empty values
+        $data = array_filter( $data );
+
         if( ! $user->braintree_customer_id ) {
             // create customer in braintree
             $result = Braintree\Customer::create($data);
@@ -72,8 +91,6 @@ class BraintreeAgent {
             foreach($result->errors->deepAll() AS $error) {
                 throw new PaymentException( $error->message, $error->code );
             }
-
-            throw new PaymentException('Unspecified Briantree error.');
         }
 
         $user->braintree_customer_id = $result->customer->id;
@@ -87,7 +104,9 @@ class BraintreeAgent {
      * @throws PaymentException
      */
     public function createSubscription( License $license ) {
-        if(! $this->hasPaymentMethod($license->user)) {
+        $user = $license->user;
+
+        if(! $this->hasPaymentMethod($user)) {
             throw new PaymentException('User has no valid payment method.');
         }
 
@@ -96,12 +115,19 @@ class BraintreeAgent {
             $this->cancelSubscription($license);
         }
 
-        // TODO: Add user tax to subscription
+        $planId = $this->getPlanId($license);
+        $price = $this->getPlanPrice($planId);
+
+
+        if($user->isEligibleForTax()) {
+            $price = $price * ( 100 + $user->getTaxRate() ) / 100;
+        }
 
         $data = [
-            'paymentMethodToken' => $license->user->braintree_payment_token,
-            'planId' => $this->getPlanId($license),
+            'paymentMethodToken' => $user->braintree_payment_token,
+            'planId' => $planId,
             'merchantAccountId' => 'boxzilla',
+            'price' => $price,
         ];
 
         if( ! $license->isExpired() ) {
@@ -122,7 +148,7 @@ class BraintreeAgent {
         $license->status = 'active';
         $license->deactivated_at = null;
 
-        $this->log->info( sprintf( 'Created Braintree subscription %s for user %s', $license->braintree_subscription_id, $license->user->email ) );
+        $this->log->info( sprintf( 'Created Braintree subscription %s for user %s', $license->braintree_subscription_id, $user->email ) );
     }
 
     /**

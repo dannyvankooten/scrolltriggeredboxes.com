@@ -11,7 +11,7 @@
 
     @include('partials.form-messages')
 
-    <form method="post" id="buy-form" data-credit-card="true" data-pricing="true">
+    <form method="post" id="buy-form" data-payment-method="true" data-pricing="true">
         {!! csrf_field() !!}
 
         <!-- Step 1: License -->
@@ -182,52 +182,73 @@
 
             <div class="well small-margin">
 
-                <div class="row clearfix">
-                    <div class="col col-5">
-                        <div class="form-group stretch">
-                            <label for="creditCardNumberInput">Credit Card Number <span class="big red">*</span></label>
-
-                            <div class="form-element">
-                                <input type="text" class="" data-stripe="number" placeholder="**** **** **** ****" id="creditCardNumberInput" required>
-                                <i class="fa fa-credit-card form-element-icon" aria-hidden="true"></i>
-                            </div>
+                <!-- Payment method -->
+                <div class="form-group">
+                    <label>Pay with</label>
+                    <div class="row clearfix ">
+                        <div class="col col3-">
+                            <label class="unstyled">
+                                <input type="radio" name="payment_method" value="stripe" checked> <i class="fa fa-credit-card" aria-hidden="true"></i> Credit card
+                            </label>
+                        </div>
+                        <div class="col col3-">
+                            <label class="unstyled">
+                                <input type="radio" name="payment_method" value="braintree"> <i class="fa fa-paypal" aria-hidden="true"></i> PayPal
+                            </label>
                         </div>
                     </div>
                 </div>
 
-                <div class="row clearfix">
+                <!-- Start credit card fields -->
+                <div data-show-if="payment_method:stripe">
+                    <div class="row clearfix">
+                        <div class="col col-5">
+                            <div class="form-group stretch">
+                                <label for="creditCardNumberInput">Credit Card Number <span class="big red">*</span></label>
 
-                    <div class="col col-3">
-                        <div class="form-group">
-                            <label for="expMonthInput">Expiration <span class="big red">*</span></label>
-                            <select data-stripe="exp_month" style="width: 100px; display: inline;" id="expMonthInput" required>
-                                <option value="" disabled selected>Month</option>
-                                @for ($i = 1; $i <= 12; $i++)
-                                <option>{{ $i }}</option>
-                                @endfor
-                            </select>
-
-                            <select data-stripe="exp_year" style="width: 100px; display: inline;" id="expYearInput" required>
-                                <option value="" disabled selected>Year</option>
-                                @for ($i = 0; $i < 10; $i++)
-                                <option value="{{ date('Y') + $i }}">{{ date('y') + $i }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col col-2">
-
-                        <div class="form-group">
-                            <label for="cvcInput">CVC <span class="big red">*</span></label>
-
-                            <div class="form-element stretch">
-                                <input type="password" data-stripe="cvc" maxlength="4" id="cvcInput" placeholder="***" required>
-                                <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
+                                <div class="form-element">
+                                    <input type="text" class="" data-stripe="number" placeholder="**** **** **** ****" id="creditCardNumberInput">
+                                    <i class="fa fa-credit-card form-element-icon" aria-hidden="true"></i>
+                                </div>
                             </div>
-
                         </div>
                     </div>
+
+                    <div class="row clearfix">
+
+                        <div class="col col-3">
+                            <div class="form-group">
+                                <label for="expMonthInput">Expiration <span class="big red">*</span></label>
+                                <select data-stripe="exp_month" style="width: 100px; display: inline;" id="expMonthInput">
+                                    <option value="" disabled selected>Month</option>
+                                    @for ($i = 1; $i <= 12; $i++)
+                                    <option>{{ $i }}</option>
+                                    @endfor
+                                </select>
+
+                                <select data-stripe="exp_year" style="width: 100px; display: inline;" id="expYearInput">
+                                    <option value="" disabled selected>Year</option>
+                                    @for ($i = 0; $i < 10; $i++)
+                                    <option value="{{ date('Y') + $i }}">{{ date('y') + $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col col-2">
+
+                            <div class="form-group">
+                                <label for="cvcInput">CVC <span class="big red">*</span></label>
+
+                                <div class="form-element stretch">
+                                    <input type="password" data-stripe="cvc" maxlength="4" id="cvcInput" placeholder="***">
+                                    <i class="fa fa-lock form-element-icon" aria-hidden="true"></i>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <p class="muted" style="font-style: italic;">This is a 256bit SSL encrypted payment. Your credit card is safe.</p>
@@ -247,13 +268,16 @@
 
     </form>
 
-    <p class="muted" style="font-style: italic;">Would you rather pay with PayPal instead? Please <a href="mailto:support@boxzillaplugin.com?Subject={!! urlencode('Paying by PayPal') !!}&Body={!! urlencode('Hello, I would like to pay for Boxzilla using PayPal. Please make this possible.') !!}">tell us</a>, we'd like to know!</p>
-
 </div>
 @stop
 
 @section('foot')
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script>
+    window.Stripe.setPublishableKey('{{ config('services.stripe.key') }}');
+    window.BraintreeClientToken = '{{ $braintreeAgent->generateClientToken() }}';
+</script>
+<script src="{{ asset('js/payments.js') }}" type="text/javascript"></script>
 <script>
     function validateVatNumber() {
         var input = this;
@@ -274,8 +298,6 @@
         request.open('GET', url);
         request.send();
     }
-
-    Stripe.setPublishableKey('{{ config('services.stripe.key') }}');
 
     var inputs = document.querySelectorAll('.vat-number-input');
     [].forEach.call( inputs, function(input) {

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\EmailLicenseDetails;
 use App\Jobs\UpdateInvoiceContact;
 use App\Jobs\UpdateStripeCustomer;
 use App\Jobs\UpdateStripeTaxPercent;
+use App\Services\Payments\Agent;
 use App\Services\Payments\BraintreeAgent;
 use App\Services\Payments\StripeAgent;
 use App\Services\Purchaser;
@@ -147,78 +149,35 @@ class AccountController extends Controller {
 	/**
 	 * @param Request $request
 	 * @param Redirector $redirector
-	 * @param StripeAgent $stripeAgent
-     * @param BraintreeAgent $braintreeAgent
+	 * @param Agent $agent
 	 *
 	 * @return RedirectResponse
 	 */
-	public function updatePaymentMethod( Request $request, Redirector $redirector, StripeAgent $stripeAgent, BraintreeAgent $braintreeAgent  ) {
-
+	public function updatePaymentMethod( Request $request, Redirector $redirector, Agent $agent  ) {
 
         /** @var User $user */
         $user = $this->auth->user();
         $this->validate($request, [
-            'payment_method' => 'required',
+            'payment_method' => 'required|in:stripe,braintree',
+            'payment_token' => 'required',
         ]);
 
-        $method = $request->input('payment_method');
+        $paymentMethod = $request->input('payment_method');
+        $paymentToken = $request->input('payment_token');
+        $user->payment_method = $paymentMethod;
 
-        // do nothing if payment method did not change.
-        if( $method === $user->payment_method ) {
-            return $redirector->back()->with('message', 'Changes saved!');
-        }
-
-        if( $method === 'braintree') {
-            return $this->updateBraintree( $user, $request, $redirector, $braintreeAgent );
-        }
-
-        return $this->updateCreditCard( $user, $request, $redirector, $stripeAgent );
-	}
-
-    /**
-     * @param User $user
-     * @param Request $request
-     * @param Redirector $redirector
-     *
-     * @param BraintreeAgent $agent
-     * @return RedirectResponse
-     */
-	protected function updateBraintree( User $user, Request $request, Redirector $redirector, BraintreeAgent $agent  )
-    {
         try {
-            $user = $agent->updatePaymentMethod($user, $request->input('payment_token'));
-        } catch( Exception $e ) {
-            $this->log->error('Payment customer creation failed: ' . $e->getMessage());
-            return $redirector->back()->with('error', $e->getMessage());
-        }
-
-        /** @var User $user */
-        $user->payment_method = 'braintree';
-        $user->save();
-        return $redirector->back()->with('message', 'Changes saved!');
-    }
-
-    /**
-     * @param User $user
-     * @param Request $request
-     * @param Redirector $redirector
-     * @param StripeAgent $agent
-     * @return RedirectResponse
-     */
-    protected function updateCreditCard( User $user,Request $request, Redirector $redirector, StripeAgent $agent  )
-    {
-        try {
-            $user = $agent->updatePaymentMethod($user, $request->input('payment_token'));
+            $user = $agent->updatePaymentMethod($user, $paymentToken);
         } catch (Exception $e) {
-            $this->log->error('Payment customer creation failed: ' . $e->getMessage());
+            $this->log->error(sprintf('Error updating payment method for user %s: %s', $user->email, $e->getMessage()));
             return $redirector->back()->with('error', $e->getMessage());
         }
 
-        $user->payment_method = 'stripe';
         $user->card_last_four = $request->input('user.card_last_four');
         $user->save();
+
         return $redirector->back()->with('message', 'Changes saved!');
-    }
+	}
 
 	/**
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -229,11 +188,12 @@ class AccountController extends Controller {
 		return view( 'account.overview', [ 'user' => $user ] );
 	}
 
-	/**
-	 * @return View
-	 */
-	public function register() {
-		return view('account.register');
+    /**
+     * @param BraintreeAgent $braintreeAgent
+     * @return View
+     */
+	public function register( BraintreeAgent $braintreeAgent ) {
+		return view('account.register', [ 'braintreeAgent' => $braintreeAgent ]);
 	}
 
 	/**
@@ -246,14 +206,15 @@ class AccountController extends Controller {
 		return view('account.welcome', [ 'user' => $user, 'license' => $license ]);
 	}
 
-	/**
-	 * @param Request $request
-	 * @param Purchaser $purchaser
-	 * @param Redirector $redirector
-	 *
-	 * @return RedirectResponse
-	 */
-	public function create( Request $request, Purchaser $purchaser, Redirector $redirector  ) {
+    /**
+     * @param Request $request
+     * @param Purchaser $purchaser
+     * @param Redirector $redirector
+     *
+     * @param Agent $agent
+     * @return RedirectResponse
+     */
+	public function create( Request $request, Purchaser $purchaser, Redirector $redirector, Agent $agent ) {
 
 		// validate new values
 		$this->validate( $request, [
@@ -262,6 +223,7 @@ class AccountController extends Controller {
 			'user.country' 		=> 'required',
 			'user.vat_number' 	=> 'sometimes|vat_number',
 			'password' 			=> 'required|confirmed|min:6',
+            'payment_method'    => 'required|in:stripe,braintree',
 			'payment_token' 	=> 'required',
 			'plan' 			    => 'required|in:personal,developer',
 		], array(
@@ -273,38 +235,42 @@ class AccountController extends Controller {
 		// create user
 		$user = new User($request->input('user'));
 		$user->setPassword($request->input('password'));
-		$user->save();
+        $user->payment_method = $request->input('payment_method');
+        $user->save();
 
 		// log user in automatically
-		$this->auth->loginUsingId($user->id);
+        $this->auth->loginUsingId($user->id);
         $this->log->info( sprintf( 'New user registration: #%d  %s <%s>', $user->id, $user->name, $user->email ) );
 
 		// create customer for payments
 		try {
-            // TODO: fix this
-			$purchaser->user($user, $request->input('payment_token'));
+            $user = $agent->updatePaymentMethod($user, $request->input('payment_token'));
 		} catch( Exception $e ) {
 			$this->log->error( 'Payment customer creation failed: ' . $e->getMessage() );
 			return $redirector->to('/edit/payment')->with('error', $e->getMessage());
 		}
 
+        $user->save();
+
 		// proceed with payment + creating license
 		$plan = $request->input('plan', 'personal');
 		$interval = $request->input('interval', 'year') === 'month' ? 'month' : 'year';
+        $license = $purchaser->license($user, $plan, $interval);
 
-		try {
-			$license = $purchaser->license($user, $plan, $interval);
-		} catch( Exception $e ) {
-			$errorMessage = $e->getMessage();
-			$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
+        try {
+            $agent->createSubscription($license);
+        } catch( Exception $e ) {
+            $errorMessage = $e->getMessage();
+            $errorMessage .= ' Please review your payment method.';
+            $this->log->error( sprintf( 'Failed to create %s subscription for %s', $user->payment_method, $user->email, $e->getMessage() ) );
+            return $redirector->to('/edit/payment')->with('error', $errorMessage );
+        }
 
-			$price = $purchaser->calculatePrice($plan, $interval);
-			$this->log->error( sprintf( 'Payment of USD%s for %s failed: %s', $price, $user->email, $e->getMessage() ) );
-			return $redirector->back()->with('error', $errorMessage );
-		}
+        // all good!
+        $license->save();
+        $this->dispatch(new EmailLicenseDetails($license));
+        $this->log->info( sprintf( 'New license key for %s (per %s, %s plan)', $user->email, $interval, $plan ) );
 
-		$this->log->info( sprintf( 'New license key for %s (per %s, %s plan)', $user->email, $interval, $plan ) );
-		
 		return $redirector->to('/welcome')->with('message', "Success. You're in!");
 	}
 }

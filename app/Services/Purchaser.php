@@ -44,26 +44,25 @@ class Purchaser {
      * @param User $user
      * @param string $plan
      * @param string $interval
-     * @param string $method
      *
      * @return License
      */
-    public function license( User $user, $plan, $interval, $method = 'stripe' )
+    public function license( User $user, $plan, $interval )
     {
         if( ! in_array( $plan, array( 'personal', 'developer' ) ) ) {
             throw new \InvalidArgumentException("Invalid plan ID: $plan");
         }
 
-        $limits = array(
+        $limits = [
             'personal' => 2,
             'developer' => 10
-        );
+        ];
         $site_limit = $limits[ $plan ];
 
         // Create license.
         $license = new License();
         $license->expires_at = Carbon::now();
-        $license->payment_method = $method;
+        $license->payment_method = $user->payment_method;
         $license->license_key = License::generateKey();
         $license->user_id = $user->id;
         $license->site_limit = $site_limit;
