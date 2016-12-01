@@ -7,7 +7,14 @@ use App\Payment;
 
 class Agent {
 
+    /**
+     * @var StripeAgent
+     */
     private $stripe;
+
+    /**
+     * @var BraintreeAgent
+     */
     private $braintree;
 
     /**
@@ -43,5 +50,17 @@ class Agent {
         return $this->{$license->payment_method}->updateNextChargeDate($license);
     }
 
+    /**
+     * @param Payment $payment
+     */
+    public function refundPayment( Payment $payment ) {
+        if(! empty($payment->stripe_id)) {
+            return $this->stripe->refundPayment($payment);
+        }
+
+        if(! empty($payment->braintree_id)) {
+            return $this->braintree->refundPayment($payment);
+        }
+    }
 
 }

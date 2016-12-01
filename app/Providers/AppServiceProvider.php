@@ -9,6 +9,7 @@ use App\Services\Purchaser;
 use App\Services\TaxRateResolver;
 use HelpScoutApp\DynamicApp;
 use Illuminate\Contracts\Logging\Log;
+use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Support\ServiceProvider;
 
 use App\Services\Invoicer\Invoicer;
@@ -48,8 +49,9 @@ class AppServiceProvider extends ServiceProvider {
 		});
 
         $this->app->singleton( Cashier::class, function ($app) {
+            $mailer = $app[Mailer::class];
             $log = $app[Log::class];
-            return new Cashier( $log );
+            return new Cashier( $mailer, $log );
         });
 
 		$this->app->singleton( StripeAgent::class, function ($app) {
@@ -64,7 +66,6 @@ class AppServiceProvider extends ServiceProvider {
             \Braintree\Configuration::merchantId(config('services.braintree.merchant_id'));
             \Braintree\Configuration::publicKey(config('services.braintree.public_key'));
             \Braintree\Configuration::privateKey(config('services.braintree.private_key'));
-
             $cashier = $app[Cashier::class];
             $log = $app[Log::class];
             return new BraintreeAgent( $cashier, $log );

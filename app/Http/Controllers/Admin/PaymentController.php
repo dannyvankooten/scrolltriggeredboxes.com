@@ -16,7 +16,6 @@ class PaymentController extends AdminController {
         /** @var Payment $payment */
         $payment = Payment::with(['user'])->findOrFail( $id );
 
-        // TODO: Add PayPal refund logic.
         $agent->refundPayment( $payment );
 
         $this->log->info( sprintf( '%s refunded %s to user %s.', $this->admin->getFirstName(), $payment->getFormattedTotal(), $payment->user->email ) );

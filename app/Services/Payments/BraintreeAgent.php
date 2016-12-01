@@ -28,8 +28,8 @@ class BraintreeAgent {
      * @param Log $log
      */
     public function __construct( Cashier $cashier, Log $log ) {
-        $this->log = $log;
         $this->cashier = $cashier;
+        $this->log = $log;
     }
 
     /**
@@ -48,7 +48,6 @@ class BraintreeAgent {
      * @throws PaymentException
      */
     public function updatePaymentMethod( User $user, $token = '' ) {
-
         $data = [
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
@@ -106,7 +105,7 @@ class BraintreeAgent {
         ];
 
         if( ! $license->isExpired() ) {
-            $data['nextBillingDate'] = $license->expires_at->format('Y-m-d H:i:s');
+            $data['firstBillingDate'] = $license->expires_at->toDateTimeString();
         }
 
         $result = Braintree\Subscription::create($data);
@@ -123,7 +122,7 @@ class BraintreeAgent {
         $license->status = 'active';
         $license->deactivated_at = null;
 
-        $this->log->info( sprintf( 'Created Braintree subscription %s for user %s', $license->paypal_subscription_id, $license->user->email ) );
+        $this->log->info( sprintf( 'Created Braintree subscription %s for user %s', $license->braintree_subscription_id, $license->user->email ) );
     }
 
     /**
@@ -162,15 +161,16 @@ class BraintreeAgent {
             throw PaymentException::fromBraintree($e);
         }
 
-        // TODO: DRY this.
         if( ! $result->success ) {
             foreach($result->errors->deepAll() AS $error) {
+                // Braintree error 81905: Subscription has already been canceled.
+                if( $error->code == 81905 && $error->attribute == 'status' ) {
+                    continue;
+                }
+
                 throw new PaymentException( $error->message, $error->code );
             }
-
-            throw new PaymentException('Unspecified Briantree error.');
         }
-
 
         $this->log->info( sprintf( 'Canceled Braintree subscription %s for user %s', $license->braintree_subscription_id, $license->user->email ) );
 
@@ -191,12 +191,20 @@ class BraintreeAgent {
             return;
         }
 
-        $result = Braintree\Subscription::update( $license->braintree_subscription_id, [
-            'nextBillingDate' => $license->expires_at->format('Y-m-d H:i:s')
-        ]);
+       // simply re-create subscription
+       $this->createSubscription($license);
+    }
 
-        $this->log->info( sprintf( 'Updated Braintree subscription %s next charge date for user %s', $license->braintree_subscription_id, $license->user->email ) );
+    /**
+     * @param Payment $payment
+     * @throws PaymentException
+     */
+    public function refundPayment( Payment $payment ) {
+        if( $payment->isRefund() ) {
+            throw new PaymentException("Payment is already a refund.");
+        }
 
+        // TODO
     }
 
     /**
@@ -204,7 +212,7 @@ class BraintreeAgent {
      * @return bool
      */
     private function hasSubscription(License $license) {
-        return ! empty( $license->paypal_subscription_id );
+        return ! empty($license->braintree_subscription_id);
     }
 
     /**

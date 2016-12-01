@@ -76,70 +76,25 @@ class LicenseController extends Controller {
 		$user = $this->auth->user();
 		$plan = $request->input('plan', 'personal');
 		$interval = $request->input('interval') == 'month' ? 'month' : 'year';
-
-        $license = $purchaser->license($user, $plan, $interval, $user->payment_method );
+        $license = $purchaser->license($user, $plan, $interval, $user->payment_method);
 
 		try {
-            $approvalUrl = $agent->createSubscription( $license );
-
-            if( ! empty($approvalUrl) ) {
-                dd( $license->paypal_subscription_id );
-
-                // store license in session
-                session([ 'license' => $license ]);
-
-                return $redirector->away($approvalUrl);
-            }
+            $agent->createSubscription($license);
 		} catch( PaymentException $e ) {
 			$errorMessage = $e->getMessage();
 			$errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
-
-			// write to log
-			$price = $purchaser->calculatePrice($plan, $interval);
-			$this->log->error( sprintf( 'Payment of USD%s for %s failed: %s', $price, $user->email, $e->getMessage() ) );
-
+			$this->log->error( sprintf( 'Failed to create %s subscription for %s', $user->payment_method, $user->email, $e->getMessage() ) );
 			return $redirector->back()->with('error', $errorMessage );
 		}
 
 		$license->save();
         $this->dispatch(new EmailLicenseDetails($license));
-
 		$this->log->info( sprintf( 'New license key for %s (per %s, %s plan)', $user->email, $interval, $plan ) );
 
 		return $redirector
 			->to('/licenses/' . $license->id )
 			->with('message', 'You now have a new license!');
 	}
-
-    /**
-     * @param Request $request
-     * @param Agent $agent
-     * @param Redirector $redirector
-     * @return RedirectResponse
-     */
-	public function storeFromPayPal( Request $request, Agent $agent, Redirector $redirector ) {
-        /** @var User $user */
-        $user = $this->auth->user();
-        $token = $request->query->get('token');
-        $session = $request->session();
-        $license = $session->get('license');
-
-        try {
-            $agent->startSubscription($license, $token);
-        } catch( PaymentException $e ) {
-            $errorMessage = $e->getMessage();
-            $errorMessage .= ' Please <a href="/edit/payment">review your payment method</a>.';
-            return $redirector->to('/licenses/new')->with('error', $errorMessage );
-        }
-
-        $license->save();
-        $this->dispatch(new EmailLicenseDetails($license));
-        $this->log->info( sprintf( 'New license key for %s (per %s, %s plan)', $user->email, $license->interval, $license->plan ) );
-
-        return $redirector
-            ->to('/licenses/' . $license->id )
-            ->with('message', 'You now have a new license!');
-    }
 
 	/**
 	 * @param $id
@@ -186,6 +141,7 @@ class LicenseController extends Controller {
             try {
                 $license->isActive() ? $agent->cancelSubscription($license) : $agent->createSubscription($license);
             } catch( PaymentException $e ) {
+                dd($e);
                 $errorMessage = 'We had some trouble with your payment. <br />Please <a href="/edit/payment">review your payment method</a>.';
                 return $redirector->back()->with('error', $errorMessage);
             }

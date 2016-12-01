@@ -17,13 +17,9 @@
 
     @if( $user->payment_method === 'stripe' && $user->card_last_four)
         <p>You have registered your card ending in {{ $user->card_last_four }}.</p>
-        <p>Use the following form if you want to use a different credit card.</p>
     @endif
 
-    @if( $user->payment_method === 'braintree' )
-        <p>You are currently paying by PayPal.</p>
-        <p>When purchasing a new license, you will be asked to log-in to your PayPal account.</p>
-    @endif
+    <p>Use the following form if you want to use a different payment method or card.</p>
 
     @include('partials.form-messages')
 
@@ -134,15 +130,14 @@
     <script>
         var form = document.getElementById('payment-method-form');
         var submitButton = form.querySelector('[type="submit"]');
+        var paypal,
+            initialPaymentMethod = form.elements.namedItem('payment_method').value;
+
 
         // Create a client.
         braintree.client.create({
             authorization: '{{ $braintreeAgent->generateClientToken() }}'
         }, function (clientErr, clientInstance) {
-
-            // Stop if there was a problem creating the client.
-            // This could happen if there is a network error or if the authorization
-            // is invalid.
             if (clientErr) {
                 console.error('Error creating client:', clientErr);
                 return;
@@ -152,51 +147,47 @@
             braintree.paypal.create({
                 client: clientInstance
             }, function (paypalErr, paypalInstance) {
-
-                // Stop if there was a problem creating PayPal.
-                // This could happen if there was a network error or if it's incorrectly
-                // configured.
                 if (paypalErr) {
                     console.error('Error creating PayPal:', paypalErr);
                     return;
                 }
 
-                // When the button is clicked, attempt to tokenize.
-                form.addEventListener('submit', function (event) {
+                paypal = paypalInstance;
+            });
+        });
 
-                    if(form.elements.namedItem('payment_method').value !== 'braintree') {
-                        return;
+        // When the button is clicked, attempt to tokenize.
+        form.addEventListener('submit', function (event) {
+            var chosenPaymentMethod = form.elements.namedItem('payment_method').value;
+            if(chosenPaymentMethod !== 'braintree' || initialPaymentMethod === chosenPaymentMethod) {
+                return;
+            }
+
+            event.preventDefault();
+            submitButton.disabled = true;
+
+            // Because tokenization opens a popup, this has to be called as a result of
+            // customer action, like clicking a button—you cannot call this at any time.
+            paypal.tokenize({
+                flow: 'vault'
+            }, function (tokenizeErr, payload) {
+                // Stop if there was an error.
+                if (tokenizeErr) {
+                    if (tokenizeErr.type !== 'CUSTOMER') {
+                        console.error('Error tokenizing:', tokenizeErr);
                     }
 
-                    event.preventDefault();
-                    submitButton.disabled = true;
+                    // TODO: Handle errors gracefully.
+                    submitButton.disabled = false;
+                    return;
+                }
 
-                    // Because tokenization opens a popup, this has to be called as a result of
-                    // customer action, like clicking a button—you cannot call this at any time.
-                    paypalInstance.tokenize({
-                        flow: 'vault'
-                    }, function (tokenizeErr, payload) {
-                        // Stop if there was an error.
-                        if (tokenizeErr) {
-                            if (tokenizeErr.type !== 'CUSTOMER') {
-                                console.error('Error tokenizing:', tokenizeErr);
-                            }
-
-                            // TODO: Handle gracefully.
-                            submitButton.disabled = false;
-                            return;
-                        }
-
-                        var input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = 'payment_token';
-                        input.value = payload.nonce;
-                        form.appendChild(input);
-                        form.submit();
-                    });
-
-                }, false);
-
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'payment_token';
+                input.value = payload.nonce;
+                form.appendChild(input);
+                form.submit();
             });
 
         });

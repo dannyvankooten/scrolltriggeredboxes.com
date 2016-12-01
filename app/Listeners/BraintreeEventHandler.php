@@ -2,7 +2,9 @@
 
 namespace App\Listeners;
 
+use App\Services\Payments\BraintreeAgent;
 use App\Services\Payments\Cashier;
+use Braintree;
 use Braintree\WebhookNotification;
 use Illuminate\Contracts\Logging\Log;
 
@@ -14,10 +16,7 @@ use Carbon\Carbon;
 
 class BraintreeEventHandler
 {
-    /**
-     * @var Mailer
-     */
-    protected $mailer;
+
 
     /**
      * @var Log
@@ -28,6 +27,7 @@ class BraintreeEventHandler
      * @var Cashier
      */
     protected $cashier;
+
 
     /**
      * StripePollInvoicePaymentFailures constructor.
@@ -52,22 +52,84 @@ class BraintreeEventHandler
     {
         $this->log->info(sprintf("Braintree event received: %s", $notification->kind ));
 
-        switch( $notification->type ) {
-            case 'invoice.payment_failed':
-
+        switch( $notification->kind ) {
+            case 'subscription_charged_unsuccessfully':
+                $this->handleSubscriptionChargeFailed($notification->subscription);
                 break;
 
-            case 'invoice.payment_succeeded':
-
+            case 'subscription_charged_successfully':
+                $this->handleSubscriptionChargeSuccess($notification->subscription);
                 break;
 
             case 'charge.refunded':
-
+                // TODO
                 break;
 
-            case 'customer.subscription.updated':
-
+            case 'subscription_canceled':
+            case 'subscription_expired':
+                $this->handleSubscriptionStatusChanged($notification->subscription);
                 break;
+        }
+    }
+
+    protected function handleSubscriptionChargeFailed(Braintree\Subscription $braintreeSubscription) {
+        /** @var License $license */
+        $license = License::with('user')->where('braintree_subscription_id', $braintreeSubscription->id )->first();
+        if( ! $license ) {
+            return;
+        }
+
+        $transaction = $braintreeSubscription->transactions[0];
+
+        // create temp payment object
+        $payment = new Payment();
+        $payment->user = $license->user;
+        $payment->currency = $transaction->currencyIsoCode;
+        $payment->subtotal = $transaction->amount;
+        if( $transaction->taxAmount ) {
+            $payment->subtotal = $transaction->amount - $transaction->taxAmount;
+            $payment->tax = ( $transaction->taxAmount / 100 );
+        }
+
+        $this->cashier->notifyAboutFailedChargeAttempt($license, $payment);
+    }
+
+    /**
+     * @param Braintree\Subscription $braintreeSubscription
+     */
+    protected function handleSubscriptionChargeSuccess(Braintree\Subscription $braintreeSubscription) {
+
+        /** @var License $license */
+        $license = License::where('braintree_subscription_id', $braintreeSubscription->id)->first();
+        if( ! $license ) {
+            return;
+        }
+
+        // record payment locally
+        $this->cashier->recordPayment($license, $braintreeSubscription->transactions[0]);
+    }
+
+    /**
+     * @param Braintree\Subscription $braintreeSubscription
+     */
+    protected function handleSubscriptionStatusChanged(Braintree\Subscription $braintreeSubscription) {
+        /** @var License $license */
+        $license = License::where('braintree_subscription_id', $braintreeSubscription->id)->first();
+        if( ! $license ) {
+            return;
+        }
+
+        // check if local license should be active or inactive
+        $active = in_array($braintreeSubscription->status, ['active', 'pending', 'past_due']);
+        if( $license->isActive() !== $active ) {
+            if( ! $active ) {
+                $license->deactivated_at = Carbon::now();
+            }
+
+            $license->status = $braintreeSubscription->status;
+            $license->save();
+
+            $this->log->info(sprintf("Deactivated license %d for user %s", $license->id, $license->user->email));
         }
     }
 

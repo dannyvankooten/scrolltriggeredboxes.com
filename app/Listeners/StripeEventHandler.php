@@ -89,6 +89,8 @@ class StripeEventHandler
 
             $license->status = $subscription->status;
             $license->save();
+
+            $this->log->info(sprintf("Deactivated license %d for user %s", $license->id, $license->user->email));
         }
     }
 
@@ -119,18 +121,7 @@ class StripeEventHandler
             $payment->tax = $invoice->tax / 100;
         }
 
-        $this->mailer->send( 'emails.failed-payment', [ 'payment' => $payment ], function( $email ) use( $payment ) {
-            $user = $payment->user;
-
-            /**
-             * @var \Illuminate\Mail\Message $email
-             */
-            $email
-                ->to( $user->email, $user->name )
-                ->subject( 'Boxzilla Plugin - Payment Failure' );
-        });
-
-        $this->log->info(sprintf('Emailed %s about failed %s charge for license %d', $payment->user->email, $payment->getFormattedTotal(), $license->id));
+        $this->cashier->notifyAboutFailedChargeAttempt($license, $payment);
     }
 
     /**
@@ -150,13 +141,6 @@ class StripeEventHandler
         if( ! $license ) {
             return;
         }
-
-        // extend license
-        $license->extend();
-        $license->save();
-
-        // log some info
-        $this->log->info(sprintf('Received payment for license %d, extended with 1 %s', $license->id, $license->interval));
 
         // record payment locally
         $this->cashier->recordPayment($license, $invoice);

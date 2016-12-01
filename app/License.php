@@ -84,7 +84,7 @@ class License extends Model {
      * @return bool
      */
     public function isActive() {
-        return $this->getStatus() === 'active' && ( ! empty( $this->stripe_subscription_id ) || ! empty( $this->paypal_subscription_id ) );
+        return $this->getStatus() === 'active' && ( ! empty( $this->stripe_subscription_id ) || ! empty( $this->braintree_subscription_id ) );
     }
 
 	/**

@@ -153,14 +153,20 @@ class AccountController extends Controller {
 	 * @return RedirectResponse
 	 */
 	public function updatePaymentMethod( Request $request, Redirector $redirector, StripeAgent $stripeAgent, BraintreeAgent $braintreeAgent  ) {
-        $method = $request->input('payment_method', 'stripe');
+
 
         /** @var User $user */
         $user = $this->auth->user();
         $this->validate($request, [
-            'payment_token' => 'required',
             'payment_method' => 'required',
         ]);
+
+        $method = $request->input('payment_method');
+
+        // do nothing if payment method did not change.
+        if( $method === $user->payment_method ) {
+            return $redirector->back()->with('message', 'Changes saved!');
+        }
 
         if( $method === 'braintree') {
             return $this->updateBraintree( $user, $request, $redirector, $braintreeAgent );

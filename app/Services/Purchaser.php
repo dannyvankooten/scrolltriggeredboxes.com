@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\User;
 use App\License;
+use Carbon\Carbon;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 
@@ -61,6 +62,7 @@ class Purchaser {
 
         // Create license.
         $license = new License();
+        $license->expires_at = Carbon::now();
         $license->payment_method = $method;
         $license->license_key = License::generateKey();
         $license->user_id = $user->id;

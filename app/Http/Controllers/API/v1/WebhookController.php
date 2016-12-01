@@ -30,12 +30,12 @@ class WebhookController extends Controller {
 	}
 
     /**
-     * @param Request $request
+     * @param BraintreeAgent $agent
      * @return Response
      */
-    public function braintree( Request $request, BraintreeAgent $agent )
+    public function braintree( BraintreeAgent $agent )
     {
-        $notification = Braintree\WebhookNotification::parse($request->bt_signature, $request->bt_payload);
+        $notification = Braintree\WebhookNotification::parse($_POST['bt_signature'], $_POST['bt_payload']);
 
         // fire off local event
         event($notification);
