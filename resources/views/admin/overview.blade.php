@@ -16,8 +16,8 @@
         .percentage.neutral { color: #999; display: none; }
         .timeframe { display: block; }
     </style>
-
     <div class="container">
+
 
         <div class="row clearfix">
             <div class="col col-2 text-center">

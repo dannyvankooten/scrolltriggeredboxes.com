@@ -257,7 +257,7 @@ class StripeGateway implements Gateway {
         $license->save();
 
         // record refund right away
-        $this->cashier->recordRefund($payment, $stripeRefund);
+        $this->cashier->recordStripeRefund($payment, $stripeRefund);
 
         // log some info
         $user = $payment->user;

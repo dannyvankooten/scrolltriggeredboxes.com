@@ -105,7 +105,7 @@ class BraintreeEventHandler
         }
 
         // record payment locally
-        $this->cashier->recordPayment($license, $braintreeSubscription->transactions[0]);
+        $this->cashier->recordBraintreePayment($license, $braintreeSubscription->transactions[0]);
     }
 
     /**

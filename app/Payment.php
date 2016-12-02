@@ -120,6 +120,14 @@ class Payment extends Model
 		return $this->user_id == $user->id;
 	}
 
+    /**
+     * @return string
+     */
+	public function getBraintreeUrl() {
+        $config = config('services.braintree');
+        return sprintf( 'https://%s.braintreegateway.com/merchants/%s/transactions/%s', $config['environment'], $config['merchant_id'], $this->braintree_id );
+    }
+
 	/**
 	 * @return string
 	 */
@@ -149,5 +157,12 @@ class Payment extends Model
      */
 	public function isRefund() {
 	    return $this->subtotal < 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRefunded() {
+        return count( $this->refunds) > 0 && -($this->refunds->sum('subtotal')) == $this->subtotal;
     }
 }

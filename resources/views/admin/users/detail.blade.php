@@ -93,6 +93,10 @@
                         @if( $payment->subtotal < 0 )
                             &nbsp; <small class="muted">(refund)</small>
                         @endif
+
+                        @if( $payment->isRefunded() )
+                            &nbsp; <small class="muted">(fully refunded)</small>
+                        @endif
                     </td>
                     <td>
                         @if( $payment->isEligibleForRefund())
@@ -104,9 +108,10 @@
                         @endif
                     </td>
                     <td>
-                        <a href="/payments/{{ $payment->id }}/invoice">Invoice</a> &nbsp;
-                        <a href="{{ $payment->getStripeUrl() }}">Stripe</a> &nbsp;
-                        <a href="{{ $payment->getMoneybirdUrl() }}">Moneybird</a>
+                        <a href="/payments/{{ $payment->id }}/invoice">Invoice</a> &middot;
+                        <a href="{{ $payment->getMoneybirdUrl() }}">Moneybird</a> &middot;
+                        @if($payment->stripe_id)<a href="{{ $payment->getStripeUrl() }}">Stripe</a>@endif
+                        @if($payment->braintree_id)<a href="{{ $payment->getBraintreeUrl() }}">Braintree</a> @endif
                     </td>
                 </tr>
             @empty

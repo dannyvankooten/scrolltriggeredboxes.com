@@ -143,7 +143,7 @@ class StripeEventHandler
         }
 
         // record payment locally
-        $this->cashier->recordPayment($license, $invoice);
+        $this->cashier->recordStripePayment($license, $invoice);
     }
 
     /**

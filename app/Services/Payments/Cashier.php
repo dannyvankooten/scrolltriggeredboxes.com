@@ -38,20 +38,37 @@ class Cashier {
 
     /**
      * @param License $license
-     * @param Stripe\Invoice|Braintree\Transaction $object
+     * @param Payment $payment
      */
-    public function recordPayment(License $license, $object ) {
-        if( $object instanceof Stripe\Invoice ) {
-            return $this->recordStripePayment($license, $object);
+    private function recordPayment(License $license, Payment $payment ) {
+        if( $this->exists($payment) ) {
+            return;
         }
 
-        if( $object instanceof Braintree\Transaction ) {
-            return $this->recordBraintreePayment($license, $object);
+        $user = $license->user;
+        $payment->license_id = $license->id;
+        $payment->user_id = $user->id;
+
+        // calculate tax
+        if( $user->isEligibleForTax() && ! $payment->tax ) {
+            $newSubtotal = $payment->subtotal / ( 1 + ( $user->getTaxRate() / 100 ) );
+            $payment->tax = $payment->subtotal - $newSubtotal;
+            $payment->subtotal = $newSubtotal;
         }
+
+        $payment->save();
+
+        // log
+        $gateway = empty( $payment->stripe_id ) ? 'Braintree' : 'Stripe';
+        $remoteId = empty( $payment->stripe_id ) ? $payment->braintree_id : $payment->stripe_id;
+        $this->log->info(sprintf('Recorded %s payment for %s transaction %s', $payment->getFormattedTotal(), $gateway, $remoteId));
 
         // extend license
         $license->extend();
         $license->save();
+
+        // dispatch job to create invoice
+        $this->dispatch(new CreatePaymentInvoice($payment));
 
         // log some info
         $this->log->info(sprintf('Received payment for license %d, extended with 1 %s', $license->id, $license->interval));
@@ -61,67 +78,69 @@ class Cashier {
      * @param License $license
      * @param Braintree\Transaction $transaction
      */
-    private function recordBraintreePayment( License $license, Braintree\Transaction $transaction ) {
-        $existingPayment = Payment::where('braintree_id', $transaction->id )->first();
-        if( $existingPayment ) {
-            return;
-        }
-
-
-        $user = $license->user;
-
-        // store local payment
+    public function recordBraintreePayment( License $license, Braintree\Transaction $transaction ) {
         $payment = new Payment();
         $payment->created_at = Carbon::instance($transaction->createdAt);
-        $payment->license_id = $license->id;
         $payment->braintree_id = $transaction->id;
-        $payment->user_id = $license->user_id;
         $payment->currency = $transaction->currencyIsoCode;
         $payment->subtotal = $transaction->amount;
 
-        // calculate tax
-        if( $user->isEligibleForTax() && ! $payment->tax ) {
-            $payment->subtotal = $transaction->amount / ( 1 + ( $user->getTaxRate() / 100 ) );
-            $payment->tax = $transaction->amount - $payment->subtotal;
-        }
-
-        $payment->save();
-
-        // log
-        $this->log->info(sprintf('Recorded %s payment for Braintree transaction %s', $payment->getFormattedTotal(), $transaction->id));
-
-        // dispatch job to create invoice
-        $this->dispatch(new CreatePaymentInvoice($payment));
+        return $this->recordPayment( $license, $payment );
     }
 
     /**
      * @param License $license
      * @param Stripe\Invoice $stripeInvoice
      */
-    private function recordStripePayment( License $license, Stripe\Invoice $stripeInvoice) {
-        $existingPayment = Payment::where('stripe_id', $stripeInvoice->charge )->first();
-        if( $existingPayment ) {
-            return;
-        }
-
+    public function recordStripePayment( License $license, Stripe\Invoice $stripeInvoice) {
         // store local payment
         $payment = new Payment();
         $payment->created_at = Carbon::createFromTimestamp($stripeInvoice->date);
-        $payment->license_id = $license->id;
         $payment->stripe_id = $stripeInvoice->charge;
-        $payment->user_id = $license->user_id;
         $payment->currency = 'USD';
         $payment->subtotal = ( $stripeInvoice->subtotal / 100 );
         if( $stripeInvoice->tax ) {
             $payment->tax = ( $stripeInvoice->tax / 100 );
         }
-        $payment->save();
+
+        return $this->recordPayment($license, $payment);
+    }
+
+    /**
+     * @param Payment $payment
+     * @param Payment $refund
+     */
+    public function recordRefund( Payment $payment, Payment $refund )
+    {
+        if( $this->exists($refund) ) {
+            return;
+        }
+
+        $user = $payment->user;
+
+        $refund->related_payment_id = $payment->id;
+        $refund->license_id = $payment->license_id;
+        $refund->user_id = $payment->user_id;
+        $refund->related_payment_id = $payment->id;
+        $refund->currency = $payment->currency;
+
+        if( $user->isEligibleForTax() ) {
+            $taxRate = $user->getTaxRate();
+            $subtotal = $refund->subtotal / ( 1 + $taxRate / 100 );
+            $tax = $refund->subtotal - $subtotal;
+            $refund->subtotal = $subtotal;
+            $refund->tax = $tax;
+        }
+
+        $refund->save();
 
         // log
-        $this->log->info(sprintf('Recorded %s payment for Stripe invoice %s', $payment->getFormattedTotal(), $stripeInvoice->id));
+        $method = empty( $refund->stripe_id ) ? 'Braintree' : 'Stripe';
+        $remoteId = empty( $refund->stripe_id ) ? $refund->braintree_id : $refund->stripe_id;
+        $this->log->info(sprintf('Recorded %s refund for %s charge %s', $refund->getFormattedTotal(), $method, $remoteId));
 
-        // dispatch job to create invoice
-        $this->dispatch(new CreatePaymentInvoice($payment));
+        // dispatch job to create credit invoice
+        $this->dispatch(new CreatePaymentInvoice($refund));
     }
 
     /**
@@ -129,46 +148,43 @@ class Cashier {
      *
      * @param Stripe\Refund $stripeRefund
      */
-    public function recordRefund( Payment $payment, Stripe\Refund $stripeRefund ) {
-        // check if local refund object exists already
-        $existing = Payment::where('stripe_id', $stripeRefund->id)->first();
-        if($existing) {
-            return;
-        }
-
-        // get user tax rate
-        $taxRate = $payment->user->getTaxRate();
-
-        // calculate subtotal & tax amount
+    public function recordStripeRefund( Payment $payment, Stripe\Refund $stripeRefund )
+    {
+        // calculate subtotal
         $amount = $stripeRefund->amount / 100; // stripe amount is in cents
-        $subtotal = $amount;
-        $tax = 0.00;
-
-        if( $taxRate > 0 ) {
-            $subtotal = $amount / ( 1 + $taxRate / 100 );
-            $tax = $amount - $subtotal;
-        }
-
 
         // store negative opposite of payment
         $refund = new Payment();
         $refund->created_at = Carbon::createFromTimestamp($stripeRefund->created);
         $refund->stripe_id = $stripeRefund->id;
-        $refund->related_payment_id = $payment->id;
-        $refund->user_id = $payment->user_id;
-        $refund->license_id = $payment->license_id;
-        $refund->tax = 0 - $tax;
-        $refund->currency = $payment->currency;
-        $refund->subtotal = 0 - $subtotal;
-        $refund->save();
+        $refund->subtotal = 0 - $amount;
 
-        // log
-        $this->log->info(sprintf('Recorded %s refund for Stripe charge refund %s', $refund->getFormattedTotal(), $stripeRefund->id));
-
-        // dispatch job to create credit invoice
-        $this->dispatch(new CreatePaymentInvoice($refund));
+        return $this->recordRefund($payment, $refund);
     }
 
+    /**
+     * @param Payment $payment
+     *
+     * @param Braintree\Transaction $braintreeTransaction
+     */
+    public function recordBraintreeRefund( Payment $payment, Braintree\Transaction $braintreeTransaction )
+    {
+        // calculate subtotal
+        $amount = $braintreeTransaction->amount;
+
+        // store negative opposite of payment
+        $refund = new Payment();
+        $refund->created_at = Carbon::instance($braintreeTransaction->createdAt);
+        $refund->braintree_id = $braintreeTransaction->id;
+        $refund->subtotal = 0 - $amount;
+
+        return $this->recordRefund($payment, $refund);
+    }
+
+    /**
+     * @param License $license
+     * @param Payment $payment
+     */
     public function notifyAboutFailedChargeAttempt(License $license, Payment $payment)
     {
         $this->mailer->send( 'emails.failed-payment', [ 'payment' => $payment ], function( $email ) use( $payment ) {
@@ -184,5 +200,22 @@ class Cashier {
 
         $this->log->info(sprintf('Emailed %s about failed %s charge for license %d', $payment->user->email, $payment->getFormattedTotal(), $license->id));
 
+    }
+
+    /**
+     * @param Payment $payment
+     *
+     * @return bool
+     */
+    private function exists( Payment $payment ) {
+        if( $payment->braintree_id ) {
+            return !!Payment::where('braintree_id', $payment->braintree_id)->first();
+        }
+
+        if( $payment->stripe_id ) {
+            return !!Payment::where('stripe_id', $payment->stripe_id)->first();
+        }
+
+        return false;
     }
 }

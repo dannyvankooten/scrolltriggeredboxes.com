@@ -89,11 +89,7 @@ class BraintreeGateway implements Gateway {
             $result = Braintree\Customer::update( $user->braintree_customer_id, $data );
         }
 
-        if( ! $result->success ) {
-            foreach($result->errors->deepAll() AS $error) {
-                throw new PaymentException( $error->message, $error->code );
-            }
-        }
+        $this->throwExceptionIfNotSuccessful($result);
 
         $user->braintree_customer_id = $result->customer->id;
         $user->braintree_payment_token = $result->customer->paymentMethods[0]->token;
@@ -137,15 +133,13 @@ class BraintreeGateway implements Gateway {
             $data['firstBillingDate'] = $license->expires_at->toDateTimeString();
         }
 
-        $result = Braintree\Subscription::create($data);
-
-        if( ! $result->success ) {
-            foreach($result->errors->deepAll() AS $error) {
-                throw new PaymentException( $error->message, $error->code );
-            }
-
-            throw new PaymentException('Unspecified Briantree error.');
+        try {
+            $result = Braintree\Subscription::create($data);
+        } catch( Braintree\Exception $e ) {
+            throw PaymentException::fromBraintree($e);
         }
+
+        $this->throwExceptionIfNotSuccessful($result);
 
         $license->braintree_subscription_id = $result->subscription->id;
         $license->status = 'active';
@@ -194,7 +188,7 @@ class BraintreeGateway implements Gateway {
             foreach($result->errors->deepAll() AS $error) {
                 // Braintree error 81905: Subscription has already been canceled.
                 if( $error->code == 81905 && $error->attribute == 'status' ) {
-                    continue;
+                    break;
                 }
 
                 throw new PaymentException( $error->message, $error->code );
@@ -233,7 +227,37 @@ class BraintreeGateway implements Gateway {
             throw new PaymentException("Payment is already a refund.");
         }
 
-        // TODO
+        try {
+            $result = Braintree\Transaction::refund($payment->braintree_id);
+        } catch( Braintree\Exception $e ) {
+            throw PaymentException::fromBraintree($e);
+        }
+
+        $this->throwExceptionIfNotSuccessful($result);
+
+        // subtract one interval from license expiration date
+        $license = $payment->license;
+        $license->expires_at = $license->expires_at->modify("-1 {$license->interval}");
+        $license->save();
+
+        // record refund right away
+        $this->cashier->recordBraintreeRefund($payment, $result->transaction);
+
+        // log some info
+        $user = $payment->user;
+        $this->log->info( sprintf( 'Refunded a total amount of %s for user %s', $payment->getCurrencySign() . $payment->getTotal(), $user->email ) );
+    }
+
+    /**
+     * @param $result
+     * @throws PaymentException
+     */
+    private function throwExceptionIfNotSuccessful($result) {
+        if( ! $result->success ) {
+            foreach($result->errors->deepAll() AS $error) {
+                throw new PaymentException( $error->message, $error->code );
+            }
+        }
     }
 
     /**
