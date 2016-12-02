@@ -67,6 +67,9 @@ class Cashier {
             return;
         }
 
+
+        $user = $license->user;
+
         // store local payment
         $payment = new Payment();
         $payment->created_at = Carbon::instance($transaction->createdAt);
@@ -75,10 +78,13 @@ class Cashier {
         $payment->user_id = $license->user_id;
         $payment->currency = $transaction->currencyIsoCode;
         $payment->subtotal = $transaction->amount;
-        if( $transaction->taxAmount ) {
-            $payment->subtotal = $transaction->amount - $transaction->taxAmount;
-            $payment->tax = ( $transaction->taxAmount / 100 );
+
+        // calculate tax
+        if( $user->isEligibleForTax() && ! $payment->tax ) {
+            $payment->subtotal = $transaction->amount / ( 1 + ( $user->getTaxRate() / 100 ) );
+            $payment->tax = $transaction->amount - $payment->subtotal;
         }
+
         $payment->save();
 
         // log
