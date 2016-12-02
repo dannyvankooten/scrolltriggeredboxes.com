@@ -118,9 +118,9 @@ class BraintreeAgent {
         $planId = $this->getPlanId($license);
         $price = $this->getPlanPrice($planId);
 
-
+        // add tax to price if needed
         if($user->isEligibleForTax()) {
-            $price = $price * ( 100 + $user->getTaxRate() ) / 100;
+            $price = $price * ( 1 + ( $user->getTaxRate() / 100 ) ) ;
         }
 
         $data = [
@@ -130,6 +130,7 @@ class BraintreeAgent {
             'price' => $price,
         ];
 
+        // if license expires in future, set first billing date to be in future.
         if( ! $license->isExpired() ) {
             $data['firstBillingDate'] = $license->expires_at->toDateTimeString();
         }
