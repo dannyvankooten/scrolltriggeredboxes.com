@@ -171,10 +171,9 @@ class AccountController extends Controller {
             return $redirector->back()->with('error', $e->getMessage());
         }
 
-
         $user->card_last_four = $request->input('user.card_last_four');
+        $user->paypal_email = $request->input('user.paypal_email');
         $user->save();
-
         return $redirector->back()->with('message', 'Changes saved!');
 	}
 

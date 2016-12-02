@@ -97,6 +97,7 @@ function generateBraintreeToken(form) {
             return;
         }
 
+        form.elements.namedItem('user[paypal_email]').value = payload.details.email;
         form.elements.namedItem('payment_token').value = payload.nonce;
         form.submit();
     });

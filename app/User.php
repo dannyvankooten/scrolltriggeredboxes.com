@@ -41,6 +41,7 @@ use DateTime;
  * @property string $braintree_payment_token
  * @property string $ip_address
  * @property string $payment_method
+ * @property string $paypal_email
  * @property DateTime $created_at
  * @property DateTime $updated_at
  * @property DateTime $last_login_at
@@ -63,7 +64,7 @@ class User extends Model implements AuthenticatableContract,
 	 *
 	 * @var array
 	 */
-	protected $fillable = [ 'name', 'email', 'address', 'city', 'zip', 'state', 'company', 'country', 'card_last_four', 'vat_number' ];
+	protected $fillable = [ 'name', 'email', 'address', 'city', 'zip', 'state', 'company', 'country', 'card_last_four', 'vat_number', 'paypal_email' ];
 
 	/**
 	 * @var array

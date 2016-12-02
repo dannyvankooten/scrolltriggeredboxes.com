@@ -16,7 +16,11 @@
     <h1 class="page-title">Update payment method</h1>
 
     @if( $user->payment_method === 'stripe' && $user->card_last_four)
-        <p>You have registered your card ending in {{ $user->card_last_four }}.</p>
+        <p>You have registered your card ending in <strong>{{ $user->card_last_four }}</strong>.</p>
+    @endif
+
+    @if( $user->payment_method === 'braintree' && $user->paypal_email)
+        <p>You have connected your PayPal account with email <strong>{{ $user->paypal_email }}</strong>.</p>
     @endif
 
     <p>Use the following form if you want to use a different payment method or card.</p>
@@ -104,7 +108,7 @@
 
             <input type="hidden" name="payment_token" value="" />
             <input type="hidden" name="user[card_last_four]" value="" />
-
+            <input type="hidden" name="user[paypal_email]" value="" />
         </form>
     </div>
 

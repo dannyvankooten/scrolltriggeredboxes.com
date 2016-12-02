@@ -45,7 +45,7 @@
             </div>
 
             <p>
-                Your {!! $user->payment_method === 'stripe' ? 'card ending in <strong>'.$user->card_last_four.'</strong>' : 'PayPal account' !!} (<a href="/edit/payment">edit</a>) will be charged <span class="price strong">$6 per month</span>
+                Your {!! $user->payment_method === 'stripe' ? 'card ending in <strong>'.$user->card_last_four.'</strong>' : 'PayPal account with email <strong>'. $user->paypal_email .'</strong>' !!} (<a href="/edit/payment">edit</a>) will be charged <span class="price strong">$6 per month</span>
                 @if( $user->getTaxRate() > 0) <span>(excl. {{ $user->getTaxRate() }}% tax)</span> @endif
                 .
             </p>

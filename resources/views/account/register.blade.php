@@ -262,6 +262,7 @@
 
             <input type="hidden" name="payment_token" value="" />
             <input type="hidden" name="user[card_last_four]" value="" />
+            <input type="hidden" name="user[paypal_email]" value="" />
 
         </div>
         <!-- / Step -->

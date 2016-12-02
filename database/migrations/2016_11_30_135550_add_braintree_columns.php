@@ -27,6 +27,7 @@ class AddBraintreeColumns extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
+            $table->string('paypal_email')->nullable();
             $table->string('braintree_customer_id')->nullable();
             $table->string('braintree_payment_token')->nullable();
             $table->string('payment_method')->default('stripe');
@@ -59,6 +60,7 @@ class AddBraintreeColumns extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('paypal_email');
             $table->dropColumn('payment_method');
             $table->dropColumn('braintree_customer_id');
             $table->dropColumn('braintree_payment_token');
