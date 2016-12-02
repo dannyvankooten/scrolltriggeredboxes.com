@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Activation;;
 use App\Jobs\EmailLicenseDetails;
 use App\Services\Payments\Agent;
-use App\Services\Payments\BraintreeAgent;
 use App\Services\Payments\PaymentException;
 use App\Services\Purchaser;
 use App\User;

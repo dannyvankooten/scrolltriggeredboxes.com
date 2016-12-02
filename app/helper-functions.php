@@ -3,6 +3,7 @@
 /*********************
  * Global Helper Functions
  *********************/
+use App\Services\Payments\Gateways\BraintreeGateway;
 
 
 /**
@@ -21,4 +22,11 @@ function domain_url( $path = '/', $subdomain = '' ) {
 	/** @var Illuminate\Http\Request $request */
 	$request = app('request');
 	return $request->getScheme() . '://' . rtrim( $domain, '/' ) . '/' . ltrim( $path, '/' );
+}
+
+/**
+ * @return string
+ */
+function braintree_client_token() {
+    return app(BraintreeGateway::class)->generateClientToken();
 }

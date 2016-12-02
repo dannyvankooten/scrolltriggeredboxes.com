@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Services\Payments;
+namespace App\Services\Payments\Gateways;
 
 use App\Payment;
+use App\Services\Payments\Cashier;
+use App\Services\Payments\PaymentException;
 use App\User;
 use App\License;
 use Carbon\Carbon;
 use Illuminate\Contracts\Logging\Log;
 use Braintree;
 
-class BraintreeAgent {
+class BraintreeGateway implements Gateway {
 
     /**
      * @var Log

@@ -5,12 +5,8 @@ namespace App\Services;
 use App\User;
 use App\License;
 use Carbon\Carbon;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-
 
 class Purchaser {
-
-    use DispatchesJobs;
 
     /**
      * @param string $plan

@@ -2,7 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Services\Payments\BraintreeAgent;
 use App\Services\Payments\Cashier;
 use Braintree;
 use Braintree\WebhookNotification;

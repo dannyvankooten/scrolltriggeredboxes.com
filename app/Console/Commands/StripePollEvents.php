@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\Payments\StripeAgent;
+use App\Services\Payments\Gateways\StripeGateway;
 use Illuminate\Console\Command;
 use Stripe;
 
@@ -25,9 +25,9 @@ class StripePollEvents extends Command
 
     /**
      * Execute the console command.
-     * @param StripeAgent $agent
+     * @param StripeGateway $agent
      */
-    public function handle( StripeAgent $agent )
+    public function handle( StripeGateway $agent )
     {
         $eventTypes = [
             'charge.refunded',

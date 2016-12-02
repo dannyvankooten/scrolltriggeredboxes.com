@@ -2,13 +2,18 @@
 
 use App\Http\Controllers\Controller;
 
-use App\Services\Payments\BraintreeAgent;
-use Illuminate\Http\Request;
+use App\Services\Payments\Agent;
 use Stripe;
 use Braintree;
+
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class WebhookController extends Controller {
+
+    public function __construct( Agent $agent ) {
+        // instantiate agent so that creds are set
+    }
 
     /**
      * @return Response
@@ -30,10 +35,9 @@ class WebhookController extends Controller {
 	}
 
     /**
-     * @param BraintreeAgent $agent
      * @return Response
      */
-    public function braintree( BraintreeAgent $agent )
+    public function braintree()
     {
         $notification = Braintree\WebhookNotification::parse($_POST['bt_signature'], $_POST['bt_payload']);
 

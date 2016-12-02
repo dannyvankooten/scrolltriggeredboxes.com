@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\Payments\StripeAgent;
+use App\Services\Payments\Gateways\StripeGateway;
 use Illuminate\Console\Command;
 use Stripe;
 
@@ -23,18 +23,11 @@ class StripeCancelSubscriptions extends Command
     protected $description = 'Cancels all subscriptions in the Stripe account.';
 
     /**
-     * @var StripeAgent
-     */
-    protected $agent;
-
-    /**
      * Create a new command instance.
-     * @param StripeAgent $agent
+     * @param StripeGateway $stripeGateway
      */
-    public function __construct( StripeAgent $agent )
+    public function __construct( StripeGateway $stripeGateway )
     {
-        $this->agent = $agent;
-
         parent::__construct();
     }
 

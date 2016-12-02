@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Payments\Gateways\StripeGateway;
 use App\Services\Payments\PaymentException;
-use App\Services\Payments\StripeAgent;
 use App\Subscription;
 use App\License;
 
@@ -26,20 +26,20 @@ class StripeMigrateSubscriptions extends Command
     protected $description = 'Migrate all local Subscriptions to Stripe';
 
     /**
-     * @var StripeAgent
+     * @var StripeGateway
      */
     protected $agent;
 
     /**
      * Create a new command instance.
      *
-     * @param StripeAgent $agent
+     * @param StripeGateway $stripeGateway
      */
-    public function __construct( StripeAgent $agent )
+    public function __construct( StripeGateway $stripeGateway )
     {
         parent::__construct();
 
-        $this->agent = $agent;
+        $this->agent = $stripeGateway;
     }
 
     /**

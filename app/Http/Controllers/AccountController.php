@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Jobs\EmailLicenseDetails;
 use App\Jobs\UpdateInvoiceContact;
-use App\Jobs\UpdateStripeCustomer;
-use App\Jobs\UpdateStripeTaxPercent;
+use App\Jobs\UpdateGatewayCustomer;
+use App\Jobs\UpdateGatewaySubscriptions;
 use App\Services\Payments\Agent;
-use App\Services\Payments\BraintreeAgent;
-use App\Services\Payments\StripeAgent;
 use App\Services\Purchaser;
 use App\User;
 use Exception;
@@ -57,8 +55,8 @@ class AccountController extends Controller {
 	/**
 	 *
 	 */
-	public function editPaymentMethod( BraintreeAgent $braintreeAgent ) {
-		return view( 'account.edit-payment-method', [ 'user' => $this->auth->user(), 'braintreeAgent' => $braintreeAgent ] );
+	public function editPaymentMethod() {
+		return view( 'account.edit-payment-method', [ 'user' => $this->auth->user() ] );
 	}
 
 	public function editCredentials() {
@@ -137,10 +135,10 @@ class AccountController extends Controller {
 		$user->save();
 
 		$this->dispatch(new UpdateInvoiceContact($user));
-		$this->dispatch(new UpdateStripeCustomer($user));
+		$this->dispatch(new UpdateGatewayCustomer($user));
 
         if($vatInfoChanged) {
-            $this->dispatch(new UpdateStripeTaxPercent($user));
+            $this->dispatch(new UpdateGatewaySubscriptions($user));
         }
 
 		return $redirector->back()->with('message', 'Changes saved!');
@@ -173,6 +171,7 @@ class AccountController extends Controller {
             return $redirector->back()->with('error', $e->getMessage());
         }
 
+
         $user->card_last_four = $request->input('user.card_last_four');
         $user->save();
 
@@ -189,11 +188,10 @@ class AccountController extends Controller {
 	}
 
     /**
-     * @param BraintreeAgent $braintreeAgent
      * @return View
      */
-	public function register( BraintreeAgent $braintreeAgent ) {
-		return view('account.register', [ 'braintreeAgent' => $braintreeAgent ]);
+	public function register() {
+		return view('account.register');
 	}
 
 	/**

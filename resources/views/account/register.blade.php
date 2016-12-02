@@ -275,7 +275,7 @@
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script>
     window.Stripe.setPublishableKey('{{ config('services.stripe.key') }}');
-    window.BraintreeClientToken = '{{ $braintreeAgent->generateClientToken() }}';
+    window.BraintreeClientToken = '{{ braintree_client_token() }}';
 </script>
 <script src="{{ asset('js/payments.js') }}" type="text/javascript"></script>
 <script>

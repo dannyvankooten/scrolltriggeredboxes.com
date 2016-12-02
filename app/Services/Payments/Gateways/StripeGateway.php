@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Services\Payments;
+namespace App\Services\Payments\Gateways;
 
 use App\License;
+use App\Services\Payments\Cashier;
+use App\Services\Payments\PaymentException;
 use App\User;
 use App\Payment;
 
@@ -16,7 +18,7 @@ use Stripe;
 use Stripe\Error\InvalidRequest;
 use Stripe\Error\Base as StripeException;
 
-class StripeAgent {
+class StripeGateway implements Gateway {
 
     /**
      * @var Log

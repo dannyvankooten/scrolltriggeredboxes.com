@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
-use App\Services\Payments\StripeAgent;
+use App\Services\Payments\Agent;
 use App\User;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UpdateStripeCustomer extends Job implements ShouldQueue
+class UpdateGatewayCustomer extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
@@ -30,14 +30,13 @@ class UpdateStripeCustomer extends Job implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param StripeAgent $agent
+     * @param Agent $agent
      *
      * @return void
      */
-    public function handle( StripeAgent $agent )
+    public function handle( Agent $agent )
     {
-        if( ! empty($this->user->stripe_customer_id) ) {
-            $agent->updatePaymentMethod($this->user);
-        }
+        $agent->updatePaymentMethod($this->user);
+        $this->user->save();
     }
 }

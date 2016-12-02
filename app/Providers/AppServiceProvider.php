@@ -1,9 +1,10 @@
 <?php namespace App\Providers;
 
 use App\Services\Payments\Agent;
-use App\Services\Payments\BraintreeAgent;
+use App\Services\Payments\Gateways\BraintreeGateway;
+use App\Services\Payments\Gateways\StripeGateway;
+
 use App\Services\Payments\Cashier;
-use App\Services\Payments\StripeAgent;
 use App\Services\Invoicer\Moneybird;
 use App\Services\Purchaser;
 use App\Services\TaxRateResolver;
@@ -54,33 +55,30 @@ class AppServiceProvider extends ServiceProvider {
             return new Cashier( $mailer, $log );
         });
 
-		$this->app->singleton( StripeAgent::class, function ($app) {
+		$this->app->singleton( StripeGateway::class, function ($app) {
 			$stripeSecret = config('services.stripe.secret');
             $cashier = $app[Cashier::class];
             $log = $app[Log::class];
-			return new StripeAgent( $stripeSecret, $cashier, $log );
+			return new StripeGateway( $stripeSecret, $cashier, $log );
 		});
 
-        $this->app->singleton( BraintreeAgent::class, function ($app) {
+        $this->app->singleton( BraintreeGateway::class, function ($app) {
             \Braintree\Configuration::environment(config('services.braintree.environment'));
             \Braintree\Configuration::merchantId(config('services.braintree.merchant_id'));
             \Braintree\Configuration::publicKey(config('services.braintree.public_key'));
             \Braintree\Configuration::privateKey(config('services.braintree.private_key'));
             $cashier = $app[Cashier::class];
             $log = $app[Log::class];
-            return new BraintreeAgent( $cashier, $log );
+            return new BraintreeGateway( $cashier, $log );
         });
 
         $this->app->singleton( Agent::class, function ($app) {
-            return new Agent($app[StripeAgent::class], $app[BraintreeAgent::class]);
+            return new Agent($app[StripeGateway::class], $app[BraintreeGateway::class]);
         });
 
-		$this->app->singleton( Purchaser::class, function ($app) {
-            $stripeAgent = $app[StripeAgent::class];
-			return new Purchaser($stripeAgent);
+		$this->app->singleton( Purchaser::class, function($app) {
+			return new Purchaser();
 		});
-
-
 
 
 	}

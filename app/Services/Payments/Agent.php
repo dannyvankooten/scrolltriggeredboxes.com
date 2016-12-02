@@ -4,29 +4,51 @@ namespace App\Services\Payments;
 
 use App\License;
 use App\Payment;
+use App\Services\Payments\Gateways\BraintreeGateway;
+use App\Services\Payments\Gateways\FreeGateway;
+use App\Services\Payments\Gateways\StripeGateway;
 use App\User;
 
 class Agent {
 
     /**
-     * @var StripeAgent
+     * @var StripeGateway
      */
     private $stripe;
 
     /**
-     * @var BraintreeAgent
+     * @var BraintreeGateway
      */
     private $braintree;
 
     /**
+     * @var FreeGateway
+     */
+    private $free;
+
+    /**
      * Agent constructor.
      *
-     * @param StripeAgent $stripe
-     * @param BraintreeAgent $braintree
+     * @param StripeGateway $stripe
+     * @param BraintreeGateway $braintree
      */
-    public function __construct( StripeAgent $stripe, BraintreeAgent $braintree ) {
+    public function __construct( StripeGateway $stripe, BraintreeGateway $braintree ) {
         $this->stripe = $stripe;
         $this->braintree = $braintree;
+        $this->free = new FreeGateway();
+    }
+
+    /**
+     * @param User|License $object
+     *
+     * @return StripeGateway|BraintreeGateway|FreeGateway
+     */
+    public function getGateway($object) {
+        if( ! empty( $object->payment_method ) ) {
+            return $this->{$object->payment_method};
+        }
+
+        return $this->free;
     }
 
     /**
@@ -35,7 +57,7 @@ class Agent {
      * @return User
      */
     public function updatePaymentMethod(User $user, $paymentToken  = '') {
-        return $this->{$user->payment_method}->updatePaymentMethod($user, $paymentToken );
+        return $this->getGateway($user)->updatePaymentMethod($user, $paymentToken );
     }
 
     /**
@@ -43,21 +65,21 @@ class Agent {
      * @return string
      */
     public function createSubscription( License $license ) {
-        return $this->{$license->payment_method}->createSubscription($license);
+        return $this->getGateway($license)->createSubscription($license);
     }
 
     /**
      * @param License $license
      */
     public function cancelSubscription( License $license ) {
-        return $this->{$license->payment_method}->cancelSubscription($license);
+        return $this->getGateway($license)->cancelSubscription($license);
     }
 
     /**
      * @param License $license
      */
     public function updateNextChargeDate( License $license ) {
-        return $this->{$license->payment_method}->updateNextChargeDate($license);
+        return $this->getGateway($license)->updateNextChargeDate($license);
     }
 
     /**

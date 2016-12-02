@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
-use App\Services\Payments\StripeAgent;
+use App\Services\Payments\Agent;
 use App\User;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class UpdateStripeTaxPercent extends Job implements ShouldQueue
+class UpdateGatewaySubscriptions extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
@@ -30,17 +30,12 @@ class UpdateStripeTaxPercent extends Job implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param StripeAgent $agent
+     * @param Agent $agent
      *
      * @return void
      */
-    public function handle( StripeAgent $agent )
+    public function handle( Agent $agent )
     {
-        // do nothing for users not using Stripe.
-        if( empty($this->user->stripe_customer_id) ) {
-            return;
-        }
-
         $licenses = $this->user->getActiveLicenses();
 
         foreach( $licenses as $license ) {

@@ -1,15 +1,11 @@
 <?php namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\License;
 use App\Services\Payments\Agent;
 use App\Services\Payments\PaymentException;
-use App\Services\Payments\StripeAgent;
-use App\Services\SubscriptionAgent;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Routing\Redirector;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Illuminate\Http\Request;
 
 class LicenseController extends AdminController {
