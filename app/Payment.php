@@ -123,6 +123,32 @@ class Payment extends Model
     /**
      * @return string
      */
+	public function getGatewayName() {
+        if( ! empty( $this->stripe_id ) ) {
+            return 'Stripe';
+        }
+
+        if( ! empty( $this->braintree_id ) ) {
+            return 'PayPal';
+        }
+    }
+
+    /**
+     * @return string
+     */
+	public function getGatewayUrl() {
+        if( $this->stripe_id ) {
+            return $this->getStripeUrl();
+        }
+
+        if( $this->braintree_id ) {
+            return $this->getBraintreeUrl();
+        }
+    }
+
+    /**
+     * @return string
+     */
 	public function getBraintreeUrl() {
         $config = config('services.braintree');
         return sprintf( 'https://%s.braintreegateway.com/merchants/%s/transactions/%s', $config['environment'], $config['merchant_id'], $this->braintree_id );

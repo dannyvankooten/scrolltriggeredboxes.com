@@ -106,15 +106,22 @@
                     <tr>
                         <th>User</th>
                         <th>Amount</th>
-                        <th>Date</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($recentPayments as $payment)
                         <tr>
-                            <td><a href="/users/{{ $payment->user->id }}">{{ $payment->user->email }}</a></td>
+                            <td>
+                                <a href="/users/{{ $payment->user->id }}">{{ str_limit($payment->user->email, 18) }}</a>
+
+                                <div class="muted small">
+                                    {{ $payment->created_at->format('M j') }}
+                                    &middot;
+                                    <a href="{{ $payment->getGatewayUrl() }}">{{ $payment->getGatewayName() }}</a>
+                                </div>
+
+                            </td>
                             <td class="{{ $payment->isRefund()  ? 'danger' : 'success' }}">{{ $payment->getFormattedTotal() }}</td>
-                            <td>{{ $payment->created_at->format('M j') }}</td>
                         </tr>
                     @endforeach
                     </tbody>
