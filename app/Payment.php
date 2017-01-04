@@ -151,7 +151,9 @@ class Payment extends Model
      */
 	public function getBraintreeUrl() {
         $config = config('services.braintree');
-        return sprintf( 'https://%s.braintreegateway.com/merchants/%s/transactions/%s', $config['environment'], $config['merchant_id'], $this->braintree_id );
+        $subdomain = $config['environment'] != 'production' ? $config['environment'] : 'www';
+        
+        return sprintf( 'https://%s.braintreegateway.com/merchants/%s/transactions/%s', $subdomain, $config['merchant_id'], $this->braintree_id );
     }
 
 	/**
