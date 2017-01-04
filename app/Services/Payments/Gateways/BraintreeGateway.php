@@ -124,7 +124,7 @@ class BraintreeGateway implements Gateway {
         $data = [
             'paymentMethodToken' => $user->braintree_payment_token,
             'planId' => $planId,
-            'merchantAccountId' => 'boxzilla',
+            'merchantAccountId' => config('braintree.merchant_account_id'),
             'price' => $price,
         ];
 
