@@ -159,7 +159,7 @@ class Cashier {
         $refund->stripe_id = $stripeRefund->id;
         $refund->subtotal = 0 - $amount;
 
-        return $this->recordRefund($payment, $refund);
+        $this->recordRefund($payment, $refund);
     }
 
     /**
@@ -178,7 +178,7 @@ class Cashier {
         $refund->braintree_id = $braintreeTransaction->id;
         $refund->subtotal = 0 - $amount;
 
-        return $this->recordRefund($payment, $refund);
+        $this->recordRefund($payment, $refund);
     }
 
     /**

@@ -162,7 +162,7 @@ class StripeEventHandler
         foreach( $stripeRefunds as $stripeRefund ) {
 
             // record refunds locally
-            $this->cashier->recordRefund($payment, $stripeRefund);
+            $this->cashier->recordStripeRefund($payment, $stripeRefund);
         }
 
     }
