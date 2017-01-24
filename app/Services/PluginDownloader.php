@@ -147,7 +147,7 @@ class PluginDownloader {
 
             try {
                 $res = $this->client->request( 'GET', $url, [ 'sink' => $filename ] );
-            } catch( GuzzleHttp\Exception\ClientException $e ) {
+            } catch( GuzzleHttp\Exception\RequestException $e ) {
                 abort( $e->getCode() );
                 exit;
             }
