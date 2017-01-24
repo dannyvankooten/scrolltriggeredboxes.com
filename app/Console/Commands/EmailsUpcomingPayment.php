@@ -64,11 +64,11 @@ class EmailsUpcomingPayment extends Command
 
     public function handle_license( License $license )
     {
-//        // check if already reminded in last 10 days
-//        $tresholdDate = new Carbon('-10 days');
-//        if( $license->last_reminded_at >= $tresholdDate) {
-//            return;
-//        }
+        // check if already reminded in last 10 days
+        $tresholdDate = new Carbon('-10 days');
+        if( $license->last_reminded_at >= $tresholdDate) {
+            return;
+        }
 
         $this->mailer->send('emails.upcoming-payment', ['license' => $license, 'user' => $license->user], function(Message $message) use($license) {
             $from = config('mail.from.address');
