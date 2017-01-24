@@ -148,6 +148,8 @@ class PluginDownloader {
             try {
                 $res = $this->client->request( 'GET', $url, [ 'sink' => $filename ] );
             } catch( GuzzleHttp\Exception\RequestException $e ) {
+                // remove on error
+                unlink($filename);
                 abort( $e->getCode() );
                 exit;
             }
