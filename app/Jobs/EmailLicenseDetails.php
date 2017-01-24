@@ -37,7 +37,7 @@ class EmailLicenseDetails extends Job implements ShouldQueue
      * @param Mailer $mailer
      * @param Log $log
      */
-    public function handle(Mailer $mailer, Log $log )
+    public function handle(Mailer $mailer, Log $log)
     {
         $license = $this->license;
         $user = $this->license->user;

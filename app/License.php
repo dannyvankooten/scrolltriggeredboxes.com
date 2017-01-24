@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $interval
  * @property string $plan
  * @property string $status
+ * @property Carbon $last_reminded_at
  */
 class License extends Model {
 
@@ -36,7 +37,7 @@ class License extends Model {
 	protected $fillable = [];
 
 	public $timestamps = true;
-	protected $dates = [ 'created_at', 'updated_at', 'deleted_at', 'expires_at' ];
+	protected $dates = [ 'created_at', 'updated_at', 'deleted_at', 'expires_at', 'last_reminded_at' ];
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
