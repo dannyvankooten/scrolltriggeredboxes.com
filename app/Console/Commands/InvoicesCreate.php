@@ -6,7 +6,7 @@ use App\Services\Invoicer\Invoicer;
 use Illuminate\Console\Command;
 use App\Payment;
 
-class CreateInvoices extends Command
+class InvoicesCreate extends Command
 {
     /**
      * The name and signature of the console command.

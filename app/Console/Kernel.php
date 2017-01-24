@@ -1,6 +1,6 @@
 <?php namespace App\Console;
 
-use App\Console\Commands\CreateInvoices;
+use App\Console\Commands\InvoicesCreate;
 use App\Console\Commands\EmailsUpcomingPayment;
 use App\Console\Commands\StripeCancelSubscriptions;
 use App\Console\Commands\StripeCreatePlans;
@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel {
 	 * @var array
 	 */
 	protected $commands = [
-		CreateInvoices::class,
+        InvoicesCreate::class,
         StripeMigrateSubscriptions::class,
         StripePollEvents::class,
         StripeCreatePlans::class,
