@@ -58,7 +58,7 @@
                             <label for="creditCardNumberInput">Credit Card Number <span class="big red">*</span></label>
 
                             <div class="form-element">
-                                <input type="text" data-stripe="number" placeholder="**** **** **** ****" id="creditCardNumberInput">
+                                <input type="text" data-stripe="number" pattern="[\d\ ]{13,24)" placeholder="**** **** **** ****" id="creditCardNumberInput">
                                 <i class="fa fa-credit-card form-element-icon"></i>
                             </div>
                         </div>
