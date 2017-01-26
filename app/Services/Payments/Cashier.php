@@ -187,7 +187,7 @@ class Cashier {
      */
     public function notifyAboutFailedChargeAttempt(License $license, Payment $payment)
     {
-        $this->mailer->send( 'emails.failed-payment', [ 'payment' => $payment ], function( $email ) use( $payment ) {
+        $this->mailer->send( 'emails.failed-payment', [ 'payment' => $payment , 'user' => $payment->user ], function( $email ) use( $payment ) {
             $user = $payment->user;
 
             /**
