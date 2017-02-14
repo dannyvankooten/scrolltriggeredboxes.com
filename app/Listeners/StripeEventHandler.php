@@ -77,6 +77,7 @@ class StripeEventHandler
         /** @var License $license */
         $license = License::where('stripe_subscription_id', $subscription->id)->first();
         if( ! $license ) {
+            $this->log->warning(sprintf('Received event for Stripe subscription %s without local license.', $subscription->id));
             return;
         }
 
@@ -109,6 +110,7 @@ class StripeEventHandler
         /** @var License $license */
         $license = License::with('user')->where('stripe_subscription_id', $subscription_id )->first();
         if( ! $license ) {
+            $this->log->warning(sprintf('Received event for Stripe subscription %s without local license.', $subscription_id));
             return;
         }
 
@@ -139,6 +141,7 @@ class StripeEventHandler
         /** @var License $license */
         $license = License::where('stripe_subscription_id', $subscription_id)->first();
         if( ! $license ) {
+            $this->log->warning(sprintf('Received event for Stripe subscription %s without local license.', $subscription_id));
             return;
         }
 
