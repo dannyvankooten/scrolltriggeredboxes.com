@@ -75,6 +75,7 @@ class BraintreeEventHandler
         /** @var License $license */
         $license = License::with('user')->where('braintree_subscription_id', $braintreeSubscription->id )->first();
         if( ! $license ) {
+            $this->log->warning(sprintf('Received event for Braintree subscription %s without local license.', $braintreeSubscription->id));
             return;
         }
 
@@ -101,6 +102,7 @@ class BraintreeEventHandler
         /** @var License $license */
         $license = License::where('braintree_subscription_id', $braintreeSubscription->id)->first();
         if( ! $license ) {
+            $this->log->warning(sprintf('Received event for Braintree subscription %s without local license.', $braintreeSubscription->id));
             return;
         }
 
@@ -115,6 +117,7 @@ class BraintreeEventHandler
         /** @var License $license */
         $license = License::where('braintree_subscription_id', $braintreeSubscription->id)->first();
         if( ! $license ) {
+            $this->log->warning(sprintf('Received event for Braintree subscription %s without local license.', $braintreeSubscription->id));
             return;
         }
 
