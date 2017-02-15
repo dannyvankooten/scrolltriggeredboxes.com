@@ -39,12 +39,16 @@ class WebhookController extends Controller {
      */
     public function braintree()
     {
+        if( empty( $_POST['bt_signature'] ) || empty( $_POST['bt_payload'] ) ) {
+            return new Response('', Response::HTTP_BAD_REQUEST );
+        }
+
         $notification = Braintree\WebhookNotification::parse($_POST['bt_signature'], $_POST['bt_payload']);
 
         // fire off local event
         event($notification);
 
-        // tell Stripe we got this
+        // tell Braintree we got this
         return new Response('', Response::HTTP_OK );
     }
 
