@@ -48,8 +48,6 @@ class StripeEventHandler
      */
     public function handle(Stripe\Event $event)
     {
-        $this->log->info(sprintf("Stripe event received: %s", $event->type));
-
         switch( $event->type ) {
             case 'invoice.payment_failed':
                 $this->handleInvoicePaymentFailed($event->data->object);

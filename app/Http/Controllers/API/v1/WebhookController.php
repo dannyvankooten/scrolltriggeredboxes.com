@@ -6,13 +6,25 @@ use App\Services\Payments\Agent;
 use Stripe;
 use Braintree;
 
+use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
 class WebhookController extends Controller {
 
-    public function __construct( Agent $agent ) {
-        // instantiate agent so that creds are set
+    /**
+     * @var Log
+     */
+    private $log;
+
+    /**
+     * WebhookController constructor.
+     * 
+     * @param Agent $agent We inject this so that credentials are set.
+     * @param Log $log
+     */
+    public function __construct( Agent $agent, Log $log ) {
+        $this->log = $log;
     }
 
     /**
@@ -26,6 +38,9 @@ class WebhookController extends Controller {
 
         // verify the event by fetching it from Stripe
         $event = Stripe\Event::retrieve($eventData->id);
+
+        // log received webhook event
+        $this->log->info(sprintf("Stripe event received: %s", $event->type));
 
         // fire off local event
         event($event);
@@ -43,7 +58,11 @@ class WebhookController extends Controller {
             return new Response('', Response::HTTP_BAD_REQUEST );
         }
 
+        // parse webhook notification
         $notification = Braintree\WebhookNotification::parse($_POST['bt_signature'], $_POST['bt_payload']);
+
+        // log received webhook event
+        $this->log->info(sprintf("Braintree event received: %s", $notification->kind));
 
         // fire off local event
         event($notification);
