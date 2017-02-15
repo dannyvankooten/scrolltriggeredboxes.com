@@ -19,7 +19,7 @@ class WebhookController extends Controller {
 
     /**
      * WebhookController constructor.
-     * 
+     *
      * @param Agent $agent We inject this so that credentials are set.
      * @param Log $log
      */
@@ -57,6 +57,13 @@ class WebhookController extends Controller {
         if( empty( $_POST['bt_signature'] ) || empty( $_POST['bt_payload'] ) ) {
             return new Response('', Response::HTTP_BAD_REQUEST );
         }
+
+        /**
+         * Sleep for 1 second to fix a race condition with Braintree firing the webhook event before we got a chance to save our local subscription object.
+         *
+         * TODO: Fix this properly?
+         */
+        sleep(1);
 
         // parse webhook notification
         $notification = Braintree\WebhookNotification::parse($_POST['bt_signature'], $_POST['bt_payload']);
