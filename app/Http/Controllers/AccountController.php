@@ -259,7 +259,7 @@ class AccountController extends Controller {
         } catch( Exception $e ) {
             $errorMessage = $e->getMessage();
             $errorMessage .= ' Please review your payment method.';
-            $this->log->error( sprintf( 'Failed to create %s subscription for %s', $user->payment_method, $user->email, $e->getMessage() ) );
+            $this->log->error( sprintf( 'Failed to create %s subscription for %s: %s', ucfirst($user->payment_method), $user->email, $e->getMessage() ) );
             return $redirector->to('/edit/payment')->with('error', $errorMessage );
         }
 
