@@ -49,7 +49,7 @@ class BraintreeEventHandler
      */
     public function handle(WebhookNotification $notification)
     {
-        $this->log->info(sprintf("Braintree event received: %s", $notification->kind ));
+        $this->log->info(sprintf("Braintree event received: %s", $notification->kind));
 
         switch( $notification->kind ) {
             case 'subscription_charged_unsuccessfully':

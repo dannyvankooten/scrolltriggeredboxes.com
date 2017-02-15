@@ -257,6 +257,9 @@ class BraintreeGateway implements Gateway {
             foreach($result->errors->deepAll() AS $error) {
                 throw new PaymentException( $error->message, $error->code );
             }
+
+            // fallback error because errors array is only populated on validation errors
+            throw new PaymentException( $result->message );
         }
     }
 
