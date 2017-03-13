@@ -141,6 +141,7 @@ class BraintreeGateway implements Gateway {
 
         $this->throwExceptionIfNotSuccessful($result);
 
+        $license->payment_method = 'braintree';
         $license->braintree_subscription_id = $result->subscription->id;
         $license->status = 'active';
         $license->deactivated_at = null;

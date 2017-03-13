@@ -65,7 +65,7 @@ class Agent {
      * @return string
      */
     public function createSubscription( License $license ) {
-        return $this->getGateway($license)->createSubscription($license);
+        return $this->getGateway($license->user)->createSubscription($license);
     }
 
     /**

@@ -163,6 +163,7 @@ class StripeGateway implements Gateway {
             throw PaymentException::fromStripe($e);
         }
 
+        $license->payment_method = 'stripe';
         $license->stripe_subscription_id = $stripeSubscription->id;
         $license->status = 'active';
         $license->deactivated_at = null;
